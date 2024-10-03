@@ -1,0 +1,253 @@
+
+
+<div id="reportSystem">
+   <div class="row">
+      <div class="col-xl-12">
+         <div class="card  shadow">
+            <div class="card-header bg-primary text-white">
+               <h5 class="mb-0">Advanced Report System</h5>
+            </div>
+            <div class="card-body">
+               <form id="reportForm">
+                  <div class="row mb-3">
+                     <div class="col-md-4">
+                        <label for="reportType" class="form-label">Report Type:</label>
+                        <select id="reportType" class="form-select" required>
+                           <option value="">SELECT REPORT TYPE</option>
+                           <option value="STOCK_VALUATION">Stock Valuation</option>
+                           <option value="STOCK_VALUATION_MEALS">Stock Valuation (Meals)</option>
+                           <option value="STOCK_REPORT_STORES">Stock Report (Stores)</option>
+                           <option value="REVENUE_SUMMARY">Revenue Summary</option>
+                           <option value="SUMMARY_TRANSACTION">Summary Transaction</option>
+                           <option value="WAITERS_SUMMARY">Waiters Summary</option>
+                           <option value="ENHANCED_SALES">Enhanced Sales</option>
+                           <option value="ENHANCED_SALES_WAITER">Enhanced Sales by Waiter</option>
+                           <option value="ENHANCED_SUMMARY">Enhanced Summary</option>
+                        </select>
+                     </div>
+                     <div class="col-md-4">
+                        <label for="startDate" class="form-label">Start Date:</label>
+                        <input type="date" id="startDate" class="form-control" required>
+                     </div>
+                     <div class="col-md-4">
+                        <label for="endDate" class="form-label">End Date:</label>
+                        <input type="date" id="endDate" class="form-control" required>
+                     </div>
+                  </div>
+                  <div class="row mb-3" id="waiterNameContainer" style="display: none;">
+                     <div class="col-md-8">
+                        <label for="waiterSelect" class="form-label">Search and Select Waiter:</label>
+                        <select id="waiterSelect" class="form-select" style="width: 100%;" required>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="row mb-3">
+                     <div class="col-md-4">
+                        <button type="submit" id="loadReport" class="btn btn-primary">
+                           <i class="fas fa-file-alt me-2"></i>Generate Report
+                        </button>
+                     </div>
+                  </div>
+               </form>
+               <div id="errorContainer" class="alert alert-danger mt-3" style="display: none;"></div>
+               <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+                  <div class="spinner-border text-primary" role="status">
+                     <span class="visually-hidden">Loading...</span>
+                  </div>
+               </div>
+               <div id="reportContainer" class="mt-3"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script>
+   $(() => {
+      const reportSystem = {
+         init() {
+            this.cacheDom();
+            this.bindEvents();
+            this.initializeSelect2();
+            this.updateDateInputs();
+         },
+
+         cacheDom() {
+            this.$form = $('#reportForm');
+            this.$reportType = $('#reportType');
+            this.$startDate = $('#startDate');
+            this.$endDate = $('#endDate');
+            this.$waiterNameContainer = $('#waiterNameContainer');
+            this.$waiterSelect = $('#waiterSelect');
+            this.$loadReport = $('#loadReport');
+            this.$reportContainer = $('#reportContainer');
+            this.$errorContainer = $('#errorContainer');
+            this.$loadingSpinner = $('#loadingSpinner');
+         },
+
+         bindEvents() {
+            this.$reportType.on('change', () => this.updateDateInputs());
+            this.$form.on('submit', (e) => {
+               e.preventDefault();
+               this.loadReport();
+            });
+         },
+
+         initializeSelect2() {
+            this.$waiterSelect.select2({
+               ajax: {
+                  url: '/api/products-manager/search/',
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                     return {
+                        searchName: params.term
+                     };
+                  },
+                  processResults: function (data) {
+                     return {
+                        results: data.map(waiter => ({
+                           id: waiter.UserID,
+                           text: waiter.FullName
+                        }))
+                     };
+                  },
+                  transport: function(params, success, failure) {
+                     const searchTerm = params.data.searchName;
+                     return $.ajax(`/api/products-manager/search/${searchTerm}`)
+                             .then(success)
+                             .fail(failure);
+                  },
+                  cache: true
+               },
+               minimumInputLength: 2,
+               placeholder: 'Search for a waiter'
+            });
+         },
+
+         updateDateInputs() {
+            const reportType = this.$reportType.val();
+            this.$startDate.prop('disabled', false).closest('.col-md-4').show();
+            this.$endDate.prop('disabled', false).closest('.col-md-4').show();
+            this.$waiterNameContainer.hide();
+            this.$waiterSelect.prop('required', false);
+
+            switch (reportType) {
+               case 'REVENUE_SUMMARY':
+               case 'WAITERS_SUMMARY':
+                  this.$endDate.prop('disabled', true).closest('.col-md-4').hide();
+                  break;
+               case 'ENHANCED_SALES_WAITER':
+                  this.$waiterNameContainer.show();
+                  this.$waiterSelect.prop('required', true);
+                  break;
+            }
+         },
+
+         showError(message) {
+            this.$errorContainer.text(message).fadeIn();
+         },
+
+         hideError() {
+            this.$errorContainer.fadeOut();
+         },
+
+         showLoading() {
+            this.$loadingSpinner.fadeIn();
+         },
+
+         hideLoading() {
+            this.$loadingSpinner.fadeOut();
+         },
+
+         loadReport() {
+            this.hideError();
+            this.showLoading();
+            const reportType = this.$reportType.val();
+            const startDate = this.$startDate.val();
+            const endDate = this.$endDate.val();
+            const waiterName = this.$waiterSelect.find(':selected').text();
+
+            let url = '/api/reports/';
+            let params = new URLSearchParams();
+
+            switch (reportType) {
+               case 'STOCK_VALUATION':
+                  url += 'stock-valuation';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  break;
+               case 'STOCK_VALUATION_MEALS':
+                  url += 'stock-valuation-meals';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  break;
+               case 'STOCK_REPORT_STORES':
+                  url += 'stock-report-stores';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  break;
+               case 'REVENUE_SUMMARY':
+                  url += 'revenue-summary';
+                  params.append('localDate', startDate);
+                  break;
+               case 'SUMMARY_TRANSACTION':
+                  url += 'summary-transaction';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  break;
+               case 'WAITERS_SUMMARY':
+                  url += 'waiters-summary';
+                  params.append('localDate', startDate);
+                  break;
+               case 'ENHANCED_SALES':
+                  url += 'enhanced-sales';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  break;
+               case 'ENHANCED_SALES_WAITER':
+                  url += 'enhanced-sales-waiter';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  params.append('waiterName', waiterName);
+                  break;
+               case 'ENHANCED_SUMMARY':
+                  url += 'enhanced-summary';
+                  params.append('startDate', startDate);
+                  params.append('endDate', endDate);
+                  break;
+            }
+
+            params.append('action', 'open');
+
+            fetch(`${url}?${params.toString()}`, {
+               method: 'GET',
+               credentials: 'include',
+            })
+                    .then(response => {
+                       if (!response.ok) {
+                          throw new Error(`HTTP error! status: ${response.status}`);
+                       }
+                       return response.blob();
+                    })
+                    .then(blob => {
+                       const url = window.URL.createObjectURL(blob);
+                       this.$reportContainer.html(`
+               <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="${url}" width="100%" height="600px"></iframe>
+               </div>
+            `);
+                    })
+                    .catch(error => {
+                       console.error('Error:', error);
+                       this.showError(`An error occurred while loading the report: ${error.message}`);
+                    })
+                    .finally(() => {
+                       this.hideLoading();
+                    });
+         }
+      };
+
+      reportSystem.init();
+   });
+</script>

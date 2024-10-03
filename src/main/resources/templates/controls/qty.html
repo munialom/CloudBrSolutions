@@ -1,0 +1,290 @@
+<div th:fragment="pc">
+
+
+
+    <div class="row">
+        <div class="d-flex align-items-center ">
+
+            <div class="col-3 me-2">
+                <select class="selectpicker form-control" id="v-search" name="v-search" required>
+                    <option value="" disabled selected class="text-red-500">Search by Store Location</option>
+
+                </select>
+            </div>
+            <div class="col-3">
+                <div class="d-flex align-items-center ">
+                    <div class="col me-2 d-flex justify-content-start">
+                        <!-- Add Stock Radio Button -->
+                        <div class="align-items-center me-1">
+                            <input class="form-check-input" type="radio" id="add-stock" value="Add" name="inlineRadio" />
+                            <label class="form-check-label" for="add-stock">Add Stock</label>
+                        </div>
+
+                        <!-- Subtract Stock Radio Button -->
+                        <div class="align-items-center me-1">
+                            <input class="form-check-input" type="radio" id="less-stock" value="Less" name="inlineRadio" />
+                            <label class="form-check-label" for="less-stock">Subtract Stock</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="btn-toolbar">
+                    <a href="#"  id="opening-stock-btn"   class="btn  btn-sm btn-dark" ><i class="fa fa-circle-plus" ></i> Update</a>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $("#v-search").select2({
+                ajax: {
+                    url: "/api/departments/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id + ' - ' + obj.name,
+                                    studentId: obj.id // add the studentId to the option
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 3
+            });
+
+
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Attach click event handler to table rows
+            $('#selectedProducts').on('click', 'tbody tr', function() {
+                // Remove any existing button groups
+                $('.btn-group').remove();
+
+                // Remove the selected class from all rows
+                $('tr').removeClass('selected-row');
+
+                // Add the selected class to the clicked row
+                $(this).addClass('selected-row');
+
+                // Find the selected row's Product Code
+                var productCode = $(this).find('td:first').text();
+
+                // Create a button group
+                var buttonGroup = $('<div>')
+                    .addClass('btn-group')
+                    .append(
+                        $('<button>')
+                            .text('Dynamic Button')
+                            .addClass('btn btn-primary btn-xs dynamic-button')
+                            .click(function() {
+                                // Your button click logic here
+                                alert('Dynamic Button clicked for Product Code: ' + productCode);
+                            }),
+                        $('<button>')
+                            .text('Remove Item')
+                            .addClass('btn btn-danger btn-xs remove-button')
+                            .click(function() {
+                                // Your remove button click logic here
+                                $(this).closest('tr').remove();
+                            })
+                    );
+
+                // Find the cell to place the button group and append it
+                var cell = $(this).find('td:nth-child(2)');
+                cell.addClass('cell-with-buttons');
+                cell.append(buttonGroup);
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').keyup(function() {
+                var productName = $(this).val();
+                $.ajax({
+                    url: '/products/searchResults',
+                    type: 'GET',
+                    data: { productName: productName },
+                    success: function(response) {
+                        var productTableContainer = $('#productTableContainer');
+                        productTableContainer.html(response);
+
+                        if (productName.trim() === '') {
+                            productTableContainer.hide();
+                        } else {
+                            productTableContainer.show();
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    }
+                });
+            });
+
+            // Add click event listener to rows in the search results table
+            $(document).on('click', '#productTableContainer tr', function() {
+                $('#productTableContainer').hide();
+            });
+        });
+    </script>
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            let isSubmitting = false;
+            $("#opening-stock-btn").on("click", function(e) {
+                e.preventDefault();
+
+                const rows = $("#selectedProducts tbody tr");
+                var stockmode = $("input[name='inlineRadio']:checked").val();
+
+                // Check if a radio button is selected
+                if (!stockmode) {
+                    $('.alert-info').hide();
+                    $('.alert-danger').show().text('Please select a stock mode.');
+                    return; // Exit the function early
+                }
+
+                // Check if there are no rows in the table
+                if (rows.length === 0) {
+                    $('.alert-info').hide();
+                    $('.alert-danger').show().text('There are no records to save.');
+                    return; // Exit the function early
+                }
+
+                const aData = [];
+
+                rows.each(function() {
+                    const tableRow = $(this);
+
+                    const getTextByAttribute = function(attrValue) {
+                        return tableRow.find(`td[key-id="${attrValue}"]`).text();
+                    };
+
+                    const getValByAttribute = function(attrValue) {
+                        return tableRow.find(`input[name="${attrValue}"]`).val();
+                    };
+
+                    const data = {
+                        productCode: getTextByAttribute("productCode"),
+                        productName: getTextByAttribute("productName"),
+                        qty: getValByAttribute("qty")
+                    };
+
+                    aData.push(data);
+                });
+
+                let stocks = {
+                    opcode: stockmode,
+                    openingStocks: aData
+                };
+
+                // Show loading alert
+                $('.alert-info').show();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/stocks/opening",
+                    data: JSON.stringify(stocks),
+                    contentType: 'application/json',
+                    dataType: 'text',
+                    success: function(response) {
+                        if (response.toLowerCase().includes("success")) {
+                            // Use alert for success message
+                            $('.alert-info').hide();
+                            $('.alert-success').show().text(response);
+
+                            // Clear the table after successful save
+                            $("#selectedProducts tbody").empty();
+                        } else {
+                            // Use alert for unexpected response
+                            $('.alert-info').hide();
+                            $('.alert-danger').show().text('Unexpected response from the server');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Use alert for error message
+                        $('.alert-info').hide();
+                        $('.alert-danger').show().text(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+
+        $(document).ready(function() {
+            $('#upload-btn').click(function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                var fileInput = document.getElementById("file");
+                var file = fileInput.files[0];
+
+                // Create a FormData object to send the file
+                var formData = new FormData();
+                formData.append("file", file);
+
+                $('.alert-info').show();
+                setTimeout(function() {
+                    $('.alert-info').hide();
+                }, 2000); // Hide after 2 seconds
+
+                $.ajax({
+                    url: 'api-bulk/upload-qty',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('.alert-success').show();
+                        setTimeout(function() {
+                            $('.alert-success').hide();
+                        }, 2000); // Hide after 2 seconds
+                        // $('.students-count').text(response.count);
+                    },
+                    error: function() {
+                        $('.alert-info').hide();
+                        alert('Error uploading products.');
+                    }
+                });
+            });
+        });
+
+
+
+    </script>
+
+
+
+</div>

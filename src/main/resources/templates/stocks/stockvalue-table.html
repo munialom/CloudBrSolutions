@@ -1,0 +1,255 @@
+
+<div th:fragment="members">
+
+
+    <div class="row" style="margin-bottom: 15px ; margin-top: 15px">
+        <div class="d-lg-flex align-items-center mb-n2">
+            <div class="d-lg-flex d-none align-items-center text-nowrap">
+                <span id="paginationLabel" class="text-danger"></span>
+            </div>
+            <div class="d-lg-block d-none ms-2 text-body text-opacity-50">
+                <span id="totalRecords" class="text-danger"></span>
+            </div>
+
+
+            <ul class="pagination pagination-sm mb-0 ms-auto justify-content-center">
+                <li class="page-item" id="previousPage"><a class="page-link">Previous</a></li>
+                <li class="page-item d-lg-block d-none2" id="page1"><a class="page-link" href="#">1</a></li>
+                <li class="page-item d-lg-block d-none2" id="page2"><a class="page-link" href="#">2</a></li>
+                <li class="page-item d-lg-block d-none2" id="page3"><a class="page-link" href="#">3</a></li>
+                <li class="page-item d-lg-block d-none2" id="page4"><a class="page-link" href="#">4</a></li>
+                <li class="page-item d-lg-block d-none2" id="page5"><a class="page-link" href="#">5</a></li>
+                <li class="page-item" id="nextPage"><a class="page-link">Next</a></li>
+            </ul>
+
+        </div>
+    </div>
+
+
+    <!-- BEGIN table -->
+<div class="table-responsive" >
+    <table class="table table-thead-sticky table-tfoot-sticky table-bordered table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0" id="members-records">
+        <thead>
+        <tr>
+            <th>No#</th>
+            <th>Product Name</th>
+            <th>Product Code</th>
+            <th>Product Cost</th>
+            <th>Product Price</th>
+            <th>Current Stock</th>
+            <th>Purchase Value</th>
+            <th>Sales Value</th>
+            <th>Profit Margin</th>
+            <th>Profit</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="productValueDTO ,status:  ${productValueDTOs}">
+            <td th:text="${status.count}"></td>
+            <td th:text="${productValueDTO.productName}"></td>
+            <td th:text="${productValueDTO.productCode}"></td>
+            <td th:text="${productValueDTO.productCost}"></td>
+            <td th:text="${productValueDTO.productPrice}"></td>
+            <td th:text="${productValueDTO.currentStock}"></td>
+            <td th:text="${productValueDTO.purchaseValue}"></td>
+            <td th:text="${productValueDTO.salesValue}"></td>
+            <td th:text="${productValueDTO.profitMargin}"></td>
+            <td th:text="${productValueDTO.profit}"></td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+
+</div>
+<!-- END table -->
+
+<script>
+    $(document).ready(function() {
+        $('.opState').click(function(e) {
+            e.preventDefault();
+
+            // Get the status from the data-member-status attribute of the clicked a tag
+            var status = $(this).attr('data-member-status') === 'true';
+
+            // Get the custid from the data-serial-number attribute of the clicked a tag
+            var custid = $(this).attr('data-member-number');
+
+            // Create the data object
+            var data = {
+                custid: custid,
+                status: status
+            };
+
+            // Send the POST request
+            $.ajax({
+                url: '/search-members/members/update',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Show a SweetAlert with the server's response on success
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response,
+                        icon: 'success'
+                    });
+                },
+                error: function(response) {
+                    // Show a SweetAlert with the server's response on error
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.responseText,
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+
+</script>
+
+
+    <script>
+        function editStudent(id) {
+
+            var url = '/members/update/' + id;
+            $.get(url, function(response) {
+                $('#stockControlPanel').html(response);
+            });
+            //loadFragment(url);
+        }
+
+    </script>
+
+
+
+
+  <script>
+      function deleteCustomer(custid) {
+          Swal.fire({
+              title: 'Are you sure?',
+              text: 'You won\'t be able to revert this!',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  $.ajax({
+                      type: 'DELETE',
+                      url: `/search-members/${custid}`,
+                      success: function() {
+                          Swal.fire(
+                              'Deleted!',
+                              'The record has been deleted.',
+                              'success'
+                          );
+                      },
+                      error: function(jqXHR, textStatus, errorThrown) {
+                          Swal.fire(
+                              'Error!',
+                              jqXHR.responseText || 'Failed to delete the record.',
+                              'error'
+                          );
+                      }
+                  });
+              }
+          });
+      }
+
+  </script>
+
+    <script>
+        $(document).ready(function () {
+            var currentPage = [[${currentPage}]];
+            var totalPages = [[${totalPages}]];
+
+            function updatePagination() {
+                $('#currentPage').text(currentPage);
+
+                // Enable/disable "First" and "Previous" based on current page
+                if (currentPage === 1) {
+                    $('#firstPage').addClass('disabled');
+                    $('#previousPage').addClass('disabled');
+                } else {
+                    $('#firstPage').removeClass('disabled');
+                    $('#previousPage').removeClass('disabled');
+                }
+
+                // Enable/disable "Next" and "Last" based on current page
+                if (currentPage === totalPages) {
+                    $('#nextPage').addClass('disabled');
+                    $('#lastPage').addClass('disabled');
+                } else {
+                    $('#nextPage').removeClass('disabled');
+                    $('#lastPage').removeClass('disabled');
+                }
+
+                // Show total records
+                var totalItems = [[${totalItems}]];
+                var pageSize = [[${pageSize}]];
+
+                var startItem = (currentPage - 1) * pageSize + 1;
+                var endItem = Math.min(startItem + pageSize - 1, totalItems);
+
+                $('#paginationLabel').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#totalRecords').text('Showing ' + startItem + ' - ' + endItem + ' of ' + totalItems + ' records');
+            }
+
+            updatePagination();
+
+            $('#firstPage').on('click', function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#previousPage').on('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#nextPage').on('click', function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#lastPage').on('click', function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+
+
+            function navigateToPage(page) {
+                var url = '/products/stockValue?page=' + page;
+                $.get(url, function(response) {
+                    $('#stockControlPanel').html(response);
+                });
+                //fetchDataList(); // Fetch the latest data after navigating to the new page
+            }
+
+
+        });
+    </script>
+
+
+
+
+
+</div>

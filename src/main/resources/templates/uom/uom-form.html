@@ -1,0 +1,243 @@
+<div th:fragment="uom_form">
+
+
+
+   <form id="uomForm" data-parsley-validate="true"  >
+
+      <fieldset class="border p-2">
+         <legend class="float-none w-auto" style="font-size: small;">Units of Measure Card</legend>
+
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="row">
+                     <div class="col-lg-4">
+                        <div class="card rounded border">
+                           <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                              <div class="flex-1">
+                                 <i class="fa fa-bank fa-lg fa-fw text-black  me-1"></i>Units of Measure
+                              </div>
+                           </div>
+                           <div class="card-body fw-bold">
+
+                              <div class="mb-3">
+                                 <label class="form-label" for="unit">Uom</label>
+                                 <input class="form-control form-control-sm" type="text" id="unit" name="unit" onkeyup="capitalize(this)" required />
+                              </div>
+                              <div class="mb-3">
+                                 <label class="form-label" for="description">Description</label>
+                                 <input class="form-control form-control-sm" type="text" id="description" name="description" onkeyup="capitalize(this)" required />
+                              </div>
+
+
+
+                           </div>
+                        </div>
+
+                     </div>
+                     <div class="col-lg-8">
+                        <div class="card rounded border">
+                           <div class="card-header h6 mb-0 bg-none p-3">
+                              <i class="fa fa-list-numeric fa-lg fa-fw text-black  me-1"></i>List Of Units of Measure
+                           </div>
+                           <div class="card-body">
+                              <table id="uomTable" class="table table-striped table-bordered table-responsive "  style="width:100%">
+                                 <thead>
+                                 <tr>
+                                    <th>ID</th>
+                                    <th>Unit Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody></tbody>
+                              </table>
+
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+            </div>
+
+         </div>
+
+         </fieldset>
+      <fieldset class="border p-2">
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" id="saveStore-Btn" class="btn btn-primary ps-40px pe-40px">Add New UOM</button>
+      </div>
+      </fieldset>
+
+
+   </form>
+
+
+
+   <script>
+      $(document).ready(function() {
+         var dataTable = $('#uomTable').DataTable({
+            "serverSide": true,
+            "ajax": {
+               "url": "/uoms",
+               "type": "GET",
+               "data": function(d) {
+                  d.draw = d.draw;
+                  d.start = d.start;
+                  d.length = d.length;
+               }
+            },
+            "columns": [
+               { "data": "id" },
+               { "data": "unit" },
+               { "data": "description" },
+               {
+                  "data": null,
+                  "render": function(data, type, row) {
+                     return `
+                        <button class="btn btn-primary btn-sm edit-btn" data-id="${row.id}">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.id}">Delete</button>
+                    `;
+                  }
+               }
+            ],
+            "pageLength": 10
+         });
+
+         $('#uomTable').on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var $row = $(this).closest('tr'); // Store a reference to the row
+
+            // Use SweetAlert for confirmation
+            Swal.fire({
+               title: 'Are you sure?',
+               text: 'This action cannot be undone!',
+               icon: 'warning',
+               showCancelButton: true,
+               confirmButtonText: 'Yes, delete it!',
+               cancelButtonText: 'Cancel'
+            }).then((result) => {
+               if (result.isConfirmed) {
+                  $.ajax({
+                     url: '/uoms' + id, // Corrected URL with slash before id
+                     type: 'DELETE',
+                     success: function() {
+                        // Display a success notification using Gritter
+                        $.gritter.add({
+                           title: 'Success',
+                           text: 'Role Deleted',
+                           class_name: 'success'
+                        });
+
+                        // Remove the deleted row from the table
+                        $row.remove();
+                     },
+                     error: function() {
+                        // Display an error notification using Gritter
+                        $.gritter.add({
+                           title: 'Error',
+                           text: 'Error deleting role',
+                           class_name: 'danger'
+                        });
+                     }
+                  });
+               }
+            });
+         });
+
+
+
+
+         $('#uomTable').on('click', '.edit-btn', function() {
+            var id = $(this).data('id');
+            // Handle delete action using the ID
+            // For example: window.deleteData(id);
+         });
+
+         window.addToDataTable = function(data) {
+            dataTable.row.add(data).draw(false);
+         };
+      });
+   </script>
+
+
+
+
+
+
+
+   <script>
+      $(document).ready(function() {
+         $('#uomForm').submit(function(e) {
+            e.preventDefault();
+
+            // Get the submit button that was clicked
+            var submitButton = $(document.activeElement);
+
+            // Check if the submit button was the actual form submission button
+            if (submitButton.attr('type') === 'submit') {
+               // Validate fields
+               var unit = $('#unit').val();
+               var description = $('#description').val();
+
+
+               if (!unit || !description) {
+                  /*   $.gritter.add({
+                        title: 'Error',
+                        text: 'All fields are required.',
+                        class_name: 'gritter-error'
+                     });*/
+                  return; // Prevent form submission
+               }
+
+               var formData = {
+                  unit: unit,
+                  description: description
+
+               };
+
+               $.ajax({
+                  type: 'POST',
+                  url: "/uoms",
+                  data: JSON.stringify(formData),
+                  contentType: 'application/json',
+                  dataType: 'json',
+                  success: function(response) {
+                     $.gritter.add({
+                        title: 'Success',
+                        text: 'UOM' + response.unit + ' created successfully.',
+                        class_name: 'gritter-success'
+                     });
+
+                     addToDataTable(response);
+
+                     // Clear the form fields after successful submission
+                     $('#unit').val('');
+                     $('#description').val('');
+
+                  },
+                  error: function(xhr, status, error) {
+                     $.gritter.add({
+                        title: 'Error',
+                        text: 'Failed to create Role. Please try again.',
+                        class_name: 'gritter-error'
+                     });
+                  }
+               });
+            }
+         });
+      });
+   </script>
+
+
+   <script th:src="@{/assets/plugins/parsleyjs/dist/parsley.min.js}"></script>
+
+
+</div>
+
+
+
+
+
+
+

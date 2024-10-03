@@ -1,0 +1,412 @@
+<div th:fragment="product_form">
+
+   <form  id="product-form"  data-parsley-validate="true" th:action="@{/products}"  method="POST"  th:object="${product}" class="rounded border">
+
+
+
+
+         <div class="row">
+            <div class="col-lg-12">
+
+
+                     <div class="card rounded border">
+                        <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                           <div class="flex-1">
+                              <i class="fa fa-box fa-lg fa-fw text-black  me-1"></i>Product Details
+                           </div>
+                        </div>
+                        <div class="card-body fw-bold">
+
+                           <div class="row">
+                              <div class="col-lg-6">
+                                 <div class="mb-3">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="product_type">Product Type</label>
+                                             <select class="default-select2 form-control form-select-sm" id="product_type" name="productType" th:field="*{productType}"   required>
+                                                <option value=""></option>
+                                                <option value="Inventory">Inventory</option>
+                                                <option value="Service">Service</option>
+                                                <option value="Non Inventory">Non Inventory</option>
+                                             </select>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="product_name">Product Name</label>
+                                             <input type="text" class="form-control form-control-sm" id="product_name"    name="productName" th:field="*{productName}"  required/>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-6">
+                                 <div class="mb-3">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="productCode">Product Code</label>
+                                             <input type="text" class="form-control form-control-sm" id="productCode"  th:field="*{productCode}"   name="productCode"  />
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="uom">Product Unit</label>
+                                             <select  class="default-select2 form-control form-select-sm"  id="uom" name="uom" required>
+
+                                                <option value=" ">[Units of Measure]</option>
+                                                    <th:block th:each="pu: ${uom}">
+
+                                                         <option th:text="${pu.unit}" th:value="${pu.id}"></option>
+
+                                                      </th:block>
+
+                                             </select>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                           </div>
+                           <div class="row">
+                              <div class="col-lg-6">
+                                 <div class="mb-3">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="category">Category Name</label>
+                                             <select  class="default-select2 form-control form-select-sm"  id="category" name="category"
+                                                      th:field="*{category}" required>
+
+                                                <option value=" ">[Category]</option>
+                                                   <th:block th:each="ct: ${category}">
+
+                                                         <option th:text="${ct.name}" th:value="${ct.id}"></option>
+
+                                                      </th:block>
+
+                                             </select>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="brand">Brand:</label>
+                                             <select  class="default-select2 form-control form-select-sm"  id="brand" name="brand"
+                                                      th:field="*{brand}" required>
+
+                                                <option value=" ">[Brands]</option>
+                                                <th:block th:each="br: ${brands}">
+
+                                                   <option th:text="${br.name}" th:value="${br.id}"></option>
+
+                                                </th:block>
+
+                                             </select>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-lg-6">
+                                 <div class="mb-3">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="productCost">Product Cost</label>
+                                             <input type="text" class="form-control form-control-sm" id="productCost"   data-parsley-type="digits" name="productCost"  th:field="*{productCost}" required/>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="productPrice">Sale Price</label>
+                                             <input type="text" class="form-control form-control-sm" id="productPrice"   data-parsley-type="digits" name="productPrice"  th:field="*{productPrice}" required />
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                           </div>
+                           <div class="row">
+                              <div class="col-lg-6">
+                                 <div class="mb-3">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="taxMode">Tax Method</label>
+                                             <select class="default-select2 form-control form-select-sm" id="taxMode" name="taxMode" th:field="*{taxMode}"   required>
+                                                <option value=""></option>
+                                                <option value="Inventory">Exclusive</option>
+                                                <option value="Inclusive">Inclusive</option>
+                                             </select>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="alertQuantity">Minimum Stock Quantity</label>
+                                             <input type="text" class="form-control form-control-sm" id="alertQuantity"   data-parsley-type="digits" name="alertQuantity"  th:field="*{alertQuantity}" required />
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <div class="col-lg-6">
+                                 <div class="mb-3">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" >Product Tax</label>
+                                             <div class="row">
+                                                <th:block th:each="tax: ${taxData}">
+                                                   <div class="col-auto">
+                                                      <div class="form-check"  style="margin-top: 10px;">
+                                                         <input type="checkbox" class="form-check-input" name="roles" th:value="${tax.id}" id="${'role-' + tax.id}" th:field="*{taxClasses}" />
+                                                         <label class="form-check-label" for="${'role-' + tax.id}" th:text="${tax.name}"></label>
+                                                      </div>
+                                                   </div>
+                                                </th:block>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <div class="mb-3">
+                                             <label class="form-label" for="taxMode">Revenue Code:</label>
+                                             <select class="form-control form-select-sm" id="revenue" name="revenue" th:field="*{revenue}"   required>
+
+                                             </select>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                           </div>
+
+
+
+
+                        </div>
+                     </div>
+
+
+
+
+            </div>
+
+         </div>
+
+<!--      </fieldset>-->
+
+      <fieldset class="border p-2">
+         <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+            <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+            <button type="submit" id="saveStore-Btn" class="btn btn-primary ps-40px pe-40px">Add New Product</button>
+         </div>
+      </fieldset>
+
+   </form>
+
+
+
+  <!-- <script>
+      $(document).ready(function() {
+         $("#product-form").submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get the form data
+            var formData = $(this).serialize();
+
+            // Disable the submit button
+            $(this).find('input[type="submit"]').prop("disabled", true);
+
+            // Check if all fields have data
+            var allFieldsFilled = true;
+            $(this).find('input[type="text"]').each(function() {
+               if ($(this).val() === "") {
+                  allFieldsFilled = false;
+                  return false; // Exit the loop if any field is empty
+               }
+            });
+
+            if (!allFieldsFilled) {
+               // Show a SweetAlert error notification to fill data in the field
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Please fill in all fields'
+               });
+               // Enable the submit button
+               $(this).find('input[type="submit"]').prop("disabled", false);
+               return; // Exit the form submission
+            }
+
+            // Serialize and append the transaction date
+
+            // Send an AJAX request to save the data
+            $.ajax({
+               url: $(this).attr("action"),
+               type: "POST",
+               data: formData,
+               success: function(response) {
+                  // Show a SweetAlert success notification
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Success',
+                     text: 'Data saved successfully',
+                     showConfirmButton: false,
+                     timer: 1500
+                  });
+
+                  // Clear all the fields
+                  $("#product-form")[0].reset();
+
+                  // Enable the submit button
+                  $("#product-form").find('input[type="submit"]').prop("disabled", false);
+               },
+               error: function(xhr, status, error) {
+                  // Show a SweetAlert error notification
+                  Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: 'Error saving data: ' + error
+                  });
+
+                  // Enable the submit button
+                  $("#product-form").find('input[type="submit"]').prop("disabled", false);
+               }
+            });
+         });
+      });
+   </script>-->
+   <script>
+      $(document).ready(function() {
+         $("#product-form").submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Show the loading overlay
+            $("#loading-overlay").show();
+
+            // Get the form data
+            var formData = $(this).serialize();
+
+            // Disable the submit button
+            $(this).find('input[type="submit"]').prop("disabled", true);
+
+            // Check if any fields are empty
+            var emptyFields = $(this).find('input[type="text"]').filter(function() {
+               return $.trim($(this).val()) === '';
+            });
+
+            if (emptyFields.length > 0) {
+               // Show a SweetAlert error notification to fill data in the fields
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Please fill in all fields'
+               });
+
+               // Enable the submit button
+               $(this).find('input[type="submit"]').prop("disabled", false);
+
+               // Hide the loading overlay
+               $("#loading-overlay").hide();
+
+               return; // Exit the form submission
+            }
+
+            // Serialize and append the transaction date
+            // Send an AJAX request to save the data
+            $.ajax({
+               url: $(this).attr("action"),
+               type: "POST",
+               data: formData,
+               success: function(response) {
+                  // Show a SweetAlert success notification
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Success',
+                     text: 'Data saved successfully',
+                     showConfirmButton: false,
+                     timer: 1500
+                  });
+
+                  // Clear all the fields
+                  $("#product-form")[0].reset();
+
+                  // Enable the submit button
+                  $("#product-form").find('input[type="submit"]').prop("disabled", false);
+
+                  // Hide the loading overlay
+                  $("#loading-overlay").hide();
+               },
+               error: function(xhr, status, error) {
+                  // Show a SweetAlert error notification
+                  Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: 'Error saving data: ' + error
+                  });
+
+                  // Enable the submit button
+                  $("#product-form").find('input[type="submit"]').prop("disabled", false);
+
+                  // Hide the loading overlay
+                  $("#loading-overlay").hide();
+               }
+            });
+         });
+      });
+   </script>
+
+   <!-- Loading Overlay -->
+   <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; text-align: center;">
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+         <i class="fas fa-spinner fa-pulse"></i> Updating details...
+      </div>
+   </div>
+
+
+   <script>
+      $(document).ready(function() {
+         $("#revenue").select2({
+            ajax: {
+               url: "/revenues/search",
+               dataType: 'json',
+               delay: 250,
+               data: function(params) {
+                  return {
+                     keyword: params.term
+                  };
+               },
+               processResults: function(data) {
+                  console.log(data);
+                  return {
+                     results: $.map(data, function(obj) {
+                        return {
+                           id: obj.id,
+                           value: obj.id,
+                           text: obj.id + ' - ' + obj.revenueName,
+                           studentId: obj.id // add the studentId to the option
+                        };
+                     })
+                  };
+               }
+            },
+            minimumInputLength: 1
+         });
+
+      });
+   </script>
+
+
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,699 @@
+<div th:fragment="pos-main">
+
+    <style type="text/css">
+
+
+        /* Set flexbox for the pos-container */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+        /* Set flex for pos-content */
+        .pos-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Style pos-content-container */
+        .pos-content-container {
+            flex: 1;
+            padding: 2px;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+         overflow-y: auto;
+         position: sticky;
+         top: 0;
+         height: auto;
+         display: flex;
+         flex-direction: column;
+
+     }
+</style>
+
+
+
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden">
+
+        <div class="panel-body p-2 flex-1 overflow-hidden">
+
+            <div class="pos-container">
+
+                <!-- pos-content -->
+                <div class="pos-content">
+                 <div class="col-md-12">
+                    <!-- pos-content-container -->
+                    <div class="pos-content-container">
+                        <!-- BEGIN panel -->
+                        <div class="panel text-white rounded border" data-sortable-id="index-6">
+                            <div class="panel-heading bg-teal-300">
+                                <h4 class="panel-title">List of Accounts Charts</h4>
+                                <div class="panel-heading-btn">
+                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                                </div>
+                            </div>
+                                <div class="row gx-2 pb-1px">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="input-group mb-1" style="margin-top: 3px;">
+                                            <button class="btn btn-black dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <span class="d-none d-md-inline">Search </span>
+                                                <span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span>
+                                                <i class="fa fa-barcode"></i> <!-- Add this line -->
+                                                <b class="caret"></b>
+                                            </button>
+
+                                            <div class="flex-fill position-relative">
+                                                <div class="input-group">
+                                                    <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1;">
+                                                        <i class="fa fa-barcode opacity-100"></i>
+                                                    </div>
+                                                    <input type="text" class="form-control px-35px" placeholder="Search By Account Name..." id="search-pos" />
+                                                    <div id="search-salary-components-td" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             <div id="employee-list-data"></div>
+
+                        </div>
+                        <!-- END panel -->
+
+                    </div>
+                    <!-- END pos-content-container -->
+                 </div>
+
+
+                </div>
+                <!-- END pos-content -->
+
+            </div>
+
+            </div>
+    </div>
+
+
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                <i class="fas fa-spinner fa-pulse" style="margin-right: 10px;"></i>
+                <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="staticBackdrop">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Insurance/ Pension Funds/Saccos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <label class="form-label" for="organizationName">Organization Name:</label>
+                                <input type="text" class="form-control form-control-sm" id="organizationName" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="isInsurance">
+                                        <label class="form-check-label" for="isInsurance">Insurance(?)</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="isPensionFund">
+                                        <label class="form-check-label" for="isPensionFund">Pension Fund(?)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveOrgnization">Add New</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchStaffList() {
+                // Show the loading overlay
+
+
+                // Construct the URL with query parameters
+                var url = '/api/account-charts/all-account-charts';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+
+
+                        productStockManager(response);
+
+
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                        // Hide the loading overlay
+
+                    }
+                });
+            }
+
+            fetchStaffList();
+        });
+    </script>
+
+
+
+
+
+
+
+
+    <script>
+        function productStockManager(data) {
+            var itemsPerPage = 10;
+            var currentPage = 1;
+            var selectedRows = [];
+            var previousSearchQuery = "";
+            var editedPrices = {};
+            var stockChanges = {};
+            var stockOperation = "";
+
+            // Create the table and pagination controls
+            var table = $('<table id="table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Build table headers
+            for (var key in data[0]) {
+                if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                    thead.find('tr').append('<th>' + key + '</th>');
+                }
+            }
+            thead.find('tr').append('<th id="stock-operation-header" style="display: none;"></th><th>Actions</th>');
+            table.append(thead);
+            table.append(tbody);
+
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+            $('#employee-list-data').html(responsiveDiv);
+
+            // Select all functionality
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                selectedRows = isChecked ? getAllRowIndices() : [];
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.push(rowIndex);
+                } else {
+                    selectedRows = selectedRows.filter(function (index) {
+                        return index !== rowIndex;
+                    });
+                }
+                var allChecked = selectedRows.length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            function getAllRowIndices() {
+                return $('.rowCheckbox').map(function (index, element) {
+                    return $(element).closest('tr').data('original-index');
+                }).toArray();
+            }
+
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="10">10</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+                $('#employee-list-data').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>').data('original-index', startIndex + i);
+                        var rowIndex = startIndex + i;
+                        var isChecked = selectedRows.includes(rowIndex);
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                        tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                        // Unique Product ID Column (Column index 2)
+                        var productId = itemsToShow[i]['Product ID'];
+                        var costPriceKey = productId + '-CostPrice';
+                        var sellingPriceKey = productId + '-SellingPrice';
+
+                        for (var key in itemsToShow[i]) {
+                            if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                                var value = itemsToShow[i][key];
+                                var td = $('<td/>');
+                                if (key === 'Cost Price' || key === 'Selling Price') {
+                                    var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                                    var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                                    td.text(inputValue);
+                                } else {
+                                    td.text(value);
+                                }
+                                tr.append(td);
+                            }
+                        }
+
+                        if (stockOperation) {
+                            var stockKey = productId + '-StockChange';
+                            var stockValue = stockChanges[stockKey] !== undefined ? stockChanges[stockKey] : '';
+                            var stockInputId = 'stock-change-' + productId;
+
+                            var stockTd = $('<td/>').html('<input id="' + stockInputId + '" type="text" class="form-control form-control-sm" value="' + stockValue + '" />');
+                            stockTd.find('input').on('focus', function () {
+                                $(this).select();
+                                $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                                var focusedRowIndex = $(this).closest('tr').data('original-index');
+                                if (!selectedRows.includes(focusedRowIndex)) {
+                                    selectedRows.push(focusedRowIndex);
+                                }
+                                var productNameTd = $(this).closest('tr').find('td').eq(3); // Assuming the 4th column is Product Name
+                                if (!productNameTd.find('span.text-danger').length) {
+                                    productNameTd.append(' <span class="text-danger">' + (stockOperation === 'option1' ? 'Adding' : 'Subtracting') + ' qty</span>');
+                                }
+                            });
+                            stockTd.find('input').on('input', function () {
+                                var newValue = $(this).val();
+                                var inputId = $(this).attr('id');
+                                var row = $(this).closest('tr').data('original-index');
+                                var productId = itemsToShow[row]['Product ID'];
+                                var stockKey = productId + '-StockChange';
+                                stockChanges[stockKey] = newValue;
+                            });
+                            stockTd.find('input').on('keydown', function (e) {
+                                var row = $(this).closest('tr');
+                                if (e.key === "ArrowDown") {
+                                    row.next().find('input').focus();
+                                    e.preventDefault();
+                                } else if (e.key === "ArrowUp") {
+                                    row.prev().find('input').focus();
+                                    e.preventDefault();
+                                }
+                            });
+                            $('#stock-operation-header').text(stockOperation === 'option1' ? 'Add Stock' : 'Subtract Stock').show();
+                            tr.append(stockTd);
+                        } else {
+                            $('#stock-operation-header').hide();
+                        }
+
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            displayTableData();
+            createPagination(data.length);
+
+            // Handle Search
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(previousSearchQuery);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#employee-list-data .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+
+            // Handle Stock Operation Radio Buttons
+            $('input[name="filterOptions"]').on('change', function () {
+                stockOperation = $(this).val();
+                displayTableData();
+            });
+
+            // Handle Actions
+            $(document).on('click', '.btn-info', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Edit row: ' + (rowIndex + 1));
+            });
+
+            $(document).on('click', '.btn-danger', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Delete row: ' + (rowIndex + 1));
+            });
+        }
+    </script>
+
+
+
+
+
+
+
+    <script>
+        $(".trxDate").datepicker({
+            todayHighlight: true,
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $("#componentId").select2({
+                ajax: {
+                    url: "/api/accounts/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id + ' - ' + obj.name,
+
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 1
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#saveOrgnization').click(function() {
+                var organizationName = $('#organizationName').val();
+                var isInsurance = !!$('#isInsurance').is(':checked');
+                var isPensionFund = !!$('#isPensionFund').is(':checked');
+
+                var formData = {
+                    name: organizationName,
+                    insurance: isInsurance,
+                    pensionFund: isPensionFund
+                };
+
+                console.log('Form Data:', formData);
+
+                if (!organizationName) {
+                    $.gritter.add({
+                        title: 'Error',
+                        text: 'Please enter the organization name.',
+                        class_name: 'gritter-error',
+                        position: 'top-right'
+                    });
+                    return;
+                }
+
+                $('#loading-overlay').show();
+
+                $.ajax({
+                    url: "/api/organizations",
+                    type: "POST",
+                    contentType: "application/json;charset=UTF-8",
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        $('#loading-overlay').hide();
+                        $.gritter.add({
+                            title: 'Success',
+                            text: 'Organization added successfully.',
+                            class_name: 'gritter-success',
+                            position: 'top-right'
+                        });
+                        setTimeout(function() {
+                            $('#organizationName').val('');
+                            $('#isInsurance').prop('checked', false);
+                            $('#isPensionFund').prop('checked', false);
+                            $('#staticBackdrop').modal('hide');
+                        }, 1000);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#loading-overlay').hide();
+                        $.gritter.add({
+                            title: 'Error',
+                            text: 'Failed to add organization.',
+                            class_name: 'gritter-error',
+                            position: 'top-right'
+                        });
+                        console.log('Error occurred during the request');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $("#v-search").select2({
+                ajax: {
+                    url: "/api/organizations/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id + ' - ' + obj.name,
+                                    departmentId: obj.id, // add the departmentId to the option
+                                    insurance: obj.insurance,
+                                    pensionFund: obj.pensionFund
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 1
+            });
+
+            // Update checkboxes based on selected organization
+            $("#v-search").on("select2:select", function(e) {
+                var selectedOrganization = e.params.data;
+                $("#add-insurance-relief").prop("checked", selectedOrganization.insurance);
+                $("#add-pension-fund").prop("checked", selectedOrganization.pensionFund);
+            });
+        });
+    </script>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#save-employee-template-data').click(function() {
+                var employeeIds = [];
+                var amounts = parseFloat($("#templateName").val());
+
+                // Populate the employeeIds array
+                $('#table tbody input.rowCheckbox:checked').each(function() {
+                    var employeeId = parseInt($(this).closest('tr').find('td:eq(2)').text());
+                    employeeIds.push(employeeId);
+                });
+
+                var formData = {
+                    employeeIds: employeeIds,
+                    amounts: amounts,
+                    componentId: parseInt($("#componentId").val()),
+                    organizationId: parseInt($("#v-search").val()),
+                    startDate: moment($("#startDate").val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
+                    endDate: moment($("#endDate").val(), 'DD/MM/YYYY').format('YYYY-MM-DD'),
+                    percentage_of_gross: $("#gross-based-cents").is(':checked'),
+                    employer_contributes: $("#my-employeer-same-amount").is(':checked'),
+                    insurance_relief: $("#add-insurance-relief").is(':checked'),
+                    pension_fund: $("#add-pension-fund").is(':checked'),
+                    loan: $("#loan-deduction").is(':checked')
+                };
+
+                var jsonString = JSON.stringify(formData);
+                console.log(jsonString);
+
+                // Check if all values are present
+                var missingFields = [];
+                $.each(formData, function(key, value) {
+                    if (key !== 'percentage_of_gross' && key !== 'employer_contributes' && key !== 'insurance_relief' && key !== 'pension_fund' && key !== 'loan' && key !== 'organizationId' && (value === null || value === undefined || value === '')) {
+                        missingFields.push(key);
+                    }
+                });
+
+                if (employeeIds.length === 0) {
+                    missingFields.push('employeeIds');
+                }
+
+                if (isNaN(amounts)) {
+                    missingFields.push('amounts');
+                }
+
+                if (missingFields.length > 0) {
+                    $.gritter.add({
+                        title: 'Error',
+                        text: 'Add data for the following fields: ' + missingFields.join(', '),
+                        class_name: 'gritter-error'
+                    });
+                    return;
+                }
+
+                // Show the loading overlay
+                $('#loading-overlay').show();
+
+                var xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                    // Hide the loading overlay
+                    $('#loading-overlay').hide();
+
+                    if (xhr.status === 201) {
+                        $.gritter.add({
+                            title: 'Success',
+                            text: 'Successfully updated',
+                            class_name: 'gritter-success'
+                        });
+                    } else {
+                        $.gritter.add({
+                            title: 'Error',
+                            text: 'Unexpected response from the server',
+                            class_name: 'gritter-error'
+                        });
+                        console.log('Unexpected response from the server');
+                    }
+
+                    setTimeout(function() {
+                        $("#componentId").val('');
+                        $("#startDate").val('');
+                        $("#endDate").val('');
+                        $("#templateName").val('');
+                        $('#table input[type="checkbox"]').prop('checked', false);
+                    }, 2000);
+                };
+
+                xhr.onerror = function() {
+                    // Hide the loading overlay
+                    $('#loading-overlay').hide();
+
+                    $.gritter.add({
+                        title: 'Error',
+                        text: 'Error occurred during the request',
+                        class_name: 'gritter-error'
+                    });
+                    console.log('Error occurred during the request');
+                };
+
+                xhr.open("POST", "/api/employees/employeeSalaryComponents");
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.send(JSON.stringify(formData));
+            });
+        });
+    </script>
+
+</div>
+
+
+
+
+
+

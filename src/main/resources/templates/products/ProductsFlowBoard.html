@@ -1,0 +1,104 @@
+
+<div th:fragment="aggflow">
+
+    <div th:if="${success}">
+        <script>
+            $(document).ready(function () {
+                displayGritterNotification("[[${success}]]", "Success");
+            });
+        </script>
+    </div>
+
+    <div class="card border-0">
+        <ul class="nav nav-tabs nav-tabs-v2 px-3">
+            <li class="nav-item me-2"><a class="nav-link px-2 active" data-bs-toggle="tab" href="#allTab"><span
+                    class="me-10px"><i
+                    class="fa fa-fw t-plus-1 text-danger fa-lg fa-plus-circle"></i>Add New Product</span></a></li>
+            <li class="nav-item me-2"><a class="nav-link px-2" data-bs-toggle="tab" href="#pes"><span class="me-10px"><i
+                class="fa fa-fw t-plus-1 text-green fa-lg fa-search-plus"></i>Product Look Up</span></a></li>
+            <li class="nav-item me-2"><a class="nav-link px-2" data-bs-toggle="tab" href="#brand"><span class="me-10px"><i
+                    class="fa fa-fw t-plus-1 text-teal fa-lg fa-plus-circle"></i>Add Brand</span></a></li>
+            <li class="nav-item me-2"><a class="nav-link px-2" data-bs-toggle="tab" href="#brands"><span class="me-10px"><i
+                    class="fa fa-fw t-plus-1 text-green fa-lg fa-list-check"></i>List of Brands</span></a></li>
+            <li class="nav-item me-2"><a class="nav-link px-2" data-bs-toggle="tab" href="#packs"><span class="me-10px"><i
+                    class="fa fa-fw t-plus-1 text-green fa-lg fa-box-open"></i>Packaging Types</span></a></li>
+            <li class="nav-item me-2"><a class="nav-link px-2" data-bs-toggle="tab" href="#packs"><span class="me-10px"><i
+                    class="fa fa-fw t-plus-1 text-primary-100 fa-lg fa-cubes"></i>Unit of Measures</span></a></li>
+
+
+
+        </ul>
+        <div class="tab-content p-3">
+            <div class="tab-pane fade show active" id="allTab">
+
+
+                <div class="row">
+
+         <div th:replace="~{products/products::products}"></div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane fade show " id="pes">
+
+
+                <div class="row">
+<!--         <div th:replace=" ~{category/categorylist::allcats}"></div>-->
+
+
+                </div>
+
+            </div>
+
+            <div class="tab-pane fade show " id="brand">
+
+
+                <div class="row">
+               <!--     <div th:replace=" ~{brands/brand::brand}"></div>-->
+
+
+                </div>
+
+            </div>
+
+            <div class="tab-pane fade show " id="brands">
+
+
+                <div class="row">
+             <!--       <div th:replace=" ~{brands/brands::brands}"></div>-->
+
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            var table = $('.payRx').DataTable({
+                buttons: [
+                    {extend: 'copy', className: 'btn-sm'},
+                    {extend: 'csv', className: 'btn-sm'},
+                    {extend: 'excel', className: 'btn-sm'},
+                    {extend: 'pdf', className: 'btn-sm'},
+                    {extend: 'print', className: 'btn-sm'}
+                ],
+            });
+
+            table.buttons().container().prependTo('#table-buttons');
+        });
+    </script>
+</div>
+
+<!-- END #content -->

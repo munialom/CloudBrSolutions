@@ -1,0 +1,135 @@
+
+<div th:fragment="charts">
+<style>
+    #members-records {
+        max-height: 220px; /* Adjust this value according to your needs */
+        overflow-y: auto;
+        font-size: 10px;
+    }
+
+
+
+     .group-row {
+         background-color: #f2f2f2; /* Change this to your preferred color */
+     }
+    .child-row {
+        padding-left: 30px; /* Indent child rows */
+    }
+
+
+
+</style>
+
+
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden rounded border">
+
+        <div class="panel-body p-0 flex-1 overflow-hidden">
+
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Account Code</th>
+                        <th>Account Name</th>
+                        <th>Description</th>
+                        <th>Account Group</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="entry : ${topLevelAccounts}">
+                        <tr class="parent">
+                            <td colspan="4" class="table-light"><span th:text="${entry.key}"></span></td>
+                        </tr>
+                        <th:block th:each="account : ${entry.value}">
+                            <tr>
+                                <td th:text="${account.accountCode}"></td>
+                                <td th:text="${account.name}"></td>
+                                <td th:text="${account.alias}"></td>
+                                <td th:text="${account.accountGroup}"></td>
+                            </tr>
+                            <th:block th:if="${not #lists.isEmpty(account.children)}">
+                                <tr class="child">
+                                    <td colspan="4">
+                                        <table class="table table-bordered table-sm">
+                                            <thead class="thead-light">
+                                            <tr>
+                                                <th>Account Code</th>
+                                                <th>Account Name</th>
+                                                <th>Description</th>
+                                                <th>Account Group</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <th:block th:each="child : ${account.children}">
+                                                <tr>
+                                                    <td th:text="${child.accountCode}"></td>
+                                                    <td th:text="${child.name}"></td>
+                                                    <td th:text="${child.alias}"></td>
+                                                    <td th:text="${child.accountGroup}"></td>
+                                                </tr>
+                                            </th:block>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </th:block>
+                        </th:block>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+
+
+    </div>
+
+
+
+
+
+
+
+

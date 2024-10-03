@@ -1,0 +1,262 @@
+<!-- Waiters Summary Form -->
+<div id="waitersSummarySystem">
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div class="card mt-2">
+            <div class="card-header">
+               <h6 class="mb-0">Waiters Summary</h6>
+            </div>
+            <div class="card-body">
+               <div class="mb-3">
+                  <label for="waitersSummaryDatePicker" class="form-label">Select Date:</label>
+                  <input type="date" id="waitersSummaryDatePicker" class="form-control">
+               </div>
+               <div id="waitersSummaryTableContainer"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script>
+   $(document).ready(function() {
+      const waitersSummaryDatePicker = $('#waitersSummaryDatePicker');
+
+      // Set default date to current day
+      const today = new Date().toISOString().split('T')[0];
+      waitersSummaryDatePicker.val(today);
+
+      loadWaitersSummary(today);
+
+      waitersSummaryDatePicker.on('change', function() {
+         loadWaitersSummary($(this).val());
+      });
+
+      function generateDynamicTable(data, targetElementId, itemsPerPage = 10) {
+         const $targetElement = $(`#${targetElementId}`);
+
+         // Create table structure
+         const $tableWrapper = $('<div>').addClass('table-responsive');
+         const $table = $('<table>').addClass('dynamic-table');
+         const $thead = $('<thead>');
+         const $tbody = $('<tbody>');
+
+         // Generate table header
+         const headers = Object.keys(data[0]);
+         const $headerRow = $('<tr>');
+         headers.forEach(header => {
+            $headerRow.append($('<th>').text(header));
+         });
+         $thead.append($headerRow);
+
+         // Generate table body
+         function renderTableBody(pageData) {
+            $tbody.empty();
+            pageData.forEach(row => {
+               const $dataRow = $('<tr>');
+               headers.forEach(header => {
+                  let $cell;
+                  if (header === 'Waiter Name') {
+                     $cell = $('<td>').text(row[header]).addClass('waiter-name');
+                  } else if (header === 'Total Sales' || header === 'Commission Amount') {
+                     const value = parseFloat(row[header]);
+                     $cell = $('<td>').text(row[header]).addClass(value < 0 ? 'negative' : 'positive');
+                  } else {
+                     $cell = $('<td>').text(row[header]);
+                  }
+                  $dataRow.append($cell);
+               });
+               $tbody.append($dataRow);
+            });
+         }
+
+         // Assemble table
+         $table.append($thead).append($tbody);
+         $tableWrapper.append($table);
+
+         // Create search input
+         const $searchInput = $('<input>').attr({
+            type: 'text',
+            placeholder: 'Search...'
+         }).addClass('table-search');
+
+       
+
+         // Create export buttons
+         const $exportButtons = $('<div>').addClass('export-buttons');
+         ['Excel', 'PDF', 'Print'].forEach(format => {
+            $exportButtons.append(
+                    $('<button>').text(format).click(() => exportTable(format))
+            );
+         });
+
+         // Create pagination
+         const $pagination = $('<div>').addClass('pagination');
+         const totalPages = Math.ceil(data.length / itemsPerPage);
+         let currentPage = 1;
+
+         function updatePagination() {
+            $pagination.empty();
+            for (let i = 1; i <= totalPages; i++) {
+               $pagination.append(
+                       $('<button>')
+                               .text(i)
+                               .addClass(i === currentPage ? 'active' : '')
+                               .click(() => {
+                                  currentPage = i;
+                                  const startIndex = (currentPage - 1) * itemsPerPage;
+                                  renderTableBody(data.slice(startIndex, startIndex + itemsPerPage));
+                                  updatePagination();
+                               })
+               );
+            }
+         }
+
+         // Initial render
+         renderTableBody(data.slice(0, itemsPerPage));
+         updatePagination();
+
+         // Assemble all elements
+         $targetElement.empty().append($searchInput, $exportButtons, $tableWrapper, $pagination);
+
+         // Apply styles
+         const styles = `
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        .dynamic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
+        }
+
+        .dynamic-table th, .dynamic-table td {
+            padding: 6px 8px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+
+        .dynamic-table th {
+            background-color: #f0f0f0;
+            font-weight: 700;
+        }
+
+        .dynamic-table .waiter-name { font-weight: bold; }
+        .dynamic-table .negative { color: #d32f2f; }
+        .dynamic-table .positive { color: #388e3c; }
+
+        .table-search {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .export-buttons {
+            margin-bottom: 1rem;
+        }
+
+        .export-buttons button {
+            margin-right: 0.5rem;
+            padding: 6px 12px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .pagination button {
+            margin: 0 0.25rem;
+            padding: 6px 12px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+    `;
+
+         $('head').append(styles);
+
+         // Implement search functionality
+         $searchInput.on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            const filteredData = data.filter(row =>
+                    Object.values(row).some(value =>
+                            value.toString().toLowerCase().includes(searchTerm)
+                    )
+            );
+            renderTableBody(filteredData.slice(0, itemsPerPage));
+            updatePagination();
+         });
+
+         // Export functionality (placeholder)
+
+      }
+      let currentReportData = null;
+      function loadWaitersSummary(date) {
+         $.ajax({
+            type: 'GET',
+            url: `/api/products-manager/waiters-summary/${date}`,
+            success: function(data) {
+               currentReportData = data; // Store the data for later use
+               if (data && data.length > 0) {
+                  generateDynamicTable(data, 'waitersSummaryTableContainer');
+               } else {
+                  $('#waitersSummaryTableContainer').html('<p>No records found for the selected date.</p>');
+               }
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error loading waiters summary: ' + error);
+               console.error(error);
+            }
+         });
+      }
+
+      function exportTable(format) {
+         if (!currentReportData) {
+            showNotification('error', 'No data available for export. Please load the report first.');
+            return;
+         }
+
+         switch (format) {
+            case 'Excel':
+               exportToExcel(currentReportData);
+               break;
+            case 'PDF':
+               exportToPDF(currentReportData);
+               break;
+            case 'Print':
+               printWaiterReport(currentReportData);
+               break;
+         }
+      }
+
+      function printWaiterReport(data) {
+         // Use the data directly without additional formatting
+         printGeneratePdf(data, 'Waiter Summary');
+      }
+      function showNotification(type, message) {
+         // Implement your notification logic here
+         console.log(`${type}: ${message}`);
+      }
+   });
+</script>

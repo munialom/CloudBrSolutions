@@ -1,0 +1,67 @@
+<div th:fragment="search-table-purchase" xmlns="http://www.w3.org/1999/html">
+
+    <style>
+        .form-control-xs {
+            height: calc(1em + .25rem + 1px);
+            padding: .125rem .25rem;
+            font-size: .875rem;
+            line-height: 1;
+        }
+    </style>
+
+
+    <div class="table-responsive mb-3">
+        <table class="table table-hover table-panel align-middle table-sm table-striped text-nowrap mb-0 rounded border" id="search-rooms-pos">
+            <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Rate Per Night</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="room : ${rooms}">
+                <td th:text="${room.roomNumber}"></td>
+                <td th:text="${room.roomType}"></td>
+                <td th:text="${room.ratePerNight}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

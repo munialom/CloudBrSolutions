@@ -1,0 +1,572 @@
+<div th:fragment="student">
+    <div class="col-md-12">
+
+        <!-- BEGIN panel -->
+        <div class="panel text-black rounded border" data-sortable-id="index-6">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">Product Management</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+
+
+            <div class="panel-toolbar border rounded p-1">
+                <div class="row g-2 align-items-center">
+                    <!-- Store/Location Selector -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="stationId" class="form-label">Store/Location:</label>
+                            <div class="input-group input-group-sm">
+                                <select id="stationId" name="stationId" class="form-select">
+                                    <option value="">Select Store</option>
+                                    <!-- Options for stores will be dynamically added here -->
+                                </select>
+                                <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#storeModal">
+                                    <i class="fa fa-plus-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Radio Buttons -->
+                    <div class="col-md-6">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex mt-4">
+                                    <div class="form-check me-3">
+                                        <input class="form-check-input" type="radio" name="filterOptions" id="radio1" value="option1">
+                                        <label class="form-check-label" for="radio1">Add Stock</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="filterOptions" id="radio2" value="option2">
+                                        <label class="form-check-label" for="radio2">Subtract Stock</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Product -->
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text"><i class="fa fa-barcode"></i></span>
+                            <input type="text" class="form-control" placeholder="Search Product..." id="search-pos">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button and Dropdown -->
+                <div class="row mt-2">
+                    <div class="col-12 text-end">
+                        <a href="#" class="btn btn-success btn-sm me-1" id="saveOpeningStockBtn">
+                            <i class="fas fa-save me-1"></i>Save Record
+                        </a>
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                <li><a class="dropdown-item text-primary" href="#"><i class="fas fa-search me-2"></i>Search Products</a></li>
+                                <li><a class="dropdown-item text-success" href="#" data-bs-toggle="modal" data-bs-target="#productDetailsModal"><i class="fas fa-list me-2"></i>Add Extra Details</a></li>
+                                <li><a class="dropdown-item text-info" href="#"><i class="fas fa-balance-scale me-2"></i>View Units of Measure</a></li>
+                                <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-tags me-2"></i>View Brands</a></li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-receipt me-2"></i>View Revenue Codes</a></li>
+                                <li><a class="dropdown-item text-secondary" href="#"><i class="fas fa-percentage me-2"></i>View Tax Categories</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="divider mt-0 p-0">
+
+            <div class="panel-body mt-0">
+
+                <div id="stockControlPanelBulkUpdates">
+
+                </div>
+
+            </div>
+            <!-- END panel -->
+
+        </div>
+
+
+    </div>
+
+
+<!--    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                <i class="fas fa-spinner fa-pulse" style="margin-right: 10px;"></i>
+                <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+            </div>
+        </div>
+    </div>-->
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#member-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch data
+
+
+            fetchStaffList();
+        });
+    </script>
+
+
+<script>
+    function showLoading() {
+        $('#loading-overlay').show();
+    }
+
+    function hideLoading() {
+        $('#loading-overlay').hide();
+    }
+    function fetchStaffList() {
+        // Show the loading overlay
+
+
+        // Construct the URL with query parameters
+        var url = '/api-bulk/products-database';
+
+        // Make the AJAX request to the server
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+
+                /*  $('#stockControlPanelBulkUpdates').html(response);*/
+                productStockManager(response);
+
+
+            },
+            error: function() {
+                alert('An error occurred while fetching data.');
+                // Hide the loading overlay
+
+            }
+        });
+    }
+</script>
+
+
+
+    <script>
+        function productStockManager(data) {
+            var itemsPerPage = 15;
+            var currentPage = 1;
+            var selectedRows = [];
+            var previousSearchQuery = "";
+            var editedPrices = {};
+            var stockChanges = {};
+            var stockOperation = "";
+
+            // Create the table and pagination controls
+            var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Build table headers
+            for (var key in data[0]) {
+                if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                    thead.find('tr').append('<th>' + key + '</th>');
+                }
+            }
+            thead.find('tr').append('<th id="stock-operation-header" style="display: none;"></th><th>Actions</th>');
+            table.append(thead);
+            table.append(tbody);
+
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+            $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+            // Select all functionality
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                selectedRows = isChecked ? getAllRowIndices() : [];
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.push(rowIndex);
+                } else {
+                    selectedRows = selectedRows.filter(function (index) {
+                        return index !== rowIndex;
+                    });
+                }
+                var allChecked = selectedRows.length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            function getAllRowIndices() {
+                return $('.rowCheckbox').map(function (index, element) {
+                    return $(element).closest('tr').data('original-index');
+                }).toArray();
+            }
+
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+                $('#stockControlPanelBulkUpdates').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>').data('original-index', startIndex + i);
+                        var rowIndex = startIndex + i;
+                        var isChecked = selectedRows.includes(rowIndex);
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                        tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                        // Unique Product ID Column (Column index 2)
+                        var productId = itemsToShow[i]['Product ID'];
+                        var costPriceKey = productId + '-CostPrice';
+                        var sellingPriceKey = productId + '-SellingPrice';
+
+                        for (var key in itemsToShow[i]) {
+                            if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                                var value = itemsToShow[i][key];
+                                var td = $('<td/>');
+                                if (key === 'Cost Price' || key === 'Selling Price') {
+                                    var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                                    var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                                    td.text(inputValue);
+                                } else {
+                                    td.text(value);
+                                }
+                                tr.append(td);
+                            }
+                        }
+
+                        if (stockOperation) {
+                            var stockKey = productId + '-StockChange';
+                            var stockValue = stockChanges[stockKey] !== undefined ? stockChanges[stockKey] : '';
+                            var stockInputId = 'stock-change-' + productId;
+
+                            var stockTd = $('<td/>').html('<input id="' + stockInputId + '" type="text" class="form-control form-control-sm" value="' + stockValue + '" />');
+                            stockTd.find('input').on('focus', function () {
+                                $(this).select();
+                                $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                                var focusedRowIndex = $(this).closest('tr').data('original-index');
+                                if (!selectedRows.includes(focusedRowIndex)) {
+                                    selectedRows.push(focusedRowIndex);
+                                }
+                                var productNameTd = $(this).closest('tr').find('td').eq(3); // Assuming the 4th column is Product Name
+                                if (!productNameTd.find('span.text-danger').length) {
+                                    productNameTd.append(' <span class="text-danger">' + (stockOperation === 'option1' ? 'Adding' : 'Subtracting') + ' qty</span>');
+                                }
+                            });
+                            stockTd.find('input').on('input', function () {
+                                var newValue = $(this).val();
+                                var inputId = $(this).attr('id');
+                                var row = $(this).closest('tr').data('original-index');
+                                var productId = itemsToShow[row]['Product ID'];
+                                var stockKey = productId + '-StockChange';
+                                stockChanges[stockKey] = newValue;
+                            });
+                            stockTd.find('input').on('keydown', function (e) {
+                                var row = $(this).closest('tr');
+                                if (e.key === "ArrowDown") {
+                                    row.next().find('input').focus();
+                                    e.preventDefault();
+                                } else if (e.key === "ArrowUp") {
+                                    row.prev().find('input').focus();
+                                    e.preventDefault();
+                                }
+                            });
+                            $('#stock-operation-header').text(stockOperation === 'option1' ? 'Add Stock' : 'Subtract Stock').show();
+                            tr.append(stockTd);
+                        } else {
+                            $('#stock-operation-header').hide();
+                        }
+
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            displayTableData();
+            createPagination(data.length);
+
+            // Handle Search
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(previousSearchQuery);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+
+            // Handle Stock Operation Radio Buttons
+            $('input[name="filterOptions"]').on('change', function () {
+                stockOperation = $(this).val();
+                displayTableData();
+            });
+
+            // Handle Actions
+            $(document).on('click', '.btn-info', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Edit row: ' + (rowIndex + 1));
+            });
+
+            $(document).on('click', '.btn-danger', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Delete row: ' + (rowIndex + 1));
+            });
+        }
+    </script>
+
+
+
+
+        <script>
+        $(document).ready(function() {
+            // Initialize Select2 for store search
+            $("#stationId").select2({
+                ajax: {
+                    url: "/api/stores/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.storeName + (obj.counterStore ? ' (Counter Store)' : ''),
+                                    counterStore: obj.counterStore
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 1,
+                placeholder: 'Search for a store...',
+                allowClear: true
+            });
+        });
+    </script>
+
+
+
+
+
+
+    <script>
+        function saveOpeningStock() {
+            // Show loading overlay
+            //$('#loading-overlay').show();
+            showLoading();
+
+            // Step 1: Determine the stock operation
+            var stockOperation = $('input[name="filterOptions"]:checked').val();
+            var opcode = stockOperation === 'option1' ? 'ADD' : 'SUBTRACT';
+
+            // Step 2: Get the selected branch
+            var branchId = $('#stationId').val();
+            var branchName = $('#stationId option:selected').text();
+
+            // Step 3: Initialize the opening stock data
+            var openingStocks = [];
+
+            // Step 4: Iterate through selected rows
+            $('.rowCheckbox:checked').each(function() {
+                var row = $(this).closest('tr');
+                var productCode = row.find('td:eq(3)').text().replace(/(Adding qty|Subtracting qty)/g, '').trim();
+                var productName = row.find('td:eq(4)').text();
+                var buyPrice = parseFloat(row.find('td:eq(9)').text());
+                var salePrice = parseFloat(row.find('td:eq(10)').text());
+                var qtyChange = parseInt(row.find('input[id^="stock-change-"]').val() || '0');
+
+                // Only include rows with non-zero quantity changes
+                if (qtyChange !== 0) {
+                    openingStocks.push({
+                        productCode: productCode,
+                        productName: productName,
+                        buyPrice: buyPrice,
+                        salePrice: salePrice,
+                        qty: qtyChange
+                    });
+                }
+            });
+
+            // Step 5: Prepare the data to be sent
+            var openingStockDTO = {
+                openingStocks: openingStocks,
+                opcode: opcode,
+                branchId: branchId  // Include the branchId in the DTO
+            };
+
+            // Console log the DTO
+            console.log('Opening Stock DTO:', openingStockDTO);
+
+            // Step 6: Validate the data
+            if (openingStocks.length === 0) {
+               // $('#loading-
+                hideLoading();
+                $.wnoty({
+                    type: 'error',
+                    message: 'Please select at least one product with a quantity change.',
+                    position: 'top-right'
+                });
+                return;
+            }
+
+            if (!branchId) {
+                $('#loading-overlay').hide();
+                $.wnoty({
+                    type: 'error',
+                    message: 'Please select a branch.',
+                    position: 'top-right'
+                });
+                return;
+            }
+
+            // Step 7: Send the data to the server
+            $.ajax({
+                url: '/api/stocks/opening',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(openingStockDTO),
+                success: function(response) {
+                    $('#loading-overlay').hide();
+                    $.wnoty({
+                        type: 'success',
+                        message: 'Opening stock created successfully for ' + branchName,
+                        position: 'top-right'
+                    });
+                    refreshTable();
+                },
+                error: function(xhr, status, error) {
+                    $('#loading-overlay').hide();
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Error creating opening stock: ' + xhr.responseText,
+                        position: 'top-right'
+                    });
+                }
+            });
+        }
+
+        function refreshTable() {
+            // Reset selections and refresh the table
+            $('.rowCheckbox').prop('checked', false);
+            $('#selectAll').prop('checked', false);
+            selectedRows = [];
+            stockChanges = {};
+            currentPage = 1;
+            fetchStaffList();  // Make sure this function is defined to refresh your table
+        }
+
+        // Attach the saveOpeningStock function to a button click event
+        $('#saveOpeningStockBtn').on('click', saveOpeningStock);
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+

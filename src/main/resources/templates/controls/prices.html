@@ -1,0 +1,212 @@
+<div th:fragment="pc">
+
+
+
+    <div class="panel panel flex-1 m-0 d-flex flex-row">
+
+        <div class="panel-body p-0 flex-1">
+            <div class="row">
+                <div class="d-flex align-items-center ">
+                    <div class="col me-2 d-flex justify-content-start">
+                        <!-- Add Stock Radio Button -->
+                        <div class="align-items-center me-1">
+                            <input class="form-check-input" type="radio" id="sale-price" value="sale" name="inlineRadio-price" />
+                            <label class="form-check-label" >Adjust Sale Price</label>
+                        </div>
+
+                        <!-- Subtract Stock Radio Button -->
+                        <div class="align-items-center me-1">
+                            <input class="form-check-input" type="radio" id="cost-price" value="cost" name="inlineRadio-price" />
+                            <label class="form-check-label" >Adjust Cost Price</label>
+                        </div>
+
+
+                        <div class="btn-toolbar">
+
+                            <a href="#"  id="prices-stock-btn"   class="btn  btn-sm btn-dark" ><i class="fa fa-circle-plus" ></i> <span class="hidden-xs">Update</span></a>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Attach click event handler to table rows
+            $('#selectedProducts-prices').on('click', 'tbody tr', function() {
+                // Remove any existing button groups
+                $('.btn-group').remove();
+
+                // Remove the selected class from all rows
+                $('tr').removeClass('selected-row');
+
+                // Add the selected class to the clicked row
+                $(this).addClass('selected-row');
+
+                // Find the selected row's Product Code
+                var productCode = $(this).find('td:first').text();
+
+                // Create a button group
+                var buttonGroup = $('<div>')
+                    .addClass('btn-group')
+                    .append(
+                        $('<button>')
+                            .text('Dynamic Button')
+                            .addClass('btn btn-primary btn-xs dynamic-button')
+                            .click(function() {
+                                // Your button click logic here
+                                alert('Dynamic Button clicked for Product Code: ' + productCode);
+                            }),
+                        $('<button>')
+                            .text('Remove Item')
+                            .addClass('btn btn-danger btn-xs remove-button')
+                            .click(function() {
+                                // Your remove button click logic here
+                                $(this).closest('tr').remove();
+                            })
+                    );
+
+                // Find the cell to place the button group and append it
+                var cell = $(this).find('td:nth-child(2)');
+                cell.addClass('cell-with-buttons');
+                cell.append(buttonGroup);
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#search-prices').keyup(function() {
+                var productName = $(this).val();
+                $.ajax({
+                    url: '/products/searchResults-prices',
+                    type: 'GET',
+                    data: { productName: productName },
+                    success: function(response) {
+                        var productTableContainer = $('#productTableContainer-prices');
+                        productTableContainer.html(response);
+
+                        if (productName.trim() === '') {
+                            productTableContainer.hide();
+                        } else {
+                            productTableContainer.show();
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    }
+                });
+            });
+
+            // Add click event listener to rows in the search results table
+            $(document).on('click', '#productTableContainer-prices tr', function() {
+                $('#productTableContainer-prices').hide();
+            });
+        });
+    </script>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            let isSubmitting = false;
+
+            $("#prices-stock-btn").on("click", function(e) {
+                e.preventDefault();
+
+                const rows = $("#selectedProducts-prices tbody tr");
+                var stockmode = $("input[name='inlineRadio-price']:checked").val();
+
+                // Check if a radio button is selected
+                if (!stockmode) {
+                    $('.alert-info').hide();
+                    $('.alert-danger').show().text('Please select a price Adjustment mode.');
+                    return; // Exit the function early
+                }
+
+                // Check if there are no rows in the table
+                if (rows.length === 0) {
+                    $('.alert-info').hide();
+                    $('.alert-danger').show().text('There are no records to save.');
+                    return; // Exit the function early
+                }
+
+                const aData = [];
+
+                rows.each(function() {
+                    const tableRow = $(this);
+
+                    const getTextByAttribute = function(attrValue) {
+                        return tableRow.find(`td[key-id="${attrValue}"]`).text();
+                    };
+
+                    const getValByAttribute = function(attrValue) {
+                        return parseFloat(tableRow.find(`input[name="${attrValue}"]`).val());
+                    };
+
+                    const data = {
+                        productCode: getTextByAttribute("productCode"),
+                        productName: getTextByAttribute("productName"),
+                        buyPrice: getValByAttribute("productBuy"),
+                        salePrice: getValByAttribute("productSale")
+                    };
+                         console.log("buy price"+getValByAttribute("productBuy"));
+                    console.log("Sales price"+getValByAttribute("productSale"));
+                    aData.push(data);
+                });
+
+                let stocks = {
+                    opcode: stockmode,
+                    openingStocks: aData
+                };
+
+                console.log(stocks);
+                // Show loading alert
+                $('.alert-info').show();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/stocks/prices",
+                    data: JSON.stringify(stocks),
+                    contentType: 'application/json',
+                    dataType: 'text',
+                    success: function(response) {
+                        if (response.toLowerCase().includes("success")) {
+                            // Use alert for success message
+                            $('.alert-info').hide();
+                            $('.alert-success').show().text(response);
+
+                            // Clear the table after successful save
+                            $("#selectedProducts-prices tbody").empty();
+                        } else {
+                            // Use alert for unexpected response
+                            $('.alert-info').hide();
+                            $('.alert-danger').show().text('Unexpected response from the server');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Use alert for error message
+                        $('.alert-info').hide();
+                        $('.alert-danger').show().text(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+</div>

@@ -1,0 +1,225 @@
+<div th:fragment="search-table-purchase" xmlns="http://www.w3.org/1999/html">
+
+    <style>
+        .form-control-xs {
+            height: calc(1em + .25rem + 1px);
+            padding: .125rem .25rem;
+            font-size: .875rem;
+            line-height: 1;
+        }
+    </style>
+
+
+    <div class="table-responsive mb-3">
+        <table class="table  table-hover table-panel align-middle table-sm table-striped text-nowrap  mb-0 rounded border" id="search-products-pos">
+            <thead>
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Buy Price</th>
+                <th>Sale Price</th>
+                <th>Tax</th>
+                <th>Current Stock</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.productCode}"></td>
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.productCost}"></td>
+                <td th:text="${product.productPrice}"></td>
+                <td th:text="${product.tax}"></td>
+                <td th:text="${product.currentStock}"></td>
+
+            </tr>
+            </tbody>
+    </table>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            var uniqueRowIdCounter = 0;
+
+            $('#search-products-pos tbody tr').click(function () {
+                var uniqueRowId = ++uniqueRowIdCounter;
+                var productCode = $(this).find('td:nth-child(1)').text();
+                var productName = $(this).find('td:nth-child(2)').text();
+                var productPrice = parseFloat($(this).find('td:nth-child(4)').text());
+                var DefaultQty = 1;
+                var DefaultDiscount = 0;
+                var unitTax = parseFloat($(this).find('td:nth-child(5)').text());
+                var subTotal = 0;
+
+                var productCodeExists = false;
+                $('#selectedProducts-pos tbody tr').each(function () {
+                    if ($(this).find('td[key-id="productCode"]').text() === productCode) {
+                        productCodeExists = true;
+                        var qty = parseInt($(this).find('td[key-id="productQty"] .product-input').val());
+                        var discount = parseFloat($(this).find('td[key-id="discount"]').text());
+                        var finTax = parseFloat($(this).find('td[key-id="finalTax"]').text());
+
+                        qty += 1; // Increment quantity
+                        subTotal = (productPrice * qty) - ((discount * qty) + (qty*unitTax)); // Recalculate subtotal
+
+                        $(this).find('td[key-id="productQty"] .product-input').val(qty);
+                        $(this).find('td[key-id="discount"]').text(discount.toFixed(2)); // Update discount if needed
+                        $(this).find('td[key-id="unitTax"]').text(unitTax.toFixed(2));
+                        $(this).find('td[key-id="finalTax"]').text((unitTax * qty).toFixed(2));
+                        $(this).find('td[key-id="subtotal"]').text(subTotal.toFixed(2));
+                        updateSidebar();
+                        return false;
+                    }
+                });
+
+                if (!productCodeExists) {
+                    var newRow = '<tr data-row-id="' + uniqueRowId + '">' +
+                        '<td key-id="productCode">' + productCode + '</td>' +
+                        '<td key-id="productName">' + productName + '</td>' +
+                        '<td key-id="productQty">' +
+                        '<div class="input-group qty">' +
+                        '<div class="input-group-prepend">' +
+                        '<a href="#" class="btn btn-danger btn-xs"><i class="fa fa-minus fa-sm"></i></a>' +
+                        '</div>' +
+                        '<input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 15px; margin:auto; border: none" />' +
+                        '<div class="input-group-append" style="margin-left: -1px;">' +
+                        '<a href="#" class="btn btn-success btn-xs"><i class="fa fa-plus fa-sm"></i></a>' +
+                        '</div>' +
+                        '</div>' +
+                        '</td>' +
+                        '<td key-id="SalePrice">' + productPrice.toFixed(2) + '</td>' +
+                        '<td key-id="unitTax">' + unitTax.toFixed(2) + '</td>' +
+                        '<td key-id="discount">' + DefaultDiscount + '</td>' +
+                        '<td key-id="finalTax">' + (unitTax * DefaultQty).toFixed(2) + '</td>' +
+                        '<td key-id="subtotal">' + ((productPrice * DefaultQty) - (DefaultDiscount + (unitTax * DefaultQty))).toFixed(2) + '</td>' +
+                        '</tr>';
+
+                    $('#selectedProducts-pos tbody').prepend(newRow);
+                    updateSidebar();
+                }
+
+                $('#search-pos').val('');
+            });
+
+            $(document).on('input', '.product-input', function () {
+                var value = $(this).val();
+
+                if (value === '') {
+                    value = '1'; // Set default value to 1 if input is empty
+                    $(this).val(value); // Update input field
+                }
+
+                value = value.replace(/[^0-9]/g, '');
+
+                var row = $(this).closest('tr');
+                var qty = parseInt(value);
+                var discount = parseFloat(row.find('td[key-id="discount"]').text());
+                var unitTax = parseFloat(row.find('td[key-id="unitTax"]').text());
+                var productPrice = parseFloat(row.find('td[key-id="SalePrice"]').text());
+
+                var subTotal = (productPrice * qty) - ((discount * qty) + (qty*unitTax));
+
+                row.find('td[key-id="finalTax"]').text((unitTax * qty).toFixed(2));
+                row.find('td[key-id="subtotal"]').text(subTotal.toFixed(2));
+                updateSidebar();
+            });
+
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function updateSidebar() {
+            var subtotal = 0.00;  // Initialize subtotal to 0.00
+            var tax = 0.00;      // Initialize tax to 0.00
+            var discount = 0.00; // Initialize discount to 0.00
+
+            $('#selectedProducts-pos tbody tr').each(function() {
+                var productQty = parseInt($(this).find('[key-id="productQty"] input').val());
+                var productPrice = parseFloat($(this).find('[key-id="SalePrice"]').text());
+                var productFinalTax = parseFloat($(this).find('[key-id="finalTax"]').text());
+                var productDiscount = parseFloat($(this).find('[key-id="discount"]').text());
+
+                var subTotalItem = parseFloat($(this).find('td[key-id="subtotal"]').text());
+
+                subtotal += subTotalItem;
+
+                tax += productFinalTax;
+                discount += productDiscount;
+            });
+
+            // Calculate total including tax and discount
+            var totalAmount = subtotal + tax - discount;
+
+            // Set received amount equal to the total
+            var receivedAmount = totalAmount;
+            $('#receivedAmount').val(receivedAmount.toFixed(2));
+
+            // Calculate change
+            var change = receivedAmount - totalAmount;
+
+            $('#subtotal').text(subtotal.toFixed(2));
+            $('#tax').text(tax.toFixed(2));
+            $('#discount').text(discount.toFixed(2));
+            $('#totalAmount').text(totalAmount.toFixed(2));
+            $('#change').text(change.toFixed(2));
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

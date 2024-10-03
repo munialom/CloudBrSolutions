@@ -1,0 +1,193 @@
+<div id="categoryManagementSystem">
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div id="dataTableContainer">
+            <div class="row p-3">
+               <div class="col-xl-12">
+                  <div class="card mt-4">
+                     <div class="card-header">
+                        <h6 class="mb-0" id="tableTitle">Data Table</h6>
+                     </div>
+                     <div class="card-body">
+                        <div id="dynamicDataTable"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <!-- Notification Area -->
+         <div id="notification-area" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+         <script th:inline="javascript">
+            // Wrap everything in an Immediately Invoked Function Expression (IIFE) to avoid global scope pollution
+            (function() {
+               let currentEndpoint = '';
+               let currentTitle = '';
+
+               function initDynamicDataTable(endpoint, tableTitle) {
+                  currentEndpoint = endpoint;
+                  currentTitle = tableTitle;
+                  setTableTitle(tableTitle);
+                  loadData();
+                  attachEventListeners();
+               }
+
+               function attachEventListeners() {
+                  $(window).on('resize', adjustTableResponsiveness);
+               }
+
+               function setTableTitle(title) {
+                  $('#tableTitle').text(title);
+               }
+
+               function loadData() {
+                  showLoading();
+                  $.ajax({
+                     url: currentEndpoint,
+                     type: 'GET',
+                     success: function(data) {
+                        displayData(data);
+                        hideLoading();
+                     },
+                     error: function(xhr, status, error) {
+                        console.error('Error loading data:', error);
+                        showNotification('Failed to load data: ' + error, 'error');
+                        hideLoading();
+                     }
+                  });
+               }
+
+               function displayData(data) {
+                  const $dynamicDataTable = $('#dynamicDataTable');
+                  $dynamicDataTable.empty();
+
+                  if (data.length === 0) {
+                     $dynamicDataTable.html('<p>No data found.</p>');
+                     return;
+                  }
+
+                  generateDynamicTable(data, 'dynamicDataTable');
+                  adjustTableResponsiveness();
+               }
+
+               function generateDynamicTable(data, targetElementId) {
+                  const $targetElement = $(`#${targetElementId}`);
+
+                  const $tableWrapper = $('<div>').addClass('table-responsive');
+                  const $table = $('<table>').addClass('table table-striped table-hover dynamic-table');
+                  const $thead = $('<thead>');
+                  const $tbody = $('<tbody>');
+
+                  const headers = Object.keys(data[0]);
+                  const $headerRow = $('<tr>');
+                  headers.forEach(header => {
+                     $headerRow.append($('<th>').text(header));
+                  });
+                  $thead.append($headerRow);
+
+                  data.forEach(row => {
+                     const $dataRow = $('<tr>');
+                     headers.forEach(header => {
+                        $dataRow.append($('<td>').text(row[header] || ''));
+                     });
+                     $tbody.append($dataRow);
+                  });
+
+                  $table.append($thead).append($tbody);
+                  $tableWrapper.append($table);
+                  $targetElement.empty().append($tableWrapper);
+
+                  applyTableStyles();
+               }
+
+               function adjustTableResponsiveness() {
+                  const $table = $('.dynamic-table');
+                  const $wrapper = $table.parent();
+
+                  if ($wrapper.width() < $table.width()) {
+                     $wrapper.css('overflow-x', 'auto');
+                  } else {
+                     $wrapper.css('overflow-x', 'visible');
+                  }
+               }
+
+               function applyTableStyles() {
+                  if (!$('#dynamicTableStyles').length) {
+                     const styles = `
+                <style id="dynamicTableStyles">
+                    .dynamic-table {
+                        width: 100%;
+                        margin-bottom: 1rem;
+                        color: #212529;
+                        border-collapse: collapse;
+                    }
+                    .dynamic-table th,
+                    .dynamic-table td {
+                        padding: 0.75rem;
+                        vertical-align: top;
+                        border-top: 1px solid #dee2e6;
+                    }
+                    .dynamic-table thead th {
+                        vertical-align: bottom;
+                        border-bottom: 2px solid #dee2e6;
+                        background-color: #f8f9fa;
+                    }
+                    .dynamic-table tbody tr:nth-of-type(odd) {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+                    .dynamic-table tbody tr:hover {
+                        background-color: rgba(0, 0, 0, 0.075);
+                    }
+                    @media screen and (max-width: 600px) {
+                        .dynamic-table {
+                            font-size: 0.875rem;
+                        }
+                        .dynamic-table th,
+                        .dynamic-table td {
+                            padding: 0.5rem;
+                        }
+                    }
+                </style>
+            `;
+                     $('head').append(styles);
+                  }
+               }
+
+               function showLoading() {
+                  $('#dynamicDataTable').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>');
+               }
+
+               function hideLoading() {
+                  // Loading indicator is replaced by the table content
+               }
+
+               function showNotification(message, type) {
+                  const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                  const notification = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+                  $('#notification-area').append(notification);
+                  setTimeout(() => {
+                     $('.alert').alert('close');
+                  }, 5000);
+               }
+
+               // Make initDynamicDataTable available globally
+               window.initDynamicDataTable = initDynamicDataTable;
+
+               // Initialize the table when the document is ready
+               $(document).ready(function() {
+                  initDynamicDataTable('/api-bulk/suppliers', 'Supplier Information');
+               });
+            })();
+         </script>
+
+      </div>
+   </div>
+</div>
+
+

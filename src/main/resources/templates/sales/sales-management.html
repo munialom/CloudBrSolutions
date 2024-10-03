@@ -1,0 +1,236 @@
+<div th:fragment="members">
+
+
+    <style type="text/css">
+        /* Set flex for file-manager-container */
+        .file-manager-container {
+            display: flex;
+            height: auto;
+        }
+        /* Style file-manager-content */
+        .file-manager-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .vertical-divider {
+            border-left: 1px solid #ccc; /* Adjust the border style as needed */
+            height: auto; /* Adjust the height of the divider as needed */
+            margin: 0 10px; /* Adjust the margin to control spacing */
+        }
+
+
+
+
+    </style>
+
+    <!-- BEGIN #content -->
+    <div  class=" d-flex flex-column">
+
+
+        <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden rounded border">
+
+            <div class="panel-body p-0 flex-1 overflow-hidden">
+                <div class="file-manager h-100" id="fileManager">
+
+
+                    <div class="file-manager-toolbar rounded border">
+                        <ul class="nav nav-tabs nav-tabs-v2 px-3">
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2 active" data-bs-toggle="tab" id="view-sales-summary">
+                                    <span class="iconify fs-18px me-2 ms-n1 text-danger" data-icon="solar:checklist-bold-duotone"></span>
+                                    Sales Summary
+                                </a>
+                            </li>
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="view-sales-analysis">
+                                    <span class="iconify fs-18px me-2 ms-n1 text-green-500" data-icon="solar:chart-2-bold-duotone"></span>
+                                 Stock Sales Summary
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+
+                    <div class="file-manager-container rounded border">
+
+                        <div class="file-manager-content d-flex flex-column">
+
+
+                            <div class="d-flex justify-content-between mb-0 text-nowrap p-2 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-n1">
+                                        <span class="iconify fa-3x" data-icon="solar:ssd-square-bold-duotone"></span>
+                                    </div>
+                                    <div class="flex-1 ps-3 small">
+                                        <div class="fw-bold">Total Stock Items:</div>
+                                        <div class="fw-bold text-body text-opacity-75">
+                                            <b class="text-body">127.7GB</b> free of <b class="text-body">256GB</b>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vertical-divider"></div>
+                                <div class="container" id="controlPanel">
+
+                                </div>
+
+
+
+
+                            </div>
+
+                            <div class="flex-1 overflow-hidden">
+                                <div data-scrollbar="true" data-skip-mobile="true" data-height="100%" class="p-0" id="stockControlPanel">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END #content -->
+
+
+
+
+
+
+    <script>
+
+
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchData(dateone, datetwo) {
+                // Construct the URL with query parameters
+                var url = '/sales/sale-transactions?startDate=' + dateone + '&endDate=' + datetwo;
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        // Update the content of the auto-filter-mem-data element with the fetched data
+                        $('#stockControlPanel').html(response);
+                        loadControlFragment('/stocks/sales-controls');
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            }
+
+            // Function to handle button click
+            $('#view-sales-summary').click(function(event) {
+                event.preventDefault(); // Prevent the default behavior of the button click
+
+                var htmlContent = $('#daterange-btn').html();
+
+// Check if htmlContent is not undefined
+                if (htmlContent) {
+                    var dateRange = htmlContent.split(" - ");
+
+                    // Check if dateRange is not null and has two elements
+                    if (dateRange && dateRange.length == 2) {
+                        var dateone = dateRange[0];
+                        var datetwo = dateRange[1];
+
+                        // Fetch data on button click
+                        fetchData(dateone, datetwo);
+                    } else {
+                        var defaultDateOne = moment().format('YYYY-MM-DD');
+                        var defaultDateTwo = moment().format('YYYY-MM-DD');
+                        fetchData(defaultDateOne, defaultDateTwo);
+                    }
+                } else {
+                    // If htmlContent is undefined, load based on current date
+                    var defaultDateOne = moment().format('YYYY-MM-DD');
+                    var defaultDateTwo = moment().format('YYYY-MM-DD');
+                    fetchData(defaultDateOne, defaultDateTwo);
+                }
+
+            });
+
+
+            var defaultDateOne = moment().format('YYYY-MM-DD');
+            var defaultDateTwo = moment().format('YYYY-MM-DD');
+            fetchData(defaultDateOne, defaultDateTwo);
+        });
+
+
+    </script>
+
+
+
+    <script>
+
+
+        $(document).ready(function() {
+      // Function to fetch data
+      function fetchDailyStockData() {
+          // Construct the URL with query parameters
+          var url = '/stocks/stockReport'
+
+          // Make the AJAX request to the server
+          $.ajax({
+              url: url,
+              method: 'GET',
+              success: function(response) {
+                  // Update the content of the stockControlPanel element with the fetched data
+                  $('#stockControlPanel').html(response);
+                  loadControlFragment('/stocks/daily-sc');
+
+              },
+              error: function() {
+                  alert('An error occurred while fetching data.');
+              }
+          });
+      }
+
+      // Function to handle button click
+      $('#view-sales-analysis').click(function(event) {
+          event.preventDefault(); // Prevent the default behavior of the button click
+          fetchDailyStockData();
+      });
+
+  });
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+    <script>
+        function loadControlFragment(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#controlPanel').html(data);
+                },
+                error: function() {
+                    console.log('Error loading fragment');
+                }
+            });
+        }
+
+    </script>
+
+
+
+</div>
+
+
+
+
+
+
+

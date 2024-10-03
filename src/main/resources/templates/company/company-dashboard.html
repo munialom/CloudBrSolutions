@@ -1,0 +1,110 @@
+<div th:fragment="student_form">
+
+   <div class="col-lg-12">
+      <div class="card">
+         <div class="card-body fw-bold">
+
+                  <ul class="nav nav-tabs nav-tabs-v2 px-3 border">
+                  <li class="nav-item me-2">
+                     <a class="nav-link px-2 active" data-bs-toggle="tab" href="#staffRecords">
+                        <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:list-check-bold-duotone"></span>
+                      Setup:
+                     </a>
+                  </li>
+               </ul>
+
+               <div class="tab-content border" >
+                  <div id="staffRecords" class="tab-pane fade show active">
+                      <div th:replace="~{configs/school::school}"></div>
+                  </div>
+
+               </div>
+
+
+
+
+         </div>
+
+      </div>
+
+
+
+   </div>
+
+
+
+
+   <script>
+      $(document).ready(function(){
+         var currentTab = 0; // Start at the first tab
+         var tabs = $(".nav-link"); // Get all tabs
+         var tabContents = $(".tab-pane"); // Get all tab contents
+
+         // Display the correct tab
+         function showTab(n) {
+            tabs.removeClass('active'); // Remove active class from all tabs
+            $(tabs[n]).addClass('active'); // Add active class to the current tab
+            tabContents.removeClass('show active'); // Hide all tab contents
+            $(tabContents[n]).addClass('show active'); // Show the current tab content
+
+            // Update navigation buttons
+            if (n == 0) {
+               $("#prevBtn").prop('disabled', true); // Disable "Previous" button
+            } else {
+               $("#prevBtn").prop('disabled', false); // Enable "Previous" button
+            }
+            if (n == (tabs.length - 1)) {
+               $("#nextBtn").hide(); // Hide "Next" button
+               $("#submitBtn").show(); // Show "Submit" button
+            } else {
+               $("#nextBtn").show(); // Show "Next" button
+               $("#submitBtn").hide(); // Hide "Submit" button
+            }
+         }
+
+         // Implement Next/Prev buttons
+         $("#prevBtn").click(function(){
+            if (currentTab > 0) { // Check if it's not the first tab
+               currentTab--;
+               showTab(currentTab);
+            }
+         });
+
+         $("#nextBtn").click(function(){
+            if (currentTab < (tabs.length - 1)) { // Check if it's not the last tab
+               currentTab++;
+               showTab(currentTab);
+            }
+         });
+
+
+
+         // Hide the Submit button initially
+         $("#submitBtn").hide();
+
+         showTab(currentTab); // Display the current tab
+      });
+
+
+
+
+   </script>
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+

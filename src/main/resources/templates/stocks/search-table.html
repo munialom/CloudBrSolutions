@@ -1,0 +1,59 @@
+<div th:fragment="search-table" xmlns="http://www.w3.org/1999/html">
+
+
+    <div class="table-responsive mb-3">
+        <table class="table table-hover table-panel text-nowrap align-middle mb-0 rounded border" id="search-products">
+            <thead>
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Current Stock</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.productCode}"></td>
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.currentStock}"></td>
+
+            </tr>
+            </tbody>
+    </table>
+    </div>
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Enable table row selection
+            $('#search-products tbody tr').click(function() {
+                // Get the product ID and name from the selected row
+                var productCode = $(this).find('td:nth-child(1)').text();
+                var productName = $(this).find('td:nth-child(2)').text();
+
+                // Create a new row for the selected item with default quantity of 1 and quantity input field
+                var newRow = '<tr><td key-id="productCode">' + productCode+ '</td><td key-id="productName">' + productName + '</td><td key-id="qty"><input type="number" name="qty" id="qty" class="product-quantity" value="1" min="1"></td></tr>';
+
+                // Append the new row to the selected products table
+                $('#selectedProducts tbody').append(newRow);
+
+                // Clear the search input
+                $('#search-pos').val('');
+            });
+
+            // Validate input to allow only positive integers for quantity
+            $(document).on('input', '.product-quantity', function() {
+                var value = $(this).val();
+                value = value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                $(this).val(value);
+            });
+        });
+    </script>
+
+
+
+</div>

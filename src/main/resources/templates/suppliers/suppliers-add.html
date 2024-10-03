@@ -1,0 +1,204 @@
+<div th:fragment="supplier">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form id="supplierForm">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="creditorName" class="form-label">Creditor Name</label>
+                            <input type="text" class="form-control" id="creditorName" name="creditorName" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="creditorContact" class="form-label">Creditor Contact</label>
+                            <input type="text" class="form-control" id="creditorContact" name="creditorContact" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="creditTerms" class="form-label">Credit Terms</label>
+                            <input type="text" class="form-control" id="creditTerms" name="creditTerms" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="taxPin" class="form-label">Tax PIN</label>
+                            <input type="text" class="form-control" id="taxPin" name="taxPin" required>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4">
+                            <label for="creditLimit" class="form-label">Credit Limit</label>
+                            <input type="number" class="form-control" id="creditLimit" name="creditLimit" step="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="supplierType" class="form-label">Supplier Type</label>
+                            <select class="form-select" id="supplierType" name="supplierType" required>
+                                <option value="">Choose...</option>
+                                <option value="COMPANY">Company</option>
+                                <option value="INDIVIDUAL">Individual</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-12">
+                            <label for="creditorAddress" class="form-label">Creditor Address</label>
+                            <textarea class="form-control" id="creditorAddress" name="creditorAddress" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="button" class="btn btn-success btn-sm me-2" id="saveSupplierBtn">
+                                <i class="fas fa-save me-1"></i>Save Supplier
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="resetFormBtn">
+                                <i class="fas fa-undo me-1"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+
+        <!-- JavaScript code will be added here -->
+
+        <script>
+            // Function to convert string to sentence case
+            function toSentenceCase(str) {
+                return str.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, function(c) {
+                    return c.toUpperCase();
+                });
+            }
+
+            // Function to handle input changes
+            function handleInputChange(event) {
+                if (event.target.id !== 'email') {
+                    event.target.value = toSentenceCase(event.target.value);
+                }
+            }
+
+            // Add event listeners to all input fields
+            document.querySelectorAll('#supplierForm input, #supplierForm textarea').forEach(input => {
+                if (input.id !== 'email') {
+                    input.addEventListener('blur', handleInputChange);
+                }
+            });
+
+            // Special handling for select element
+            document.getElementById('supplierType').addEventListener('change', function(event) {
+                const selectedOption = event.target.options[event.target.selectedIndex];
+                selectedOption.textContent = toSentenceCase(selectedOption.textContent);
+            });
+
+
+
+            // Handle form reset
+            document.getElementById('resetFormBtn').addEventListener('click', function() {
+                document.getElementById('supplierForm').reset();
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // Save Vendor
+                $('#saveSupplierBtn').click(function() {
+                    if (!validateForm()) {
+                        return;
+                    }
+
+                    var formData = {
+                        creditorName: $('#creditorName').val(),
+                        creditorAddress: $('#creditorAddress').val(),
+                        creditorContact: $('#creditorContact').val(),
+                        creditTerms: $('#creditTerms').val(),
+                        taxPin: $('#taxPin').val(),
+                        creditlimit: parseFloat($('#creditLimit').val()),
+                        email: $('#email').val(),
+                        supplierType: $('#supplierType').val()
+                    };
+
+                    console.log('Supplier data being sent:', JSON.stringify(formData, null, 2));
+
+                    showLoading();
+
+                    $.ajax({
+                        url: '/api/suppliers',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(formData),
+                        success: function(response) {
+                            hideLoading();
+                            console.log('Response received:', response);
+                            $.wnoty({
+                                type: 'success',
+                                message: 'Supplier saved successfully',
+                                position: 'top-right'
+                            });
+                            resetForm();
+                        },
+                        error: function(xhr, status, error) {
+                            hideLoading();
+                            console.error('Error response:', xhr.responseText);
+                            var errorMessage = 'Failed to save supplier';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            $.wnoty({
+                                type: 'error',
+                                message: errorMessage,
+                                position: 'top-right'
+                            });
+                        }
+                    });
+                });
+
+                // Reset Form
+                $('#resetFormBtn').click(function() {
+                    resetForm();
+                });
+
+                function validateForm() {
+                    var isValid = true;
+                    $('#supplierForm input, #supplierForm textarea, #supplierForm select').each(function() {
+                        if ($(this).prop('required') && !$(this).val()) {
+                            isValid = false;
+                            $(this).addClass('is-invalid');
+                        } else {
+                            $(this).removeClass('is-invalid');
+                        }
+                    });
+
+                    if (!isValid) {
+                        $.wnoty({
+                            type: 'warning',
+                            message: 'Please fill in all required fields',
+                            position: 'top-right'
+                        });
+                    }
+
+                    return isValid;
+                }
+
+                function resetForm() {
+                    $('#supplierForm')[0].reset();
+                    $('#supplierForm input, #supplierForm textarea, #supplierForm select').removeClass('is-invalid');
+                }
+
+                function showLoading() {
+                    $('#loading-overlay').show();
+                }
+
+                function hideLoading() {
+                    $('#loading-overlay').hide();
+                }
+            });
+        </script>
+    </div>
+</div>

@@ -1,0 +1,93 @@
+<div th:fragment="pc">
+
+
+
+
+    <div class="row">
+        <div class="d-flex align-items-center w-100">
+
+
+
+
+
+            <div class="d-flex align-items-center me-2">
+                <div class="alert alert-info" role="alert" style="display: none;">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Uploading Products...
+                </div>
+            </div>
+            <div class="d-flex align-items-center me-2">
+                <div class="alert alert-success" role="alert" style="display: none;">
+                    <span class="me-2" role="status" aria-hidden="true"></span>
+                    <span class="students-count"></span> Products uploaded successfully.
+                </div>
+            </div>
+
+            <!-- Upload Products Button -->
+            <div class="d-flex align-items-center me-2">
+                <form id="sUpload" method="post" enctype="multipart/form-data">
+                    <label for="file">Upload Products Excel file:</label>
+                    <input type="file" id="file" name="file" accept=".xlsx,.xls" class="form-control-file" required>
+
+                </form>
+            </div>
+            <!-- Print Result Button -->
+            <a href="#" id="upload-btn" class="btn btn-secondary btn-sm d-flex align-items-center me-2 pe-3 rounded-3">
+                <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:upload-bold-duotone"></span>
+                Upload Products
+            </a>
+            <!-- Reload Data Button -->
+            <a href="#" id="opening-stock-btn" class="btn btn-success btn-sm d-flex align-items-center pe-3 rounded-3">
+                <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:refresh-bold-duotone"></span>
+                Update Data
+            </a>
+        </div>
+    </div>
+
+
+
+    <script>
+
+        $(document).ready(function() {
+            $('#upload-btn').click(function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                var fileInput = document.getElementById("file");
+                var file = fileInput.files[0];
+
+                // Create a FormData object to send the file
+                var formData = new FormData();
+                formData.append("file", file);
+
+                $('.alert-info').show();
+                setTimeout(function() {
+                    $('.alert-info').hide();
+                }, 2000); // Hide after 2 seconds
+
+                $.ajax({
+                    url: 'api-bulk/upload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('.alert-success').show();
+                        setTimeout(function() {
+                            $('.alert-success').hide();
+                        }, 2000); // Hide after 2 seconds
+                        // $('.students-count').text(response.count);
+                    },
+                    error: function() {
+                        $('.alert-info').hide();
+                        alert('Error uploading products.');
+                    }
+                });
+            });
+        });
+
+
+
+    </script>
+
+
+</div>

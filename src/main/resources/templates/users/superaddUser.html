@@ -1,0 +1,133 @@
+<div th:fragment="users">
+
+
+
+
+   <form   name="email_to_form" class="mailbox-form" th:action="@{/users}" th:object="${user}" method="POST">
+
+      <div class="card rounded border">
+         <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fa fa-money-bill-1-wave fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Add New System User
+         </div>
+         <div class="card-body">
+            <div class="row">
+               <div class="col-xs-6 form-group">
+                  <label>Email</label>
+                  <input class="form-control input-sm" th:field="*{email}" type="email" />
+               </div>
+               <div class="col-xs-6 form-group">
+                  <label>Password</label>
+                  <input class="form-control input-sm" th:field="*{password}"    type="password" />
+               </div>
+               <!-- fx -->
+
+               <!-- end -->
+
+               <div class="col-xs-6">
+                  <div class="row">
+                     <label class="col-xs-12">Full Name</label>
+                  </div>
+                  <div class="row">
+                     <div class="col-xs-12 col-sm-6">
+                        <input class="form-control input-sm" th:field="*{firstName}" type="text" />
+                     </div>
+                     <div class="col-xs-12 col-sm-6">
+                        <input class="form-control input-sm" th:field="*{lastName}"  type="text" />
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-xs-6 col-sm-3">
+                     <label for="phone">Phone</label>
+                     <input class="form-control input-sm" id="phone" th:field="*{phone}" type="text" />
+                  </div>
+                  <div class="col-xs-6 col-sm-3">
+                     <label for="branch">Branch</label>
+                     <select class="form-control form-control-sm" id="branch" name="branch" th:field="*{branch}" required>
+                        <option value="">--Select Branch--</option>
+                        <th:block th:each="branch: ${branches}">
+                           <option th:text="${branch.branchName}" th:value="${branch.id}"></option>
+                        </th:block>
+                     </select>
+                  </div>
+               </div>
+
+
+
+
+               <div class="col-xs-6 form-group">
+                  <label>Roles:</label>
+                  <th:block th:each="iRole : ${rolesData}">
+                     <input type="checkbox" class="m-2"  th:field="*{roles}"  th:text="${iRole.roleName}" th:value="${iRole.id}">&nbsp;&nbsp;&nbsp;
+
+                  </th:block>
+               </div>
+
+               <div class="col-xs-6 form-group">
+
+                  <th:block>
+                     <input type="checkbox" class="m-2" th:text="Enabled"  th:field="*{enabled}">
+
+                  </th:block>
+               </div>
+
+
+            </div>
+
+         </div>
+      </div>
+
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" class="btn btn-primary ps-40px pe-40px">Save</button>
+      </div>
+
+   </form>
+
+
+   <script>
+      $(document).ready(function() {
+         $('#saveButton').click(function() {
+            // Serialize form data
+            var formData = $('#userForm').serialize();
+
+            // Send AJAX request
+            $.ajax({
+               type: 'POST',
+               url: $('#userForm').attr('action'),
+               data: formData,
+               success: function(response) {
+                  // Show success message
+                  swal({
+                     title: "Success",
+                     text: "User saved successfully",
+                     icon: "success",
+                     timer: 2000, // Disappear after 2 seconds
+                     button: false
+                  });
+               },
+               error: function() {
+                  // Prevent default action (form submission)
+                  $('#userForm').submit(function(e) {
+                     e.preventDefault();
+                  });
+
+                  // Show error message
+                  swal({
+                     title: "Error",
+                     text: "Something went wrong. Please try again later.",
+                     icon: "error",
+                     button: "OK"
+                  });
+               }
+            });
+         });
+
+         $('#discardButton').click(function() {
+            // Handle discard button click if needed
+         });
+      });
+   </script>
+
+</div>

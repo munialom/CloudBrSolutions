@@ -1,0 +1,36 @@
+<div th:fragment="roles">
+
+   <form   name="email_to_form" class="mailbox-form" th:action="@{/roles}" th:object="${roleUser}" method="POST">
+
+      <div class="card border-0 mb-4">
+         <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fa fa-money-bill-1-wave fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Add New User Roles
+         </div>
+         <div class="card-body">
+            <div class="row">
+               <div class="col-lg-6">
+                  <div class="mb-lg-0 mb-3">
+                     <label class="form-label" for="className">User Role Name</label>
+                     <input  class="form-control" id="className" type="text" th:field="*{roleName}" onkeyup="capitalize(this)" required>
+                  </div>
+               </div>
+
+               <div class="col-lg-6">
+                  <div class="mb-lg-0 mb-3">
+                     <label class="form-label" for="className">Role Description</label>
+                     <input  class="form-control" id="className" type="text"  th:field="*{roleDescription}" onkeyup="capitalize(this)" required>
+                  </div>
+               </div>
+
+            </div>
+
+         </div>
+      </div>
+
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-end">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" class="btn btn-primary ps-40px pe-40px">Save</button>
+      </div>
+
+   </form>
+</div>

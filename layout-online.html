@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>BRS-SUITE</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+
+    <!-- Load Google Fonts asynchronously -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" media="print" onload="this.media='all'">
+
+
+    <!-- Load Bootstrap Datepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" onload="this.media='all'">
+
+    <!-- Load Bootstrap Daterangepicker CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" onload="this.media='all'">
+
+    <!-- Load Bootstrap Timepicker CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" onload="this.media='all'">
+
+    <!-- Load jQuery from a CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Load Google Charts API asynchronously -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js" async></script>
+
+    <!-- Load Iconify asynchronously -->
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js" async></script>
+
+    <!-- Load PDFMake asynchronously -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <!-- Load Moment.js asynchronously -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" async></script>
+
+
+    <!-- Load Bootstrap Datepicker JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" defer></script>
+
+    <!-- Load Bootstrap Daterangepicker JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js" defer></script>
+
+    <!-- Bootstrap Timepicker JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js" defer></script>
+    <!-- BEGIN core-css -->
+    <link th:href="@{/assets/css/vendor.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/default/app.min.css}" rel="stylesheet" />
+    <!-- END core-css -->
+
+    <link th:href="@{/assets/plugins/select2/dist/css/select2.min.css}" rel="stylesheet"/>
+    <link th:href="@{/assets/plugins/gritter/css/jquery.gritter.css}" rel="stylesheet"/>
+    <!-- Include wnoty CSS -->
+    <link th:href="@{/assets/custom/wnoty.css}" rel="stylesheet">
+
+
+</head>
+<body>
+<!-- BEGIN #loader -->
+
+<div id="loader" class="app-loader">
+    <span class="spinner" style="color: red;"></span>
+</div>
+
+<!-- END #loader -->
+<form th:action="@{/logout}" th:hidden="true" method="post" name="logoutForm">
+    <input type="submit">
+</form>
+<!-- BEGIN #app -->
+
+
+<div id="app" class="app app-header-fixed app-sidebar-fixed app-content-full-height">
+    <!-- BEGIN #header -->
+    <div id="header" class="app-header" >
+        <!-- BEGIN navbar-header -->
+        <div class="navbar-header">
+
+            <a href="/" class="navbar-brand"><span class="navbar-logo"></span> <b>360</b>BRS-SUITE</a>
+            <button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar-mobile">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <!-- END navbar-header -->
+
+        <!-- BEGIN navbar-collapse -->
+        <div class="collapse d-md-block me-auto" id="top-navbar">
+            <div class="navbar-nav">
+                <div class="navbar-item dropdown dropdown-lg">
+                    <a href="#" onclick="loadFragment('/pos/workflow')" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                        <i class="fab fa-microsoft fa-fw me-1"></i>
+                        <span class="d-lg-inline d-md-none">Point Of Sale</span>
+                        <b class="caret ms-1"></b>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        <!-- END navbar-collapse -->
+
+
+
+        <!-- BEGIN header-nav -->
+        <div class="navbar-nav">
+
+
+            <div class="navbar-item navbar-user dropdown">
+                <a href="#" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                    <img th:src="@{/assets/img/user/user-13.jpg}" alt=""/>
+
+<!--                    <span class="d-none d-md-inline" sec:authentication="principal.FullName"><b class="caret"></b></span>-->
+                </a>
+                <div class="dropdown-menu dropdown-menu-end me-1">
+                    <a href="#" onclick="loadFragment('/users/profile')" class="dropdown-item">Edit Profile</a>
+                    <a href="javascript:;" class="dropdown-item d-flex align-items-center">
+                        Inbox
+                        <span class="badge bg-danger rounded-pill ms-auto pb-4px">2</span>
+                    </a>
+                    <a href="javascript:;" class="dropdown-item">Calendar</a>
+                    <a href="javascript:;" class="dropdown-item">Setting</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" id="logoutLink" class="dropdown-item">Log Out</a>
+                </div>
+            </div>
+        </div>
+        <!-- END header-nav -->
+    </div>
+    <!-- END #header -->
+
+
+    <!-- BEGIN #sidebar -->
+
+    <div th:replace="~{fragments/side-bar}"></div>
+
+
+
+    <!-- END #sidebar -->
+
+
+    <!-- BEGIN #content -->
+    <div id="content" class="app-content d-flex flex-column p-0">
+        <!-- BEGIN content-container -->
+        <div class="app-content-container flex-grow-1 overflow-hidden" data-scrollbar="true" data-height="100%">
+            <section layout:fragment="main-content"></section>
+
+        </div>
+
+
+
+        <!-- BEGIN #footer -->
+        <div id="footer" class="app-footer m-0" style="text-align: center;">
+            &copy; 2024 360-BRS-SUITE MANAGEMENT SYSTEM - Designed and Developed By Ctecx Technologies Solutions All Rights Reserved
+        </div>
+        <!-- END #footer -->
+
+    </div>
+
+
+    <!-- END #content -->
+
+    <!-- BEGIN scroll-top-btn -->
+    <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top" data-toggle="scroll-to-top"><i
+            class="fa fa-angle-up"></i></a>
+    <!-- END scroll-top-btn -->
+</div>
+<!-- END #app -->
+
+
+<script th:inline="javascript">
+    function loadFragment(url) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(data) {
+                $('#fragmentContainer').html(data);
+
+                // Update URL without triggering a full page refresh
+                if (history.pushState) {
+                    history.pushState({ fragmentUrl: url }, null, '#' + url);
+                }
+            },
+            error: function() {
+                console.log('Error loading fragment');
+            }
+        });
+    }
+
+    // Function to fix the URL issue after login
+    function fixUrlAfterLogin() {
+        var currentUrl = window.location.href;
+
+        // Remove the "continue" parameter from the URL fragment
+        var newUrl = currentUrl.replace('?continue', '');
+
+        // Update the URL
+        history.replaceState({ fragmentUrl: newUrl }, null, newUrl);
+    }
+
+    // Call the function after login
+    fixUrlAfterLogin();
+
+
+</script>
+
+<script>
+    $(document).ready(function() {
+        var fragmentUrl = location.hash.substring(1); // Get the fragment identifier
+        if (fragmentUrl) {
+            loadFragment(fragmentUrl);
+        } else {
+            loadFragment('/staff/new-dashboard');
+        }
+    });
+</script>
+
+
+
+
+<script>
+    function capitalize(input) {
+        input.value = input.value.toUpperCase();
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        function capitalizeSentenceCase(input) {
+            return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+        }
+
+        function capitalizeInputOnKeyUp(input) {
+            var inputValue = $(input).val();
+            var sentenceCaseValue = capitalizeSentenceCase(inputValue);
+            $(input).val(sentenceCaseValue);
+        }
+
+        $('input[type="text"]').keyup(function () {
+            capitalizeInputOnKeyUp(this);
+        });
+    });
+</script>
+
+<script>
+    function addCountryCode() {
+        var phone = document.getElementById("phoneNumber");
+        var kinPhone = document.getElementById("kinContact");
+
+        // Remove the first digit (assumed to be 0) and add the country code for phoneNumber
+        var phoneNumber = phone.value;
+        if (phoneNumber.length === 10) {
+            phone.value = "+254" + phoneNumber.slice(1);
+        }
+
+        // Remove the first digit (assumed to be 0) and add the country code for kinContact
+        var kinPhoneNumber = kinPhone.value;
+        if (kinPhoneNumber.length === 10) {
+            kinPhone.value = "+254" + kinPhoneNumber.slice(1);
+        }
+    }
+</script>
+
+<script>
+    // Collapsible table rows
+    $(document).ready(function() {
+        $('.parent .toggle').click(function() {
+            $(this).closest('tr').next('.child').toggle();
+            $(this).text(function(_, text) {
+                return text === '+' ? '-' : '+';
+            });
+        });
+        $('.child').hide();
+    });
+</script>
+<script>
+
+
+    $("#logoutLink").on('click', function (e) {
+        e.preventDefault();
+        document.logoutForm.submit();
+
+
+    });
+
+</script>
+
+
+
+
+
+
+
+
+<script>
+    $(document).ready(function() {
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function capitalizeSentenceCase(inputElement) {
+            var inputValue = inputElement.val();
+            var capitalizedValue = inputValue.toLowerCase().replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+            inputElement.val(capitalizedValue);
+        }
+
+        $('form input[type="text"]').on('input', function() {
+            capitalizeSentenceCase($(this));
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function() {
+        var handleTableHeight = function() {
+            var tableSheet = document.getElementById('table-sheet');
+            if (tableSheet) {
+                var targetHeight = window.innerHeight - tableSheet.getBoundingClientRect().top;
+                tableSheet.style.height = targetHeight + 'px';
+            }
+        };
+
+        var handleCheckbox = function() {
+            document.querySelectorAll('[data-toggle="check-all"]').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    var isChecked = this.checked;
+                    var table = this.closest('#table-sheet');
+                    var checkboxes = table.querySelectorAll('tbody input[type="checkbox"]');
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            });
+        };
+
+        handleTableHeight();
+        handleCheckbox();
+
+        window.addEventListener('resize', function() {
+            handleTableHeight();
+        });
+    });
+</script>
+
+
+
+
+<script>
+    async function fetchHeaderDataFromDatabase() {
+        try {
+            const response = await fetch('/api/setup/company');
+            const data = await response.json();
+
+            const headerData = {};
+            data.forEach(item => {
+                const { key, value } = item;
+                switch (key) {
+                    case 'SCHOOL_NAME':
+                        headerData.schoolName = value;
+                        break;
+                    case 'SCHOOL_POSTAL':
+                        headerData.schoolAddress = value;
+                        break;
+                    case 'SCHOOL_MOTTO':
+                        headerData.reportTitle = value;
+                        break;
+                    case 'SCHOOL_LOCATION':
+                        headerData.schoolLocation = value;
+                        break;
+                    case 'SCHOOL_EMAIL':
+                        headerData.schoolEmail = value;
+                        break;
+                    case 'SCHOOL_PHONE':
+                        headerData.schoolPhone = value;
+                        break;
+                    case 'SCHOOL_LOGO':
+                        headerData.schoolLogo = value;
+                        break;
+                    // Add more cases if you need to extract additional data
+                    default:
+                        break;
+                }
+            });
+
+            return headerData;
+        } catch (error) {
+            console.error('Error fetching header data:', error);
+            // Return an empty object if there's an error
+            return {};
+        }
+    }
+</script>
+
+
+<script>
+
+    async function printGeneratePdf(data, reportTitle) {
+        var tableData = [];
+        var columnNames = ['No.'].concat(Object.keys(data[0]).map(function (key) {
+            return key.charAt(0).toUpperCase() + key.slice(1);
+        }));
+
+        data.forEach(function (item, index) {
+            var rowData = [index + 1];
+            for (var key in item) {
+                rowData.push(item[key]);
+            }
+            tableData.push(rowData);
+        });
+
+        const headerDataFromDb = await fetchHeaderDataFromDatabase();
+        var headerContent = [
+            { text: headerDataFromDb.schoolName || '', style: 'header', alignment: 'center', margin: [0, 10, 0, 0] },
+            {
+                text: (headerDataFromDb.schoolAddress || '') + '   -   ' + (headerDataFromDb.schoolPhone || ''),
+                style: 'subheader',
+                alignment: 'center',
+                margin: [0, 2, 0, 0]
+            },
+            { text: reportTitle, style: 'subheader', alignment: 'center', margin: [0, 2, 0, 0] }
+        ];
+
+        var pageOrientation = tableData[0].length > 8 ? 'landscape' : 'portrait';
+        var pageMargins = pageOrientation === 'landscape' ? [20, 60, 20, 40] : [40, 60, 40, 60]; // Adjusted margins for portrait layout
+
+        var cellAlignment = function (cellValue) {
+            if (typeof cellValue === 'string') {
+                var numericValue = parseFloat(cellValue.replace(/[,]/g, ''));
+                if (!isNaN(numericValue)) {
+                    return 'right';
+                }
+            }
+            return 'left';
+        };
+
+        const getMaxWidth = (rows, accessor, withPadding = true) => {
+            const maxWidth = Math.max(...rows.map(row => {
+                const cellValue = String(row[accessor]);
+                return cellValue.length * 3 + 10;
+            }));
+            return withPadding ? maxWidth : maxWidth - 10;
+        };
+
+        const columnWidths = [
+            25, // No. column
+            ...columnNames.slice(1).map(name => getMaxWidth(tableData, columnNames.indexOf(name))),
+        ];
+
+        const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
+        const availableWidth = pageOrientation === 'landscape' ? 780 - pageMargins[0] - pageMargins[2] : 580 - pageMargins[0] - pageMargins[2]; // Adjusted available width considering margins
+        const scaleFactor = availableWidth / tableWidth;
+
+        var docDefinition = {
+            content: [
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: columnWidths.map(width => width * scaleFactor),
+                        body: [
+                            columnNames.map(name => ({ text: name, style: 'tableHeader', alignment: cellAlignment(name) })),
+                            ...tableData.map(row => {
+                                return row.map((cell, index) => {
+                                    return index > 0 ? { text: cell, style: 'tableBody', alignment: cellAlignment(cell) } : { text: cell, style: 'tableIndex' };
+                                });
+                            })
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: function (i, node) {
+                            return (i === 0 || i === node.table.body.length) ? 1 : 0.5;
+                        },
+                        vLineWidth: function (i, node) {
+                            return (i === 0 || i === node.table.widths.length) ? 1 : 0.5;
+                        },
+                        hLineColor: function (i, node) {
+                            return (i === 0 || i === node.table.body.length) ? '#333333' : '#CCCCCC';
+                        },
+                        vLineColor: function (i, node) {
+                            return (i === 0 || i === node.table.widths.length) ? '#333333' : '#CCCCCC';
+                        },
+                        paddingLeft: function (i, node) {
+                            return 2; // Reduced left padding
+                        },
+                        paddingRight: function (i, node) {
+                            return 2; // Reduced right padding
+                        },
+                        paddingTop: function (i, node) {
+                            return 1; // Reduced top padding
+                        },
+                        paddingBottom: function (i, node) {
+                            return 1; // Reduced bottom padding
+                        }
+                    }
+                }
+            ],
+            styles: {
+                header: {
+                    fontSize: 10, // Adjusted header font size
+                    fontFamily: 'Roboto',
+                    bold: true,
+                    margin: [0, 0, 0, 5] // Adjusted bottom margin for header
+                },
+                subheader: {
+                    fontSize: 8, // Adjusted subheader font size
+                    fontFamily: 'Roboto',
+                    margin: [0, 0, 0, 3] // Adjusted bottom margin for subheader
+                },
+                tableHeader: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto',
+                    bold: true,
+                    lineHeight: 1.2
+                },
+                tableBody: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto',
+                    lineHeight: 1.2
+                },
+                tableIndex: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto',
+                    alignment: 'center',
+                    lineHeight: 1.2
+                },
+                footerText: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto'
+                }
+            },
+            defaultStyle: {
+                fontSize: 7.5,
+                font: 'Roboto'
+            },
+            pageSize: 'A4',
+            pageOrientation: pageOrientation,
+            pageMargins: pageMargins,
+            header: headerContent,
+            footer: function (currentPage, pageCount) {
+                var currentDate = new Date();
+                var dateString = currentDate.toDateString() + ", " + currentDate.toLocaleTimeString();
+                return {
+                    stack: [
+                        { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'center' },
+                        { text: 'Printed on ' + dateString, alignment: 'center' }
+                    ]
+                };
+            }
+        };
+
+        var pdfDoc = pdfMake.createPdf(docDefinition);
+        pdfDoc.open();
+    }
+
+</script>
+
+
+
+
+<script>
+    function generateEmployeesTable(data, containerId, recordsPerPage = 10) {
+        // Create a new table and append thead and tbody
+        var table = $('<table class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+        var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" data-toggle="check-all" /></div></th><th>No</th></tr></thead>');
+        var tbody = $('<tbody/>');
+
+        // Add table headers
+        for (var key in data[0]) {
+            thead.find('tr').append('<th>' + key + '</th>');
+        }
+
+        // Add table data
+        var currentPage = 0;
+        var totalPages = Math.ceil(data.length / recordsPerPage);
+        var filteredData = data;
+
+        function renderPage(pageNumber) {
+            tbody.empty();
+            var startIndex = pageNumber * recordsPerPage;
+            var endIndex = startIndex + recordsPerPage;
+
+            for (var i = startIndex; i < endIndex && i < filteredData.length; i++) {
+                var tr = $('<tr/>');
+                // Add a checkbox to each row
+                tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" /></div></td>');
+                // Add a row number to each row
+                tr.append('<td>' + (i + 1) + '</td>');
+                for (var key in filteredData[i]) {
+                    tr.append('<td>' + filteredData[i][key] + '</td>');
+                }
+                tbody.append(tr);
+            }
+
+            table.append(thead);
+            table.append(tbody);
+
+            // Create a div with class "table-responsive" and append the table
+            var responsiveDiv = $('<div class="table-responsive p-2"/>');
+            responsiveDiv.append(table);
+
+            // Create pagination controls
+            var paginationContainer = $('<nav aria-label="Page navigation" class="d-flex justify-content-between align-items-center p-3"><ul class="pagination pagination-sm m-0"></ul><span class="page-info"></span></nav>');
+            var pagination = paginationContainer.find('.pagination');
+            var pageInfo = paginationContainer.find('.page-info');
+
+            totalPages = Math.ceil(filteredData.length / recordsPerPage);
+
+            if (totalPages > 1) {
+                var prevDisabled = currentPage === 0 ? 'disabled' : '';
+                var nextDisabled = currentPage === totalPages - 1 ? 'disabled' : '';
+
+                pagination.append('<li class="page-item ' + prevDisabled + '"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '">Previous</a></li>');
+
+                var maxPagesToShow = 15;
+                var startPage = Math.max(0, currentPage - Math.floor(maxPagesToShow / 2));
+                var endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+                for (var j = startPage; j < endPage; j++) {
+                    var active = j === currentPage ? 'active' : '';
+                    pagination.append('<li class="page-item ' + active + '"><a class="page-link" href="#" data-page="' + j + '">' + (j + 1) + '</a></li>');
+                }
+
+                if (endPage < totalPages) {
+                    pagination.append('<li class="page-item disabled"><a class="page-link" href="#">...</a></li>');
+                    pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (totalPages - 1) + '">' + totalPages + '</a></li>');
+                }
+
+                pagination.append('<li class="page-item ' + nextDisabled + '"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '">Next</a></li>');
+
+                pageInfo.text('Page ' + (currentPage + 1) + ' of ' + totalPages);
+            }
+
+            responsiveDiv.append(paginationContainer);
+
+            // Append the new div to the specified container
+            $('#' + containerId).html(responsiveDiv);
+
+            // Add click event handlers for pagination links
+            pagination.find('a').click(function(e) {
+                e.preventDefault();
+                var pageNumber = parseInt($(this).data('page'));
+                if (pageNumber >= 0 && pageNumber < totalPages) {
+                    currentPage = pageNumber;
+                    renderPage(currentPage);
+                }
+            });
+        }
+
+        // Add search functionality
+        $('#search-pos').on('input', function() {
+            var searchValue = $(this).val().toLowerCase();
+            filteredData = data.filter(function(item) {
+                var values = Object.values(item).join(' ').toLowerCase();
+                return values.includes(searchValue);
+            });
+            currentPage = 0;
+            renderPage(currentPage);
+        });
+
+        renderPage(currentPage);
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+
+
+    async function printGeneratePdf(data, reportTitle) {
+        var tableData = [];
+        var columnNames = ['No.'].concat(Object.keys(data[0]).map(function (key) {
+            return key.charAt(0).toUpperCase() + key.slice(1);
+        }));
+
+        data.forEach(function (item, index) {
+            var rowData = [index + 1];
+            for (var key in item) {
+                rowData.push(item[key]);
+            }
+            tableData.push(rowData);
+        });
+
+        const headerDataFromDb = await fetchHeaderDataFromDatabase();
+        var headerContent = [
+            { text: headerDataFromDb.schoolName || '', style: 'header', alignment: 'center', margin: [0, 10, 0, 0] },
+            {
+                text: (headerDataFromDb.schoolAddress || '') + '   -   ' + (headerDataFromDb.schoolPhone || ''),
+                style: 'subheader',
+                alignment: 'center',
+                margin: [0, 2, 0, 0]
+            },
+            { text: reportTitle, style: 'subheader', alignment: 'center', margin: [0, 2, 0, 0] }
+        ];
+
+        var pageOrientation = tableData[0].length > 8 ? 'landscape' : 'portrait';
+        var pageMargins = pageOrientation === 'landscape' ? [20, 60, 20, 40] : [40, 60, 40, 60]; // Adjusted margins for portrait layout
+
+        var cellAlignment = function (cellValue) {
+            if (typeof cellValue === 'string') {
+                var numericValue = parseFloat(cellValue.replace(/[,]/g, ''));
+                if (!isNaN(numericValue)) {
+                    return 'right';
+                }
+            }
+            return 'left';
+        };
+
+        const getMaxWidth = (rows, accessor, withPadding = true) => {
+            const maxWidth = Math.max(...rows.map(row => {
+                const cellValue = String(row[accessor]);
+                return cellValue.length * 3 + 10;
+            }));
+            return withPadding ? maxWidth : maxWidth - 10;
+        };
+
+        const columnWidths = [
+            25, // No. column
+            ...columnNames.slice(1).map(name => getMaxWidth(tableData, columnNames.indexOf(name))),
+        ];
+
+        const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
+        const availableWidth = pageOrientation === 'landscape' ? 780 - pageMargins[0] - pageMargins[2] : 580 - pageMargins[0] - pageMargins[2]; // Adjusted available width considering margins
+        const scaleFactor = availableWidth / tableWidth;
+
+        var docDefinition = {
+            content: [
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: columnWidths.map(width => width * scaleFactor),
+                        body: [
+                            columnNames.map(name => ({ text: name, style: 'tableHeader', alignment: cellAlignment(name) })),
+                            ...tableData.map(row => {
+                                return row.map((cell, index) => {
+                                    return index > 0 ? { text: cell, style: 'tableBody', alignment: cellAlignment(cell) } : { text: cell, style: 'tableIndex' };
+                                });
+                            })
+                        ]
+                    },
+                    layout: {
+                        hLineWidth: function (i, node) {
+                            return (i === 0 || i === node.table.body.length) ? 1 : 0.5;
+                        },
+                        vLineWidth: function (i, node) {
+                            return (i === 0 || i === node.table.widths.length) ? 1 : 0.5;
+                        },
+                        hLineColor: function (i, node) {
+                            return (i === 0 || i === node.table.body.length) ? '#333333' : '#CCCCCC';
+                        },
+                        vLineColor: function (i, node) {
+                            return (i === 0 || i === node.table.widths.length) ? '#333333' : '#CCCCCC';
+                        },
+                        paddingLeft: function (i, node) {
+                            return 2; // Reduced left padding
+                        },
+                        paddingRight: function (i, node) {
+                            return 2; // Reduced right padding
+                        },
+                        paddingTop: function (i, node) {
+                            return 1; // Reduced top padding
+                        },
+                        paddingBottom: function (i, node) {
+                            return 1; // Reduced bottom padding
+                        }
+                    }
+                }
+            ],
+            styles: {
+                header: {
+                    fontSize: 10, // Adjusted header font size
+                    fontFamily: 'Roboto',
+                    bold: true,
+                    margin: [0, 0, 0, 5] // Adjusted bottom margin for header
+                },
+                subheader: {
+                    fontSize: 8, // Adjusted subheader font size
+                    fontFamily: 'Roboto',
+                    margin: [0, 0, 0, 3] // Adjusted bottom margin for subheader
+                },
+                tableHeader: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto',
+                    bold: true,
+                    lineHeight: 1.2
+                },
+                tableBody: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto',
+                    lineHeight: 1.2
+                },
+                tableIndex: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto',
+                    alignment: 'center',
+                    lineHeight: 1.2
+                },
+                footerText: {
+                    fontSize: 7.5,
+                    fontFamily: 'Roboto'
+                }
+            },
+            defaultStyle: {
+                fontSize: 7.5,
+                font: 'Roboto'
+            },
+            pageSize: 'A4',
+            pageOrientation: pageOrientation,
+            pageMargins: pageMargins,
+            header: headerContent,
+            footer: function (currentPage, pageCount) {
+                var currentDate = new Date();
+                var dateString = currentDate.toDateString() + ", " + currentDate.toLocaleTimeString();
+                return {
+                    stack: [
+                        { text: 'Page ' + currentPage.toString() + ' of ' + pageCount, alignment: 'center' },
+                        { text: 'Printed on ' + dateString, alignment: 'center' }
+                    ]
+                };
+            }
+        };
+
+        var pdfDoc = pdfMake.createPdf(docDefinition);
+        pdfDoc.open();
+    }
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function capitalizeCaseWise(input) {
+        // Use jQuery to handle the capitalization
+        $(input).val(function(_, val) {
+            // Split the value into words
+            var words = val.split(/\s+/);
+            // Capitalize the first letter of each word
+            var capitalizedWords = words.map(function(word) {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            });
+            // Join the words back into a single string
+            return capitalizedWords.join(' ');
+        });
+    }
+</script>
+
+
+
+
+
+
+<!-- ================== BEGIN core-js ================== -->
+<script th:src="@{/assets/js/vendor.min.js}"></script>
+<script th:src="@{/assets/js/app.min.js}"></script>
+<script th:src="@{/assets/js/jquery.scannerdetection.js}"></script>
+<!-- ================== END core-js ================== -->
+
+<script th:src="@{/assets/plugins/select2/dist/js/select2.min.js}"></script>
+<script th:src="@{/assets/plugins/sweetalert/dist/sweetalert.min.js}"></script>
+<script th:src="@{/assets/plugins/gritter/js/jquery.gritter.js}"></script>
+
+<script th:src="@{/assets/custom/wnoty.js}"></script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

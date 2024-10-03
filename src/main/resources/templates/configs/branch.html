@@ -1,0 +1,191 @@
+
+<div th:fragment="branch" th:remove="tag">
+
+            <form  method="post" id="branchForm"  data-parsley-validate="true"   th:action="@{/branchMaster/save}"  class="rounded border">
+
+                <div class="card border-0 mb-4">
+                    <div class="card-header h6 mb-0 bg-none p-3">
+                        <i class="fa fa-diagram-project fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Configure Church Details
+                    </div>
+                    <div class="card-body">
+                        <div class="col-md-12">
+                            <div class="panel ">
+                                <div class="panel-heading bg-teal-100 text-white">
+                                    <div class="btn-group pull-right">
+                                        <button type="button" class="btn btn-warning btn-xs">Action</button>
+                                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+
+                                        </ul>
+                                    </div>
+                                    <h4 class="panel-title">Branch setup</h4>
+                                </div>
+
+                                <div class="panel-body">
+
+                                            <fieldset>
+                                                <legend class="pull-left width-full " style="font-size:12px;color: green;"><span>Branch Details:</span></legend>
+                                                <!-- begin row -->
+                                                <div class="row">
+
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Branch Name:</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" id="branchName" name="branchName"  placeholder="Branch Name" class="form-control input-sm"  required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Branch Leader:</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text"  name="branchLeader" placeholder="branchLeader" class="form-control input-sm"  required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Contact Details:</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text"  name="phone"  placeholder="Phone Number" class="form-control input-sm" required >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- end row -->
+                                                </div>
+
+
+                                                <div class="row">
+
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Open Date:</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="date"  name="openDate"   class="form-control datepicker"  placeholder="yyy-mm-dd"  required/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Location:</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text"   name="location"    class="form-control input-sm" placeholder="location" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-3 control-label">Main Church(?):</label>
+                                                            <div class="col-sm-9">
+
+
+                                                                <input type="checkbox" class="form-check-input" name="mainChurch">&nbsp;&nbsp;&nbsp;
+
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- end row -->
+                                                </div>
+
+                                            </fieldset>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="mailbox-content-footer d-flex align-items-center justify-content-end">
+                    <button type="submit" id="school-data" class="btn btn-default cancel  ps-40px pe-40px me-5px">Discard</button>
+                    <button type="submit" class="btn btn-primary ps-40px pe-40px">Update Details</button>
+                </div>
+
+            </form>
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#school-form').submit(function(event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+
+                // Serialize the form data
+                var formData = $(this).serialize();
+
+                // Submit the form data using AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        // Display a success notification
+                        $.gritter.add({
+                            title: 'Success',
+                            text: 'Form submitted successfully',
+                            class_name: 'gritter-success'
+                        });
+
+                        // Load the same form to see the changes
+                        loadFragment('/settings/system');
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error if the form submission fails
+                        $.gritter.add({
+                            title: 'Error',
+                            text: 'Form submission failed',
+                            class_name: 'gritter-error'
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            function showLogoThumbnail() {
+                var fileInput = document.getElementById('fileImage');
+                var thumbnail = document.getElementById('thumbnail');
+
+                fileInput.addEventListener('change', function() {
+                    var file = fileInput.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        thumbnail.src = e.target.result;
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            showLogoThumbnail();
+        });
+
+    </script>
+</div>
+
+
+
+
+

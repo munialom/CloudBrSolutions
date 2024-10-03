@@ -1,0 +1,787 @@
+<div th:fragment="student">
+    <div class="col-md-12">
+
+        <!-- BEGIN panel -->
+        <div class="panel text-black rounded border" data-sortable-id="index-6">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">Purchases Management</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+
+
+
+            <div class="panel-toolbar border rounded bg-white">
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="purchaseOrderNumber" class="form-label">Purchase Order Number:</label>
+                            <input type="text" class="form-control form-control-sm" id="purchaseOrderNumber" value="PO10001" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="purchaseDate" class="form-label">Date:</label>
+                            <div class="input-group date trxDate">
+                                <input type="text" id="purchaseDate" name="purchaseDate" class="form-control form-control-sm bg-light-200" readonly/>
+                                <span class="input-group-text input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="paymentTerms" class="form-label">Terms of Payment:</label>
+                            <select class="form-control form-control-sm" id="paymentTerms">
+                                <option value="cash" selected>Cash</option>
+                                <option value="credit">Credit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="storeId" class="form-label">Store:</label>
+                            <select class="form-control form-control-sm" id="storeId">
+                                <option value="" selected disabled>Select a store</option>
+                                <!-- Store options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="row g-2 align-items-center mt-1">
+                    <!-- Search Product -->
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa fa-barcode"></i></span>
+                            <input type="text" class="form-control" placeholder="Search Product..." id="search-pos">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col d-flex justify-content-end align-items-center">
+                        <a href="#" class="btn btn-success btn-sm me-2" id="savePurchaseOrderBtn"><i class="fas fa-save fa-lg me-1"></i>Save Record</a>
+                        <a href="#" onclick="loadFragment('/products/product-details')" class="btn btn-danger btn-sm me-2" id="viewBtn"><i class="fas fa-list-numeric fa-lg me-1"></i>View</a>
+                        <div class="dropdown">
+                            <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-lg"></i>
+                            </button>
+                            <!-- Dropdown menu structure -->
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item text-primary" href="#"><i class="fas fa-search fa-lg me-1"></i>Search Products</a></li>
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item text-success" href="#" data-bs-toggle="modal" data-bs-target="#productDetailsModal"><i class="fas fa-list fa-lg me-1"></i>Add Extra Details</a></li>
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item text-info" href="#"><i class="fas fa-balance-scale fa-lg me-1"></i>View Units of Measure</a></li>
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-tags fa-lg me-1"></i>View Brands</a></li>
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-receipt fa-lg me-1"></i>View Revenue Codes</a></li>
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item text-secondary" href="#"><i class="fas fa-percentage fa-lg me-1"></i>View Tax Categories</a></li>
+                                <hr class="dropdown-divider">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <hr class="divider mt-0">
+
+            <div class="panel-body mt-0">
+                <div id="stockControlPanelBulkUpdates">
+                </div>
+            </div>
+            <!-- END panel -->
+
+
+    </div>
+
+
+
+
+        
+
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#member-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+       <script>
+           // Function to update the purchase order number
+           function updatePurchaseOrderNumber() {
+               $.ajax({
+                   url: '/api-bulk/next-number',
+                   method: 'GET',
+                   dataType: 'text', // Changed to 'text' instead of 'json'
+                   success: function(data) {
+                       $('#purchaseOrderNumber').val(data.trim());
+                   },
+                   error: function(xhr, status, error) {
+                       console.error('Error fetching next purchase order number:', error);
+                       // Optionally, display an error message to the user
+                       // $('#errorMessage').text('Failed to update purchase order number. Please try again.');
+                   }
+               });
+           }
+
+           // Call the function when the document is ready
+           $(document).ready(function() {
+               updatePurchaseOrderNumber();
+           });
+
+
+
+       </script>
+
+        <script>
+
+            $(() => {
+                // Initialize date pickers
+                $('.trxDate').datepicker({
+                    format: 'dd/mm/yyyy',
+                    autoclose: true,
+                    todayHighlight: true
+                });
+
+                // Set the current date on page load
+                const currentDate = new Date();
+                const formattedDate = moment(currentDate).format('DD/MM/YYYY');
+                $('#purchaseDate').val(formattedDate).prop('readonly', true);
+            });
+        </script>
+
+<script>
+    (function() {
+        const showNotification = (type, message) => {
+            $.wnoty({
+                type,
+                message,
+                position: 'top-right'
+            });
+        };
+
+        const getSupplierIdFromSpan = () => {
+            const supplierSpan = $('span:contains("Supplier ID:")');
+            if (supplierSpan.length === 0) {
+                throw new Error('Supplier ID span not found');
+            }
+
+            const spanText = supplierSpan.text();
+            const match = spanText.match(/Supplier ID:\s*(\d+)/);
+
+            if (!match || !match[1]) {
+                throw new Error('Supplier ID not found in span');
+            }
+
+            return parseInt(match[1], 10);
+        };
+
+        const validateInputs = () => {
+            const requiredFields = ['#purchaseOrderNumber', '#purchaseDate', '#paymentTerms', '#storeId'];
+            const emptyFields = requiredFields.filter(field => !$(field).val());
+
+            if (emptyFields.length > 0) {
+                showNotification('error', 'All fields are required. Please fill in all inputs.');
+                return false;
+            }
+
+            return true;
+        };
+
+        const collectPurchaseOrderData = () => {
+            const purchaseDate = $('#purchaseDate').val();
+            const formattedDate = moment(purchaseDate, 'DD/MM/YYYY').isValid()
+                ? moment(purchaseDate, 'DD/MM/YYYY').format('YYYY-MM-DDTHH:mm:ss.SSS')
+                : null;
+
+            const items = [];
+            $('tbody tr').each(function() {
+                const $row = $(this);
+                if ($row.find('.rowCheckbox').prop('checked')) {
+                    const productId = $row.find('td:eq(1)').text();
+                    const productCode = $row.find('td:eq(2)').text();
+                    const quantity = $row.find('input[id^="quantity-to-order"]').val();
+                    const unitPrice = $row.find('input[id^="unit-price"]').val();
+
+                    if (quantity && unitPrice) {
+                        items.push({
+                            productId: parseInt(productId),
+                            productCode: productCode,
+                            quantity: parseInt(quantity),
+                            unitPrice: parseFloat(unitPrice)
+                        });
+                    }
+                }
+            });
+
+            return {
+                supplierId: getSupplierIdFromSpan(),
+                storeId: $('#storeId').val(),
+                purchaseOrderNumber: $('#purchaseOrderNumber').val(),
+                orderDate: formattedDate,
+                terms: $('#paymentTerms').val(),
+                items: items
+            };
+        };
+
+        const clearInputs = () => {
+            $('#purchaseOrderNumber').val('');
+            const currentDate = new Date();
+            const formattedDate = moment(currentDate).format('DD/MM/YYYY');
+            $('#purchaseDate').val(formattedDate);
+            $('#paymentTerms').val('cash');
+            $('#storeId').val(null).trigger('change');
+            $('input[type="checkbox"]').prop('checked', false);
+            $('.editable-input').val('');
+        };
+
+        const submitPurchaseOrder = async (purchaseOrderData) => {
+            try {
+                const response = await fetch('/api/purchase-orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(purchaseOrderData),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to save purchase order');
+                }
+
+                const result = await response.json();
+                showNotification('success', 'Purchase order created successfully');
+                clearInputs();
+                updatePurchaseOrderNumber();
+            } catch (error) {
+                console.error('Error saving purchase order:', error);
+                showNotification('error', error.message || 'Failed to save purchase order. Please try again.');
+            }
+        };
+
+        const initializeStoreSelect = () => {
+            $('#storeId').select2({
+                ajax: {
+                    url: '/api/stores/search',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            name: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(store => ({
+                                id: store.id,
+                                text: store.storeName,
+                                storeCode: store.storeCode,
+                                branchName: store.branchName,
+                                isMainStore: store.isMainStore
+                            }))
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Search for a store',
+                minimumInputLength: 1,
+                templateResult: formatStoreResult,
+                templateSelection: formatStoreSelection
+            });
+        };
+
+        const formatStoreResult = (store) => {
+            if (store.loading) {
+                return store.text;
+            }
+
+            const $container = $(
+                `<div class="select2-result-store clearfix">
+            <div class="select2-result-store__name">${store.text} (${store.storeCode})</div>
+            <div class="select2-result-store__branch">${store.branchName}</div>
+            ${store.isMainStore ? '<div class="select2-result-store__main">Main Store</div>' : ''}
+        </div>`
+            );
+
+            return $container;
+        };
+
+        const formatStoreSelection = (store) => {
+            return store.text || store.storeName;
+        };
+
+        // Event handler for save button
+        $('#savePurchaseOrderBtn').on('click', async (e) => {
+            e.preventDefault();
+
+            if (!validateInputs()) {
+                return;
+            }
+
+            try {
+                const purchaseOrderData = collectPurchaseOrderData();
+
+                if (!purchaseOrderData.orderDate) {
+                    throw new Error('Invalid date. Please enter a valid date.');
+                }
+
+                if (purchaseOrderData.items.length === 0) {
+                    throw new Error('No valid items selected. Please select at least one item and provide both quantity and unit price.');
+                }
+
+                await submitPurchaseOrder(purchaseOrderData);
+            } catch (error) {
+                showNotification('error', error.message);
+            }
+        });
+
+        // Initialize store search on document ready
+        $(document).ready(() => {
+            initializeStoreSelect();
+        });
+    })();
+</script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchStaffList() {
+                // Show the loading overlay
+
+
+                // Construct the URL with query parameters
+                var url = '/api-bulk/products-database';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+
+                      /*  $('#stockControlPanelBulkUpdates').html(response);*/
+                       purchaseOrders(response);
+
+
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                        // Hide the loading overlay
+
+                    }
+                });
+            }
+
+            fetchStaffList();
+        });
+    </script>
+
+
+
+
+
+<script>
+    const purchaseOrders = (data) => {
+        let itemsPerPage = 15;
+        let currentPage = 1;
+        let selectedRows = new Set();
+        let previousSearchQuery = "";
+        let inputValues = {};
+
+        const viewpoint = {
+            headers: ['Product ID', 'Product Code', 'Product Name', 'Category', 'Quantity to Order', 'Unit Price'],
+            editableFields: ['Quantity to Order', 'Unit Price']
+        };
+
+        const addCustomScrollbarStyle = () => {
+            if (!$("#custom-scrollbar-style").length) {
+                $("<style>")
+                    .attr("id", "custom-scrollbar-style")
+                    .prop("type", "text/css")
+                    .html(`
+                .table-container::-webkit-scrollbar { width: 8px; }
+                .table-container::-webkit-scrollbar-track { background: #f1f1f1; }
+                .table-container::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+                .table-container::-webkit-scrollbar-thumb:hover { background: #555; }
+            `)
+                    .appendTo("head");
+            }
+        };
+
+        const createTable = () => {
+            const tableContainer = $('<div class="table-container" style="max-height: 340px; overflow-y: auto;"/>');
+            const table = $('<table id="purchase-order-table" class="table table-striped table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered" style="font-size: 0.7rem;"/>');
+            const thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 2;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            const tbody = $('<tbody/>');
+            const tfoot = $("<tfoot></tfoot>").css({
+                "position": "sticky",
+                "bottom": 0,
+                "background-color": "#f8f9fa",
+                "z-index": 1
+            });
+
+            viewpoint.headers.forEach(header => {
+                thead.find('tr').append(`<th>${header}</th>`);
+            });
+
+            table.append(thead).append(tbody).append(tfoot);
+            tableContainer.append(table);
+            $('#stockControlPanelBulkUpdates').find('.table-container').remove();
+            $('#stockControlPanelBulkUpdates').append(tableContainer);
+            return tableContainer;
+        };
+
+        const handleSelectAll = () => {
+            $(document).on('change', '#selectAll', function () {
+                const isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                if (isChecked) {
+                    selectedRows = new Set(getAllRowIndices());
+                } else {
+                    selectedRows.clear();
+                }
+            });
+        };
+
+        const handleRowSelection = () => {
+            $(document).on('change', '.rowCheckbox', function () {
+                const rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.add(rowIndex);
+                } else {
+                    selectedRows.delete(rowIndex);
+                }
+                $('#selectAll').prop('checked', selectedRows.size === $('.rowCheckbox').length);
+            });
+        };
+
+        const getAllRowIndices = () => {
+            return Array.from($('.rowCheckbox')).map(element => $(element).closest('tr').data('original-index'));
+        };
+
+
+
+        const displayTableData = (filteredData) => {
+            const displayData = filteredData || data;
+            const totalItems = displayData.length;
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+            const itemsToShow = displayData.slice(startIndex, endIndex);
+
+            $('tbody').empty();
+            if (itemsToShow.length === 0) {
+                $('tbody').append(`<tr><td colspan="${viewpoint.headers.length + 2}" class="text-center">No Records</td></tr>`);
+            } else {
+                itemsToShow.forEach((item, index) => {
+                    const rowIndex = startIndex + index;
+                    const tr = $('<tr/>').data('original-index', rowIndex);
+                    const isChecked = selectedRows.has(rowIndex);
+                    tr.append(`<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ${isChecked ? 'checked' : ''} /></div></td>`);
+                    tr.append(`<td>${rowIndex + 1}</td>`);
+
+                    viewpoint.headers.forEach(header => {
+                        const productId = item['Product ID'];
+                        const inputId = `${header.toLowerCase().replace(/ /g, '-')}-${productId}`;
+                        let value = inputValues[inputId] || item[header] || '';
+
+                        if (header === 'Unit Price') {
+                            value = inputValues[inputId] || item['Cost Price'] || '';
+                        }
+
+                        if (viewpoint.editableFields.includes(header)) {
+                            const td = $('<td/>').html(`<input id="${inputId}" type="text" class="form-control form-control-sm editable-input" value="${value}" placeholder="0" style="font-size: 0.7rem;" />`);
+                            td.find('input').on('focus input', function() {
+                                updateRowSelection($(this));
+                                inputValues[$(this).attr('id')] = $(this).val();
+                            });
+                            tr.append(td);
+                        } else {
+                            tr.append($('<td/>').text(value));
+                        }
+                    });
+
+                    $('tbody').append(tr);
+                });
+            }
+
+            updatePaginationInfo(totalItems, startIndex, endIndex);
+            updatePurchaseSummary();
+        };
+
+        const createPagination = (totalItems) => {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const footerRow = $("<tr></tr>");
+            const footerCell = $("<td></td>").attr("colspan", viewpoint.headers.length + 2);
+            const paginationControls = $('<div class="d-flex justify-content-between align-items-center"/>');
+
+            // Left controls
+            const leftControls = $('<div class="d-flex align-items-center"/>');
+            leftControls.append(`
+            <select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px; font-size: 0.7rem;">
+                <option value="15">15</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">All</option>
+            </select>
+        `);
+            leftControls.append(`<span>Total: ${totalItems} items</span>`);
+
+            // Center controls
+            const centerControls = $('<div class="d-flex justify-content-center flex-grow-1"/>');
+            centerControls.append('<button class="btn btn-sm btn-outline-primary mx-1" id="prevPage" style="font-size: 0.7rem;">Previous</button>');
+            centerControls.append('<span id="paginationInfo" style="margin: 0 10px; font-size: 0.7rem;"></span>');
+            centerControls.append('<button class="btn btn-sm btn-outline-primary mx-1" id="nextPage" style="font-size: 0.7rem;">Next</button>');
+
+            // Right controls
+            const rightControls = $('<div/>');
+            rightControls.append('<span>Page <span id="currentPage"></span> of <span id="totalPages"></span></span>');
+
+            paginationControls.append(leftControls).append(centerControls).append(rightControls);
+            footerCell.append(paginationControls);
+            footerRow.append(footerCell);
+
+            // Add purchase summary row
+            const summaryRow = $("<tr></tr>");
+            const summaryCell = $("<td></td>").attr("colspan", viewpoint.headers.length + 2);
+            const summaryContent = $('<div class="d-flex justify-content-between align-items-center" style="font-size: 0.7rem;"/>');
+            summaryContent.append('<span>Items: <span id="totalItems">0(0)</span></span>');
+            summaryContent.append('<span>Total: <span id="totalAmount">0.00</span></span>');
+            summaryContent.append('<span>Order Tax: <span id="orderTax">0.00</span></span>');
+            summaryContent.append('<span>Order Discount: <span id="orderDiscount">0.00</span></span>');
+            summaryContent.append('<span>Shipping Cost: <span id="shippingCost">0.00</span></span>');
+            summaryContent.append('<span>Grand Total: <span id="grandTotal">0.00</span></span>');
+            summaryCell.append(summaryContent);
+            summaryRow.append(summaryCell);
+
+            $('tfoot').html(footerRow).append(summaryRow);
+
+            $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                currentPage = 1;
+                displayTableData();
+            });
+
+            $('#prevPage').on('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTableData();
+                }
+            });
+
+            $('#nextPage').on('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTableData();
+                }
+            });
+        };
+
+        const updatePaginationInfo = (totalItems, startIndex, endIndex) => {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            $('#currentPage').text(currentPage);
+            $('#totalPages').text(totalPages);
+            $('#paginationInfo').text(`${startIndex + 1} - ${endIndex} of ${totalItems}`);
+            $('#selectAll').prop('checked', selectedRows.size === $('.rowCheckbox').length);
+            $('#prevPage').prop('disabled', currentPage === 1);
+            $('#nextPage').prop('disabled', currentPage === totalPages);
+        };
+
+        const updateRowSelection = (input) => {
+            const checkbox = input.closest('tr').find('.rowCheckbox');
+            checkbox.prop('checked', true);
+            const rowIndex = input.closest('tr').data('original-index');
+            selectedRows.add(rowIndex);
+        };
+
+        const updatePurchaseSummary = () => {
+            let total = 0;
+            let itemCount = 0;
+            $('.editable-input').each(function() {
+                const quantity = parseFloat($(this).closest('tr').find('input[id^="quantity-to-order"]').val()) || 0;
+                const price = parseFloat($(this).closest('tr').find('input[id^="unit-price"]').val()) || 0;
+                total += quantity * price;
+                itemCount += quantity;
+            });
+
+            const orderTax = 0; // This should be calculated based on your tax rules
+            const orderDiscount = parseFloat($('#orderDiscount').text()) || 0;
+            const shippingCost = parseFloat($('#shippingCost').text()) || 0;
+            const grandTotal = total + orderTax - orderDiscount + shippingCost;
+
+            $('#totalItems').text(`${itemCount}(${$('.editable-input').length / 2})`);
+            $('#totalAmount').text(total.toFixed(2));
+            $('#orderTax').text(orderTax.toFixed(2));
+            $('#grandTotal').text(grandTotal.toFixed(2));
+        };
+
+        const handleSearch = () => {
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                const filteredData = data.filter(item =>
+                    Object.values(item).some(value =>
+                        value.toString().toLowerCase().includes(previousSearchQuery)
+                    )
+                );
+                currentPage = 1;
+                displayTableData(filteredData);
+                createPagination(filteredData.length);
+            });
+        };
+
+        const setupArrowNavigation = () => {
+            $(document).on('keydown', '.editable-input', function(e) {
+                const currentInput = $(this);
+                const currentRow = currentInput.closest('tr');
+                const currentIndex = currentRow.find('.editable-input').index(currentInput);
+
+                switch(e.which) {
+                    case 38: // up arrow
+                        const prevRow = currentRow.prev();
+                        if (prevRow.length) {
+                            prevRow.find('.editable-input').eq(currentIndex).focus();
+                        }
+                        break;
+                    case 40: // down arrow
+                        const nextRow = currentRow.next();
+                        if (nextRow.length) {
+                            nextRow.find('.editable-input').eq(currentIndex).focus();
+                        }
+                        break;
+                    case 37: // left arrow
+                        currentInput.prev('.editable-input').focus();
+                        break;
+                    case 39: // right arrow
+                        currentInput.next('.editable-input').focus();
+                        break;
+                }
+            });
+        };
+
+        const init = () => {
+            addCustomScrollbarStyle();
+            createTable();
+            handleSelectAll();
+            handleRowSelection();
+            displayTableData();
+            createPagination(data.length);
+            handleSearch();
+            setupArrowNavigation();
+        };
+
+        init();
+    };
+</script>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $("#stationId").select2({
+                ajax: {
+                    url: "/api/branches/branches-list",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id + ' - ' + obj.branchName,
+                                    branchId: obj.id // add the branchId to the option
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 1
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $("#supplierId").select2({
+                ajax: {
+                    url: "/api/suppliers/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id + ' - ' + obj.creditorName,
+                                    supplierId: obj.id // add the supplierId to the option
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 1
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+

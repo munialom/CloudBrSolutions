@@ -1,0 +1,711 @@
+<div th:fragment="student">
+    <div class="col-md-12">
+
+        <!-- BEGIN panel -->
+        <div class="panel text-black rounded border" data-sortable-id="index-6">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">Product Management</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+            <div class="panel-toolbar">
+
+
+               <!--     <div class="row mb-1">
+                        <div class="d-flex align-items-center justify-content-between">
+                            &lt;!&ndash; Search input container &ndash;&gt;
+                            <div class="flex-grow-1 me-2" style="flex-basis: 35%;">
+                                <div class="input-group position-relative">
+                                    <div class="input-group-text bg-none border-0" style="z-index: 1; position: absolute; top: 50%; transform: translateY(-50%); left: 10px;">
+                                        <i class="fa fa-barcode"></i>
+                                    </div>
+                                    <input type="text" class="form-control ps-5 bg-light" placeholder="Search Product By Name By Code..." id="search-pos" />
+                                    <div id="search-salary-components-td" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                                </div>
+                            </div>
+
+                            &lt;!&ndash; Dropdown and Radio buttons container &ndash;&gt;
+                            <div class="d-flex align-items-center me-2" style="flex-basis: 45%;">
+
+
+                                &lt;!&ndash; Radio Buttons &ndash;&gt;
+                                <div class="form-check form-check-inline me-2">
+                                    <input class="form-check-input" type="radio" name="filterOptions" id="changePrice" value="option1">
+                                    <label class="form-check-label" for="changePrice" style="white-space: nowrap;">Adjust Price</label>
+                                </div>
+
+                            </div>
+
+                            &lt;!&ndash; Button group container &ndash;&gt;
+                            <div class="d-flex">
+                                <a href="#" class="btn btn-danger btn-sm me-1" id="savePriceChangesBtn">
+                                    <i class="fas fa-save fa-lg me-1"></i>Update Prices
+                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v fa-lg"></i>
+                                    </button>
+                                    &lt;!&ndash; Dropdown menu structure &ndash;&gt;
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item open-member-list-modal text-primary" href="#" data-bs-toggle="modal" data-bs-target="#patientListModal">
+                                            <i class="fas fa-download fa-lg me-1"></i>Import Items</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-success" href="#"><i class="fas fa-upload fa-lg me-1"></i>Export Items</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-info" href="#"><i class="fas fa-eye fa-lg me-1"></i>Export Current View</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-cog fa-lg me-1"></i>Preferences</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sync fa-lg me-1"></i>Refresh List</a></li>
+                                        <hr class="dropdown-divider">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>-->
+                <div class="row mb-1">
+                    <div class="d-flex align-items-center justify-content-between w-100">
+                        <!-- Search input container -->
+                        <div class="flex-grow-1 me-2" style="max-width: 80%;">
+                            <div class="input-group position-relative">
+                                <div class="input-group-text bg-none border-0" style="z-index: 1; position: absolute; top: 50%; transform: translateY(-50%); left: 10px;">
+                                    <i class="fa fa-barcode"></i>
+                                </div>
+                                <input type="text" class="form-control ps-5 bg-light" placeholder="Search Product By Name By Code..." id="search-pos" />
+                                <div id="search-salary-components-td" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Radio button -->
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="checkbox" id="changePrice">
+                            <label class="form-check-label" for="changePrice">Adjust Price</label>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-danger btn-sm me-1" id="savePriceChangesBtn">
+                                <i class="fas fa-save me-1"></i>Update Prices
+                            </button>
+                            <button class="btn btn-info btn-sm" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                <li><a class="dropdown-item text-primary" href="#"><i class="fas fa-download me-1"></i>Import Items</a></li>
+                                <li><a class="dropdown-item text-success" href="#"><i class="fas fa-upload me-1"></i>Export Items</a></li>
+                                <li><a class="dropdown-item text-info" href="#"><i class="fas fa-eye me-1"></i>Export Current View</a></li>
+                                <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-cog me-1"></i>Preferences</a></li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sync me-1"></i>Refresh List</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <hr class="divider mt-0">
+            <div class="panel-body mt-0">
+
+                <div id="stockControlPanelBulkUpdates">
+
+                </div>
+
+            </div>
+            <!-- END panel -->
+
+        </div>
+
+
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#member-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchStaffList() {
+                // Show the loading overlay
+
+
+                // Construct the URL with query parameters
+                var url = '/api-bulk/products-database';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+
+                      /*  $('#stockControlPanelBulkUpdates').html(response);*/
+                      productPriceManager(response);
+
+
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                        // Hide the loading overlay
+
+                    }
+                });
+            }
+
+            fetchStaffList();
+        });
+    </script>
+
+
+
+
+   <!-- <script>
+        function productPriceManager(data) {
+            var itemsPerPage = 15;
+            var currentPage = 1;
+            var selectedRows = [];
+            var pricingEditable = false;
+            var previousSearchQuery = "";
+            var editedPrices = {};
+
+            // Create the table and pagination controls
+            var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Build table headers
+            for (var key in data[0]) {
+                thead.find('tr').append('<th>' + key + '</th>');
+            }
+            thead.find('tr').append('<th>Actions</th>');
+            table.append(thead);
+            table.append(tbody);
+
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+            $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+            // Select all functionality
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                selectedRows = isChecked ? getAllRowIndices() : [];
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.push(rowIndex);
+                } else {
+                    selectedRows = selectedRows.filter(function (index) {
+                        return index !== rowIndex;
+                    });
+                }
+                var allChecked = selectedRows.length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            function getAllRowIndices() {
+                return $('.rowCheckbox').map(function (index, element) {
+                    return $(element).closest('tr').data('original-index');
+                }).toArray();
+            }
+
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+                $('#stockControlPanelBulkUpdates').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage&#45;&#45;;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>').data('original-index', startIndex + i);
+                        var rowIndex = startIndex + i;
+                        var isChecked = selectedRows.includes(rowIndex);
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                        tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                        // Unique Product ID Column (Column index 2)
+                        var productId = itemsToShow[i]['Product ID'];
+                        var costPriceKey = productId + '-CostPrice';
+                        var sellingPriceKey = productId + '-SellingPrice';
+
+                        for (var key in itemsToShow[i]) {
+                            var value = itemsToShow[i][key];
+                            var td = $('<td/>');
+                            if (key === 'Cost Price' || key === 'Selling Price') {
+                                var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                                var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                                var inputId = key === 'Cost Price' ? 'cost-price-' + productId : 'selling-price-' + productId;
+                                if (pricingEditable) {
+                                    td.html('<input id="' + inputId + '" type="text" class="form-control form-control-sm" value="' + inputValue + '" />');
+                                    td.find('input').on('focus', function () {
+                                        $(this).select();
+                                        $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                                        var focusedRowIndex = $(this).closest('tr').data('original-index');
+                                        if (!selectedRows.includes(focusedRowIndex)) {
+                                            selectedRows.push(focusedRowIndex);
+                                        }
+                                        var productNameTd = $(this).closest('tr').find('td').eq(4);
+                                        if (!productNameTd.find('span.text-danger').length) {
+                                            productNameTd.append(' <span class="text-danger">Price Changes</span>');
+                                        }
+                                    });
+                                    td.find('input').on('input', function () {
+                                        var newValue = $(this).val();
+                                        var inputId = $(this).attr('id');
+                                        var row = $(this).closest('tr').data('original-index');
+                                        var productId = itemsToShow[row]['Product ID'];
+                                        var priceKey = inputId.includes('cost-price') ? productId + '-CostPrice' : productId + '-SellingPrice';
+                                        editedPrices[priceKey] = newValue;
+                                    });
+                                } else {
+                                    td.text(inputValue);
+                                }
+                            } else {
+                                td.text(value);
+                            }
+                            tr.append(td);
+                        }
+
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            displayTableData();
+            createPagination(data.length);
+
+            // Handle Search
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(previousSearchQuery);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+
+            // Handle Pricing Edit Toggle
+            $('#changePrice').on('change', function () {
+                pricingEditable = $(this).prop('checked');
+                displayTableData();
+            });
+
+            // Handle Actions
+            $(document).on('click', '.btn-info', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Edit row: ' + (rowIndex + 1));
+            });
+
+            $(document).on('click', '.btn-danger', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Delete row: ' + (rowIndex + 1));
+            });
+        }
+    </script>-->
+
+
+
+
+    <script>
+        function productPriceManager(data) {
+            var itemsPerPage = 15;
+            var currentPage = 1;
+            var selectedRows = [];
+            var pricingEditable = false;
+            var previousSearchQuery = "";
+            var editedPrices = {};
+
+            // Create the table and pagination controls
+            var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Build table headers
+            for (var key in data[0]) {
+                thead.find('tr').append('<th>' + key + '</th>');
+            }
+            thead.find('tr').append('<th>Actions</th>');
+            table.append(thead);
+            table.append(tbody);
+
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+            $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+            // Select all functionality
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                selectedRows = isChecked ? getAllRowIndices() : [];
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.push(rowIndex);
+                } else {
+                    selectedRows = selectedRows.filter(function (index) {
+                        return index !== rowIndex;
+                    });
+                }
+                var allChecked = selectedRows.length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            function getAllRowIndices() {
+                return $('.rowCheckbox').map(function (index, element) {
+                    return $(element).closest('tr').data('original-index');
+                }).toArray();
+            }
+
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+                $('#stockControlPanelBulkUpdates').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>').data('original-index', startIndex + i);
+                        var rowIndex = startIndex + i;
+                        var isChecked = selectedRows.includes(rowIndex);
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                        tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                        var productId = itemsToShow[i]['Product ID'];
+                        var costPriceKey = productId + '-CostPrice';
+                        var sellingPriceKey = productId + '-SellingPrice';
+
+                        for (var key in itemsToShow[i]) {
+                            var value = itemsToShow[i][key];
+                            var td = $('<td/>');
+                            if (key === 'Cost Price' || key === 'Selling Price') {
+                                var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                                var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                                var inputId = key === 'Cost Price' ? 'cost-price-' + productId : 'selling-price-' + productId;
+                                if (pricingEditable) {
+                                    td.html('<input id="' + inputId + '" type="text" class="form-control form-control-sm price-input" value="' + inputValue + '" />');
+                                    td.find('input').on('focus', function () {
+                                        $(this).select();
+                                        $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                                        var focusedRowIndex = $(this).closest('tr').data('original-index');
+                                        if (!selectedRows.includes(focusedRowIndex)) {
+                                            selectedRows.push(focusedRowIndex);
+                                        }
+                                        var productNameTd = $(this).closest('tr').find('td').eq(4);
+                                        if (!productNameTd.find('span.text-danger').length) {
+                                            productNameTd.append(' <span class="text-danger">Price Changes</span>');
+                                        }
+                                    });
+                                    td.find('input').on('input', function () {
+                                        var newValue = $(this).val();
+                                        var inputId = $(this).attr('id');
+                                        var row = $(this).closest('tr').data('original-index');
+                                        var productId = itemsToShow[row]['Product ID'];
+                                        var priceKey = inputId.includes('cost-price') ? productId + '-CostPrice' : productId + '-SellingPrice';
+                                        editedPrices[priceKey] = newValue;
+                                    });
+                                    td.find('input').on('keydown', function(e) {
+                                        var currentInput = $(this);
+                                        var currentTd = currentInput.closest('td');
+                                        var currentTr = currentInput.closest('tr');
+                                        var isPrevious = e.which === 38; // Up arrow
+                                        var isNext = e.which === 40; // Down arrow
+
+                                        if (isPrevious || isNext) {
+                                            e.preventDefault();
+                                            var targetTr = isPrevious ? currentTr.prev() : currentTr.next();
+                                            if (targetTr.length) {
+                                                var targetInput = targetTr.find('td:nth-child(' + (currentTd.index() + 1) + ') input');
+                                                if (targetInput.length) {
+                                                    targetInput.focus();
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    td.text(inputValue);
+                                }
+                            } else {
+                                td.text(value);
+                            }
+                            tr.append(td);
+                        }
+
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            displayTableData();
+            createPagination(data.length);
+
+            // Handle Search
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(previousSearchQuery);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+
+            // Handle Pricing Edit Toggle
+            $('#changePrice').on('change', function () {
+                pricingEditable = $(this).prop('checked');
+                displayTableData();
+            });
+
+            // Handle Actions
+            $(document).on('click', '.btn-info', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Edit row: ' + (rowIndex + 1));
+            });
+
+            $(document).on('click', '.btn-danger mydx', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Delete row: ' + (rowIndex + 1));
+            });
+        }
+    </script>
+
+
+
+
+
+
+
+    <script>
+        function savePriceChanges() {
+            // Show loading overlay
+            $('#loading-overlay').show();
+
+            // Initialize the price update data
+            var priceUpdates = [];
+
+            // Iterate through selected rows
+            $('.rowCheckbox:checked').each(function() {
+                var row = $(this).closest('tr');
+                var productCode = row.find('td:eq(3)').text().trim();
+                var productName = row.find('td:eq(4)').text();
+                var buyPrice = parseFloat(row.find('input[id^="cost-price-"]').val() || row.find('td:eq(9)').text());
+                var salePrice = parseFloat(row.find('input[id^="selling-price-"]').val() || row.find('td:eq(10)').text());
+
+                priceUpdates.push({
+                    productCode: productCode,
+                    productName: productName,
+                    buyPrice: buyPrice,
+                    salePrice: salePrice
+                });
+            });
+
+            // Prepare the data to be sent
+            var priceUpdateDTO = {
+                openingStocks: priceUpdates
+            };
+
+            // Console log the DTO
+            console.log('Price Update DTO:', priceUpdateDTO);
+
+            // Validate the data
+            if (priceUpdates.length === 0) {
+                $('#loading-overlay').hide();
+                $.wnoty({
+                    type: 'error',
+                    message: 'Please select at least one product to update prices.',
+                    position: 'top-right'
+                });
+                return;
+            }
+
+            // Send the data to the server
+            $.ajax({
+                url: '/api/stocks/prices',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(priceUpdateDTO),
+                success: function(response) {
+                    $('#loading-overlay').hide();
+                    $.wnoty({
+                        type: 'success',
+                        message: 'Prices updated successfully',
+                        position: 'top-right'
+                    });
+                    refreshTable();
+                },
+                error: function(xhr, status, error) {
+                    $('#loading-overlay').hide();
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Error updating prices: ' + xhr.responseText,
+                        position: 'top-right'
+                    });
+                }
+            });
+        }
+
+        function refreshTable() {
+            // Reset selections and refresh the table
+            $('.rowCheckbox').prop('checked', false);
+            $('#selectAll').prop('checked', false);
+            selectedRows = [];
+            editedPrices = {};
+            currentPage = 1;
+            fetchStaffList();  // Make sure this function is defined to refresh your table
+        }
+
+        // Attach the savePriceChanges function to a button click event
+        $('#savePriceChangesBtn').on('click', savePriceChanges);
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+

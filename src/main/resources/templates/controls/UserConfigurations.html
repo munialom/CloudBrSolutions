@@ -1,0 +1,29 @@
+<div th:fragment="cp">
+
+    <div class="app-content-padding px-4 py-3">
+        <div class="d-lg-flex mb-lg-3 mb-2">
+            <h1 class="page-header mb-0 flex-1">
+                <i class="fa fa-folder-plus fa-lg fa-fw me-2" style="color:#2de0a7;"></i>
+                System User & Access Controls:
+            </h1>
+            <h1 class="alert alert-danger page-header mb-0 flex-1" role="alert" style="display: none; font-size: xx-small"></h1>
+            <span class="d-none d-lg-flex align-items-center">
+
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop"  class="btn btn-secondary btn-sm d-flex me-2 pe-3 rounded-3">
+							<span class="iconify fs-18px me-2 ms-n1" data-icon="solar:eye-bold-duotone"></span>
+							Add New Department
+						</a>
+
+                        <a href="#"  onclick="loadFragment('/payroll-setup/update-pay-grades')"  class="btn btn-secondary btn-sm d-flex me-2 pe-3 rounded-3">
+							<span class="iconify fs-18px me-2 ms-n1" data-icon="solar:plus-minus-bold-duotone"></span>
+							Bulk Edit
+						</a>
+					</span>
+        </div>
+
+    </div>
+
+
+
+
+</div>

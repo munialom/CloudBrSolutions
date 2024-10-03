@@ -1,0 +1,213 @@
+<div th:fragment="members">
+
+
+    <style type="text/css">
+        /* Set flex for file-manager-container */
+        .file-manager-container {
+            display: flex;
+            height: auto;
+        }
+
+
+        /* Style file-manager-content */
+        .file-manager-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .vertical-divider {
+            border-left: 1px solid #ccc; /* Adjust the border style as needed */
+            height: auto; /* Adjust the height of the divider as needed */
+            margin: 0 10px; /* Adjust the margin to control spacing */
+        }
+
+
+
+
+    </style>
+
+    <!-- BEGIN #content -->
+    <div  class=" d-flex flex-column">
+
+
+        <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden rounded border">
+
+            <div class="panel-body p-0 flex-1 overflow-hidden">
+                <div class="file-manager h-100" id="fileManager">
+
+                    <div class="file-manager-toolbar ">
+                        <ul class="nav nav-tabs nav-tabs-v2 px-3">
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2 active" data-bs-toggle="tab" id="order-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:add-folder-bold-duotone"></span>
+                                    Create Payment Request
+                                </a>
+                            </li>
+
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="pending-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:list-arrow-down-bold-duotone"></span>
+                                    Pending Payment Request
+                                </a>
+                            </li>
+
+
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="approved-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:list-check-bold-duotone"></span>
+                                    Approved Payments
+                                </a>
+                            </li>
+
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="decline-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:list-cross-minimalistic-bold-duotone"></span>
+                                    Declined Payments
+                                </a>
+                            </li>
+
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="unfilled-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:lock-password-unlocked-bold-duotone"></span>
+                                    Process Payments
+                                </a>
+                            </li>
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="paid-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:inbox-line-bold-duotone"></span>
+                                    Paid
+                                </a>
+                            </li>
+
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="unpaid-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:letter-opened-bold-duotone"></span>
+                                    Unpaid
+                                </a>
+                            </li>
+                            <li class="nav-item me-2">
+                                <a class="nav-link px-2" data-bs-toggle="tab" id="closed-form">
+                                    <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:lock-password-bold-duotone"></span>
+                                    Closed
+                                </a>
+                            </li>
+                        </ul>
+
+
+                    </div>
+
+                    <div class="file-manager-container rounded border" style="height: auto;">
+
+                        <div class="file-manager-content d-flex flex-column">
+
+
+                            <div class="d-flex justify-content-between mb-0 text-nowrap p-2 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <div class="mx-n1">
+                                        <span class="iconify fa-3x text-green-500" data-icon="solar:user-circle-bold-duotone"></span>
+                                    </div>
+                                    <div class="flex-1 ps-3 small">
+                                        <div class="fw-bold" id="customer-name">Walking-Customer</div>
+                                        <div class="fw-bold text-body text-opacity-75">
+
+                                            <span id="customer-id" class="display" style="display: none;">1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="vertical-divider"></div>
+                                <div class="container" id="controlPanel">
+
+                                </div>
+
+
+                            </div>
+
+                            <div class="flex-1 overflow-hidden">
+                                <div data-scrollbar="true" data-skip-mobile="true" data-height="100%" class="p-0" id="stockControlPanel">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END #content -->
+<!--    <script>
+
+
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchData() {
+                // Construct the URL with query parameters
+                var url = '/orders/new-order';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        // Update the content of the auto-filter-mem-data element with the fetched data
+                        $('#stockControlPanel').html(response);
+
+                        loadControlFragment('/suppliers/controls');
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            }
+
+            // Function to handle button click
+            $('#order-form').click(function(event) {
+                event.preventDefault(); // Prevent the default behavior of the button click
+
+                fetchData();
+            });
+            fetchData();
+
+        });
+
+
+    </script>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function loadControlFragment(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#controlPanel').html(data);
+                },
+                error: function() {
+                    console.log('Error loading fragment');
+                }
+            });
+        }
+
+    </script>
+
+
+
+</div>
+
+
+
+
+
+
+

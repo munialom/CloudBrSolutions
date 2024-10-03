@@ -1,0 +1,29 @@
+<div th:fragment="bankData">
+
+
+
+    <div class="table-responsive table-bordered">
+
+        <table class="table table-condensed  table-striped table-bordered records">
+            <thead>
+
+            <tr>
+                <th>AccountID</th>
+                <th>AccountName</th>
+                <th>Account Number</th>
+                <th>Bank Name</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            <tr th:each="acc: ${bankAccounts}">
+                <td th:text="${acc.id}"></td>
+                <td th:text="${acc.accountName}"></td>
+                <td th:text="${acc.accountNumber}"></td>
+                <td th:text="${acc.bankName}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

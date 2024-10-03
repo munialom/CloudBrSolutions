@@ -1,0 +1,714 @@
+<div th:fragment="members">
+
+    <style type="text/css">
+
+
+        /* Set flexbox for the pos-container */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+        /* Set flex for pos-content */
+        .pos-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Style pos-content-container */
+        .pos-content-container {
+            flex: 1;
+            padding: 10px;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+            min-width: 300px; /* Changed to min-width to allow flexibility */
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* overflow-y: auto;*/
+         position: sticky;
+         top: 0;
+         height: auto;
+         display: flex;
+         flex-direction: column;
+
+     }
+</style>
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden">
+
+        <div class="panel-body p-2 flex-1 overflow-hidden">
+
+            <div class="pos-container">
+
+
+                <!-- pos-content -->
+                <div class="pos-content">
+                 <div class="col-md-9">
+                    <!-- pos-content-container -->
+                    <div class="pos-content-container">
+                        <div class="pos-table-row">
+                            <!-- Add your table rows here -->
+
+
+                            <!-- BEGIN input-group -->
+                            <div class="input-group mb-3" style="margin-top: 0;">
+                                <button class="btn btn-black dropdown-toggle" type="button" data-bs-toggle="dropdown"><span class="d-none d-md-inline">Search Products</span><span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span> <b class="caret"></b></button>
+
+                                <div class="flex-fill position-relative">
+                                    <div class="input-group">
+                                        <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1;">
+                                            <i class="fa fa-barcode opacity-100"></i>
+                                        </div>
+                                        <input type="text" class="form-control px-35px bg-light" placeholder="Search products..." id="search-pos" />
+                                        <div id="productTableContainer-pos" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- END input-group -->
+
+
+
+                            <!-- BEGIN panel -->
+                            <div class="panel rounded border" data-sortable-id="ui-widget-16">
+                                <div class="panel-heading bg-default-700 text-white">
+
+                                    <div class="panel-heading-btn">
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="panel-body">
+                                    <!-- BEGIN table -->
+                                    <div class="table-responsive mb-3">
+                                        <table class="table table-hover table-bordered table-sm table-striped text-nowrap  mb-0 rounded border bg-gradient " id="selectedProducts-pos" >
+                                            <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>UnitCost</th>
+                                                <th>UnitTax</th>
+                                                <th>Discount</th>
+                                                <th>NetTax</th>
+                                                <th>SubTotal</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+
+                                        </table>
+
+                                        <fieldset class="border p-2">
+
+                                            <div class="mailbox-content-footer">
+
+
+
+
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <!-- END table -->
+                                </div>
+
+                            </div>
+                            <!-- END panel -->
+
+                        </div>
+
+                    </div>
+                    <!-- END pos-content-container -->
+                 </div>
+                    <!-- pos-sidebar -->
+                    <div class="col-md-3">
+
+                    <div class="pos-sidebar bg-gradient">
+
+                        <div class="pos-sidebar-body" >
+
+                            <div class="card rounded border">
+                                <div class="card-header h6 mb-0 bg-none p-3">
+                                    <i class="fab fa-cc-amazon-pay fa-lg fa-fw text-black-500  me-1"></i>Payment Summary
+                                </div>
+                                <div class="card-body">
+                                    <div class="note text-dark" style="height: auto;">
+                                        <div class="note-icon"><i class="fab fa-cc-amazon-pay"></i></div>
+                                        <div class="note-content">
+
+                                            <div class="stats-info">
+
+                                                <h3 class="text-center" id="totalAmount"><b>0.00</b></h3>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="pos-sidebar-footer" style="padding: 5px; border-top: 1px solid #e5e5e5;">
+
+                            <div class="card rounded border">
+                                <div class="card-header bg-none p-3 h6 m-0 d-flex align-items-center">
+                                    <i class="fa fa-credit-card fa-lg me-2 text-black-500"></i>
+                                    Payment Records
+                                    <a href="#" class="ms-auto text-decoration-none text-black-500"><i class="fab fa-paypal me-1 fa-lg"></i> View paypal records</a>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-borderless table-sm fw-bold m-0">
+                                        <tbody>
+                                        <tr>
+                                            <td class="w-150px">Subtotal</td>
+                                            <td>3 items</td>
+                                            <td class="text-end" id="subtotal"><b>0.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tax</td>
+                                            <td>VAT 16%</td>
+                                            <td class="text-end" id="tax"><b>0.00</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Discount</td>
+                                            <td>FLT 5%</td>
+                                            <td class="text-end" id="discount"><b>0.00</b></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="pb-2" colspan="2"><b>Change</b></td>
+                                            <td class="text-end pb-2 text-decoration-underline" id="change"><b>0.00</b></td>
+                                        </tr>
+
+                                        <tr>
+                                            <div class="alert alert-info" role="alert" style="display: none;">
+                                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                Saving Sales Transaction...
+                                            </div>
+
+                                            <div class="alert alert-success" role="alert" style="display: none;">
+                                                <span class="me-2" role="status" aria-hidden="true"></span>
+                                                <span class="students-count"></span>Sale Transaction Saved successfully.
+                                            </div>
+                                            <div class="alert alert-danger" role="alert" style="display: none;">
+                                                <span class="me-2" role="status" aria-hidden="true"></span>
+                                                <span class="students-count"></span>Sale Transaction Saving Failed.
+                                            </div>
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer bg-none d-flex p-3">
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <a href="#" class="btn btn-danger ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                <i class="fab fa-paypal d-block fs-18px my-1"></i>
+                                                CANCEL
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="#" id="saleClose" class="btn btn-success ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                <i class="fab fa-cc-visa d-block fs-18px my-1"></i>
+                                                CREATE QUOTE
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    </div>
+
+
+                    <!-- END pos-sidebar -->
+
+                </div>
+                <!-- END pos-content -->
+
+            </div>
+
+            </div>
+    </div>
+
+
+
+        <script>
+            $(document).ready(function() {
+                $("#v-search").select2({
+                    ajax: {
+                        url: "/search-customers/api",
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                keyword: params.term
+                            };
+                        },
+                        processResults: function(data) {
+                            console.log(data);
+                            return {
+                                results: $.map(data, function(obj) {
+                                    return {
+                                        id: obj.custid,
+                                        value: obj.custid,
+                                        text: obj.custid + ' - ' + obj.customername,
+                                        studentId: obj.custid // add the studentId to the option
+                                    };
+                                })
+                            };
+                        }
+                    },
+                    minimumInputLength: 3
+                });
+                // Add an event listener for when an option is selected
+                $("#v-search").on("select2:select", function (e) {
+                    var selectedOption = e.params.data;
+                    var customerName = selectedOption.text.split(' - ')[1]; // Extract customer name
+                    var customerId = selectedOption.text.split(' - ')[0]; // Extract customer name
+                    $("#customer-name").text(customerName);
+                    $("#customer-id").text(customerId);// Update the span element
+                });
+
+            });
+        </script>
+
+
+
+
+
+        <script>
+            $(document).ready(function() {
+                let isSubmitting = false;
+
+                $("#saleClose").on("click", function(e) {
+                    e.preventDefault();
+
+                    if (isSubmitting) {
+                        console.log('Form is already being submitted. Please wait.');
+                        return;
+                    }
+
+                    const rows = $("#selectedProducts-pos tbody tr");
+                    var totalAmountValue = $("#totalAmount").text();
+                    var totalAmountFloat = parseFloat(totalAmountValue);
+                    const receivedAmount = $("#receivedAmount").val();
+                    const customerID = $("#customer-id").text();
+
+                    if (rows.length === 0) {
+                        // Display a message if there are no records to save
+                        console.log('No records to save.');
+
+                        // Display a SweetAlert with a danger message
+                        swal({
+                            title: "No Records to Save",
+                            text: "You cannot save empty records.",
+                            icon: "error",
+                            dangerMode: true,
+                        });
+
+                        // Set a timeout to close the SweetAlert after 3000 milliseconds (3 seconds)
+                        setTimeout(function(){
+                            swal.close();
+                        }, 1000);
+
+                        // Prevent posting empty records
+                        return;
+                    }
+
+                    const aData = [];
+
+                    rows.each(function() {
+                        const tableRow = $(this);
+
+                        const data = {
+                            productCode: tableRow.find('td[key-id="productCode"]').text(),
+                            productName: tableRow.find('td[key-id="productName"]').text(),
+                            cost: tableRow.find('td[key-id="SalePrice"]').text(),
+                            discount: tableRow.find('td[key-id="discount"]').text(),
+                            tax: tableRow.find('td[key-id="unitTax"]').text(),
+                            netTax: tableRow.find('td[key-id="finalTax"]').text(),
+                            subtotal: tableRow.find('td[key-id="subtotal"]').text(),
+                            qty: tableRow.find('input.product-input').val()
+                        };
+
+                        aData.push(data);
+                    });
+
+                    let selectedModes = [];
+
+                    // Check which checkboxes are selected
+                    if ($('#inlineCheckbox1').is(':checked')) {
+                        selectedModes.push('CASH');
+                    }
+
+                    if ($('#inlineCheckbox2').is(':checked')) {
+                        selectedModes.push('MPESA');
+                    }
+
+                    if ($('#inlineCheckbox3').is(':checked')) {
+                        selectedModes.push('VISA');
+                    }
+
+                    let stocks = {
+                        saleStocks: aData,
+                        amountPaid: receivedAmount,
+                        totalAmount: totalAmountFloat,
+                        customerId: customerID,
+                        payMode: selectedModes // Include the selected payment modes
+                    };
+
+                    // Set isSubmitting to true
+                    isSubmitting = true;
+
+                    $('.alert-info').show();
+
+                    var xhr = new window.XMLHttpRequest();
+
+                    xhr.onload = function() {
+                        // Reset isSubmitting to false on completion
+                        isSubmitting = false;
+
+                        if (xhr.status === 201) {
+                            $('.alert-info').hide();
+                            $('.alert-success').show();
+
+                            // Clear the table after successful save
+                            $("#selectedProducts-pos tbody").empty();
+                            updateSidebar();
+
+                            // Hide success alert after 2 seconds
+                            setTimeout(function() {
+                                $('.alert-success').hide();
+                            }, 3000);
+                            // Uncheck MPESA and VISA checkboxes if they were checked
+                            if ($('#inlineCheckbox2').is(':checked')) {
+                                $('#inlineCheckbox2').prop('checked', false);
+                            }
+
+                            if ($('#inlineCheckbox3').is(':checked')) {
+                                $('#inlineCheckbox3').prop('checked', false);
+                            }
+                        } else {
+                            $('.alert-danger').show();
+                            console.log('Unexpected response from the server');
+                        }
+                    };
+
+                    xhr.onerror = function() {
+                        // Reset isSubmitting to false on error
+                        isSubmitting = false;
+
+                        console.log('Error occurred during the request');
+                    };
+
+                    xhr.open("POST", "/api/stocks/sales");
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    xhr.send(JSON.stringify(stocks));
+                });
+            });
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <script>
+
+      $(document).ready(function() {
+          $('#search-pos').on('input', function() {
+              var productName = $(this).val();
+              var page = 0; // start from the first page
+              var size = 5; // number of records per page
+              $.ajax({
+                  url: '/products/sales',
+                  type: 'GET',
+                  data: {
+                      productName: productName,
+                      page: page,
+                      size: size
+                  },
+                  success: function(response) {
+                      var productTableContainer = $('#productTableContainer-pos');
+                      productTableContainer.html(response);
+
+                      if (productName.trim() === '') {
+                          productTableContainer.hide();
+                      } else {
+                          productTableContainer.show();
+                      }
+                  },
+                  error: function(e) {
+                      console.log(e);
+                  }
+              });
+          });
+
+          // Add click event listener to rows in the search results table
+          $(document).on('click', '#productTableContainer-pos tr', function() {
+              $('#productTableContainer-pos').hide();
+          });
+      });
+
+
+        </script>
+
+
+
+
+
+
+        <script>
+
+    $(document).ready(function(){
+    $('#selectedProducts-pos').on('click', 'tbody tr', function(event) {
+        // Check if a button was clicked
+        if (!$(event.target).is('button')) {
+            // Remove any existing button groups
+            $('.btn-group').remove();
+
+            // Remove the selected class from all rows
+            $('tr').removeClass('selected-row');
+
+            // Add the selected class to the clicked row
+            $(this).addClass('selected-row');
+
+            // Find the selected row's Product Code
+            var productCode = $(this).find('td:first').text();
+
+            // Create a button group with two buttons: Return Item and Resale Item
+            var buttonGroup = $('<div>')
+                .addClass('btn-group')
+                .append(
+                    $('<button>')
+                        .attr('id', 'return-button')
+                        .addClass('btn btn-xs btn-success dynamic-button')
+                        .text('Return'),
+                    $('<button>')
+                        .attr('id', 'resale-button')
+                        .addClass('btn btn-xs  btn-primary dynamic-button')
+                        .text('Resale')
+                        .hide(),
+                    $('<button>')
+                        .attr('id', 'remove-button')
+                        .addClass('btn btn-danger btn-xs ')
+                        .text('Remove')
+                );
+
+            // Find the cell to place the button group and append it
+            var cell = $(this).find('td:nth-child(2)');
+            cell.addClass('cell-with-buttons');
+            cell.append(buttonGroup);
+        }
+    });
+
+    // Use event delegation for click events on dynamically added buttons
+    $('#selectedProducts-pos').on('click', '#return-button', function() {
+        // Perform Return action
+        var productCode = $(this).closest('tr').find('td:first').text();
+        updateProductDetails(productCode);
+        updateSidebar();
+        // Show the Resale button
+        $(this).siblings('#resale-button').show();
+        // Hide the Return button
+        $(this).hide();
+    });
+
+    $('#selectedProducts-pos').on('click', '#resale-button', function() {
+        // Perform Resale action
+        var productCode = $(this).closest('tr').find('td:first').text();
+        updateProductDetails(productCode);
+        updateSidebar();
+        // Show the Return button
+        $(this).siblings('#return-button').show();
+        // Hide the Resale button
+        $(this).hide();
+    });
+
+    $('#selectedProducts-pos').on('click', '#remove-button', function() {
+        $(this).closest('tr').remove();
+        updateSidebar();
+    });
+});
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function updateProductDetails(productCode) {
+            var productCodeExists = false;
+
+            $('#selectedProducts-pos tbody tr').each(function () {
+                if ($(this).find('td[key-id="productCode"]').text() === productCode) {
+                    productCodeExists = true;
+                    var pQ = parseInt($(this).find('td[key-id="productQty"] .product-input').val());
+                    var qty = -1*pQ; // Default quantity is -1 for multiplication
+
+                    var productPrice = parseFloat($(this).find('td[key-id="SalePrice"]').text());
+                    var unitTax = parseFloat($(this).find('td[key-id="unitTax"]').text());
+                    var discount = parseFloat($(this).find('td[key-id="discount"]').text());
+
+                    var subTotal = (productPrice * qty) - ((discount * qty) + (qty * unitTax)); // Calculate subtotal
+
+                    $(this).find('td[key-id="productQty"] .product-input').val(qty);
+                    $(this).find('td[key-id="finalTax"]').text((unitTax * qty).toFixed(2));
+                    $(this).find('td[key-id="subtotal"]').text(subTotal.toFixed(2));
+                    updateSidebar();
+                    return false; // Exit loop
+                }
+            });
+
+            if (!productCodeExists) {
+                console.log("Product with code " + productCode + " not found in selected products.");
+            }
+        }
+
+    </script>
+
+
+    <script>
+        function updateProductDetailsResale(productCode) {
+            var productCodeExists = false;
+
+            $('#selectedProducts-pos tbody tr').each(function () {
+                if ($(this).find('td[key-id="productCode"]').text() === productCode) {
+                    productCodeExists = true;
+                    var pQ = parseInt($(this).find('td[key-id="productQty"] .product-input').val());
+
+                    var qty = -1*-pQ; // Default quantity is -1 for multiplication
+
+                    var productPrice = parseFloat($(this).find('td[key-id="SalePrice"]').text());
+                    var unitTax = parseFloat($(this).find('td[key-id="unitTax"]').text());
+                    var discount = parseFloat($(this).find('td[key-id="discount"]').text());
+
+                    var subTotal = (productPrice * qty) - ((discount * qty) + (qty * unitTax)); // Calculate subtotal
+
+                    $(this).find('td[key-id="productQty"] .product-input').val(qty);
+                    $(this).find('td[key-id="finalTax"]').text((unitTax * qty).toFixed(2));
+                    $(this).find('td[key-id="subtotal"]').text(subTotal.toFixed(2));
+                    updateSidebar();
+                    return false; // Exit loop
+                }
+            });
+
+            if (!productCodeExists) {
+                console.log("Product with code " + productCode + " not found in selected products.");
+            }
+        }
+
+    </script>
+<script>
+    $(document).ready(function() {
+        $('#search-pos').keydown(function(e) {
+            // Check if the key pressed is an arrow key
+            if (e.keyCode >= 37 && e.keyCode <= 40) {
+                e.preventDefault();
+
+                // Get the currently focused element
+                var focusedElement = $(':focus');
+
+                // If the focused element is the input field, show the table and make the first row scrollable
+                if (focusedElement.is('#search-pos')) {
+                    var tableContainer = $('#productTableContainer-pos');
+                    var table = tableContainer.find('table');
+                    var tableHeight = table.outerHeight();
+                    var containerHeight = tableContainer.height();
+                    var currentScrollTop = tableContainer.scrollTop();
+
+                    switch(e.keyCode) {
+                        case 37: // Left arrow key
+                            // Add your left arrow key logic here (if any)
+                            break;
+                        case 38: // Up arrow key
+                            if (currentScrollTop > 0) {
+                                tableContainer.scrollTop(currentScrollTop - 20); // Scroll up
+                            }
+                            break;
+                        case 39: // Right arrow key
+                            // Add your right arrow key logic here (if any)
+                            break;
+                        case 40: // Down arrow key
+                            tableContainer.scrollTop(currentScrollTop + 20); // Scroll down
+                            break;
+                    }
+                }
+            }
+        });
+    });
+
+
+
+</script>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+

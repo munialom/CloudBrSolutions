@@ -1,0 +1,53 @@
+
+
+
+<div th:fragment="my-products">
+
+
+
+    <div class="col-lg-12">
+        <div class="card rounded border" style="margin: auto">
+
+            <div class="card-body" id="bookings" style="height:100%;">
+                <div class="card rounded border">
+                    <ul class="nav nav-tabs nav-tabs-v2 px-3">
+                        <li class="nav-item me-2"><a class="nav-link px-2 active" data-bs-toggle="tab" href="#allTab">
+                            <span class="me-10px"><i class="fa fa-fw t-plus-1 text-blue fa-lg fa-dice-d6"></i>New Product </span></a></li>
+
+                    </ul>
+                    <div class="tab-content p-3">
+                        <div class="tab-pane fade show active" id="allTab">
+                            <div th:replace="~{products/product-form::product_form}"></div>
+
+
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/assets/plugins/parsleyjs/dist/parsley.min.js}"></script>
+    <script th:src="@{/assets/plugins/select2/dist/js/select2.min.js}"></script>
+
+</div>
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+<div th:fragment="classes">
+
+   <form data-parsley-validate="true" id="bankAccounts" th:action="@{/banks}" th:object="${account}" method="POST">
+
+      <div class="card border-0 mb-4">
+         <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fa fa-money-bill-1-wave fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Add New Bank Details
+         </div>
+         <div class="card-body">
+            <div class="row"><!-- start row  three-->
+               <div class="col-md-6">
+                  <div class="mb-10px">
+                     <label class="form-label" for="accountname">Account Name:</label>
+                     <input class="form-control form-control-sm" data-parsley-validate="true" id="accountname"
+                            name="accountname" th:field="*{accountName}"  type="text" required/>
+
+                  </div>
+
+
+               </div>
+               <div class="col-md-3">
+                  <div class="mb-10px">
+                     <label class="form-label" for="bankname">Bank Name:</label>
+                     <input class="form-control form-control-sm" data-parsley-validate="true" id="bankname"
+                            name="bankname" th:field="*{bankName}"  type="text" required/>
+
+                  </div>
+
+
+               </div>
+               <div class="col-md-3">
+                  <div class="mb-10px">
+                     <label class="form-label" for="accountnumber">Account Number:</label>
+                     <input class="form-control form-control-sm" data-parsley-validate="true" id="accountnumber"
+                            name="accountnumber" th:field="*{accountNumber}"  type="text" required/>
+
+                  </div>
+
+
+               </div>
+
+            </div><!-- end row three -->
+
+         </div>
+      </div>
+
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-end">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" class="btn btn-primary ps-40px pe-40px">Save</button>
+      </div>
+
+   </form>
+</div>

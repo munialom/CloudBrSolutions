@@ -1,0 +1,239 @@
+<!-- Category Management Form -->
+<div id="categoryManagementSystem">
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div class="card">
+            <div class="card-header">
+               <h6 class="mb-0">Product Category Management</h6>
+            </div>
+            <div class="card-body">
+               <form id="categoryForm">
+                  <div class="mb-3">
+                     <label for="categoryName" class="form-label">Category Name</label>
+                     <input type="text" class="form-control" id="categoryName" name="categoryName" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="categoryAlias" class="form-label">Category Alias</label>
+                     <input type="text" class="form-control" id="categoryAlias" name="categoryAlias" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="parentCategory" class="form-label">Parent Category</label>
+                     <select class="form-select" id="parentCategory" name="parentCategory">
+                        <option value="">None</option>
+                     </select>
+                  </div>
+                  <div class="mb-3 form-check">
+                     <input type="checkbox" class="form-check-input" id="onWaiterMenu" name="onWaiterMenu">
+                     <label class="form-check-label" for="onWaiterMenu">Show on Waiter Menu</label>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="saveCategory">Save Category</button>
+               </form>
+            </div>
+         </div>
+
+         <div class="card mt-4">
+            <div class="card-header">
+               <h6 class="mb-0">Product Category List</h6>
+            </div>
+            <div class="card-body">
+               <div id="categoryTableContainer"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script>
+   $(document).ready(function() {
+      loadCategories();
+      loadTableCategories();
+
+      // Save Category
+      $('#categoryForm').submit(function(e) {
+         e.preventDefault();
+         var categoryName = $('#categoryName').val();
+         var categoryAlias = $('#categoryAlias').val();
+         var parentCategoryId = $('#parentCategory').val() || null;
+         var onWaiterMenu = $('#onWaiterMenu').is(':checked');
+
+         $.ajax({
+            type: 'POST',
+            url: '/api/categories',
+            data: JSON.stringify({
+               name: categoryName,
+               alias: categoryAlias,
+               parent: { id: parentCategoryId },
+               onWaiterMenu: onWaiterMenu
+            }),
+            contentType: 'application/json',
+            success: function(data) {
+               loadCategories();
+               showNotification('success', 'Category saved successfully');
+               $('#categoryForm')[0].reset();
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error saving category: ' + error);
+               console.error(error);
+            }
+         });
+      });
+
+      // Load Categories
+      function loadCategories() {
+         $.ajax({
+            type: 'GET',
+            url: '/api/categories',
+            success: function(data) {
+               var parentCategoriesSelect = $('#parentCategory');
+               var categoryList = $('#categoryList');
+
+               parentCategoriesSelect.empty();
+               categoryList.empty();
+
+               parentCategoriesSelect.append('<option value="">None</option>');
+
+               $.each(data, function(index, category) {
+                  var optionText = category.name + (category.onWaiterMenu ? ' (On Waiter Menu)' : '');
+                  parentCategoriesSelect.append('<option value="' + category.id + '">' + optionText + '</option>');
+
+                  categoryList.append('<p>' + optionText + ' (Alias: ' + category.alias + ')</p>');
+               });
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error loading categories: ' + error);
+               console.error(error);
+            }
+         });
+      }
+
+
+      function generateDynamicTable(data, targetElementId) {
+         const $targetElement = $(`#${targetElementId}`);
+
+         // Create table structure
+         const $tableWrapper = $('<div>').addClass('table-responsive');
+         const $table = $('<table>').addClass('dynamic-table');
+         const $thead = $('<thead>');
+         const $tbody = $('<tbody>');
+
+         // Generate table header
+         const headers = Object.keys(data[0]);
+         const $headerRow = $('<tr>');
+         headers.forEach(header => {
+            $headerRow.append($('<th>').text(header));
+         });
+         $thead.append($headerRow);
+
+         // Generate table body
+         data.forEach(row => {
+            const $dataRow = $('<tr>');
+            headers.forEach(header => {
+               let $cell;
+               if (header === 'Actions') {
+                  $cell = $('<td>').html(row[header]);
+               } else {
+                  $cell = $('<td>').text(row[header]);
+               }
+               $dataRow.append($cell);
+            });
+            $tbody.append($dataRow);
+         });
+
+         // Assemble and inject table into target element
+         $table.append($thead).append($tbody);
+         $tableWrapper.append($table);
+         $targetElement.empty().append($tableWrapper);
+
+         // Apply styles
+         const styles = `
+         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+            .table-responsive {
+               overflow-x: auto;
+               -webkit-overflow-scrolling: touch;
+            }
+
+            .dynamic-table {
+               width: 100%;
+               border-collapse: separate;
+               border-spacing: 0;
+               font-family: 'Roboto', sans-serif;
+               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+               border-radius: 4px;
+               overflow: hidden;
+               font-size: 12px;
+            }
+
+            .dynamic-table th,
+            .dynamic-table td {
+               padding: 8px 12px;
+               text-align: left;
+               border-bottom: 1px solid #e0e0e0;
+            }
+
+            .dynamic-table th {
+               background-color: #f8f9fa;
+               color: #333;
+               font-weight: 700;
+            }
+
+            .dynamic-table td {
+               font-weight: 300;
+            }
+
+            .dynamic-table tr:last-child td {
+               border-bottom: none;
+            }
+
+            .dynamic-table tr:nth-child(even) {
+               background-color: #f8f9fa;
+            }
+
+            @media (max-width: 768px) {
+               .dynamic-table th,
+               .dynamic-table td {
+                  padding: 6px 8px;
+               }
+            }
+         </style>
+      `;
+
+         $('head').append(styles);
+      }
+
+
+      function loadTableCategories() {
+         $.ajax({
+            type: 'GET',
+            url: '/api/products-manager/categories',
+            success: function(data) {
+               generateDynamicTable(data, 'categoryTableContainer');
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error loading brands: ' + error);
+               console.error(error);
+            }
+         });
+      }
+
+      // Show notification
+      function showNotification(type, message) {
+         $.wnoty({
+            type: type,
+            message: message,
+            position: 'top-right'
+         });
+      }
+   });
+
+   function capitalizeCaseWise(element) {
+      let words = element.value.split(' ');
+      for (let i = 0; i < words.length; i++) {
+         words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
+      }
+      element.value = words.join(' ');
+   }
+</script>
+

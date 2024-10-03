@@ -1,0 +1,84 @@
+<div th:fragment="charts" xmlns="http://www.w3.org/1999/html">
+
+
+    <div class="table-responsive table-bordered">
+        <table  class="table table-striped table-bordered align-middle display records">
+
+        <thead>
+        <tr>
+            <th>Account Name</th>
+            <th>Description</th>
+            <th>Account Group</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="account : ${topLevelAccounts}">
+            <tr class="parent">
+                <td><span class="toggle">+</span> <span th:text="${account.name}"></span></td>
+                <td th:text="${account.alias}"></td>
+                <td th:text="${account.accountGroup}"></td>
+                <td>
+                    <div class="btn-group">
+                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                            <i class="fa fa-edit fa-lg fa-fw " style="color: springgreen;"></i>
+                        </a>
+                        <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                            <i class="fa fa-trash fa-lg fa-fw " style="color: red"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-list fa-lg fa-fw " style="color:orange"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <th:block th:if="${not #lists.isEmpty(account.children)}">
+                <tr class="child">
+                    <td colspan="4">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Account Name</th>
+                                <th>Description</th>
+                                <th>Account Group</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="child : ${account.children}">
+                                <tr>
+                                    <td th:text="${child.name}"></td>
+                                    <td th:text="${child.alias}"></td>
+                                    <td th:text="${child.accountGroup}"></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                                <i class="fa fa-edit fa-lg fa-fw " style="color: springgreen;"></i>
+                                            </a>
+                                            <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                                <i class="fa fa-trash fa-lg fa-fw " style="color: red"></i>
+                                            </a>
+                                            <a href="#">
+                                                <i class="fa fa-list fa-lg fa-fw " style="color:orange"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </th:block>
+        </th:block>
+        </tbody>
+    </table>
+
+
+
+
+
+</div>
+
+
+</div>

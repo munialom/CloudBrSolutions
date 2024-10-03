@@ -1,0 +1,360 @@
+<div th:fragment="pc">
+
+            <div class="row">
+                <div class="col-4">
+                    <a href="#" id="datepicker-btn" class="btn btn-white d-flex align-items-center rounded-3">
+                        <i class="far fa-lg fa-calendar me-10px text-body text-opacity-50 d-none"></i>
+                        <span class="iconify fs-20px my-n1 me-2 ms-n1 text-theme" data-icon="solar:calendar-search-linear"></span>
+                        Select Date
+                        <i class="fa ms-auto fa-chevron-down"></i>
+                    </a>
+                </div>
+
+                <div class="col-4">
+                    <div class="btn-toolbar" style="margin-top: 0">
+                        <div class="btn-group me-2">
+                            <a href="#"  id="reload" class="btn btn-success btn-sm " ><i class="fa fa-fw fa-eye" ></i> <span class="hidden-xs">View</span></a>
+                            <a href="#"  class="btn btn-white btn-sm" ><i class="fa fa-fw fa-file-excel text-green-500" ></i> <span class="hidden-xs">Excel</span></a>
+                            <a href="#" onclick="printDailyStock()" class="btn btn-red btn-sm" ><i class="fa fa-fw fa-print" ></i> <span class="hidden-xs">Print</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+    <script>
+        function generatePdf(data) {
+            // Process JSON data and populate tableData
+            var tableData = [];
+            var columnNames = ['No.'].concat(Object.keys(data[0]).map(function(key) { return key.toUpperCase(); })); // Assuming the keys of the first item represent column names
+
+            // Populate tableData
+            data.forEach(function(item, index) {
+                var rowData = [index + 1]; // Add row count
+                for (var key in item) {
+                    rowData.push(item[key]);
+                }
+                tableData.push(rowData);
+            });
+
+            var docDefinition = {
+                content: [
+                    {
+                        stack: [
+                            { text: 'NAKENY MINIMAT', style: 'header', alignment: 'center' },
+                            { text: 'P.O BOX 101-30500 LODWAR', style: 'header', alignment: 'center' },
+                            { text: '0705127908', style: 'header', alignment: 'center' }
+                        ],
+                        margin: [0, 10, 0, 0],
+                        fontSize: 9
+                    },
+                    {
+                        text: 'DAILY STOCK SHEET RECORDS',
+                        style: 'header',
+                        alignment: 'center',
+                        margin: [0, 10, 0, 0],
+                        fontSize: 9
+                    },
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: Array(columnNames.length).fill('*'), // Add this line
+                            body: [
+                                columnNames, // Table header row
+                                ...tableData.map(row => {
+                                    return row.map((cell, index) => {
+                                        return index > 0 ? { text: cell, noWrap: true } : cell;
+                                    });
+                                }) // Table data rows with noWrap set to true
+                            ]
+                        },
+                        layout: {
+                            hLineWidth: function(i, node) {
+                                return (i === 0 || i === node.table.body.length) ? 0.5 : 0.5;
+                            },
+                            vLineWidth: function(i, node) {
+                                return (i === 0 || i === node.table.widths.length) ? 0.5 : 0.5;
+                            }
+                        },
+                        margin: [20, 10, 20, 8]
+                    }
+                ],
+                styles: {
+                    header: {
+                        fontSize: 9,
+                        bold: true
+                    },
+                    tableBody: {
+                        fontSize: 9
+                    }
+                },
+                defaultStyle: {
+                    fontSize: 9,
+                    font: 'Roboto'
+                },
+                pageSize: 'A4',
+                pageOrientation: 'landscape',
+                pageMargins: [20, 25, 20, 25],
+
+                footer: function(currentPage, pageCount) {
+                    var currentDate = new Date();
+                    var dateString = currentDate.toDateString() + ", " + currentDate.toLocaleTimeString();
+                    return {
+                        stack:[
+                            { text:'Page ' + currentPage.toString() + ' of ' + pageCount, alignment:'center' },
+                            { text:'Printed on ' + dateString, alignment:'center' }
+                        ]
+                    };
+                }
+            };
+
+            // Create PDF document
+            var pdfDoc = pdfMake.createPdf(docDefinition);
+
+            // Open PDF
+            pdfDoc.open();
+        }
+    </script>
+
+
+
+
+    <script>
+        function generateInvoice(data) {
+            // Process JSON data and populate tableData
+            var tableData = [];
+            var columnNames = ['QTY', 'Item', 'Description', 'Unit Price', 'VAT', 'TAX %', 'Total']; // Replace the column names
+
+            // Populate tableData
+            data.forEach(function(item, index) {
+                var rowData = [index + 1]; // Add row count
+                for (var key in item) {
+                    rowData.push(item[key]);
+                }
+                tableData.push(rowData);
+            });
+
+            var docDefinition = {
+                content: [
+                    {
+                        stack: [
+                            { text: 'Sun solutions', style: 'header', alignment: 'center' }, // Replace the text
+                            { text: 'Box 883-50200 Bungoma', style: 'header', alignment: 'center' }, // Replace the text
+                            { text: '0722470792', style: 'header', alignment: 'center' } // Replace the text
+                        ],
+                        margin: [0, 10, 0, 0],
+                        fontSize: 9
+                    },
+                    {
+                        text: 'Invoice', // Replace the text
+                        style: 'header',
+                        alignment: 'center',
+                        margin: [0, 10, 0, 0],
+                        fontSize: 9
+                    },
+                    {
+                        text: 'Date: 30/01/2024', // Add this text
+                        alignment: 'right',
+                        margin: [0, 0, 20, 0]
+                    },
+                    {
+                        text: 'Invoice No.: 10000', // Add this text
+                        alignment: 'right',
+                        margin: [0, 0, 20, 0]
+                    },
+                    {
+                        stack: [ // Add this stack
+                            { text: 'BILL TO:', style: 'header' },
+                            { text: 'CHEBUKAKA GIRLS' }
+                        ],
+                        margin: [20, 10, 0, 0]
+                    },
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: [50, 100, 200, 100, 100, 50, 100], // Add this line
+                            body: [
+                                columnNames, // Table header row
+                                ...tableData.map(row => {
+                                    return row.map((cell, index) => {
+                                        return index > 0 ? { text: cell, noWrap: true } : cell;
+                                    });
+                                }) // Table data rows with noWrap set to true
+                            ]
+                        },
+                        layout: {
+                            hLineWidth: function(i, node) {
+                                return (i === 0 || i === node.table.body.length) ? 0.5 : 0; // Change this line
+                            },
+                            vLineWidth: function(i, node) {
+                                return 0; // Change this line
+                            }
+                        },
+                        margin: [20, 10, 20, 8]
+                    },
+                    {
+                        text: 'Subtotal: KES20,689.66', // Add this text
+                        alignment: 'right',
+                        margin: [0, 10, 20, 0]
+                    },
+                    {
+                        text: 'VAT: KES3,310.34', // Add this text
+                        alignment: 'right',
+                        margin: [0, 0, 20, 0]
+                    },
+                    {
+                        text: 'Total: KES24,000.00', // Add this text
+                        alignment: 'right',
+                        margin: [0, 0, 20, 0]
+                    },
+                    {
+                        text: 'Balance Due: KES24,000.00', // Add this text
+                        alignment: 'right',
+                        margin: [0, 0, 20, 0]
+                    },
+                    {
+                        text: 'Please contact us for more information about payment options.', // Add this text
+                        margin: [20, 10, 0, 0]
+                    },
+                    {
+                        text: 'Thank you for your business.', // Add this text
+                        margin: [20, 0, 0, 0]
+                    }
+                ],
+                styles: {
+                    header: {
+                        fontSize: 9,
+                        bold: true
+                    },
+                    tableBody: {
+                        fontSize: 9
+                    }
+                },
+                defaultStyle: {
+                    fontSize: 9,
+                    font: 'Roboto'
+                },
+                pageSize: 'A4',
+                pageOrientation: 'landscape',
+                pageMargins: [20, 25, 20, 25],
+
+                footer: function(currentPage, pageCount) {
+                    var currentDate = new Date();
+                    var dateString = currentDate.toDateString() + ", " + currentDate.toLocaleTimeString();
+                    return {
+                        stack:[
+                            { text:'Page ' + currentPage.toString() + ' of ' + pageCount, alignment:'center' },
+                            { text:'Printed on ' + dateString, alignment:'center' }
+                        ]
+                    };
+                }
+            };
+
+            // Create PDF document
+            var pdfDoc = pdfMake.createPdf(docDefinition);
+
+            // Open PDF
+            pdfDoc.open();
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function printDailyStock() {
+            // Show spinner
+            $('#spinner').show();
+
+            // Make an AJAX request to get JSON data
+            $.ajax({
+                url: '/api/stocks/stockReport',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Process data and generate PDF
+                    generatePdf(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                    // Hide spinner on error
+                    $('#spinner').hide();
+                }
+            });
+        }
+
+    </script>
+
+
+
+    <script>
+        function getInvoice() {
+            // Show spinner
+            $('#spinner').show();
+
+            // Make an AJAX request to get JSON data
+            $.ajax({
+                url: '/api-bulk/invoice',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Process data and generate PDF
+                    generateInvoice(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                    // Hide spinner on error
+                    $('#spinner').hide();
+                }
+            });
+        }
+
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $(function() {
+                var selected_date;
+
+                $('#datepicker-btn').datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                }).on('changeDate', function(e) {
+                    selected_date = e.date;
+                    $('#datepicker-btn').html(e.format('yyyy-mm-dd'));
+                });
+
+
+            });
+        });
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

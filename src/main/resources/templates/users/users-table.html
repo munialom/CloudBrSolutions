@@ -1,0 +1,158 @@
+
+<div th:fragment="users">
+
+
+        <div class="card rounded border">
+            <div class="card-header h6 mb-0 bg-none p-3">
+                <i class="fa fa-money-bill-1-wave fa-lg fa-fw text-dark text-opacity-50 me-1"></i>User Records
+            </div>
+            <div class="card-body">
+                <!-- BEGIN table -->
+                <div style="max-height: 315px; overflow-y: auto;">
+
+                        <div class="table-responsive" >
+                            <table class="table table-thead-sticky table-tfoot-sticky table-bordered table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0"  id="users-table">
+                                <thead>
+                                <tr class="bg-gradient-gray-dark text-white">
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Phone</th>
+                            <th>Roles</th>
+                            <th>Enabled</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user : ${usersList}">
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.firstName}"></td>
+                            <td th:text="${user.lastName}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td>
+                                <ul>
+                                    <li th:each="role : ${user.roles}" th:text="${role.roleName}"></li>
+                                </ul>
+                            </td>
+                            <td>
+                <span class="status-icon">
+                    <i th:class="${user.enabled} ? 'fas fa-check-circle text-success' : 'fas fa-times-circle text-danger'"></i>
+                </span>
+                                <span th:text="${user.enabled ? 'Active' : 'Inactive'}"></span>
+                            </td>
+
+                            <td>
+                                <div>
+                                    <a href="#" class="btn btn-xs border-0 rounded-pill  p-0 d-flex align-items-center justify-content-center" data-bs-toggle="dropdown">
+                                        <i class="fa fa-ellipsis-h text-gray-600"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a href="#" class="dropdown-item d-flex align-items-center">
+                                            <i class="fa fa-fw fa-bookmark fa-lg"></i>
+                                            <div class="flex-1 ps-1">
+                                                <div>Data Management</div>
+                                                <div class="mt-n1 text-gray-500"><small>View and Update Details</small></div>
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item userStatus" th:data-user-id="${user.id}" ><i class="fa fa-fw fa-arrow-down-short-wide fa-lg me-1"></i>Activate</a>
+                                        <a href="#"  class="dropdown-item userStatus" th:data-user-id="${user.id}"><i class="fa fa-fw fa-list-numeric fa-lg me-1"></i>Deactivate</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item"><i class="fa fa-fw fa-archive fa-lg me-1"></i> Move to archive</a>
+                                        <a href="#" class="dropdown-item"><i class="fa fa-fw fa-trash-alt fa-lg me-1 text-red-500"></i>Terminate</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- END table -->
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+</div>
+<!--<script>
+    $(document).ready(function() {
+        $('.userStatus').click(function(e) {
+            e.preventDefault();
+
+            // Get the userStatus from the clicked a tag
+            var userStatus = $(this).text().trim();
+
+            // Get the id from the data-user-id attribute of the clicked a tag
+            var id = $(this).attr('data-user-id');
+
+            // Create the data object
+            var data = {
+                id: id,
+                clicked: userStatus
+            };
+
+            // Send the POST request
+            $.ajax({
+                url: '/api-user/users/update',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Show a SweetAlert with the server's response on success
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response,
+                        icon: 'success'
+                    });
+                },
+                error: function(response) {
+                    // Show a SweetAlert with the server's response on error
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.responseText,
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+
+</script>-->
+    <script>
+        $(document).ready(() => {
+            $('.userStatus').click((e) => {
+                e.preventDefault();
+
+                // Get the userStatus from the clicked a tag
+                const userStatus = $(e.currentTarget).text().trim();
+
+                // Get the id from the data-user-id attribute of the clicked a tag
+                const id = $(e.currentTarget).data('user-id');
+
+                // Create the data object
+                const data = { id, clicked: userStatus };
+
+                // Send the POST request
+                $.ajax({
+                    url: '/api-user/users/update',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: (response) => {
+                        // Show a SweetAlert with the server's response on success
+                        swal("Success!", response, "success");
+                    },
+                    error: (response) => {
+                        // Show a SweetAlert with the server's response on error
+                        swal("Error!", response.responseText, "error");
+                    }
+                });
+            });
+        });
+    </script>
+</div>

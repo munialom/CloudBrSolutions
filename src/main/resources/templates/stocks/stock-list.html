@@ -1,0 +1,219 @@
+<div th:fragment="stock-sheet">
+
+     <div class="row" style="margin-bottom: 15px ; margin-top: 15px">
+         <div class="d-lg-flex align-items-center mb-n2">
+             <div class="d-lg-flex d-none align-items-center text-nowrap">
+
+                 <span id="paginationLabel"></span>
+             </div>
+             <div class="d-lg-block d-none ms-2 text-body text-opacity-50">
+                 <span id="totalRecords"></span>
+             </div>
+
+
+             <ul class="pagination pagination-sm mb-0 ms-auto justify-content-center">
+                 <li class="page-item" id="previousPage"><a class="page-link">Previous</a></li>
+                 <li class="page-item d-lg-block d-none2" id="page1"><a class="page-link" href="#">1</a></li>
+                 <li class="page-item d-lg-block d-none2" id="page2"><a class="page-link" href="#">2</a></li>
+                 <li class="page-item d-lg-block d-none2" id="page3"><a class="page-link" href="#">3</a></li>
+                 <li class="page-item d-lg-block d-none2" id="page4"><a class="page-link" href="#">4</a></li>
+                 <li class="page-item d-lg-block d-none2" id="page5"><a class="page-link" href="#">5</a></li>
+                 <li class="page-item" id="nextPage"><a class="page-link">Next</a></li>
+             </ul>
+
+         </div>
+     </div>
+        <div class="table-responsive">
+            <table class="table table-thead-sticky table-tfoot-sticky table-bordered table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0" id="products-records">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>ID</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>UOM</th>
+                    <th>Type</th>
+                    <th>Cost</th>
+                    <th>Price</th>
+                    <th>Alert Qty</th>
+                    <th>Tax Mode</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product ,status : ${products}">
+                    <td th:text="${status.count}"></td>
+                    <td th:text="${product.id}"></td>
+                    <td th:text="${product.productCode}"></td>
+                    <td th:text="${product.productName}"></td>
+                    <td th:text="${product.brand.name}"></td>
+                    <td th:text="${product.category.name}"></td>
+                    <td th:text="${product.uom.unit}"></td>
+                    <td th:text="${product.productType}"></td>
+                    <td th:text="${product.productCost}"></td>
+                    <td th:text="${product.productPrice}"></td>
+                    <td th:text="${product.alertQuantity}"></td>
+                    <td th:text="${product.taxMode}"></td>
+
+                    <td>
+                        <div class="btn-row">
+                            <!-- Edit Button -->
+                            <a href="#" th:attr="onclick='editStudent(\'' + ${product.id} + '\')'"
+                               data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                <i class="bi bi-pencil-square text-success"></i> <!-- Bootstrap Icon for Edit -->
+                            </a>
+
+                            <!-- Delete Button -->
+                            <a href="#" th:attr="onclick='deleteCustomer(\'' + ${product.id} + '\')'"
+                               data-bs-toggle="tooltip" data-bs-placement="top" title="Delete">
+                                <i class="bi bi-trash text-danger"></i> <!-- Bootstrap Icon for Delete -->
+                            </a>
+                        </div>
+                    </td>
+
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+<!--    <script>
+        function editStudent(id) {
+
+            var url = '/members/update/' + id;
+            loadFragment(url);
+        }
+
+    </script>
+
+
+
+
+    <script>
+        function deleteCustomer(custid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: `/search-members/${custid}`,
+                        success: function() {
+                            Swal.fire(
+                                'Deleted!',
+                                'The record has been deleted.',
+                                'success'
+                            );
+                        },
+                        error: function() {
+                            Swal.fire(
+                                'Error!',
+                                'Failed to delete the record.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+    </script>-->
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            var currentPage = [[${currentPage}]];
+            var totalPages = [[${totalPages}]];
+
+            function updatePagination() {
+                $('#currentPage').text(currentPage);
+
+                // Enable/disable "First" and "Previous" based on current page
+                if (currentPage === 1) {
+                    $('#firstPage').addClass('disabled');
+                    $('#previousPage').addClass('disabled');
+                } else {
+                    $('#firstPage').removeClass('disabled');
+                    $('#previousPage').removeClass('disabled');
+                }
+
+                // Enable/disable "Next" and "Last" based on current page
+                if (currentPage === totalPages) {
+                    $('#nextPage').addClass('disabled');
+                    $('#lastPage').addClass('disabled');
+                } else {
+                    $('#nextPage').removeClass('disabled');
+                    $('#lastPage').removeClass('disabled');
+                }
+
+                // Show total records
+                var totalItems = [[${totalItems}]];
+                var pageSize = [[${pageSize}]];
+
+                var startItem = (currentPage - 1) * pageSize + 1;
+                var endItem = Math.min(startItem + pageSize - 1, totalItems);
+
+                $('#paginationLabel').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#totalRecords').text('Showing ' + startItem + ' - ' + endItem + ' of ' + totalItems + ' records');
+            }
+
+            updatePagination();
+
+            $('#firstPage').on('click', function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#previousPage').on('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#nextPage').on('click', function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#lastPage').on('click', function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            function navigateToPage(page) {
+                var url = '/products/all?page=' + page;
+                $.get(url, function(response) {
+                    $('#stockControlPanel').html(response);
+                });
+                //fetchDataList(); // Fetch the latest data after navigating to the new page
+            }
+
+
+
+        });
+    </script>
+
+</div>

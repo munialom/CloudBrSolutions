@@ -1,0 +1,193 @@
+
+<div id="sidebar" class="app-sidebar" data-bs-theme="dark"
+	 xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+
+
+	<div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
+		<!-- BEGIN menu -->
+		<div class="menu">
+			<!-- User Profile Section -->
+			<div class="menu-profile">
+				<a href="javascript:;" class="menu-profile-link" data-toggle="app-sidebar-profile" data-target="#appSidebarProfileMenu">
+					<div class="menu-profile-cover with-shadow"></div>
+					<div class="menu-profile-image">
+						<img th:src="@{/assets/img/user/user-13.jpg}" alt="" />
+					</div>
+			<!--		<div class="menu-profile-info">
+						<div class="d-flex align-items-center">
+							<div class="flex-grow-1">
+								<div class="row">
+									<span class="d-none d-md-inline badge bg-dark" th:if="${#authentication.principal.branchName != null}" th:text="${#authentication.principal.branchName}"></span>
+								</div>
+								<p th:text="${#authentication.principal.fullName}"></p>
+								<small th:text="${#authentication.principal.username}"></small>
+							</div>
+							<div class="menu-caret ms-auto"></div>
+						</div>
+						<small>
+							<span th:text="${#authentication.authorities}"></span>
+						</small>
+					</div>-->
+				</a>
+			</div>
+			<div id="appSidebarProfileMenu" class="collapse">
+				<div class="menu-item pt-5px">
+					<a href="javascript:;" class="menu-link">
+						<div class="menu-icon"><i class="fa fa-cog"></i></div>
+						<div class="menu-text">Settings</div>
+					</a>
+				</div>
+				<div class="menu-item">
+					<a href="javascript:;" class="menu-link">
+						<div class="menu-icon"><i class="fa fa-pencil-alt"></i></div>
+						<div class="menu-text">Feedback</div>
+					</a>
+				</div>
+				<div class="menu-item pb-5px">
+					<a href="javascript:;" class="menu-link">
+						<div class="menu-icon"><i class="fa fa-question-circle"></i></div>
+						<div class="menu-text">Help</div>
+					</a>
+				</div>
+				<div class="menu-divider m-0"></div>
+			</div>
+			<div class="menu-header">Main Navigation</div>
+
+			<!-- Dashboard Section -->
+			<div class="menu-item">
+				<a href="#" onclick="loadFragment('/sales/sale-controls')" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-tachometer-alt"></i></div>
+					<div class="menu-text">Dashboard</div>
+				</a>
+			</div>
+
+			<!-- Sales Management Section -->
+			<div class="menu-item has-sub">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fab fa-windows"></i></div>
+					<div class="menu-text">Sales Manager</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/sales/sale-controls')" class="menu-link"><div class="menu-text">DashBoard</div></a>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/pos/cashier')" class="menu-link"><div class="menu-text">Cashier</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/finance/stock-sheet')" class="menu-link"><div class="menu-text">Stock Sheet</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/finance/stock-sheet-meals')" class="menu-link"><div class="menu-text">Food Sales</div></a>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Inventory Management Section -->
+			<div class="menu-item has-sub">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-box"></i></div>
+					<div class="menu-text">Inventory</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/productsWorkFlow/controlPanel')" class="menu-link"><div class="menu-text">Products Management</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/products/product-controls')" class="menu-link"><div class="menu-text">Add Stocks</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/products/product-price-controls')" class="menu-link"><div class="menu-text">Prices Management</div></a>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/finance/stock-sheet')" class="menu-link"><div class="menu-text">Stock Sheet</div></a>
+					</div>
+				<!--	<div class="menu-item">
+						<a href="#" onclick="loadFragment('/finance/stock-sheet-meals')" class="menu-link"><div class="menu-text">Food Sales</div></a>
+					</div>-->
+				</div>
+			</div>
+
+			<!-- Purchasing Section -->
+			<div class="menu-item has-sub">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-truck-fast"></i></div>
+					<div class="menu-text">Stores</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/suppliers/supplier-managers')" class="menu-link"><div class="menu-text">Suppliers</div></a>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/stocks/purchases')" class="menu-link"><div class="menu-text">Receive Stock</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/stocks/issuance')" class="menu-link"><div class="menu-text">Issue Stock</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/finance/stores')" class="menu-link"><div class="menu-text">Reports</div></a>
+					</div>
+
+
+				</div>
+			</div>
+
+
+			<!-- Reports Section -->
+			<div class="menu-item has-sub">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-chart-pie"></i></div>
+					<div class="menu-text">Reports</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/sales/all-sales-reports')" class="menu-link"><div class="menu-text">Sales Reports</div></a>
+					</div>
+
+
+				</div>
+			</div>
+
+			<!-- Settings Section -->
+			<div class="menu-item has-sub">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-cogs"></i></div>
+					<div class="menu-text">Settings</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/configs/system-manager')" class="menu-link">
+							<div class="menu-text">Company Setup</div>
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+</div>
+
+<div class="app-sidebar-bg"></div>
+<div class="app-sidebar-mobile-backdrop"><a href="#" data-dismiss="app-sidebar-mobile" class="stretched-link"></a></div>

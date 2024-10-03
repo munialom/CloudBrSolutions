@@ -1,0 +1,100 @@
+<div th:fragment="members">
+
+
+
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden rounded border">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">POINT OF SALE:</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+
+            <div class="panel-body p-0">
+                <div  id="stockControlPanel">
+
+                </div>
+            </div>
+        </div>
+
+
+
+    <script>
+
+
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchData() {
+                // Construct the URL with query parameters
+                var url = '/pos/rooms';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        // Update the content of the auto-filter-mem-data element with the fetched data
+                        $('#stockControlPanel').html(response);
+
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            }
+
+            // Function to handle button click
+            $('#pos-form').click(function(event) {
+                event.preventDefault(); // Prevent the default behavior of the button click
+
+                fetchData();
+            });
+            fetchData();
+
+        });
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function loadControlFragment(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#controlPanel').html(data);
+                },
+                error: function() {
+                    console.log('Error loading fragment');
+                }
+            });
+        }
+
+    </script>
+
+
+
+</div>
+
+
+
+
+
+
+

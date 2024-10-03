@@ -1,0 +1,216 @@
+<!-- Brand Management Form -->
+<div id="brandManagementSystem">
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div class="card">
+            <div class="card-header">
+               <h6 class="mb-0">Product Brand Management</h6>
+            </div>
+            <div class="card-body">
+               <form id="brandForm">
+                  <div class="mb-3">
+                     <label for="brandName" class="form-label">Brand Name</label>
+                     <input type="text" class="form-control" id="brandName" name="brandName" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="brandDescription" class="form-label">Brand Description</label>
+                     <textarea class="form-control" id="brandDescription" name="brandDescription" onkeyup="capitalizeCaseWise(this)"></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="saveBrand">Save Brand</button>
+               </form>
+            </div>
+         </div>
+
+         <div class="card mt-4">
+            <div class="card-header">
+               <h6 class="mb-0">Product Brand List</h6>
+            </div>
+            <div class="card-body">
+               <div id="brandTableContainer"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script>
+   $(document).ready(function() {
+      loadBrands();
+      loadTableBrands();
+
+      // Save Brand
+      $('#brandForm').submit(function(e) {
+         e.preventDefault();
+         var brandName = $('#brandName').val();
+         var brandDescription = $('#brandDescription').val();
+
+         $.ajax({
+            type: 'POST',
+            url: '/api/brands',
+            data: JSON.stringify({
+               name: brandName,
+               description: brandDescription
+            }),
+            contentType: 'application/json',
+            success: function(data) {
+               loadBrands();
+               showNotification('success', 'Brand saved successfully');
+               $('#brandForm')[0].reset();
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error saving brand: ' + error);
+               console.error(error);
+            }
+         });
+      });
+
+      // Load Brands
+      function loadBrands() {
+         $.ajax({
+            type: 'GET',
+            url: '/api/brands',
+            success: function(data) {
+               var brandList = $('#brandList');
+               brandList.empty();
+
+               $.each(data, function(index, brand) {
+                  brandList.append('<p>' + brand.name + ' - ' + brand.description + '</p>');
+               });
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error loading brands: ' + error);
+               console.error(error);
+            }
+         });
+      }
+
+      function generateDynamicTable(data, targetElementId) {
+         const $targetElement = $(`#${targetElementId}`);
+
+         // Create table structure
+         const $tableWrapper = $('<div>').addClass('table-responsive');
+         const $table = $('<table>').addClass('dynamic-table');
+         const $thead = $('<thead>');
+         const $tbody = $('<tbody>');
+
+         // Generate table header
+         const headers = Object.keys(data[0]);
+         const $headerRow = $('<tr>');
+         headers.forEach(header => {
+            $headerRow.append($('<th>').text(header));
+         });
+         $thead.append($headerRow);
+
+         // Generate table body
+         data.forEach(row => {
+            const $dataRow = $('<tr>');
+            headers.forEach(header => {
+               let $cell;
+               if (header === 'Actions') {
+                  $cell = $('<td>').html(row[header]);
+               } else {
+                  $cell = $('<td>').text(row[header]);
+               }
+               $dataRow.append($cell);
+            });
+            $tbody.append($dataRow);
+         });
+
+         // Assemble and inject table into target element
+         $table.append($thead).append($tbody);
+         $tableWrapper.append($table);
+         $targetElement.empty().append($tableWrapper);
+
+         // Apply styles
+         const styles = `
+         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+            .table-responsive {
+               overflow-x: auto;
+               -webkit-overflow-scrolling: touch;
+            }
+
+            .dynamic-table {
+               width: 100%;
+               border-collapse: separate;
+               border-spacing: 0;
+               font-family: 'Roboto', sans-serif;
+               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+               border-radius: 4px;
+               overflow: hidden;
+               font-size: 12px;
+            }
+
+            .dynamic-table th,
+            .dynamic-table td {
+               padding: 8px 12px;
+               text-align: left;
+               border-bottom: 1px solid #e0e0e0;
+            }
+
+            .dynamic-table th {
+               background-color: #f8f9fa;
+               color: #333;
+               font-weight: 700;
+            }
+
+            .dynamic-table td {
+               font-weight: 300;
+            }
+
+            .dynamic-table tr:last-child td {
+               border-bottom: none;
+            }
+
+            .dynamic-table tr:nth-child(even) {
+               background-color: #f8f9fa;
+            }
+
+            @media (max-width: 768px) {
+               .dynamic-table th,
+               .dynamic-table td {
+                  padding: 6px 8px;
+               }
+            }
+         </style>
+      `;
+
+         $('head').append(styles);
+      }
+
+      function loadTableBrands() {
+         $.ajax({
+            type: 'GET',
+            url: '/api/products-manager/brands',
+            success: function(data) {
+               generateDynamicTable(data, 'brandTableContainer');
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error loading brands: ' + error);
+               console.error(error);
+            }
+         });
+      }
+
+      // Show notification
+      function showNotification(type, message) {
+         $.wnoty({
+            type: type,
+            message: message,
+            position: 'top-right'
+         });
+      }
+   });
+
+   function capitalizeCaseWise(element) {
+      let words = element.value.split(' ');
+      for (let i = 0; i < words.length; i++) {
+         words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
+      }
+      element.value = words.join(' ');
+   }
+</script>
+
+

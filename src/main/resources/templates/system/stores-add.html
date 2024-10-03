@@ -1,0 +1,256 @@
+<div th:fragment="store">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form id="storeForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="storeName" class="form-label">Store Name</label>
+                            <input type="text" class="form-control" id="storeName" name="storeName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mt-4">
+                                <input class="form-check-input" type="checkbox" id="counterStore" name="counterStore">
+                                <label class="form-check-label" for="counterStore">
+                                    Counter Store
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 d-flex justify-content-end">
+                            <button type="button" class="btn btn-success btn-sm me-2" id="saveStoreBtn">
+                                <i class="fas fa-save me-1"></i>Save Store
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="resetFormBtn">
+                                <i class="fas fa-undo me-1"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-12 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Store List</h5>
+                    <div class="table-responsive">
+                        <table id="storeTable" class="table table-striped table-sm">
+                            <thead>
+                            <tr>
+                                <th>Store Name</th>
+                                <th>Counter Store</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Store data will be dynamically populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(() => {
+            // DOM elements
+            const $storeForm = $('#storeForm');
+            const $saveStoreBtn = $('#saveStoreBtn');
+            const $resetFormBtn = $('#resetFormBtn');
+            const $loadingOverlay = $('#loading-overlay');
+            const $storeTable = $('#storeTable');
+
+            // Utility functions
+            const showLoading = () => $loadingOverlay.show();
+            const hideLoading = () => $loadingOverlay.hide();
+
+            const resetForm = () => {
+                $storeForm[0].reset();
+                $storeForm.find('input').removeClass('is-invalid');
+                $saveStoreBtn.data('mode', 'create').data('id', '').text('Save Store');
+            };
+
+            const validateForm = () => {
+                let isValid = true;
+                $storeForm.find('input[required]').each((_, element) => {
+                    const $element = $(element);
+                    if (!$element.val()) {
+                        isValid = false;
+                        $element.addClass('is-invalid');
+                    } else {
+                        $element.removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    $.wnoty({
+                        type: 'warning',
+                        message: 'Please fill in all required fields',
+                        position: 'top-right'
+                    });
+                }
+
+                return isValid;
+            };
+
+            // API calls
+            const loadStores = async () => {
+                try {
+                    showLoading();
+                    const response = await $.ajax({
+                        url: '/api/stores',
+                        method: 'GET',
+                        dataType: 'json'
+                    });
+                    renderStoreTable(response);
+                } catch (error) {
+                    console.error('Error loading stores:', error);
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Failed to load stores',
+                        position: 'top-right'
+                    });
+                } finally {
+                    hideLoading();
+                }
+            };
+
+            const saveStore = async (formData, mode, storeId = null) => {
+                const url = mode === 'edit' ? `/api/stores/${storeId}` : '/api/stores';
+                const method = mode === 'edit' ? 'PUT' : 'POST';
+
+                try {
+                    showLoading();
+                    const result = await $.ajax({
+                        url: url,
+                        method: method,
+                        contentType: 'application/json',
+                        data: JSON.stringify(formData)
+                    });
+
+                    $.wnoty({
+                        type: 'success',
+                        message: `Store ${mode === 'edit' ? 'updated' : 'saved'} successfully`,
+                        position: 'top-right'
+                    });
+                    resetForm();
+                    loadStores();
+                } catch (error) {
+                    console.error('Error:', error);
+                    $.wnoty({
+                        type: 'error',
+                        message: error.responseJSON?.message || `Failed to ${mode} store`,
+                        position: 'top-right'
+                    });
+                } finally {
+                    hideLoading();
+                }
+            };
+
+            const deleteStore = async (storeId) => {
+                if (!confirm('Are you sure you want to delete this store?')) return;
+
+                try {
+                    showLoading();
+                    await $.ajax({
+                        url: `/api/stores/${storeId}`,
+                        method: 'DELETE'
+                    });
+                    $.wnoty({
+                        type: 'success',
+                        message: 'Store deleted successfully',
+                        position: 'top-right'
+                    });
+                    loadStores();
+                } catch (error) {
+                    console.error('Error deleting store:', error);
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Failed to delete store',
+                        position: 'top-right'
+                    });
+                } finally {
+                    hideLoading();
+                }
+            };
+
+            const editStore = async (storeId) => {
+                try {
+                    showLoading();
+                    const store = await $.ajax({
+                        url: `/api/stores/${storeId}`,
+                        method: 'GET',
+                        dataType: 'json'
+                    });
+                    populateForm(store);
+                } catch (error) {
+                    console.error('Error fetching store details:', error);
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Failed to load store details',
+                        position: 'top-right'
+                    });
+                } finally {
+                    hideLoading();
+                }
+            };
+
+            // Helper functions
+            const renderStoreTable = (stores) => {
+                const $tableBody = $storeTable.find('tbody');
+                $tableBody.empty();
+
+                stores.forEach(store => {
+                    const row = `
+                <tr>
+                    <td>${store.storeName}</td>
+                    <td>${store.counterStore ? 'Yes' : 'No'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary edit-store" data-id="${store.id}">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-store" data-id="${store.id}">Delete</button>
+                    </td>
+                </tr>
+            `;
+                    $tableBody.append(row);
+                });
+            };
+
+            const populateForm = (store) => {
+                $('#storeName').val(store.storeName);
+                $('#counterStore').prop('checked', store.counterStore);
+                $saveStoreBtn.data('mode', 'edit').data('id', store.id).text('Update Store');
+            };
+
+            // Event listeners
+            $saveStoreBtn.on('click', () => {
+                if (!validateForm()) return;
+
+                const formData = {
+                    storeName: $('#storeName').val(),
+                    counterStore: $('#counterStore').prop('checked')
+                };
+
+                const mode = $saveStoreBtn.data('mode');
+                const storeId = $saveStoreBtn.data('id');
+                saveStore(formData, mode, storeId);
+            });
+
+            $resetFormBtn.on('click', resetForm);
+
+            $(document).on('click', '.delete-store', function() {
+                const storeId = $(this).data('id');
+                deleteStore(storeId);
+            });
+
+            $(document).on('click', '.edit-store', function() {
+                const storeId = $(this).data('id');
+                editStore(storeId);
+            });
+
+            // Initialize and load stores
+            loadStores();
+        });
+    </script>
+</div>

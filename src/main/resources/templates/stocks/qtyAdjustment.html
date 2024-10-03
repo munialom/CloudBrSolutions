@@ -1,0 +1,76 @@
+<div th:fragment="stock">
+
+    <!-- BEGIN panel -->
+    <div class="panel rounded border" data-sortable-id="ui-widget-16">
+        <div class="panel panel-inverse" data-sortable-id="ui-widget-1">
+            <div class="panel-heading">
+                <h4 class="panel-title">Stock Adjustments</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+
+        <div class="panel-toolbar border-bottom" style="display: flex; align-items: center;">
+            <!-- BEGIN input-group -->
+            <div class="input-group mb-3">
+                <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown"><span class="d-none d-md-inline">Search Products</span><span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span> <b class="caret"></b></button>
+
+                <div class="flex-fill position-relative">
+                    <div class="input-group">
+                        <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1;">
+                            <i class="fa fa-search opacity-5"></i>
+                        </div>
+                        <input type="text" class="form-control px-35px bg-light" placeholder="Search products..." id="search-pos" />
+                        <div id="productTableContainer" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- END input-group -->
+        </div>
+
+        <div class="panel-body">
+            <!-- BEGIN table -->
+            <div class="table-responsive mb-3">
+                <table class="table table-thead-sticky table-tfoot-sticky table-bordered table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0" id="selectedProducts">
+                    <thead>
+                    <tr>
+                        <th>Product Code</th>
+                        <th>Product Name</th>
+                        <th>Product Quantity</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+                <fieldset class="border p-2">
+
+                        <div class="alert alert-info" role="alert" style="display: none;">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Updating Stocks Qty...
+                        </div>
+
+                        <div class="alert alert-success" role="alert" style="display: none;">
+                            <span class="me-2" role="status" aria-hidden="true"></span>
+                            <span class="students-count"></span>Transaction Saved successfully.
+                        </div>
+                        <div class="alert alert-danger" role="alert" style="display: none;">
+                            <span class="me-2" role="status" aria-hidden="true"></span>
+                            <span class="students-count"></span>Transaction Saving Failed.
+                        </div>
+
+
+                </fieldset>
+            </div>
+            <!-- END table -->
+        </div>
+
+    </div>
+    <!-- END panel -->
+
+    </div>
+</div>

@@ -1,0 +1,69 @@
+<div th:fragment="search-table-prices" xmlns="http://www.w3.org/1999/html">
+
+
+    <div class="table-responsive mb-3">
+        <table class="table table-hover table-panel text-nowrap align-middle mb-0 rounded border" id="search-products-prices">
+            <thead>
+            <tr>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Buying Price</th>
+                <th>Sale Price</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.productCode}"></td>
+                <td th:text="${product.productName}"></td>
+                <td th:text="${product.productCost}"></td>
+                <td th:text="${product.productPrice}"></td>
+
+            </tr>
+            </tbody>
+    </table>
+    </div>
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Enable table row selection
+            $('#search-products-prices tbody tr').click(function() {
+                // Get the product ID and name from the selected row
+                var productCode = $(this).find('td:nth-child(1)').text();
+                var productName = $(this).find('td:nth-child(2)').text();
+                var productBuy = $(this).find('td:nth-child(3)').text();
+                var productSale = $(this).find('td:nth-child(4)').text();
+
+                // Create a new row for the selected item with default quantity of 1 and quantity input field
+                // Create a new row for the selected item with input fields for productBuy and productSale
+                var newRow = '<tr>' +
+                    '<td key-id="productCode">' + productCode + '</td>' +
+                    '<td key-id="productName">' + productName + '</td>' +
+                    '<td key-id="productBuy"><input type="number" name="productBuy" id="productBuy" class="product-buy" value="' + productBuy + '" min="0"></td>' +
+                    '<td key-id="productSale"><input type="number" name="productSale" id="productSale" class="product-sale" value="' + productSale + '" min="0"></td>' +
+                    '</tr>';
+
+                // Append the new row to the selected products table
+                $('#selectedProducts-prices tbody').append(newRow);
+
+                // Clear the search input
+                $('#search-prices').val('');
+            });
+
+            // Validate input to allow only positive integers for productBuy and productSale
+            $(document).on('input', '.product-buy, .product-sale', function() {
+                var value = $(this).val();
+                value = value.replace(/[^0-9]/g, ''); // Remove non-digit characters
+                $(this).val(value);
+            });
+        });
+    </script>
+
+
+
+</div>

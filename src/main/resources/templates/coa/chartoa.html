@@ -1,0 +1,42 @@
+<div th:fragment="coa">
+
+    <form id="account-chart" th:action="@{/accounts/create}" th:object="${ac}" method="POST"
+          data-parsley-validate="true">
+    <div class="card border-0 mb-4">
+        <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fa fa-diagram-project fa-lg fa-fw text-dark text-opacity-50 me-1"></i> Create All Chart of Accounts
+        </div>
+        <div class="card-body">
+
+                <div class="panel ">
+                    <div class="panel-heading bg-teal-100 text-white">
+
+                        <h4 class="panel-title">Chart of Accounts</h4>
+                    </div>
+
+                    <div class="panel-body" style=" border: 1px solid #ccc;">
+
+
+
+
+                    </div>
+
+                </div>&nbsp;&nbsp;
+
+
+
+        </div>
+    </div>
+
+
+    <div class="mailbox-content-footer d-flex align-items-center justify-content-end">
+        <button type="submit" class="btn btn-default cancel  ps-40px pe-40px me-5px">Discard</button>
+        <button type="submit" class="btn btn-primary ps-40px pe-40px">Save</button>
+    </div>
+
+
+    </form>
+
+
+
+</div>

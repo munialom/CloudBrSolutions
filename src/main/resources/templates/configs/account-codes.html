@@ -1,0 +1,144 @@
+
+<div th:fragment="hardware" th:remove="tag">
+
+            <form id="school-form" method="post" th:action="@{/settings/accounting}"  class="rounded border">
+
+                <div class="card border-0 mb-4">
+                    <div class="card-header h6 mb-0 bg-none p-3">
+                        <i class="fa fa-diagram-project fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Configure POS Hardware Details
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-lg-0 mb-3">
+                                    <label class="form-label">OFFICE FEES:</label>
+                                    <input type="text" class="form-control form-control-sm" onkeyup="capitalize(this)" name="OFFICE" th:value="${OFFICE}" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-lg-0 mb-3">
+                                    <label class="form-label">DAILY SHARES:</label>
+                                    <input type="text" class="form-control form-control-sm" onkeyup="capitalize(this)" name="SHARES" th:value="${SHARES}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-lg-0 mb-3">
+                                    <label class="form-label">LOAN FEES:</label>
+                                    <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="LOAN_FEE" th:value="${LOAN_FEE}" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-lg-0 mb-3">
+                                    <label class="form-label">MEMBERSHIP FEES:</label>
+                                    <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="MEMBERSHIP_FEES"  th:value="${MEMBERSHIP_FEES}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-lg-0 mb-3">
+                                    <label class="form-label">NEW VEHICLE FEES:</label>
+                                    <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="VEHICLE_FEES" th:value="${VEHICLE_FEES}" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-lg-0 mb-3">
+                                    <label class="form-label">STATEMENT FEES:</label>
+                                    <input type="text" class="form-control form-control-sm" onkeyup="capitalize(this)"  name="STATEMENT_FEE" th:value="${STATEMENT_FEE}" />
+                                </div>
+                            </div>
+                        </div>
+<!--                        <div class="row">-->
+<!--                            <div class="col-lg-6">-->
+<!--                                <div class="mb-lg-0 mb-3">-->
+<!--                                    <label class="form-label">LOGO:</label>-->
+<!--                                    <img id="thumbnail" alt="Image Preview" th:src="@{${SCHOOL_LOGO}}" width="150" height="70"/>-->
+<!--                                    <input type="file" id="fileImage" name="fileImage"  accept="image/png,image/jpeg"/>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+                    </div>
+                </div>
+
+                <div class="mailbox-content-footer d-flex align-items-center justify-content-end">
+                    <button type="submit" id="school-data" class="btn btn-default cancel  ps-40px pe-40px me-5px">Discard</button>
+                    <button type="submit" class="btn btn-primary ps-40px pe-40px">Update Details</button>
+                </div>
+
+            </form>
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#school-form').submit(function(event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+
+                // Serialize the form data
+                var formData = $(this).serialize();
+
+                // Submit the form data using AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        // Display a success notification
+                        $.gritter.add({
+                            title: 'Success',
+                            text: 'Form submitted successfully',
+                            class_name: 'gritter-success'
+                        });
+
+                        // Load the same form to see the changes
+                        loadFragment('/settings/system');
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error if the form submission fails
+                        $.gritter.add({
+                            title: 'Error',
+                            text: 'Form submission failed',
+                            class_name: 'gritter-error'
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            function showLogoThumbnail() {
+                var fileInput = document.getElementById('fileImage');
+                var thumbnail = document.getElementById('thumbnail');
+
+                fileInput.addEventListener('change', function() {
+                    var file = fileInput.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        thumbnail.src = e.target.result;
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            showLogoThumbnail();
+        });
+
+    </script>
+</div>
+
+
+
+
+

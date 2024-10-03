@@ -1,0 +1,590 @@
+<div th:fragment="members">
+
+
+    <style type="text/css">
+
+
+        /* Set flexbox for the pos-container */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+
+        }
+
+        /* Set flex for pos-content */
+        .pos-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Style pos-content-container */
+        .pos-content-container {
+            flex: 1;
+            padding: 10px;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+
+        }
+    </style>
+
+
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden rounded border">
+        <div class="panel-heading bg-light-100 border-bottom">
+            <h4 class="panel-title">Bills:</h4>
+            <div class="panel-heading-btn">
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+
+
+        <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden">
+
+            <div class="panel-body p-2 flex-1 overflow-hidden">
+
+                <div class="pos-container">
+
+                    <!-- pos-content -->
+                    <div class="pos-content">
+                        <div class="col-md-9">
+                            <!-- pos-content-container -->
+                            <div class="pos-content-container">
+
+                                <div class="card">
+                                    <div class="card-header h6 bg-none p-2 d-flex align-items-center">
+                                        <div class="flex-1">
+                                            <i class="fa fa-chalkboard-user fa-fw text-dark me-1"></i>Billed Services:
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="card-body fw-bold">
+                                        <div class="row" id="cashBillContainer">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <!-- END pos-content-container -->
+                        </div>
+                        <!-- pos-sidebar -->
+                        <div class="col-md-3">
+
+                            <div class="pos-sidebar bg-gradient">
+
+                                <div class="pos-sidebar-body" >
+
+                                    <div class="card rounded border">
+                                        <div class="card-header h6 mb-0 bg-none p-3">
+                                            OSCU Status: <a href="#" class="ms-auto text-decoration-none text-black-500">
+                                            <i class="fa fa-fw fa-lg fs-12px me-2 connectivity-icon"></i>
+                                            <span class="status-text"></span>
+                                            <span class="status-value" id="customer-id" style="display: none;"></span>
+                                        </a>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="mb-3 flex-grow-1 pe-1">
+                                                        <div class="d-flex align-items-center bg-light-100" style="padding: 10px;">
+                                                            <div style="flex: 0 0 auto; margin-right: 20px;">
+                                                                <i class="fab fa-cc-amazon-pay fa-4x"></i>
+                                                            </div>
+                                                            <div style="flex: 1 1 auto; text-align: right;">
+                                                                <span id="totalAmount" style="font-size: 2.5rem; font-weight: bold;">0.00</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-floating mb-15px">
+                                                <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder="Amount Paid" id="receivedAmount" value="0.00"/>
+                                                <label for="receivedAmount" class="d-flex align-items-center fs-13px text-gray-600">Amount Paid</label>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-md-12 pt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="CASH" checked>
+                                                        <label class="form-check-label" for="inlineCheckbox1">CASH</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="MPESA">
+                                                        <label class="form-check-label" for="inlineCheckbox2">MPESA</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="VISA">
+                                                        <label class="form-check-label" for="inlineCheckbox3">VISA</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="pos-sidebar-footer" style="padding: 5px; border-top: 1px solid #e5e5e5;">
+
+                                    <div class="card rounded border">
+                                        <div class="card-header bg-none p-3 h6 m-0 d-flex align-items-center">
+                                            <i class="fa fa-credit-card fa-lg me-2 text-black-500"></i>
+                                            Payment Records
+                                            <a href="#" class="ms-auto text-decoration-none text-black-500"><i class="fab fa-paypal me-1 fa-lg"></i> View paypal records</a>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-borderless table-sm fw-bold m-0">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="w-150px">Total</td>
+                                                    <td>3 items</td>
+                                                    <td class="text-end" id="subtotal"><b>0.00</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tax</td>
+                                                    <td>VAT 16%</td>
+                                                    <td class="text-end" id="tax"><b>0.00</b></td>
+                                                </tr>
+
+
+                                                <tr>
+                                                    <td class="pb-2" colspan="2"><b>Change</b></td>
+                                                    <td class="text-end pb-2 text-decoration-underline" id="change-balance"><b>0.00</b></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="card-footer bg-none d-flex p-3">
+
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a href="#" class="btn btn-danger ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                        <i class="fab fa-paypal d-block fs-18px my-1"></i>
+                                                        CANCEL
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="#" id="saveSaleTransactionBtn" class="btn btn-success ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                        <i class="fab fa-cc-visa d-block fs-18px my-1"></i>
+                                                        MARK PAID
+                                                    </a>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                        <!-- END pos-sidebar -->
+
+                    </div>
+                    <!-- END pos-content -->
+
+                </div>
+
+            </div>
+        </div>
+
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+
+    </div>
+
+
+
+
+
+    <script>
+        // Global variables
+        let cashBillData = [];
+        let totalAmount = 0;
+        let totalTax = 0;
+        let totalItems = 0;
+
+        function initializeCashBillManager(containerId) {
+            const container = $(`#${containerId}`);
+            createStructure(container);
+            addEventListeners(container);
+        }
+
+        function updateCashBillData(serialNumber) {
+            const container = $('#cashBillContainer');
+            if (serialNumber) {
+                fetchData(serialNumber, container);
+            } else {
+                showNoRecordsAlert(container, "No valid serial number provided.");
+            }
+        }
+
+        function fetchData(serialNumber, container) {
+            $.ajax({
+                url: `/api/products-manager/order-transaction-details/${serialNumber}`,
+                method: 'GET',
+                success: function(data) {
+                    cashBillData = data;
+                    if (cashBillData.length === 0) {
+                        showNoRecordsAlert(container, "No records found for this transaction.");
+                    } else {
+                        displayBillData(container);
+                    }
+                    updateSidebar();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching cash bill data:', error);
+                    container.html('<div class="alert alert-danger" role="alert">Error loading cash bill data. Please try again later.</div>');
+                }
+            });
+        }
+
+        function createStructure(container) {
+            const structure = `
+        <div id="alertContainer"></div>
+        <div class="table-responsive panel-heading bg-light-100">
+            <table id="cash-bill-table" class="table table-bordered mb-0">
+                <thead class="bg-light-100">
+                    <tr>
+                        <th><input type="checkbox" id="select-all-checkbox"></th>
+                        <th>No</th>
+                        <th>Product ID</th>
+                        <th>Product Code</th>
+                        <th>Product Name</th>
+                        <th class="text-end">Quantity</th>
+                        <th class="text-end">Unit Price</th>
+                        <th class="text-end">Tax</th>
+                        <th class="text-end">Net Tax</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    `;
+            container.html(structure);
+
+            // Add custom styles
+            if (!$("#custom-bill-manager-style").length) {
+                $("<style>")
+                    .attr("id", "custom-bill-manager-style")
+                    .prop("type", "text/css")
+                    .html(`
+                #cash-bill-table {
+                    font-size: 0.7rem;
+                }
+                #cash-bill-table th,
+                #cash-bill-table td {
+                    padding: 0.3rem;
+                }
+                #cash-bill-table .text-end {
+                    text-align: right;
+                }
+                .table-responsive {
+                    max-height: 500px;
+                    overflow-y: auto;
+                }
+            `)
+                    .appendTo("head");
+            }
+        }
+
+        function showNoRecordsAlert(container, message) {
+            const alertHtml = `
+        <div class="alert alert-info" role="alert">
+            ${message}
+        </div>
+    `;
+            container.find('#alertContainer').html(alertHtml);
+            container.find('.table-responsive').hide();
+        }
+
+        function displayBillData(container) {
+            container.find('#alertContainer').empty();
+            container.find('.table-responsive').show();
+            const tbody = container.find('tbody');
+            const tfoot = container.find('tfoot');
+            tbody.empty();
+
+            cashBillData.forEach((item, index) => {
+                const tr = $('<tr>');
+                tr.append(`<td><input type="checkbox" class="row-checkbox" data-product-id="${item.product_id}"></td>`);
+                tr.append(`<td>${index + 1}</td>`);
+                tr.append(`<td>${item.product_id}</td>`);
+                tr.append(`<td>${item.product_code}</td>`);
+                tr.append(`<td>${item.product_name}</td>`);
+                tr.append(`<td class="text-end">${item.qty}</td>`);
+                tr.append(`<td class="text-end">${item.unitprice.toFixed(2)}</td>`);
+                tr.append(`<td class="text-end">${item.tax.toFixed(2)}</td>`);
+                tr.append(`<td class="text-end">${item.net_tax.toFixed(2)}</td>`);
+                tr.append(`<td class="text-end">${item.subtotal.toFixed(2)}</td>`);
+                tbody.append(tr);
+            });
+
+            updateBillSummary(tfoot);
+        }
+
+        function updateBillSummary(tfoot) {
+            totalItems = cashBillData.reduce((sum, item) => sum + item.qty, 0);
+            totalAmount = cashBillData.reduce((sum, item) => sum + item.subtotal, 0);
+            totalTax = cashBillData.reduce((sum, item) => sum + item.net_tax, 0);
+
+            const summaryContent = `
+        <tr class="table-light">
+            <td colspan="5"><strong>Total Items: ${totalItems}</strong></td>
+            <td colspan="3" class="text-end"><strong>Total Tax: ${totalTax.toFixed(2)}</strong></td>
+            <td colspan="2" class="text-end"><strong>Total Amount: ${totalAmount.toFixed(2)}</strong></td>
+        </tr>
+    `;
+            tfoot.html(summaryContent);
+            updateSidebar();
+        }
+
+        function updateSidebar() {
+            // Update the total items
+            $('.table-borderless tr:first-child td:nth-child(2)').text(`${totalItems} items`);
+
+            // Update the subtotal
+            $('#subtotal b').text(totalAmount.toFixed(2));
+
+            // Update the tax amount
+            $('#tax b').text(totalTax.toFixed(2));
+
+            // Update the total amount
+            $('#totalAmount').text(totalAmount.toFixed(2));
+
+            updateChange();
+        }
+
+        function updateChange() {
+            const receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+            const change = receivedAmount - totalAmount;
+            $('#change-balance b').text(change >= 0 ? change.toFixed(2) : '0.00');
+        }
+
+        function addEventListeners(container) {
+            $('#receivedAmount').on('input', function() {
+                updateChange();
+            });
+
+            // Add event listener for the "Select All" checkbox
+            $('#select-all-checkbox').on('change', function() {
+                $('.row-checkbox').prop('checked', $(this).is(':checked'));
+            });
+
+            // Add event listener for individual row checkboxes
+            container.on('change', '.row-checkbox', function() {
+                const allChecked = $('.row-checkbox:checked').length === $('.row-checkbox').length;
+                $('#select-all-checkbox').prop('checked', allChecked);
+            });
+        }
+
+        // Call this function after the DOM is fully loaded
+        $(document).ready(function() {
+            // Initialize the received amount input with 0.00
+            $('#receivedAmount').val('0.00');
+
+            // Initialize the cash bill manager
+            initializeCashBillManager('cashBillContainer');
+        });
+
+        // Function to be called when a transaction is selected
+        function onTransactionSelected(serialNumber) {
+            updateCashBillData(serialNumber);
+            $(".messenger-chat").toggle();
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <script>
+        // Simplified Payment Processing Module
+        const PaymentProcessor = (function() {
+            function getSelectedPaymentModes() {
+                return ['CASH', 'MPESA', 'VISA'].filter(mode =>
+                    $(`#inlineCheckbox${mode === 'CASH' ? '1' : mode === 'MPESA' ? '2' : '3'}`).is(':checked')
+                );
+            }
+
+            function getPaymentData() {
+                const totalAmount = parseFloat($('#totalAmount').text()) || 0;
+                const receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+                const selectedModes = getSelectedPaymentModes();
+
+                const paymentData = {
+                    totalAmount: totalAmount,
+                    receivedAmount: receivedAmount,
+                    paymentModes: selectedModes
+                };
+
+                console.log('Payment Data:', paymentData);
+                return paymentData;
+            }
+
+            function validatePayment(paymentData) {
+                if (paymentData.totalAmount <= 0) {
+                    showNotification('error', 'Total amount must be greater than zero');
+                    return false;
+                }
+
+                if (paymentData.receivedAmount <= 0) {
+                    showNotification('error', 'Received amount must be greater than zero');
+                    return false;
+                }
+
+                if (paymentData.paymentModes.length === 0) {
+                    showNotification('error', 'Please select at least one payment mode');
+                    return false;
+                }
+
+                // New validation logic
+                if (paymentData.paymentModes.length === 1) {
+                    if (paymentData.receivedAmount !== paymentData.totalAmount) {
+                        showNotification('error', 'Received amount must be equal to total amount when using a single payment mode');
+                        return false;
+                    }
+                } /*else {
+                    if (paymentData.receivedAmount < paymentData.totalAmount) {
+                        showNotification('error', 'Received amount cannot be less than total amount');
+                        return false;
+                    }
+                }*/
+
+                return true;
+            }
+
+            return {
+                getPaymentData: getPaymentData,
+                validatePayment: validatePayment
+            };
+        })();
+
+        // Function to save the sale transaction
+        const saveSaleTransaction = async () => {
+            const paymentData = PaymentProcessor.getPaymentData();
+            console.log('Payment Data before sending:', paymentData);
+
+            if (!PaymentProcessor.validatePayment(paymentData)) {
+                return;
+            }
+
+            showLoading();
+            try {
+                const serialNumber = $('#currentSerial').text().trim();
+
+                if (!serialNumber) {
+                    showNotification('error', 'Serial number is missing');
+                    return;
+                }
+
+                const saleTransactionData = {
+                    serialNumber: serialNumber,
+                    ...paymentData,
+                    description: 'Sale transaction'
+                };
+
+                console.log('Data to be sent:', saleTransactionData);
+                const response = await $.ajax({
+                    url: '/api/transactions/sale',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(saleTransactionData)
+                });
+                console.log('Sale transaction response:', response);
+                if (Array.isArray(response) && response.length > 0) {
+                    showNotification('success', 'Sale transaction saved successfully');
+                    clearInputsAndResetUI();
+                } else {
+                    showNotification('error', 'No transactions were saved. Please check the server logs.');
+                }
+            } catch (error) {
+                console.error('Error saving sale transaction:', error);
+                showNotification('error', 'Error saving sale transaction: ' + (error.responseText || error.message));
+            } finally {
+                hideLoading();
+            }
+        };
+
+        // Function to clear inputs and reset UI
+        function clearInputsAndResetUI() {
+            // Clear and reset input fields
+            $('#receivedAmount').val('0.00');
+            $('#totalAmount').text('0.00');
+
+            // Uncheck all payment mode checkboxes
+            $('#inlineCheckbox1, #inlineCheckbox2, #inlineCheckbox3').prop('checked', false);
+
+            // Clear the cash bill table
+            $('#cash-bill-table tbody').empty();
+
+            // Reset any other relevant UI elements
+            // For example, if you have a current serial number display, you might want to reset it:
+            // $('#currentSerial').text('');
+        }
+
+        // Utility functions
+        function showLoading() {
+            $('#loading-overlay').show();
+        }
+
+        function hideLoading() {
+            $('#loading-overlay').hide();
+        }
+
+        function showNotification(type, message) {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        }
+
+        // Attach event listener to the save button
+        $('#saveSaleTransactionBtn').on('click', saveSaleTransaction);
+    </script>
+
+</div>
+
+
+
+
+
+
+

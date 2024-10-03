@@ -1,0 +1,74 @@
+<div th:fragment="pc">
+
+    <div class="panel panel flex-1 m-0 d-flex flex-row">
+
+        <div class="panel-body p-0 flex-1">
+            <div class="row">
+                <div class="d-flex align-items-center ">
+
+                    <div class="col me-2">
+                        <select class="selectpicker form-control" id="v-search" name="v-search" required>
+                            <option value="" disabled selected>Search Supplier(Individual/Company)</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="btn-toolbar">
+                        <div class="btn-group me-2">
+                            <a href="#"  onclick="loadFragment('/suppliers')"  class="btn  btn-sm btn-dark" ><i class="fa fa-circle-plus" ></i> <span class="hidden-xs">Add New Supplier</span></a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            $("#v-search").select2({
+                ajax: {
+                    url: "/api/creditor/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id + ' - ' + obj.creditorName,
+                                    studentId: obj.id // add the studentId to the option
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 3
+            });
+            // Add an event listener for when an option is selected
+            $("#v-search").on("select2:select", function (e) {
+                var selectedOption = e.params.data;
+                var customerName = selectedOption.text.split(' - ')[1]; // Extract customer name
+                var customerId = selectedOption.text.split(' - ')[0]; // Extract customer name
+                $("#customer-name").text(customerName);
+                $("#customer-id").text(customerId);// Update the span element
+            });
+
+        });
+    </script>
+
+
+
+</div>

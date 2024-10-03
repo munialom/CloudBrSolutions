@@ -1,0 +1,440 @@
+<div th:fragment="charts-account">
+
+    <style type="text/css">
+
+        /* Messenger Styles */
+        .messenger {
+            display: flex;
+            height: auto;
+        }
+
+        .messenger-chat {
+            width: 30%;
+            border-right: 1px solid #ddd;
+        }
+
+        .messenger-content {
+            width: 70%;
+            padding: 20px;
+        }
+
+
+
+        .messenger-chat-header input[type="text"] {
+            width: 100%;
+        }
+
+        /* Chat Body Styles */
+        .messenger-chat-body {
+            padding: 20px;
+        }
+
+
+
+        /* Content Styles */
+        .widget-chat {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+
+
+        .widget-chat-media img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+
+        /* Style the input fields */
+        .container input {
+            font-size: 16px;
+            padding: 10px;
+            width: 100%;
+            display: block;
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style the label to be above and to the left */
+        .container label {
+            position: absolute;
+            margin-left: 10px;
+            margin-top: 10px;
+            pointer-events: none;
+            transition: 0.2s ease all;
+        }
+
+        /* Style the label to be smaller and move up when the input is focused or filled */
+        .container input:focus ~ label,
+        .container input:valid ~ label {
+            top: -20px;
+            font-size: 14px;
+            color: blue;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+            min-width: 377px; /* Changed to min-width to allow flexibility */
+
+            /* overflow-y: auto;*/
+            position: sticky;
+            top: 0;
+            height: 85%;
+            display: flex;
+            flex-direction: column;
+
+        }
+
+
+
+
+    </style>
+
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow rounded border">
+
+        <div class="panel-body p-0 flex-1 overflow">
+
+            <div class="messenger" id="messenger">
+
+                <div class="messenger-chat">
+
+                    <div class="messenger-chat-body">
+
+                        <div class="row">
+
+                            <div class="pos-sidebar bg-gradient">
+
+                                <div class="pos-sidebar-body" >
+
+
+                                    <div class="pos-sidebar-footer">
+
+                                        <div class="card rounded border">
+                                            <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                                                <div class="flex-1">
+                                                    <i class="fab fa-cc-visa fa-lg fa-fw text-black  me-1"></i>Chart of Accounts:
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <form id="account-chart-form" th:action="@{/accounts/create}" th:object="${ac}" method="POST"
+                                                      data-parsley-validate="true">
+
+                                                    <div class="form-floating mb-3">
+                                                        <select class="form-control default-select2 "  id="accountGroup" name="accountGroup" style="width: 100%; height: 40px;" th:field="*{accountGroup}">
+                                                            <option value=" "></option>
+                                                            <option th:each="account : ${T(com.ctecx.brsuite.chartofaccounts.AccountGroup).values()}"
+                                                                    th:text="${account.displayText}"
+                                                                    th:value="${account.name()}">
+                                                            </option>
+
+                                                        </select>
+                                                        <label for="accountGroup">Search By Account Group</label>
+                                                    </div>
+
+                                                    <div class="form-floating mb-3">
+                                                        <input type="text" class="form-control" id="accountName" name="accountName" style="width: 100%; height: 40px;"  th:field="*{name}" >
+                                                        <label for="accountName">Account Name</label>
+                                                    </div>
+
+                                                    <div class="form-floating mb-3">
+                                                        <input type="text" class="form-control" id="description" name="description" style="width: 100%; height: 40px;"   th:field="*{alias}" >
+                                                        <label for="description">Description</label>
+                                                    </div>
+
+                                                    <div class="form-floating mb-3 select2-wrapper">
+                                                        <select class="form-control"  id="accountChart" name="accountChart" style="width: 100%; height: 40px;"    th:field="*{parent}" >
+                                                            <option value="">--[No Parent Account]--</option>
+                                                            <th:block th:each="fs: ${formStrands}">
+
+                                                                <option th:text="${fs.name}" th:value="${fs.id}"></option>
+
+                                                            </th:block>
+                                                        </select>
+                                                        <label for="accountChart">Sub Account of(?)</label>
+                                                    </div>
+
+
+                                                </form>
+
+                                            </div>
+
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <table class="table table-borderless table-sm fw-bold m-0">
+                                                        <tbody>
+                                                        <tr>
+                                                            <div class="alert alert-info" role="alert" style="display: none;">
+                                                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                                Processing......
+                                                            </div>
+
+                                                            <div class="alert alert-success" role="alert" style="display: none;">
+                                                                <span class="me-2" role="status" aria-hidden="true"></span>
+                                                                <span class="students-count"></span>Saved successfully.
+                                                            </div>
+                                                            <div class="alert alert-danger" role="alert" style="display: none;">
+                                                                <span class="me-2" role="status" aria-hidden="true"></span>
+                                                                <span class="students-count"></span>Saving Failed.
+                                                            </div>
+
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                            <div class="card-footer bg-none d-flex p-3">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <a href="#" class="btn btn-danger ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                            <i class="fab fa-paypal d-block fs-18px my-1"></i>
+                                                            CANCEL
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <a href="#" id="saving-my-chart" class="btn btn-success ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                            <i class="fab fa-amazon-pay d-block fs-18px my-1"></i>
+                                                            PROCESS
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="messenger-content" style="width: 100%;">
+                    <div class="widget-chat">
+                        <div class="card rounded border">
+                            <div class="card-header bg-none p-3 h6 m-0 d-flex align-items-center">
+                                <i class="fa fa-clock fa-lg me-2 text-green-500 text-opacity-50"></i>
+                                Records
+                                <a href="#" class="ms-auto text-decoration-none text-red-500" id="view-recent-data"><i class="fa fa-eye me-1 fa-lg"></i> View  records</a>
+                            </div>
+                            <div class="card-body" id="recentTable" style="height:300px; overflow-y: auto;">
+
+
+                            </div>
+                            <div class="card-footer bg-none d-flex p-3">
+                                <b class="text-body" id="my-Id" style="display: none"></b>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#saving-my-chart').click(function() {
+                // Serialize form data
+                var formData = $('#userForm').serialize();
+
+                // Send AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: $('#account-chart-form').attr('action'),
+                    data: formData,
+                    success: function(response) {
+                        // Show success message
+                        swal({
+                            title: "Success",
+                            text: "User saved successfully",
+                            icon: "success",
+                            timer: 2000, // Disappear after 2 seconds
+                            button: false
+                        });
+                    },
+                    error: function() {
+                        // Prevent default action (form submission)
+                        $('#account-chart-form').submit(function(e) {
+                            e.preventDefault();
+                        });
+
+                        // Show error message
+                        swal({
+                            title: "Error",
+                            text: "Something went wrong. Please try again later.",
+                            icon: "error",
+                            button: "OK"
+                        });
+                    }
+                });
+            });
+
+            $('#discardButton').click(function() {
+                // Handle discard button click if needed
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2
+            $("#accountChart").select2({
+                ajax: {
+                    url: "/api/accounts/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    value: obj.id,
+                                    text: obj.id+ ' - ' + obj.name,
+                                    studentId: obj.id // add the studentId to the option
+                                };
+                            })
+                        };
+                    }
+                },
+                minimumInputLength: 2
+            });
+
+            // When an option is selected
+            $('#accountChart').on('select2:select', function(e) {
+                var label = $(this).siblings('label');
+                label.addClass('selected');
+                label.trigger('update');  // Add this line
+
+                // Add padding to the selected option
+                $(this).next().find('.select2-selection__rendered').css('padding-top', '25px'); // Adjust the padding as needed
+                $(this).next().find('.select2-selection').css('height', '40px');
+            });
+
+            // When an option is deselected
+            $('#accountChart').on('select2:unselect', function() {
+                var label = $(this).siblings('label');
+                if ($(this).val() === null) {
+                    label.removeClass('selected');
+                }
+                label.trigger('update');  // Add this line
+
+                // Reset padding when option is deselected
+                $(this).next().find('.select2-selection__rendered').css('padding-top', '0');
+                $(this).next().find('.select2-selection').css('height', '40px');
+            });
+
+            // When the Select2 dropdown is opened
+            $('#accountChart').on('select2:open', function() {
+                var label = $(this).siblings('label');
+                label.addClass('focused');
+            });
+
+            // When the Select2 dropdown is closed
+            $('#accountChart').on('select2:close', function() {
+                var label = $(this).siblings('label');
+                label.removeClass('focused');
+            });
+
+            // Check if an option is pre-selected on page load
+            if ($('#accountChart').val() !== null) {
+                var label = $('#accountChart').siblings('label');
+                label.addClass('selected');
+                label.trigger('update');  // Add this line
+            }
+            else {
+                // If no option is pre-selected, set the height
+                $('#accountChart').next().find('.select2-selection').css('height', '40px');
+            }
+        });
+    </script>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $(".default-select2").select2();
+
+            // Apply the height adjustment on page load
+
+
+            // When an option is selected
+            $('.default-select2').on('select2:select', function(e) {
+                var label = $(this).siblings('label');
+                label.addClass('selected');
+                label.trigger('update');
+
+                // Add padding to the selected option
+                $(this).next().find('.select2-selection__rendered').css('padding-top', '25px');
+                $('.default-select2').next().find('.select2-selection').css('height', '40px');
+            });
+
+            // When an option is deselected
+            $('.default-select2').on('select2:unselect', function() {
+                var label = $(this).siblings('label');
+                if ($(this).val() === null) {
+                    label.removeClass('selected');
+                }
+                label.trigger('update');
+
+                // Reset padding when option is deselected
+                $(this).next().find('.select2-selection__rendered').css('padding-top', '0');
+                $('.default-select2').next().find('.select2-selection').css('height', '40px');
+            });
+
+            // When the Select2 dropdown is opened
+            $('.default-select2').on('select2:open', function() {
+                var label = $(this).siblings('label');
+                label.addClass('focused');
+            });
+
+            // When the Select2 dropdown is closed
+            $('.default-select2').on('select2:close', function() {
+                var label = $(this).siblings('label');
+                label.removeClass('focused');
+            });
+
+            // Check if an option is pre-selected on page load
+            if ($('.default-select2').val() !== null) {
+                var label = $('.default-select2').siblings('label');
+                label.addClass('selected');
+                label.trigger('update');
+            }
+
+            // Delay the application of the height
+            setTimeout(function() {
+                $('.default-select2').next().find('.select2-selection').css('height', '40px');
+            }, 125);  // Adjust the delay as needed
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+
+</div>
+

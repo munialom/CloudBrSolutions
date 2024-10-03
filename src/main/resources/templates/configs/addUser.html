@@ -1,0 +1,83 @@
+
+
+
+<div th:fragment="users">
+
+
+
+   <form name="email_to_form" class="mailbox-form" th:action="@{/users}" th:object="${user}" method="POST">
+      <div class="card border-0 mb-4">
+         <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fa fa-money-bill-1-wave fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Add New System
+         </div>
+         <div class="card-body">
+            <div class="row">
+               <!-- First row -->
+               <div class="col-xs-6">
+                  <div class="form-floating mb-3">
+                     <input type="email" class="form-control" id="email" th:field="*{email}">
+                     <label for="email">Email</label>
+                  </div>
+               </div>
+               <div class="col-xs-6">
+                  <div class="form-floating mb-3">
+                     <input type="password" class="form-control" id="password" th:field="*{password}">
+                     <label for="password">Password</label>
+                  </div>
+               </div>
+               <div class="col-xs-6">
+                  <div class="form-floating mb-3">
+                     <input type="text" class="form-control" id="firstName" th:field="*{firstName}">
+                     <label for="firstName">First Name</label>
+                  </div>
+               </div>
+               <div class="col-xs-6">
+                  <div class="form-floating mb-3">
+                     <input type="text" class="form-control" id="lastName" th:field="*{lastName}">
+                     <label for="lastName">Last Name</label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <!-- Second row -->
+               <div class="col-xs-4">
+                  <div class="form-floating mb-3">
+                     <input type="text" class="form-control" id="phone" th:field="*{phone}">
+                     <label for="phone">Phone</label>
+                  </div>
+               </div>
+               <div class="col-xs-4">
+                  <div class="form-floating mb-3">
+                     <input type="text" class="form-control" id="branch" th:field="*{branch}">
+                     <label for="branch">Branch</label>
+                  </div>
+               </div>
+               <div class="col-xs-4">
+                  <div class="form-floating mb-3">
+                     <input type="checkbox" class="form-control" id="enabled" th:field="*{enabled}">
+                     <label for="enabled">Enabled</label>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <!-- Last row -->
+               <div class="col-xs-12">
+                  <label>Roles:</label>
+                  <th:block th:each="iRole : ${rolesData}">
+                     <div class="form-floating mb-3">
+                        <input type="checkbox" class="form-control m-2" th:field="*{roles}" th:text="${iRole.roleName}" th:value="${iRole.id}">
+                        <label th:text="${iRole.roleName}"></label>
+                     </div>
+                  </th:block>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-end">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" class="btn btn-primary ps-40px pe-40px">Save</button>
+      </div>
+   </form>
+
+
+</div>

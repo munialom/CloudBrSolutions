@@ -1,0 +1,44 @@
+<div th:fragment="products">
+
+
+
+   <script type="text/javascript">
+      $(document).ready(function() {
+         // Submit form on Save button click
+         $('#productForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+            var form = $(this);
+
+            // Send AJAX request to save the data
+            $.ajax({
+               url: form.attr('action'),
+               type: 'POST',
+               data: form.serialize(),
+               success: function() {
+                  // Show success message using Gritter notification
+                  $.gritter.add({
+                     title: 'Success',
+                     text: 'Product saved successfully: ' + $('[name="name"]').val(),
+                     class_name: 'success',
+                     time: 3000 // Display time in milliseconds (3 seconds)
+                  });
+
+                  // Reset the form
+                  form[0].reset();
+               },
+               error: function() {
+                  // Show error message using Gritter notification
+                  $.gritter.add({
+                     title: 'Error',
+                     text: 'Failed to save the product.',
+                     class_name: 'danger',
+                     time: 3000 // Display time in milliseconds (3 seconds)
+                  });
+               }
+            });
+         });
+      });
+   </script>
+
+
+</div>

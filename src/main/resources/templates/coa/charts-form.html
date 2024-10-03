@@ -1,0 +1,288 @@
+<div th:fragment="chart_form">
+
+
+
+   <form id="account-chart" th:action="@{/accounts/create}" th:object="${ac}" method="POST"
+         data-parsley-validate="true">
+
+      <fieldset class="border p-2">
+         <legend class="float-none w-auto" style="font-size: small;">New Accounts Chart Card</legend>
+
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="row">
+                     <div class="col-lg-12">
+                        <div class="card rounded border">
+                           <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                              <div class="flex-1">
+                                 <i class="fa fa-bank fa-lg fa-fw text-black  me-1"></i>Chart of Accounts
+                              </div>
+                           </div>
+                           <div class="card-body fw-bold">
+                              <div class="row">
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label" for="accountGroup">Account Category:</label>
+                                       <select class="form-select form-select-sm" id="accountGroup" name="accountGroup"
+                                               th:field="*{accountGroup}"  data-parsley-required="true">
+                                          <option value=""></option>
+                                          <option th:each="account : ${T(com.ctecx.brsuite.chartofaccounts.AccountGroup).values()}"
+                                                  th:text="${account.displayText}"
+                                                  th:value="${account.name()}">
+                                          </option>
+
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label" for="accountName">Account Name:</label>
+                                       <input class="form-control form-control-sm" id="accountName" name="strandName"
+                                              th:field="*{name}"  type="text"
+                                              data-parsley-required="true"/>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+
+
+
+
+                                 <div class="col-lg-6">
+                                    <div class="mb-3">
+                                       <div class="row">
+                                          <div class="col-md-6">
+                                             <div class="mb-3">
+                                                <label class="form-label" for="code">Account Code:</label>
+                                                <input class="form-control form-control-sm" id="code" name="accountCode"
+                                                       th:field="*{accountCode}" placeholder="Enter Code eg 1000" type="text"
+                                                       data-parsley-required="true" readonly/>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                             <div class="mb-3">
+                                                <label class="form-label" for="alias">Account Description:</label>
+                                                <input class="form-control form-control-sm" id="alias" name="alias"
+                                                       th:field="*{alias}" placeholder="Enter Description Name" type="text"
+                                                       data-parsley-required="true"/>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label" for="ex-search">Select Parent Account</label>
+
+                                       <select  class="selectpicker form-control "  id="accountChart"  name="parent"
+                                                th:field="*{parent}"  data-parsley-required="true">
+                                          <!--
+
+                                                                                  <option value="0">&#45;&#45;[No Parent Account]&#45;&#45;</option>
+                                                                                  <th:block th:each="fs: ${formStrands}">
+
+                                                                                      <option th:text="${fs.name}" th:value="${fs.id}"></option>
+
+                                                                                  </th:block>
+                                          -->
+
+                                       </select>
+                                    </div>
+                                 </div>
+                              </div>
+
+                           </div>
+                        </div>
+
+                     </div>
+
+                  </div>
+            </div>
+
+         </div>
+
+         </fieldset>
+      <fieldset class="border p-2">
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" id="saveBranch-Btn" class="btn btn-primary ps-40px pe-40px">Add New</button>
+      </div>
+      </fieldset>
+
+
+   </form>
+
+   <script>
+      $(document).ready(function() {
+         $('#accountGroup').change(function() {
+            var accountGroup = $(this).val();
+            $.get('/api/accounts/generateCode', { accountGroup: accountGroup }, function(data) {
+               $('#code').val(data);
+            });
+         });
+      });
+
+   </script>
+
+
+
+   <script>
+      $(document).ready(function() {
+         $("#account-chart").submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get the form data
+            var formData = $(this).serialize();
+
+            // Disable the submit button
+            $(this).find('input[type="submit"]').prop("disabled", true);
+
+            // Check if all fields have data
+            var allFieldsFilled = true;
+            $(this).find('input[type="text"]').each(function() {
+               if ($(this).val() === "") {
+                  allFieldsFilled = false;
+                  return false; // Exit the loop if any field is empty
+               }
+            });
+
+            if (!allFieldsFilled) {
+               // Show a SweetAlert error notification to fill data in the field
+               Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Please fill in all fields'
+               });
+               // Enable the submit button
+               $(this).find('input[type="submit"]').prop("disabled", false);
+               return; // Exit the form submission
+            }
+
+            // Serialize and append the transaction date
+
+            // Send an AJAX request to save the data
+            $.ajax({
+               url: $(this).attr("action"),
+               type: "POST",
+               data: formData,
+               success: function(response) {
+                  // Show a SweetAlert success notification
+                  Swal.fire({
+                     icon: 'success',
+                     title: 'Success',
+                     text: 'Data saved successfully'
+                  });
+
+                  // Clear all the fields
+                  $("#account-chart")[0].reset();
+
+                  // Enable the submit button
+                  $("#account-chart").find('input[type="submit"]').prop("disabled", false);
+               },
+               error: function(xhr, status, error) {
+                  // Show a SweetAlert error notification
+                  Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: 'Error saving data: ' + error
+                  });
+
+                  // Enable the submit button
+                  $("#account-chart").find('input[type="submit"]').prop("disabled", false);
+               }
+            });
+         });
+      });
+   </script>
+
+
+   <script>
+      $(document).ready(function() {
+         // Initialize Select2
+         $("#accountChart").select2({
+            ajax: {
+               url: "/api/accounts/search",
+               dataType: 'json',
+               delay: 250,
+               data: function(params) {
+                  return {
+                     keyword: params.term
+                  };
+               },
+               processResults: function(data) {
+                  console.log(data);
+                  return {
+                     results: $.map(data, function(obj) {
+                        return {
+                           id: obj.id,
+                           value: obj.id,
+                           text: obj.id+ ' - ' + obj.name,
+                           studentId: obj.id // add the studentId to the option
+                        };
+                     })
+                  };
+               }
+            },
+            minimumInputLength: 2
+         });
+
+         // When an option is selected
+         $('#accountChart').on('select2:select', function(e) {
+            var label = $(this).siblings('label');
+            label.addClass('selected');
+            label.trigger('update');  // Add this line
+
+            // Add padding to the selected option
+            $(this).next().find('.select2-selection__rendered').css('padding-top', '25px'); // Adjust the padding as needed
+            $(this).next().find('.select2-selection').css('height', '40px');
+         });
+
+         // When an option is deselected
+         $('#accountChart').on('select2:unselect', function() {
+            var label = $(this).siblings('label');
+            if ($(this).val() === null) {
+               label.removeClass('selected');
+            }
+            label.trigger('update');  // Add this line
+
+            // Reset padding when option is deselected
+            $(this).next().find('.select2-selection__rendered').css('padding-top', '0');
+            $(this).next().find('.select2-selection').css('height', '40px');
+         });
+
+         // When the Select2 dropdown is opened
+         $('#accountChart').on('select2:open', function() {
+            var label = $(this).siblings('label');
+            label.addClass('focused');
+         });
+
+         // When the Select2 dropdown is closed
+         $('#accountChart').on('select2:close', function() {
+            var label = $(this).siblings('label');
+            label.removeClass('focused');
+         });
+
+         // Check if an option is pre-selected on page load
+         if ($('#accountChart').val() !== null) {
+            var label = $('#accountChart').siblings('label');
+            label.addClass('selected');
+            label.trigger('update');  // Add this line
+         }
+         else {
+            // If no option is pre-selected, set the height
+            $('#accountChart').next().find('.select2-selection').css('height', '40px');
+         }
+      });
+   </script>
+
+   <script th:src="@{/assets/plugins/parsleyjs/dist/parsley.min.js}"></script>
+
+
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    $(document).ready(function() {
+        $(function() {
+            var selected_date;
+
+            $('#date-picker').daterangepicker({
+                singleDatePicker: true, // Set to true for single date selection
+                startDate: moment().startOf('hour'),
+                endDate: moment().startOf('hour').add(32, 'hour'),
+                opens: 'center', // Changed from 'left' to 'center'
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, function(start) {
+                selected_date = start;
+                $('#date-picker').html(start.format('YYYY-MM-DD'));
+            });
+
+            // Now you can use the selected_date variable in your code as needed.
+        });
+    });
+
+
+</script>
+
+
+<!--<script>
+      $(document).ready(function() {
+          let isSubmitting = false;
+
+          $("#opening-stock-btn").on("click", function(e) {
+              e.preventDefault();
+
+              const rows = $("#selectedProducts tbody tr");
+              var stockmode = $("input[name='inlineRadio']:checked").val();
+
+              // Check if a radio button is selected
+              if (!stockmode) {
+                  Swal.fire({
+                      icon: 'info',
+                      title: 'No Option Selected',
+                      text: 'Please select a stock mode.',
+                      showConfirmButton: true
+                  });
+                  return; // Exit the function early
+              }
+
+              // Check if there are no rows in the table
+              if (rows.length === 0) {
+                  Swal.fire({
+                      icon: 'info',
+                      title: 'No Data',
+                      text: 'There are no records to save.',
+                      showConfirmButton: true
+                  });
+                  return; // Exit the function early
+              }
+
+              const aData = [];
+
+              rows.each(function() {
+                  const tableRow = $(this);
+
+                  const getTextByAttribute = function(attrValue) {
+                      return tableRow.find(`td[key-id="${attrValue}"]`).text();
+                  };
+
+                  const getValByAttribute = function(attrValue) {
+                      return tableRow.find(`input[name="${attrValue}"]`).val();
+                  };
+
+                  const data = {
+                      productCode: getTextByAttribute("productCode"),
+                      productName: getTextByAttribute("productName"),
+                      qty: getValByAttribute("qty")
+                  };
+
+                  aData.push(data);
+              });
+
+              let stocks = {
+                  opcode: stockmode,
+                  openingStocks: aData
+              };
+
+              $.ajax({
+                  type: "POST",
+                  url: "/api/stocks/opening",
+                  data: JSON.stringify(stocks),
+                  contentType: 'application/json',
+                  dataType: 'text',
+                  success: function(response) {
+                      if (response.toLowerCase().includes("success")) {
+                          // Use SweetAlert for success message
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Success',
+                              text: response,
+                              showConfirmButton: false,
+                              timer: 1500
+                          });
+
+                          // Clear the table after successful save
+                          $("#selectedProducts tbody").empty();
+                      } else {
+                          // Use SweetAlert for unexpected response
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: 'Unexpected response from the server',
+                              showConfirmButton: true
+                          });
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      // Use SweetAlert for error message
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: xhr.responseText,
+                          showConfirmButton: true
+                      });
+                  }
+              });
+          });
+      });
+  </script>-->
+</body>
+</html>

@@ -1,0 +1,596 @@
+<div th:fragment="settings-system">
+
+    <style>
+        /* Import Roboto font */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        /* Apply Roboto font to the messenger menu */
+        .messenger-menu {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .messenger-menu-link {
+            transition: all 0.2s ease-in-out;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 400; /* Regular weight for normal text */
+        }
+
+        .messenger-menu-item:not(.active) .messenger-menu-link:hover,
+        .messenger-menu-item:not(.active) .messenger-menu-link:focus {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .messenger-menu-item.active .messenger-menu-link {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            font-weight: 500; /* Medium weight for active item */
+        }
+
+        .messenger-menu-link:focus {
+            outline: 2px solid rgba(13, 110, 253, 0.5);
+            outline-offset: 2px;
+        }
+
+        .menu-label {
+            font-size: 14px;
+        }
+    </style>
+
+    <div class="col-lg-12">
+        <div class="card">
+
+            <div class="card-body fw-bold">
+                <div class="messenger rounded border p-0" id="messenger">
+
+                    <div class="messenger-menu d-flex flex-column bg-white shadow-sm rounded p-2" style="width: auto; min-width:130px;">
+                        <div class="messenger-menu-category mb-2">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Stock Analysis</span>
+                        </div>
+                        <div class="messenger-menu-item active mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/records', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="document-text-outline" class="me-2" style="font-size: 24px; color: #16a085;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px; color: #16a085;">Stock Records</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/valuation', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="calculator-outline" class="me-2" style="font-size: 24px; color: #2980b9;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Stock Valuation</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/daily-sheet', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="today-outline" class="me-2" style="font-size: 24px; color: #8e44ad;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Daily Stock Sheet</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/movement', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="trending-up-outline" class="me-2" style="font-size: 24px; color: #e74c3c;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Stock Movement</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/aging', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="hourglass-outline" class="me-2" style="font-size: 24px; color: #f39c12;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Stock Aging</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/turnover', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="refresh-circle-outline" class="me-2" style="font-size: 24px; color: #27ae60;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Stock Turnover</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/forecasting', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="analytics-outline" class="me-2" style="font-size: 24px; color: #2c3e50;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Stock Forecasting</span>
+                            </a>
+                        </div>
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Advanced Analysis</span>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/performance-metrics', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="speedometer-outline" class="me-2" style="font-size: 24px; color: #3498db;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Performance Metrics</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/abc-analysis', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="bar-chart-outline" class="me-2" style="font-size: 24px; color: #9b59b6;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">ABC Analysis</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/demand-planning', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="git-network-outline" class="me-2" style="font-size: 24px; color: #e67e22;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Demand Planning</span>
+                            </a>
+                        </div>
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Inventory Optimization</span>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/reorder-point', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="repeat-outline" class="me-2" style="font-size: 24px; color: #1abc9c;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Reorder Point Analysis</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/safety-stock', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="shield-outline" class="me-2" style="font-size: 24px; color: #34495e;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Safety Stock Calculator</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/lead-time', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="time-outline" class="me-2" style="font-size: 24px; color: #7f8c8d;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Lead Time Analysis</span>
+                            </a>
+                        </div>
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Reporting & Visualization</span>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/dashboard', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="grid-outline" class="me-2" style="font-size: 24px; color: #2ecc71;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Stock Dashboard</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/custom-reports', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="create-outline" class="me-2" style="font-size: 24px; color: #e74c3c;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Custom Reports</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item">
+                            <a href="#" onclick="stockAnalysisFragment('/stock/data-export', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="download-outline" class="me-2" style="font-size: 24px; color: #3498db;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Data Export</span>
+                            </a>
+                        </div>
+                    </div>
+
+
+                    <div class="messenger-chat" style="display: none;">
+                        <div class="messenger-chat-header d-flex">
+                            <div class="flex-1 position-relative">
+                                <input type="text" class="form-control border-0 bg-light ps-30px" placeholder="Search" id="search-list" />
+                                <i class="fa fa-search position-absolute start-0 top-0 h-100 ps-2 ms-3px d-flex align-items-center justify-content-center"></i>
+                            </div>
+                            <div class="ps-2">
+                                <a href="#" onclick="productsControlPanelFragment('/products/adding-new-product')" class="btn border-0 bg-light shadow-none">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="messenger-chat-body">
+                            <div data-scrollbar="true" data-height="100%">
+                                <div class="messenger-chat-list">
+                                    <div class="messenger-chat-item">
+                                        <a href="javascript:;" class="messenger-chat-link" data-toggle-class="messenger-chat-content-mobile-toggled" data-target="#messenger">
+                                            <div class="messenger-chat-media">
+                                                <img alt="" src="assets/img/user/user-1.jpg" />
+                                            </div>
+                                            <div class="messenger-chat-content">
+                                                <div class="messenger-chat-title">
+                                                    <div>Daniel</div>
+                                                    <div class="messenger-chat-time">09:15 AM</div>
+                                                </div>
+                                                <div class="messenger-chat-desc"> Hey, how was your weekend?</div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="messenger-content">
+                        <div class="widget-chat">
+                            <!-- BEGIN widget-chat-header -->
+                            <div class="widget-chat-header">
+                                <div class="d-block d-lg-none">
+                                    <button type="button" class="btn border-0 shadow-none" data-toggle-class="messenger-chat-content-mobile-toggled" data-target="#messenger">
+                                        <i class="fa fa-chevron-left fa-lg"></i>
+                                    </button>
+                                </div>
+                                <div class="widget-chat-header-content" id="productDetailsContainer">
+
+
+                                </div>
+                                <div class="">
+                                    <button type="button" class="btn border-0 shadow-none" data-bs-toggle="dropdown">
+                                        <i class="fa fa-ellipsis fa-lg"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- END widget-chat-header -->
+                            <!-- BEGIN widget-chat-body -->
+                            <div class="widget-chat-body bg-white p-0" data-scrollbar="true" data-height="100%" id="mainProductsControlPanel">
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            </div>
+
+
+            </div>
+
+
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+            <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script>
+        function fetchProductDetails(productId) {
+            $.ajax({
+                url: `/api-bulk/productsDetails/${productId}`,
+                method: 'GET',
+                success: function(data) {
+                    updateProductDetails(data[0]); // Assuming the API returns an array with one object
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching product details:", error);
+                    $('#productDetailsContainer').html('<p>Error loading product details.</p>');
+                }
+            });
+        }
+
+        function updateProductDetails(product) {
+            const deepBlue = '#0047AB';
+            const iconStyles = 'margin-right: 5px; vertical-align: middle;';
+
+            let productHtml = `
+        <div id="productContainer" style="font-family: Arial, sans-serif;">
+            <p style="margin: 0; font-size: 11px; line-height: 1.6;">
+                <span style="color: ${deepBlue}; font-weight: bold;"><i class="fas fa-box" style="${iconStyles}"></i>${product['Product Name']}</span>
+                <span style="color: black;"><i class="fas fa-hashtag" style="${iconStyles}"></i>Product ID: ${product['Product ID']}</span>
+                <span style="color: ${deepBlue};"><i class="fas fa-barcode" style="${iconStyles}"></i>Code: ${product['Product Code']}</span>
+                <span style="color: black;"><i class="fas fa-layer-group" style="${iconStyles}"></i>Group: ${product['Product Group']}</span>
+                <span style="color: ${deepBlue};"><i class="fas fa-tags" style="${iconStyles}"></i>Category: ${product['Category']}</span>
+            </p>
+        </div>
+    `;
+
+            $('#productDetailsContainer').html(productHtml);
+            $('#product-id').html(`<span style="color: black;"><i class="fas fa-hashtag" style="${iconStyles}"></i>Product ID: ${product['Product ID']}</span>`);
+        }
+    </script>
+
+
+
+    <script>
+        function productsControlPanelFragment(url, event) {
+            if (event) {
+                event.preventDefault();
+            }
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#mainProductsControlPanel').html(data);
+                },
+                error: function() {
+                    console.log('Error loading fragment');
+                }
+            });
+        }
+        $(document).ready(function() {
+            productsControlPanelFragment('/products/adding-new-product',event);
+        });
+    </script>
+
+
+
+
+
+
+
+   <script>
+       $(document).ready(function() {
+           let allProducts = [];
+           let totalProductCount = 0;
+           const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F06292', '#AED581', '#7986CB', '#4DB6AC', '#FFD54F'];
+           let searchTimeout;
+           let activeItemProductId = null;
+
+           function showLoading() {
+               $('#loading-overlay').show();
+           }
+
+           function hideLoading() {
+               $('#loading-overlay').hide();
+           }
+
+           function toSentenceCase(str) {
+               return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+           }
+
+           function getInitials(name) {
+               return name.split(' ').map(n => n[0]).join('').toUpperCase();
+           }
+
+           function updateTotalCountBadge() {
+               $('.messenger-menu-item.active').css('position', 'relative');
+               const badgeHtml = `
+            <span class="badge rounded-pill bg-danger total-count-badge"
+                  style="position: absolute; top: -1px; right: -4px;">
+                ${totalProductCount}
+            </span>`;
+               $('.messenger-menu-item.active').append(badgeHtml);
+           }
+
+           function renderProductList(products) {
+               $('.messenger-chat-list').empty();
+               if (products.length === 0) {
+                   $('.messenger-chat-list').html('<p>No products found.</p>');
+                   totalProductCount = 0;
+               } else {
+                   products.forEach(function(product, index) {
+                       let initials = getInitials(product['Product Name']);
+                       let colorIndex = index % colors.length;
+
+                       let chatItem = `
+                    <div class="messenger-chat-item position-relative mb-2" data-product-id="${product['Product ID']}">
+                        <div class="chat-item-content d-flex align-items-center p-2">
+                            <div class="messenger-chat-media rounded-circle flex-shrink-0 me-3" style="background-color: ${colors[colorIndex]}; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: small;">
+                                ${initials}
+                            </div>
+                            <div class="messenger-chat-content flex-grow-1">
+                                <div class="messenger-chat-title d-flex justify-content-between align-items-center">
+                                    <div class="fw-bold">${toSentenceCase(product['Product Name'])}</div>
+                                </div>
+                                <div class="messenger-chat-desc text-muted small">
+                                    ${product['Product Code']} | ${product['Product Group']} | ${product['Category']}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons position-absolute end-0 mb-6 me-1" style="display: none;">
+                            <button class="btn btn-primary btn-xs view-details me-1" data-product-id="${product['Product ID']}">View Details</button>
+                            <button class="btn btn-secondary btn-xs update" data-product-id="${product['Product ID']}">Update</button>
+                        </div>
+                    </div>
+                `;
+
+                       $('.messenger-chat-list').append(chatItem);
+                   });
+                   totalProductCount = products.length;
+               }
+               updateTotalCountBadge();
+
+               if (activeItemProductId) {
+                   setActiveItem(activeItemProductId);
+               }
+           }
+
+           function setActiveItem(productId) {
+               $('.messenger-chat-item.active').removeClass('active').find('.action-buttons').hide();
+               const $newActiveItem = $(`.messenger-chat-item[data-product-id="${productId}"]`);
+               activeItemProductId = productId;
+               fetchProductDetails(productId);
+               $(".messenger-chat").toggle();
+           }
+
+           function clearActiveItem() {
+               $('.messenger-chat-item.active').removeClass('active').find('.action-buttons').hide();
+               activeItemProductId = null;
+           }
+
+           $('.messenger-chat-list').on('click', '.chat-item-content', function(e) {
+               const $clickedItem = $(this).closest('.messenger-chat-item');
+               const clickedProductId = $clickedItem.data('product-id');
+
+               if (activeItemProductId === clickedProductId) {
+                   clearActiveItem();
+               } else {
+                   setActiveItem(clickedProductId);
+               }
+
+               e.stopPropagation();
+           });
+
+           $('.messenger-chat-list').on('mousedown', '.view-details, .update', function(e) {
+               e.stopPropagation();
+               e.preventDefault();
+           });
+
+           $('.messenger-chat-list').on('click', '.view-details, .update', function(e) {
+               e.stopPropagation();
+               e.preventDefault();
+               const $button = $(this);
+               const productId = $button.data('product-id');
+
+               if ($button.hasClass('view-details')) {
+                   fetchProductDetails(productId);
+                   console.log('View details for Product ID:', productId);
+               } else if ($button.hasClass('update')) {
+                   alert('Update for Product ID: ' + productId);
+                   console.log('Update for Product ID:', productId);
+                   // Add your update logic here
+               }
+           });
+
+           $(document).on('click', function(e) {
+               if (!$(e.target).closest('.messenger-chat-item').length) {
+                   clearActiveItem();
+               }
+           });
+
+           function fetchProductData(searchTerm = '') {
+               showLoading();
+               $.ajax({
+                   url: '/api-bulk/products-database',
+                   method: 'GET',
+                   data: { search: searchTerm },
+                   dataType: 'json',
+                   success: function(data) {
+                       allProducts = data.sort((a, b) => b['Product ID'] - a['Product ID']);
+                       renderProductList(allProducts);
+                       hideLoading();
+                   },
+                   error: function(xhr, status, error) {
+                       console.error('Error fetching products:', error);
+                       $('.messenger-chat-list').html('<p>Error loading products. Please try again later.</p>');
+                       totalProductCount = 0;
+                       updateTotalCountBadge();
+                       hideLoading();
+                   }
+               });
+           }
+
+           function searchProducts(searchTerm) {
+               if (searchTerm === '') {
+                   renderProductList(allProducts);
+               } else {
+                   let filteredProducts = allProducts.filter(product =>
+                       product['Product Name'].toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       product['Product Code'].toLowerCase().includes(searchTerm.toLowerCase())
+                   );
+                   renderProductList(filteredProducts);
+               }
+           }
+
+           $('#search-list').on('input', function() {
+               let searchTerm = $(this).val().trim();
+               clearTimeout(searchTimeout);
+
+               searchProducts(searchTerm);
+
+               searchTimeout = setTimeout(() => {
+                   fetchProductData(searchTerm);
+               }, 300);
+           });
+
+           // Function to fetch product details (placeholder)
+
+
+           // Initial data fetch
+           fetchProductData();
+       });
+   </script>
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Function to load content based on the URL
+            function loadContent(url, tabId) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $(tabId).html(response);
+                        $(tabId).siblings('.tab-pane').empty(); // Clear content of other tabs
+                    },
+                    error: function() {
+                        $(tabId).html('<p>Error loading content.</p>');
+                    }
+                });
+            }
+
+            // Load the default content on page load
+            loadContent('/patients/dr-management', '#dr-management');
+
+            // Handle click event on navigation tabs
+            $('.nav-link').on('click', function(e) {
+                e.preventDefault();
+                var url = '';
+                var tabId = $(this).attr('href');
+
+                // Determine the URL based on the clicked tab
+                switch (tabId) {
+                    case '#dr-management':
+                        url = '/patients/dr-management';
+                        break;
+                    case '#medical-records':
+                        url = '/patients/dr-management';
+                        break;
+                    default:
+                        return;
+                }
+
+                // Load the content for the clicked tab
+                loadContent(url, tabId);
+                $(tabId).tab('show'); // Show the clicked tab
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Click event handler for the messenger menu item
+            $(".messenger-menu-item.active").on("click", function(e) {
+                e.preventDefault(); // Prevent default link behavior
+
+                // Toggle the visibility of the messenger chat
+               // $(".messenger-chat").toggle();
+            });
+        });
+    </script>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

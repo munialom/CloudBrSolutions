@@ -1,0 +1,178 @@
+<div th:fragment="pc">
+
+    <div class="row">
+        <div class="d-flex align-items-center ">
+
+            <div class="col-3 me-2">
+                <a href="#" id="daterange-btn" class="btn btn-white d-flex align-items-center rounded-3">
+                    <i class="far fa-lg fa-calendar me-10px text-body text-opacity-50 d-none"></i>
+                    <span class="iconify fs-20px my-n1 me-2 ms-n1 text-theme" data-icon="solar:calendar-search-linear"></span>
+                    Date Range
+                    <i class="fa ms-auto fa-chevron-down"></i>
+                </a>
+            </div>
+            <div class="col-3 me-2">
+                <a href="#" class="btn btn-white d-flex align-items-center rounded-3" data-bs-toggle="dropdown">
+                    <i class="fa fa-lg fa-tags me-10px text-body text-opacity-50 d-none"></i>
+                    <span class="iconify fs-20px my-n1 me-2 ms-n1 text-theme" data-icon="solar:tag-linear"></span>
+                    Payment Status
+                    <i class="fa ms-auto fa-chevron-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-danger"></i>Pending</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-warning"></i>Partial</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-success"></i>Cleared</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-primary"></i>Prepaid</a></li>
+                </ul>
+            </div>
+
+            <!-- Print Result Button -->
+          <!--  <a href="#" id="print-btn" class="btn btn-secondary btn-sm d-flex align-items-center me-2 pe-3 rounded-3">
+                <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:printer-bold-duotone"></span>
+                Print Report
+            </a>-->
+            <!-- Reload Data Button -->
+            <a href="#"  id="view-sales" class="btn btn-success btn-sm d-flex align-items-center pe-3 rounded-3">
+                <span class="iconify fs-18px me-2 ms-n1" data-icon="solar:refresh-bold-duotone"></span>
+                View Sales
+            </a>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $(function() {
+                var start_date;
+                var end_date;
+
+                $('#daterange-btn').daterangepicker({
+                    opens: 'center', // Changed from 'left' to 'center'
+                    startDate: moment().startOf('hour'),
+                    endDate: moment().startOf('hour').add(32, 'hour'),
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    }
+                }, function(start, end, label) {
+                    start_date = start;
+                    end_date = end;
+                    $('#daterange-btn').html(start.format('YYYY-MM-DD') + " - " + end.format('YYYY-MM-DD'));
+                });
+
+                // Set the initial date range to 'Today'
+                var start = moment();
+                var end = moment();
+                $('#daterange-btn').data('daterangepicker').setStartDate(start);
+                $('#daterange-btn').data('daterangepicker').setEndDate(end);
+                $('#daterange-btn').html(start.format('YYYY-MM-DD') + " - " + end.format('YYYY-MM-DD'));
+
+                // Now you can use the start_date and end_date variables in your code as needed.
+            });
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+
+            // Add click event listeners to each dropdown item
+            $('.dropdown-item').click(function(event) {
+                event.preventDefault(); // Prevent the default behavior of the button click
+
+                // Get the remark from the clicked dropdown item
+                var remark = $(this).text().trim();
+
+                // Construct the URL with query parameters
+                var url = '/sales/sale-remark?remark=' + remark;
+
+                // Fetch data from the updated URL on button click
+                fetchData(url);
+            });
+
+            function fetchData(url) {
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        // Update the content of the auto-filter-mem-data element with the fetched data
+                        $('#stockControlPanel').html(response);
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            }
+        });
+
+    </script>
+
+
+
+
+
+    <script>
+
+
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchData(dateone, datetwo) {
+                // Construct the URL with query parameters
+                var url = '/sales/sale-transactions?startDate=' + dateone + '&endDate=' + datetwo;
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        // Update the content of the auto-filter-mem-data element with the fetched data
+                        $('#stockControlPanel').html(response);
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            }
+
+            // Function to handle button click
+            $('#view-sales').click(function(event) {
+                event.preventDefault(); // Prevent the default behavior of the button click
+
+                var dateRange = $('#daterange-btn').html().split(" - ");
+                var dateone = dateRange[0];
+                var datetwo = dateRange[1];
+
+                // Fetch data on button click
+                fetchData(dateone, datetwo);
+            });
+
+            var defaultDateOne = moment().format('YYYY-MM-DD');
+            var defaultDateTwo = moment().format('YYYY-MM-DD');
+            fetchData(defaultDateOne, defaultDateTwo);
+        });
+
+
+    </script>
+
+
+
+
+
+</div>

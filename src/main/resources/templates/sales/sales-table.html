@@ -1,0 +1,288 @@
+<div th:fragment="members">
+    <style type="text/css">
+
+
+        .table-responsive {
+            max-height: max-content; /* Set max height for the table */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        .table-thead-sticky thead th {
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            /* Set header background color to white */
+        }
+
+        .table-tfoot-sticky tfoot th {
+            position: sticky;
+            bottom: 0;
+            background-color: #ffffff;
+
+            /* Set footer background color to white */
+        }
+
+
+        .table-sm th,
+        .table-sm td {
+            padding: .3rem; /* Adjust padding for small table */
+        }
+
+        .pagination-sm {
+            margin: 0; /* Remove default margin from pagination */
+        }
+
+        .form-check {
+            margin-bottom: 0; /* Remove margin from form-check */
+        }
+    </style>
+
+
+
+    <div class="table-responsive" id="table-sales">
+        <table class="table table-thead-sticky table-tfoot-sticky table-bordered   table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0">
+            <thead>
+            <tr>
+                <th>No#</th>
+                <th>Customer Name</th>
+                <th>Serial Number</th>
+                <th>Transaction Date</th>
+                <th>Created At</th>
+                <th>Remark</th>
+                <th>Created By</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Balance</th>
+                <th>Send Sms</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="transaction ,status: ${saleTransactions}">
+                <td th:text="${status.count}"></td>
+                <td th:text="${transaction.customerName}">Customer Name</td>
+                <td class="serial-number" th:data-serial-number="${transaction.serialNumber}">
+                    <span class="list-icon"><i class="fas fa-arrow-down-short-wide"></i></span>
+                    <span  th:text="${transaction.serialNumber}"></span>
+                </td>
+                <td th:text="${transaction.transactionDate}">Transaction Date</td>
+                <td>
+                    <span class="time-icon"><i class="fas fa-clock"></i></span>
+                    <span class="relative-time" th:text="${#temporals.format(transaction.createdAt, 'E dd MMM, hh:mma')}"></span>
+                </td>
+            <!--    <td th:text="${#temporals.format(transaction.createdAt, 'E dd MMM, hh:mma')}">Created At</td>-->
+                <td class="remark-column" th:text="${transaction.remark}">Remark</td>
+                <td th:text="${transaction.createdBy}">Created By</td>
+                <td th:text="${transaction.total}">Total</td>
+                <td th:text="${transaction.paid}">Paid</td>
+                <td th:text="${transaction.balance}">Balance</td>
+                <td class="send-sms" th:data-sms-send="${transaction.customerName}">
+                    <span class="list-icon"><i class="fas fa-envelope"></i></span>
+                    <span  th:text="${transaction.balance}"></span>
+                </td>
+            </tr>
+
+
+            </tbody>
+                 <tfoot>
+                 <tr>
+                     <th></th>
+                     <th></th>
+                     <th></th>
+                     <th></th>
+                     <th></th>
+                     <th></th>
+                     <th>Summary</th>
+                     <th>0.00</th>
+                     <th>0.00</th>
+                     <th>0.00</th>
+                 </tr>
+                 </tfoot>
+        </table>
+    </div>
+
+    <!-- Nested table template -->
+    <div id="nested-table-template" style="display:none;">
+        <table class="nested-table table table-bordered">
+            <thead>
+            <tr>
+                <th>No#</th>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Qty</th>
+                <th>Unit Cost</th>
+                <th>Unit Tax</th>
+                <th>Discount</th>
+                <th>Net Tax</th>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Data will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+
+
+<script>
+    $(document).ready(function() {
+        var isNestedTableOpen = false;
+
+        $('td.serial-number').click(function() {
+            var row = $(this).closest('tr');
+            var nestedTableContainer = row.next('.nested-table-container-row');
+
+            if (nestedTableContainer.length) {
+                nestedTableContainer.remove();
+                isNestedTableOpen = false;
+            } else {
+                var parentTable = row.closest('table');
+                var parentColumns = parentTable.find('thead th').length;
+
+                if (isNestedTableOpen) {
+                    $('.nested-table-container-row').remove();
+                    isNestedTableOpen = false;
+                } else {
+                    var nestedTable = $('#nested-table-template').find('.nested-table').clone();
+                    var container = $('<div class="nested-table-container"></div>').append(nestedTable);
+                    var colspan = parentColumns;
+
+                    var newRow = $('<tr class="nested-table-container-row"></tr>');
+                    var newCell = $('<td colspan="' + colspan + '"></td>').append(container);
+
+                    newRow.append(newCell);
+                    row.after(newRow);
+
+                    // Fetch data from the API
+                    var serialNumber = $(this).data('serial-number');
+
+                    $.getJSON('/api/sold-items?serialNumber=' + serialNumber, function(data) {
+                        var tbody = nestedTable.find('tbody');
+                        for (var i = 0; i < data.length; i++) {
+                            var row = $('<tr></tr>');
+                            row.append('<td>' + (i+1) + '</td>'); // Add index
+                            row.append('<td>' + data[i].productCode + '</td>');
+                            row.append('<td>' + data[i].productName + '</td>');
+                            row.append('<td>' + data[i].qty + '</td>');
+                            row.append('<td>' + '' + data[i].cost.toFixed(2) + '</td>');
+                            row.append('<td>' + '' + data[i].discount.toFixed(2) + '</td>');
+                            row.append('<td>' + '' + data[i].tax.toFixed(2) + '</td>');
+                            row.append('<td>' + '' + data[i].netTax.toFixed(2) + '</td>');
+                            row.append('<td>' + '' + data[i].subtotal.toFixed(2) + '</td>');
+                            tbody.append(row);
+                        }
+                    });
+
+                    isNestedTableOpen = true;
+                }
+            }
+        });
+    });
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+    $(document).ready(function() {
+        $('tr').each(function() {
+            var remarkText = $(this).find('.remark-column').text().trim();
+            var badgeClass = '';
+
+            switch(remarkText) {
+                case 'Pending':
+                    badgeClass = 'badge bg-danger';
+                    break;
+                case 'Partial':
+                    badgeClass = 'badge bg-warning';
+                    break;
+                case 'Cleared':
+                    badgeClass = 'badge bg-success';
+                    break;
+                case 'Prepaid':
+                    badgeClass = 'badge bg-info';
+                    break;
+                default:
+                    badgeClass = 'badge bg-secondary';
+            }
+
+            var badgeHTML = '<span class="d-flex ' + badgeClass + '">' + remarkText + '</span>';
+            $(this).find('.remark-column').empty().append(badgeHTML);
+        });
+    });
+
+
+
+</script>
+
+    <script>
+        $(document).ready(function() {
+            // Define the function to update totals
+            function updateTotals() {
+                var totalTotal = 0;
+                var totalPaid = 0;
+                var totalBalance = 0;
+
+                // Loop through each row in the tbody
+                $('#table-sales tbody tr').each(function() {
+                    var total = parseFloat($(this).find('td:nth-child(8)').text().replace('KES', '').replace(',', ''));
+                    var paid = parseFloat($(this).find('td:nth-child(9)').text().replace('KES', '').replace(',', ''));
+                    var balance = parseFloat($(this).find('td:nth-child(10)').text().replace('KES', '').replace(',', ''));
+
+                    totalTotal += total;
+                    totalPaid += paid;
+                    totalBalance += balance;
+                });
+
+                // Format the totals with two decimal places and thousand separator
+                var formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'KES',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+
+                // Update the cells in the tfoot
+                $('#table-sales tfoot tr th:nth-child(8)').text(formatter.format(totalTotal));
+                $('#table-sales tfoot tr th:nth-child(9)').text(formatter.format(totalPaid));
+                $('#table-sales tfoot tr th:nth-child(10)').text(formatter.format(totalBalance));
+            }
+
+            // Call the function initially
+            updateTotals();
+
+
+
+        });
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+

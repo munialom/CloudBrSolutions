@@ -1,0 +1,60 @@
+<div th:fragment="conCharts">
+<div class="row">
+
+    <!-- BEGIN widget-chart -->
+    <div class="widget rounded mb-4" data-id="widget">
+        <!-- BEGIN widget-header -->
+        <div class="widget-header">
+            <h4 class="widget-header-title">BAR CHART SHOWING STUDENT REGISTRATION COUNT BY CLASS</h4>
+            <div class="widget-header-icon"><a href="#" class="text-gray-500"><i class="fa fa-fw fa-upload"></i></a></div>
+            <div class="widget-header-icon"><a href="#" class="text-gray-500"><i class="fa fa-fw fa-cog"></i></a></div>
+        </div>
+        <!-- END widget-header -->
+        <!-- BEGIN widget-content -->
+        <div class="row m-0">
+            <div class="col widget-chart-content" >
+
+              <div id="myConChartContainer" style="height:280px; width: 100%;"></div>
+
+
+            </div>
+
+       <!--     <div class="col-lg-4 p-3">
+                &lt;!&ndash; BEGIN widget-list &ndash;&gt;
+                <div id="GenderContainer"></div>
+                &lt;!&ndash; END widget-list &ndash;&gt;
+            </div>-->
+
+        </div>
+        <!-- END widget-content -->
+    </div>
+    <!-- END widget-chart -->
+
+
+</div>
+
+
+
+
+    <script type="text/javascript" th:inline="javascript">
+
+        $(document).ready(function () {
+            google.charts.load('current', {'packages': ['corechart']});
+
+            google.charts.setOnLoadCallback(function() {
+                loadStudents();
+
+            });
+
+        });
+
+    </script>
+
+
+    <script type="text/javascript" th:src="@{/assets/customjs/students.js}"></script>
+
+
+
+</div>
+
+

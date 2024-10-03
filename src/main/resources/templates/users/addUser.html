@@ -1,0 +1,131 @@
+<div th:fragment="users">
+
+
+   <form id="email_to_form" class="mailbox-form" th:action="@{/users}" th:object="${user}" method="POST">
+      <div class="card rounded border">
+         <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fa fa-money-bill-1-wave fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Add New System User
+         </div>
+         <div class="card-body">
+            <div class="row">
+               <div class="col">
+                  <div class="mb-3">
+                     <label class="form-label">Email</label>
+                     <input type="text" class="form-control form-control-sm" th:field="*{email}" />
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="mb-3">
+                     <label class="form-label">First Name</label>
+                     <input type="text" class="form-control form-control-sm" th:field="*{firstName}" />
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="mb-3">
+                     <label class="form-label">Last Name</label>
+                     <input type="text" class="form-control form-control-sm" th:field="*{lastName}" />
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col">
+                  <div class="mb-3">
+                     <label class="form-label">Phone</label>
+                     <input type="text" class="form-control form-control-sm" th:field="*{phone}" />
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="mb-3">
+                     <label class="form-label">Branch</label>
+                     <select class="form-control form-control-sm" th:field="*{branch}" required>
+                        <option value="">--Select Branch--</option>
+                        <th:block th:each="branch: ${branches}">
+                           <option th:text="${branch.branchName}" th:value="${branch.id}"></option>
+                        </th:block>
+                     </select>
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="mb-3">
+                           <label class="form-label">Waiter Pin</label>
+                           <input type="text" class="form-control form-control-sm" th:field="*{pin}" />
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="mb-3">
+                           <label class="form-label">&nbsp;</label> <!-- Empty label for alignment -->
+                           <div class="form-check mt-2">
+                              <input type="checkbox" class="form-check-input" th:field="*{enabled}" id="enabledCheckbox">
+                              <label class="form-check-label" for="enabledCheckbox">Enabled</label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col">
+                  <div class="mb-3">
+                     <label class="form-label">Roles:</label>
+                     <th:block th:each="iRole : ${rolesData}">
+                        <input type="checkbox" class="m-2" th:field="*{roles}" th:text="${iRole.roleName}" th:value="${iRole.id}">   
+                     </th:block>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+         <button type="submit" class="btn btn-default w-100px">Discard</button>
+         <button type="submit" class="btn btn-success w-100px">Save</button>
+      </div>
+   </form>
+   <script>
+      $(document).ready(function() {
+         $('#saveButton').click(function() {
+            // Serialize form data
+            var formData = $('#userForm').serialize();
+
+            // Send AJAX request
+            $.ajax({
+               type: 'POST',
+               url: $('#userForm').attr('action'),
+               data: formData,
+               success: function(response) {
+                  // Show success message
+                  swal({
+                     title: "Success",
+                     text: "User saved successfully",
+                     icon: "success",
+                     timer: 2000, // Disappear after 2 seconds
+                     button: false
+                  });
+               },
+               error: function() {
+                  // Prevent default action (form submission)
+                  $('#userForm').submit(function(e) {
+                     e.preventDefault();
+                  });
+
+                  // Show error message
+                  swal({
+                     title: "Error",
+                     text: "Something went wrong. Please try again later.",
+                     icon: "error",
+                     button: "OK"
+                  });
+               }
+            });
+         });
+
+         $('#discardButton').click(function() {
+            // Handle discard button click if needed
+         });
+      });
+   </script>
+
+
+
+</div>

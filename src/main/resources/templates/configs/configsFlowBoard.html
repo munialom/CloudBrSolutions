@@ -1,0 +1,143 @@
+
+
+
+<div th:fragment="configs">
+
+
+
+    <!-- BEGIN mailbox -->
+    <div class="mailbox">
+        <!-- BEGIN mailbox-sidebar -->
+        <div class="mailbox-sidebar">
+
+            <div class="mailbox-sidebar-content collapse d-lg-block" id="emailNav">
+                <div class="mailbox-sidebar-header d-flex justify-content-center">
+                    <a href="#emailNav" data-bs-toggle="collapse" class="btn btn-dark btn-sm me-auto d-block d-lg-none">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <a href="email_compose.html" class="btn btn-dark ps-40px pe-40px btn-sm">
+                       Settings
+                    </a>
+                </div>
+                <!-- BEGIN scrollbar -->
+                <!-- BEGIN scrollbar -->
+                <div data-scrollbar="true" data-height="100%" data-skip-mobile="true">
+                    <div class="nav-title"><b>FOLDERS</b></div>
+                    <ul class="nav nav-inbox">
+                        <li><a href="#" onclick="loadControlFragment('/configs/system')"><i class="fa fa-building fa-lg fa-fw me-2" style="color:blue;"></i>Organisation Profile</a></li>
+<!--                        <li><a onclick="loadControlFragment('/configs/salary-data')"><i class="fa fa-file-invoice fa-lg fa-fw me-2" style="color:red;"></i>Salary Components</a></li>-->
+
+                    </ul>
+
+                    <div class="nav-title"><b>LABEL</b></div>
+                    <div class="dropdown-divider"></div>
+                    <ul class="nav nav-inbox">
+                        <li><a href="#" onclick="loadControlFragment('/configs/users')"><i class="fa fa-users fa-lg fa-fw me-2" style="color:blue;"></i>Users & Roles</a></li>
+                        <li><a href="#" onclick="loadControlFragment('/configs/communication')"><i class="fa fa-comments fa-lg fa-fw me-2" style="color:green;"></i>Communication</a></li>
+                        <li><a href="javascript:;"><i class="fa fa-id-card fa-lg fa-fw me-2" style="color:red;"></i>License</a></li>
+                    </ul>
+                </div>
+                <!-- END scrollbar -->
+
+                <!-- END scrollbar -->
+            </div>
+        </div>
+        <!-- END mailbox-sidebar -->
+        <!-- BEGIN mailbox-content -->
+        <div class="mailbox-content">
+            <div class="mailbox-content-header">
+                <!-- BEGIN btn-toolbar -->
+                <div class="btn-toolbar align-items-center">
+                    <div class="btn-group me-2">
+                        <a href="javascript:;" class="btn btn-white btn-sm"><i class="fa fa-fw fa-database" style="color:blue;"></i> <span class="hidden-xs">Data Back</span></a>
+                        <a href="javascript:;" class="btn btn-white btn-sm"><i class="fa fa-fw fa-bell" style="color:green;"></i> <span class="hidden-xs">Notifications</span></a>
+                    </div>
+                    <div>
+                        <a href="#" class="btn btn-white btn-sm" data-bs-toggle="dropdown"><i class="fa fa-fw fa-ellipsis-h"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a href="javascript:;" class="dropdown-item">Save draft</a>
+                            <a href="javascript:;" class="dropdown-item">Show From</a>
+                            <a href="javascript:;" class="dropdown-item">Check names</a>
+                            <a href="javascript:;" class="dropdown-item">Switch to plain text</a>
+                            <a href="javascript:;" class="dropdown-item">Check for accessibility issues</a>
+                        </div>
+                    </div>
+                    <div class="ms-auto">
+                        <a href="email_inbox.html" class="btn btn-white btn-sm"><i class="fa fa-fw fa-shield-alt" style="color:red;"></i> <span class="hidden-xs">Security Update</span></a>
+                    </div>
+                </div>
+                <!-- END btn-toolbar -->
+
+            </div>
+            <div class="mailbox-content-body">
+                <!-- BEGIN scrollbar -->
+                <div data-scrollbar="true" data-height="100%" data-skip-mobile="true">
+                    <!-- BEGIN form -->
+
+                        <!-- BEGIN mailbox-input -->
+                        <div class="mailbox-input" id="form-area">
+
+                        </div>
+                        <!-- END mailbox-input -->
+
+                    <!-- END form -->
+                </div>
+                <!-- END scrollbar -->
+            </div>
+
+        </div>
+        <!-- END mailbox-content -->
+    </div>
+    <!-- END mailbox -->
+
+
+    <script>
+
+
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchData() {
+                // Construct the URL with query parameters
+                var url = '/configs/system';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+                        // Update the content of the auto-filter-mem-data element with the fetched data
+                        $('#form-area').html(response);
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            }
+
+
+            fetchData();
+
+        });
+
+
+    </script>
+
+
+    <script>
+        function loadControlFragment(url) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#form-area').html(data);
+                },
+                error: function() {
+                    console.log('Error loading fragment');
+                }
+            });
+        }
+
+    </script>
+
+
+</div>

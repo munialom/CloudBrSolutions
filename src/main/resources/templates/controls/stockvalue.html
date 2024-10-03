@@ -1,0 +1,235 @@
+<div th:fragment="pc">
+
+            <div class="row">
+         <!--       <div class="col-4">
+                    <a href="#" id="datepicker-btn" class="btn btn-white d-flex align-items-center rounded-3">
+                        <i class="far fa-lg fa-calendar me-10px text-body text-opacity-50 d-none"></i>
+                        <span class="iconify fs-20px my-n1 me-2 ms-n1 text-theme" data-icon="solar:calendar-search-linear"></span>
+                        Select Date
+                        <i class="fa ms-auto fa-chevron-down"></i>
+                    </a>
+                </div>-->
+
+                <div class="col-4">
+                    <div class="btn-toolbar" style="margin-top: 0">
+                        <div class="btn-group me-2">
+
+                            <a href="#" onclick="printValueStock()" class="btn btn-dark btn-sm" ><i class="fa fa-fw fa-print" ></i> <span class="hidden-xs">Print V</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+    <script>
+        function generatePdf(data) {
+            // Process JSON data and populate tableData
+            var tableData = [];
+            var columnNames = ['No.'].concat(Object.keys(data[0]).map(function(key) { return key.charAt(0).toUpperCase() + key.slice(1); })); // Assuming the keys of the first item represent column names
+
+            // Populate tableData
+            data.forEach(function(item, index) {
+                var rowData = [index + 1]; // Add row count
+                for (var key in item) {
+                    rowData.push(item[key]);
+                }
+                tableData.push(rowData);
+            });
+
+            var docDefinition = {
+                content: [
+                    {
+                        stack: [
+                            { text: 'NAKENY MINIMAT', style: 'header', alignment: 'center' },
+                            { text: 'P.O BOX 101-30500 LODWAR', style: 'header', alignment: 'center' },
+                            { text: '0705127908', style: 'header', alignment: 'center' }
+                        ],
+                        margin: [0, 10, 0, 0],
+                        fontSize: 9
+                    },
+                    {
+                        text: 'STOCK VALUATION',
+                        style: 'header',
+                        alignment: 'center',
+                        margin: [0, 10, 0, 0],
+                        fontSize: 9
+                    },
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: Array(columnNames.length).fill('auto'), // Add this line
+                            body: [
+                                columnNames.map(name => ({ text: name, style: 'tableHeader' })),
+                                ...tableData.map(row => {
+                                    return row.map((cell, index) => {
+                                        return index > 0 ? { text: cell, noWrap: true } : cell;
+                                    });
+                                })
+                            ]
+                        },
+                        layout: {
+                            hLineWidth: function(i, node) {
+                                return (i === 0 || i === node.table.body.length) ? 0.5 : 0.5;
+                            },
+                            vLineWidth: function(i, node) {
+                                return (i === 0 || i === node.table.widths.length) ? 0.5 : 0.5;
+                            }
+                        },
+                        margin: [20, 10, 20, 8]
+                    }
+                ],
+                styles: {
+                    header: {
+                        fontSize: 9,
+                        fontFamily: 'Roboto',
+                        bold: true
+                    },
+                    tableHeader: {
+                        fontSize: 9,
+                        fontFamily: 'Roboto',
+                        bold: false
+                    },
+                    tableBody: {
+                        fontSize: 9,
+                        fontFamily: 'Roboto'
+                    }
+                },
+                defaultStyle: {
+                    fontSize: 9,
+                    font: 'Roboto'
+                },
+                pageSize: 'A4',
+                pageOrientation: 'portrait',
+                pageMargins: [20, 25, 20, 25],
+
+                footer: function(currentPage, pageCount) {
+                    var currentDate = new Date();
+                    var dateString = currentDate.toDateString() + ", " + currentDate.toLocaleTimeString();
+                    return {
+                        stack:[
+                            { text:'Page ' + currentPage.toString() + ' of ' + pageCount, alignment:'center' },
+                            { text:'Printed on ' + dateString, alignment:'center' }
+                        ]
+                    };
+                }
+            };
+
+            // Create PDF document
+            var pdfDoc = pdfMake.createPdf(docDefinition);
+
+            // Open PDF
+            pdfDoc.open();
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        function printValueStock() {
+            // Show spinner
+            $('#spinner').show();
+
+            // Make an AJAX request to get JSON data
+            $.ajax({
+                url: '/api-bulk/products/value',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Process data and generate PDF
+                    generatePdf(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                    // Hide spinner on error
+                    $('#spinner').hide();
+                }
+            });
+        }
+
+    </script>
+
+
+
+    <script>
+        function getInvoice() {
+            // Show spinner
+            $('#spinner').show();
+
+            // Make an AJAX request to get JSON data
+            $.ajax({
+                url: '/api-bulk/invoice',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Process data and generate PDF
+                    generateInvoice(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                    // Hide spinner on error
+                    $('#spinner').hide();
+                }
+            });
+        }
+
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $(function() {
+                var selected_date;
+
+                $('#datepicker-btn').datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                }).on('changeDate', function(e) {
+                    selected_date = e.date;
+                    $('#datepicker-btn').html(e.format('yyyy-mm-dd'));
+                });
+
+
+            });
+        });
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>

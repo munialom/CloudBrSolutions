@@ -1,0 +1,60 @@
+<div th:fragment="time-zone-data">
+
+    <div id="timezone-chart"></div>
+    <script>
+        google.charts.load('current', {'packages':['table']});
+        google.charts.setOnLoadCallback(initializeChart);
+
+        const fetchTimezoneData = async () => {
+            try {
+                const response = await fetch('/api/timezone-info');
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching timezone data:', error);
+                return null;
+            }
+        };
+
+        const createDataTable = (data) => {
+            const dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('string', 'Timezone Type');
+            dataTable.addColumn('string', 'Timezone');
+            dataTable.addColumn('string', 'Current Time');
+            dataTable.addColumn('string', 'Offset from Main');
+
+            const addRow = (label, timezone, time, offset) => {
+                const parsedTime = new Date(time.split('[')[0]);
+                const formattedTime = parsedTime instanceof Date && !isNaN(parsedTime)
+                    ? parsedTime.toLocaleString()
+                    : 'Invalid date';
+                dataTable.addRow([label, timezone, formattedTime, offset || 'N/A']);
+            };
+
+            addRow('Main Timezone', data.mainTimezone, data.mainCurrentTime, 'N/A');
+            addRow('System Timezone', data.systemTimezone, data.systemCurrentTime, data.systemOffsetFromMainTimezone);
+            addRow('Server Timezone', data.serverTimezone, data.serverCurrentTime, data.serverOffsetFromMainTimezone);
+
+            return dataTable;
+        };
+
+        const drawChart = (dataTable) => {
+            const options = {
+                showRowNumber: true,
+                width: '100%',
+                height: '100%'
+            };
+
+            const chart = new google.visualization.Table(document.getElementById('timezone-chart'));
+            chart.draw(dataTable, options);
+        };
+
+        async function initializeChart() {
+            const data = await fetchTimezoneData();
+            if (data) {
+                const dataTable = createDataTable(data);
+                drawChart(dataTable);
+            }
+        }
+    </script>
+</div>
+

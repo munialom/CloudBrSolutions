@@ -1,0 +1,132 @@
+<div id="summaryTransactionReportSystem">
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div class="card mt-2">
+            <div class="card-header">
+               <h6 class="mb-0">Summary Transaction Report</h6>
+            </div>
+            <div class="card-body">
+               <div class="mb-3">
+                  <label for="startDatePicker" class="form-label">Start Date:</label>
+                  <input type="date" id="startDatePicker" class="form-control">
+               </div>
+               <div class="mb-3">
+                  <label for="endDatePicker" class="form-label">End Date:</label>
+                  <input type="date" id="endDatePicker" class="form-control">
+               </div>
+               <button id="generateReportBtn" class="btn btn-primary mb-3">Generate Report</button>
+               <div id="summaryTransactionReportTableContainer"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script>
+   $(document).ready(function() {
+      const startDatePicker = $('#startDatePicker');
+      const endDatePicker = $('#endDatePicker');
+      const generateReportBtn = $('#generateReportBtn');
+
+      // Set default dates to current day
+      const today = new Date().toISOString().split('T')[0];
+      startDatePicker.val(today);
+      endDatePicker.val(today);
+
+      generateReportBtn.on('click', function() {
+         loadSummaryTransactionReport(startDatePicker.val(), endDatePicker.val());
+      });
+
+      function generateSummaryTable(data, targetElementId) {
+         const $targetElement = $(`#${targetElementId}`);
+
+         // Create table structure
+         const $tableWrapper = $('<div>').addClass('table-responsive');
+         const $table = $('<table>').addClass('table table-bordered table-striped');
+         const $thead = $('<thead>');
+         const $tbody = $('<tbody>');
+
+         // Generate table header
+         const $headerRow = $('<tr>');
+         $headerRow.append($('<th>').text('Category'));
+         $headerRow.append($('<th>').text('Amount'));
+         $thead.append($headerRow);
+
+         // Generate table body
+         data.forEach(row => {
+            const $dataRow = $('<tr>');
+            $dataRow.append($('<td>').text(row.Category));
+            $dataRow.append($('<td>').text(row.Amount));
+            $tbody.append($dataRow);
+         });
+
+         // Assemble table
+         $table.append($thead).append($tbody);
+         $tableWrapper.append($table);
+
+         // Clear previous content and append the new table
+         $targetElement.empty().append($tableWrapper);
+
+         // Apply styles
+         const styles = `
+         <style>
+            .table-responsive {
+               overflow-x: auto;
+            }
+            .table {
+               width: 100%;
+               margin-bottom: 1rem;
+               color: #212529;
+            }
+            .table th,
+            .table td {
+               padding: 0.75rem;
+               vertical-align: top;
+               border-top: 1px solid #dee2e6;
+            }
+            .table thead th {
+               vertical-align: bottom;
+               border-bottom: 2px solid #dee2e6;
+            }
+            .table tbody + tbody {
+               border-top: 2px solid #dee2e6;
+            }
+            .table-striped tbody tr:nth-of-type(odd) {
+               background-color: rgba(0, 0, 0, 0.05);
+            }
+            .table-bordered {
+               border: 1px solid #dee2e6;
+            }
+            .table-bordered th,
+            .table-bordered td {
+               border: 1px solid #dee2e6;
+            }
+         </style>
+         `;
+         $('head').append(styles);
+      }
+
+      function loadSummaryTransactionReport(startDate, endDate) {
+         $.ajax({
+            type: 'GET',
+            url: `/api/products-manager/summary-transaction-report?startDate=${startDate}&endDate=${endDate}`,
+            success: function(data) {
+               if (data && data.length > 0) {
+                  generateSummaryTable(data, 'summaryTransactionReportTableContainer');
+               } else {
+                  $('#summaryTransactionReportTableContainer').html('<p>No records found for the selected date range.</p>');
+               }
+            },
+            error: function(xhr, status, error) {
+               showNotification('error', 'Error loading summary transaction report: ' + error);
+               console.error(error);
+            }
+         });
+      }
+
+      function showNotification(type, message) {
+         // Implement your notification logic here
+         console.log(`${type}: ${message}`);
+      }
+   });
+</script>

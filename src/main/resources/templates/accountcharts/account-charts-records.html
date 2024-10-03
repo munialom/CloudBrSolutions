@@ -1,0 +1,739 @@
+<div th:fragment="pos-main">
+
+    <style type="text/css">
+
+
+        /* Set flexbox for the pos-container */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+        /* Set flex for pos-content */
+        .pos-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Style pos-content-container */
+        .pos-content-container {
+            flex: 1;
+            padding: 2px;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+
+        }
+    </style>
+
+
+
+    <div class="panel panel flex-1 m-0 d-flex flex-column overflow-hidden">
+
+        <div class="panel-body p-2 flex-1 overflow-hidden">
+
+            <div class="pos-container">
+
+                <!-- pos-content -->
+                <div class="pos-content">
+                    <div class="col-md-12">
+                        <!-- pos-content-container -->
+                        <div class="pos-content-container">
+                            <!-- BEGIN panel -->
+                            <div class="panel text-danger-500 rounded border" data-sortable-id="index-6">
+                                <div class="panel-heading bg-light-100 border-bottom">
+                                    <h4 class="panel-title">Chart of Accounts:</h4>
+                                    <div class="panel-heading-btn">
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                                    </div>
+                                </div>
+                                <!--<div class="panel-toolbar mb-0">
+                                    <div class="btn-group me-5px">
+                                        <a class="btn btn-primary" href="javascript:;" data-bs-toggle="modal" data-bs-target="#accountChartModal">
+                                            <i class="fa fa-plus text-white"></i>Add Legder Account
+                                        </a>
+                                        <a class="btn btn-white" href="javascript:;" id="print-statement">
+                                            <i class="fa fa-print"></i>Print
+                                        </a>
+                                    </div>
+                                </div>-->
+
+                                <div class="panel-toolbar">
+
+
+                                    <div class="row mb-1">
+                                        <!-- Flexbox container -->
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <!-- Search input container -->
+                                            <div class="flex-grow-1 me-2">
+                                                <div class="input-group position-relative">
+                                                    <div class="input-group-text bg-none border-0" style="z-index: 1; position: absolute; top: 50%; transform: translateY(-50%); left: 10px;">
+                                                        <i class="fa fa-barcode"></i>
+                                                    </div>
+                                                    <input type="text" class="form-control ps-5 bg-light" placeholder="Search Account By Name / Code..." id="search-pos" />
+                                                    <div id="search-salary-components-td" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Button group container -->
+                                            <div class="d-flex">
+                                                <a href="#"  class="btn btn-success btn-sm me-1" data-bs-toggle="modal" data-bs-target="#accountChartModal" id="saveBtn">
+                                                    <i class="fas fa-circle-plus fa-lg me-1"></i>Add New
+                                                </a>
+                                                <a href="#" class="btn btn-danger btn-sm me-1" id="initializeDefaultAccounts">
+                                                    <i class="fas fa-print fa-lg me-1"></i>DefaultAccounts
+                                                </a>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-v fa-lg"></i>
+                                                    </button>
+                                                    <!-- Dropdown menu structure -->
+                                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                                        <hr class="dropdown-divider">
+                                                        <li><a class="dropdown-item  text-primary" href="#">
+                                                            <i class="fas fa-download fa-lg me-1"></i>Import Items</a></li>
+                                                        <hr class="dropdown-divider">
+                                                        <li><a class="dropdown-item text-success" href="#"><i class="fas fa-upload fa-lg me-1"></i>Export Items</a></li>
+                                                        <hr class="dropdown-divider">
+                                                        <li><a class="dropdown-item text-info" href="#"><i class="fas fa-eye fa-lg me-1"></i>Export Current View</a></li>
+                                                        <hr class="dropdown-divider">
+                                                        <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-cog fa-lg me-1"></i>Preferences</a></li>
+                                                        <hr class="dropdown-divider">
+                                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sync fa-lg me-1"></i>Refresh List</a></li>
+                                                        <hr class="dropdown-divider">
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <hr class="divider mt-0">
+
+                                <div class="panel-body">
+
+                                    <div id="employee-list-data"></div>
+
+                                </div>
+                            </div>
+                            <!-- END panel -->
+
+                        </div>
+                        <!-- END pos-content-container -->
+                    </div>
+
+                </div>
+                <!-- END pos-content -->
+
+            </div>
+
+        </div>
+
+
+        <!-- Account Charts Modal -->
+        <div class="modal fade" id="accountChartModal" tabindex="-1" aria-labelledby="accountChartModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accountChartModalLabel">Add Account Chart</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="accountChartForm">
+                            <div class="mb-3">
+                                <label for="accountChartName" class="form-label">Account Chart Name</label>
+                                <input type="text" class="form-control" id="accountChartName" name="accountChartName" onkeyup="capitalizeCaseWise(this)">
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountChartAlias" class="form-label">Account Chart Alias</label>
+                                <input type="text" class="form-control" id="accountChartAlias" name="accountChartAlias" onkeyup="capitalizeCaseWise(this)">
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountGroup" class="form-label">Account Group</label>
+                                <select class="form-select" id="accountGroup" name="accountGroup">
+                                    <option value="">Select Account Group</option>
+                                    <optgroup label="Assets">
+                                        <option value="CURRENT_ASSETS">Current Assets</option>
+                                        <option value="FIXED_ASSETS">Fixed Assets</option>
+                                        <option value="LONG_TERM_INVESTMENTS">Long-term Investments</option>
+                                        <option value="OTHER_ASSETS">Other Assets</option>
+                                    </optgroup>
+                                    <optgroup label="Liabilities">
+                                        <option value="CURRENT_LIABILITIES">Current Liabilities</option>
+                                        <option value="LONG_TERM_LIABILITIES">Long-term Liabilities</option>
+                                    </optgroup>
+                                    <optgroup label="Equity">
+                                        <option value="SHARE_CAPITAL">Share Capital</option>
+                                        <option value="RETAINED_EARNINGS">Retained Earnings</option>
+                                    </optgroup>
+                                    <optgroup label="Revenue">
+                                        <option value="OPERATING_REVENUE">Operating Revenue</option>
+                                        <option value="NON_OPERATING_REVENUE">Non-operating Revenue</option>
+                                    </optgroup>
+                                    <optgroup label="Expenses">
+                                        <option value="OPERATING_EXPENSES">Operating Expenses</option>
+                                        <option value="NON_OPERATING_EXPENSES">Non-operating Expenses</option>
+                                        <option value="COST_OF_GOODS_SOLD">Cost of Goods Sold</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="parentAccountChart" class="form-label">Parent Account Chart</label>
+                                <select class="form-select" id="parentAccountChart" name="parentAccountChart">
+                                    <option value="">None</option>
+                                    <!-- Options will be dynamically added here -->
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="isBankAccount" name="isBankAccount">
+                                <label class="form-check-label" for="isBankAccount">Is Bank Account</label>
+                            </div>
+                            <div class="mb-3" id="linkedBankAccountDiv" style="display: none;">
+                                <label for="linkedBankAccount" class="form-label">Linked Bank Account</label>
+                                <select class="form-select" id="linkedBankAccount" name="linkedBankAccount">
+                                    <option value="">Select Linked Bank Account</option>
+                                    <!-- Options will be dynamically added here -->
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveAccountChart">Save Account Chart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                    <i class="fas fa-spinner fa-pulse" style="margin-right: 10px;"></i>
+                    <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch data
+            function fetchStaffList() {
+                // Show the loading overlay
+
+
+                // Construct the URL with query parameters
+                var url = '/api/account-charts/all-account-charts';
+
+                // Make the AJAX request to the server
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function(response) {
+
+
+                        productStockManager(response);
+
+
+                    },
+                    error: function() {
+                        alert('An error occurred while fetching data.');
+                        // Hide the loading overlay
+
+                    }
+                });
+            }
+
+            fetchStaffList();
+        });
+    </script>
+
+
+
+
+
+
+
+
+    <script>
+        function productStockManager(data) {
+            var itemsPerPage = 10;
+            var currentPage = 1;
+            var selectedRows = [];
+            var previousSearchQuery = "";
+            var editedPrices = {};
+            var stockChanges = {};
+            var stockOperation = "";
+
+            // Create the table and pagination controls
+            var table = $('<table id="table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Build table headers
+            for (var key in data[0]) {
+                if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                    thead.find('tr').append('<th>' + key + '</th>');
+                }
+            }
+            thead.find('tr').append('<th id="stock-operation-header" style="display: none;"></th><th>Actions</th>');
+            table.append(thead);
+            table.append(tbody);
+
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+            $('#employee-list-data').html(responsiveDiv);
+
+            // Select all functionality
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                selectedRows = isChecked ? getAllRowIndices() : [];
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.push(rowIndex);
+                } else {
+                    selectedRows = selectedRows.filter(function (index) {
+                        return index !== rowIndex;
+                    });
+                }
+                var allChecked = selectedRows.length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            function getAllRowIndices() {
+                return $('.rowCheckbox').map(function (index, element) {
+                    return $(element).closest('tr').data('original-index');
+                }).toArray();
+            }
+
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="10">10</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+                $('#employee-list-data').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>').data('original-index', startIndex + i);
+                        var rowIndex = startIndex + i;
+                        var isChecked = selectedRows.includes(rowIndex);
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                        tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                        // Unique Product ID Column (Column index 2)
+                        var productId = itemsToShow[i]['Product ID'];
+                        var costPriceKey = productId + '-CostPrice';
+                        var sellingPriceKey = productId + '-SellingPrice';
+
+                        for (var key in itemsToShow[i]) {
+                            if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                                var value = itemsToShow[i][key];
+                                var td = $('<td/>');
+                                if (key === 'Cost Price' || key === 'Selling Price') {
+                                    var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                                    var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                                    td.text(inputValue);
+                                } else {
+                                    td.text(value);
+                                }
+                                tr.append(td);
+                            }
+                        }
+
+                        if (stockOperation) {
+                            var stockKey = productId + '-StockChange';
+                            var stockValue = stockChanges[stockKey] !== undefined ? stockChanges[stockKey] : '';
+                            var stockInputId = 'stock-change-' + productId;
+
+                            var stockTd = $('<td/>').html('<input id="' + stockInputId + '" type="text" class="form-control form-control-sm" value="' + stockValue + '" />');
+                            stockTd.find('input').on('focus', function () {
+                                $(this).select();
+                                $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                                var focusedRowIndex = $(this).closest('tr').data('original-index');
+                                if (!selectedRows.includes(focusedRowIndex)) {
+                                    selectedRows.push(focusedRowIndex);
+                                }
+                                var productNameTd = $(this).closest('tr').find('td').eq(3); // Assuming the 4th column is Product Name
+                                if (!productNameTd.find('span.text-danger').length) {
+                                    productNameTd.append(' <span class="text-danger">' + (stockOperation === 'option1' ? 'Adding' : 'Subtracting') + ' qty</span>');
+                                }
+                            });
+                            stockTd.find('input').on('input', function () {
+                                var newValue = $(this).val();
+                                var inputId = $(this).attr('id');
+                                var row = $(this).closest('tr').data('original-index');
+                                var productId = itemsToShow[row]['Product ID'];
+                                var stockKey = productId + '-StockChange';
+                                stockChanges[stockKey] = newValue;
+                            });
+                            stockTd.find('input').on('keydown', function (e) {
+                                var row = $(this).closest('tr');
+                                if (e.key === "ArrowDown") {
+                                    row.next().find('input').focus();
+                                    e.preventDefault();
+                                } else if (e.key === "ArrowUp") {
+                                    row.prev().find('input').focus();
+                                    e.preventDefault();
+                                }
+                            });
+                            $('#stock-operation-header').text(stockOperation === 'option1' ? 'Add Stock' : 'Subtract Stock').show();
+                            tr.append(stockTd);
+                        } else {
+                            $('#stock-operation-header').hide();
+                        }
+
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            displayTableData();
+            createPagination(data.length);
+
+            // Handle Search
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(previousSearchQuery);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#employee-list-data .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+
+            // Handle Stock Operation Radio Buttons
+            $('input[name="filterOptions"]').on('change', function () {
+                stockOperation = $(this).val();
+                displayTableData();
+            });
+
+            // Handle Actions
+            $(document).on('click', '.btn-info', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Edit row: ' + (rowIndex + 1));
+            });
+
+            $(document).on('click', '.btn-danger', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Delete row: ' + (rowIndex + 1));
+            });
+        }
+    </script>
+
+
+
+
+   <script>
+       $(document).ready(function() {
+           loadParentAccountCharts();
+
+           $('#parentAccountChart, #linkedBankAccount').select2({
+               placeholder: 'Select an account',
+               allowClear: true,
+               width: '100%',
+               dropdownParent: $('#accountChartModal')
+           });
+
+           $('#accountGroup').change(function() {
+               var selectedGroup = $(this).val();
+               var parentGroup = getParentGroup(selectedGroup);
+               $('#linkedBankAccountDiv').hide();
+
+               if (parentGroup === 'REVENUE') {
+                   $('#linkedBankAccountDiv').show();
+                   loadBankAccounts();
+               }
+           });
+
+           function getParentGroup(accountGroup) {
+               var parentGroups = {
+                   'CURRENT_ASSETS': 'ASSETS',
+                   'FIXED_ASSETS': 'ASSETS',
+                   'LONG_TERM_INVESTMENTS': 'ASSETS',
+                   'OTHER_ASSETS': 'ASSETS',
+                   'CURRENT_LIABILITIES': 'LIABILITIES',
+                   'LONG_TERM_LIABILITIES': 'LIABILITIES',
+                   'SHARE_CAPITAL': 'EQUITY',
+                   'RETAINED_EARNINGS': 'EQUITY',
+                   'OPERATING_REVENUE': 'REVENUE',
+                   'NON_OPERATING_REVENUE': 'REVENUE',
+                   'OPERATING_EXPENSES': 'EXPENSES',
+                   'NON_OPERATING_EXPENSES': 'EXPENSES',
+                   'COST_OF_GOODS_SOLD': 'EXPENSES'
+               };
+               return parentGroups[accountGroup] || accountGroup;
+           }
+
+           function loadBankAccounts() {
+               $.ajax({
+                   type: 'GET',
+                   url: '/api/account-charts/bank-accounts',
+                   success: function(data) {
+                       var linkedBankAccountSelect = $('#linkedBankAccount');
+                       linkedBankAccountSelect.empty();
+                       linkedBankAccountSelect.append('<option value="">Select Linked Bank Account</option>');
+
+                       $.each(data, function(index, bankAccount) {
+                           linkedBankAccountSelect.append($('<option>', {
+                               value: bankAccount.id,
+                               text: bankAccount.name + ' (' + bankAccount.accountCode + ')'
+                           }));
+                       });
+                   },
+                   error: function(xhr, status, error) {
+                       showNotification('error', 'Error loading bank accounts: ' + error);
+                       console.error(error);
+                   }
+               });
+           }
+
+           $('#saveAccountChart').click(function() {
+               var accountChartData = {
+                   name: $('#accountChartName').val(),
+                   alias: $('#accountChartAlias').val(),
+                   accountGroup: $('#accountGroup').val(),
+                   parentId: $('#parentAccountChart').val() || null,
+                   bankAccount: $('#isBankAccount').is(':checked'),
+                   linkedBankAccountId: $('#linkedBankAccount').val() || null
+               };
+
+               if (!accountChartData.name || !accountChartData.alias || !accountChartData.accountGroup) {
+                   showNotification('error', 'Please fill in all required fields.');
+                   return;
+               }
+
+               var parentGroup = getParentGroup(accountChartData.accountGroup);
+               if (parentGroup === 'REVENUE' && !accountChartData.linkedBankAccountId) {
+                   showNotification('error', 'Please select a linked bank account for revenue accounts.');
+                   return;
+               }
+
+               $.ajax({
+                   type: 'POST',
+                   url: '/api/account-charts/check-name',
+                   data: accountChartData.name,
+                   contentType: 'text/plain',
+                   success: function(data) {
+                       if (data) {
+                           showNotification('warning', 'Account chart with this name already exists.');
+                       } else {
+                           saveAccountChart(accountChartData);
+                       }
+                   },
+                   error: function(xhr, status, error) {
+                       showNotification('error', 'Error checking account chart name: ' + error);
+                       console.error(error);
+                   }
+               });
+           });
+
+           function saveAccountChart(accountChartData) {
+               $.ajax({
+                   type: 'POST',
+                   url: '/api/account-charts',
+                   data: JSON.stringify(accountChartData),
+                   contentType: 'application/json',
+                   success: function(data) {
+                       showNotification('success', 'Account Chart saved successfully');
+                       $('#accountChartForm')[0].reset();
+                       $('#parentAccountChart, #linkedBankAccount').val(null).trigger('change');
+                       $('#accountChartModal').modal('hide');
+                       fetchAccountCharts();
+                   },
+                   error: function(xhr, status, error) {
+                       showNotification('error', 'Error saving account chart: ' + error);
+                       console.error(error);
+                   }
+               });
+           }
+
+           function loadParentAccountCharts() {
+               $.ajax({
+                   type: 'GET',
+                   url: '/api/account-charts/parent-accounts',
+                   success: function(data) {
+                       var parentAccountChartsSelect = $('#parentAccountChart');
+                       parentAccountChartsSelect.empty();
+                       parentAccountChartsSelect.append('<option value="">None</option>');
+
+                       $.each(data, function(index, accountChart) {
+                           var option = new Option(accountChart.name + ' (' + accountChart.accountCode + ')', accountChart.id, false, false);
+                           parentAccountChartsSelect.append(option);
+                       });
+
+                       parentAccountChartsSelect.trigger('change');
+                   },
+                   error: function(xhr, status, error) {
+                       showNotification('error', 'Error loading parent account charts: ' + error);
+                       console.error(error);
+                   }
+               });
+           }
+
+           function showNotification(type, message) {
+               $.wnoty({
+                   type: type,
+                   message: message,
+                   position: 'top-right'
+               });
+           }
+
+
+
+       });
+   </script>
+
+    <script>
+        $(document).ready(function() {
+            $("#initializeDefaultAccounts").click(function() {
+                // Disable the button to prevent multiple clicks
+                $(this).prop('disabled', true);
+
+                // Show a loading message
+                showNotification('info', 'Initializing default accounts...');
+
+                $.ajax({
+                    url: '/api/account-charts/default-accounts/initialize',
+                    type: 'POST',
+                    success: function(response) {
+                        showNotification('success', 'Default accounts have been initialized successfully.');
+
+                        // Optionally, you can refresh the account list or perform any other action here
+                        // For example: fetchAccountCharts();
+                    },
+                    error: function(xhr, status, error) {
+                        showNotification('error', 'Error initializing default accounts: ' + error);
+                        console.error(error);
+                    },
+                    complete: function() {
+                        // Re-enable the button
+                        $("#initializeDefaultAccounts").prop('disabled', false);
+                    }
+                });
+            });
+
+        });
+
+        // Using the provided showNotification function
+        function showNotification(type, message) {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        }
+    </script>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+

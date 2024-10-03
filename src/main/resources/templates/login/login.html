@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>BRSUITE Access:</title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	
+	<!-- ================== BEGIN core-css ================== -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+	<link th:href="@{/assets/css/vendor.min.css}" rel="stylesheet" />
+	<link th:href="@{/assets/css/default/app.min.css}" rel="stylesheet" />
+
+	<!-- ================== END core-css ================== -->
+	<style>
+
+		.login-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		.login-content {
+			width: 100%;
+			max-width: 400px;
+			padding: 30px;
+			background-color: #ffffff;
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
+		.form-control {
+			height: 45px;
+			font-size: 14px;
+			background-color: #f8f9fa;
+			border: 1px solid #e9ecef;
+		}
+		.form-label {
+			font-size: 14px;
+			color: #6c757d;
+		}
+		.btn {
+			height: 45px;
+			font-size: 14px;
+		}
+		.btn-primary {
+			background-color: #00a3bf;
+			border-color: #00a3bf;
+		}
+		.btn-secondary {
+			background-color: #4285f4;
+			border-color: #4285f4;
+			color: #ffffff;
+		}
+		.form-check-label {
+			font-size: 14px;
+			color: #6c757d;
+		}
+		#pinpad {
+			width: 100%;
+		}
+		.pin-buttons {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+		}
+		.pinButton {
+			height: 60px;
+			font-size: 18px;
+			border: 1px solid #e9ecef;
+		}
+		.pinButton.number {
+			background-color: #ffffff;
+			color: #000000;
+		}
+		.pinButton.clear {
+			background-color: #ff6b6b;
+			color: #ffffff;
+		}
+		.pinButton.enter {
+			background-color: #00a3bf;
+			color: #ffffff;
+		}
+	</style>
+
+
+
+
+</head>
+<body class='pace-top'>
+	<!-- BEGIN #loader -->
+	<div id="loader" class="app-loader">
+		<span class="spinner"></span>
+	</div>
+	<!-- END #loader -->
+
+	<!-- BEGIN #app -->
+	<div id="app" class="app">
+		<!-- BEGIN login -->
+		<div class="login login-with-news-feed">
+			<!-- BEGIN news-feed -->
+			<div class="news-feed">
+				<div class="news-image" style="background-image: url(../assets/img/login-bg/login-bg-11.jpg); background-size: cover;"></div>
+			</div>
+
+			<!-- END news-feed -->
+
+
+
+
+
+
+
+			<!-- BEGIN login-container -->
+			<div class="login-container">
+				<!-- BEGIN login-header -->
+				<div class="login-header">
+					<div class="brand">
+						<div class="d-flex align-items-center">
+							<span class="logo"></span>
+
+							<b>BRS</b> By Ctecx
+						</div>
+						<small>Creative | Innovation | Connected</small>
+					</div>
+					<div class="icon">
+						<i class="fa fa-boxes"></i>
+					</div>
+				</div>
+				<!-- END login-header -->
+
+				<div class="login-content">
+
+					<div id="regularLoginForm">
+						<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
+						<form th:action="@{/login}" method="POST" class="fs-13px">
+							<div class="mb-3">
+								<label for="emailAddress" class="form-label">Email Address</label>
+								<input type="email" name="email" class="form-control" placeholder="admin@system.com" id="emailAddress" />
+							</div>
+							<div class="mb-3">
+								<label for="password" class="form-label">Password</label>
+								<input type="password" name="password" class="form-control" placeholder="••••" id="password" />
+							</div>
+							<div class="mb-3 form-check">
+								<input class="form-check-input" type="checkbox" value="1" id="rememberMe" />
+								<label class="form-check-label" for="rememberMe">Remember Me</label>
+							</div>
+							<div class="mb-3">
+								<button type="submit" class="btn btn-primary w-100">Sign me in</button>
+							</div>
+							<div class="mb-3">
+								<button type="button" id="switchToWaiterLogin" class="btn btn-secondary w-100">Switch to Waiter Login</button>
+							</div>
+						</form>
+					</div>
+
+					<div id="waiterLoginForm" style="display: none;">
+						<h2 class="text-center mb-4">Waiter Login</h2>
+						<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
+						<form th:action="@{/waiter/login}" method="post" id="waiterLoginFormSubmit">
+							<div id="pinpad">
+								<input type="password" id="pin" name="pin" class="form-control mb-3" readonly>
+								<div class="pin-buttons">
+									<button type="button" class="btn btn-light pinButton calc">1</button>
+									<button type="button" class="btn btn-light pinButton calc">2</button>
+									<button type="button" class="btn btn-light pinButton calc">3</button>
+									<button type="button" class="btn btn-light pinButton calc">4</button>
+									<button type="button" class="btn btn-light pinButton calc">5</button>
+									<button type="button" class="btn btn-light pinButton calc">6</button>
+									<button type="button" class="btn btn-light pinButton calc">7</button>
+									<button type="button" class="btn btn-light pinButton calc">8</button>
+									<button type="button" class="btn btn-light pinButton calc">9</button>
+									<button type="button" class="btn btn-danger pinButton clear">Clear</button>
+									<button type="button" class="btn btn-light pinButton calc">0</button>
+									<button type="button" class="btn btn-success pinButton enter" id="waiterLoginSubmit">Enter</button>
+								</div>
+							</div>
+						</form>
+						<div class="mt-3">
+							<button id="switchToRegularLogin" class="btn btn-secondary w-100">Switch to Regular Login</button>
+						</div>
+					</div>
+
+					<div class="text-center mt-3">
+						<small class="text-muted">&copy; Ctecx Technologies All Rights Reserved <span id="currentYear"></span></small>
+					</div>
+				</div>
+
+
+			</div>
+			<!-- END login-container -->
+
+
+		</div>
+		<!-- END login -->
+
+		<!-- BEGIN scroll-top-btn -->
+		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top" data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+		<!-- END scroll-top-btn -->
+	</div>
+	<!-- END #app -->
+
+	<!-- ================== BEGIN core-js ================== -->
+	<script th:src="@{/assets/js/vendor.min.js}"></script>
+	<script th:src="@{/assets/js/app.min.js}"></script>
+	<script th:src="@{/assets/keypad/js/app.js}"></script>
+	<!-- ================== END core-js ================== -->
+	<script>
+		$(document).ready(function() {
+			$('#currentYear').text(new Date().getFullYear());
+		});
+	</script>
+
+<script>
+	$(document).ready(function() {
+		$('#switchToWaiterLogin').click(function() {
+			$('#regularLoginForm').hide();
+			$('#waiterLoginForm').show();
+		});
+
+		$('#switchToRegularLogin').click(function() {
+			$('#waiterLoginForm').hide();
+			$('#regularLoginForm').show();
+		});
+
+		$('.pinButton.calc').click(function() {
+			let pinInput = $('#pin');
+			let val = $(this).text();
+			pinInput.val(pinInput.val() + val);
+		});
+
+		$('.pinButton.clear').click(function() {
+			$('#pin').val('');
+		});
+
+		$('#waiterLoginSubmit').click(function(e) {
+			e.preventDefault();
+			let pinInput = $('#pin');
+			if (pinInput.val().length > 0) {
+				console.log('Submitting waiter login form');
+				$('#waiterLoginFormSubmit').submit();
+			} else {
+				alert('Please enter a PIN');
+			}
+		});
+
+		// Set current year
+		$('#currentYear').text(new Date().getFullYear());
+	});
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<div th:fragment="stock-issuance-system">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                <div class="flex-1">
+                    <i class="fa fa-dolly fa-lg fa-fw text-dark me-1"></i>Stock Issuance:
+                </div>
+            </div>
+
+            <div class="card-body fw-bold">
+                <ul class="nav nav-tabs nav-tabs-v2 px-3 border">
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2 active" data-bs-toggle="tab" href="#createIssuance">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:document-add-bold-duotone"></span>
+                            CREATE ISSUANCE
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#pendingIssuance">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:hourglass-bold-duotone"></span>
+                            PENDING
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#issuedIssuance">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:box-bold-duotone"></span>
+                            ISSUED
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#receivedIssuance">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:check-square-bold-duotone"></span>
+                            RECEIVED
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#cancelledIssuance">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:close-circle-bold-duotone"></span>
+                            CANCELLED
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content border">
+                    <div id="createIssuance" class="tab-pane fade show active">
+                        <!-- Content for Create Issuance tab -->
+                    </div>
+                    <div id="pendingIssuance" class="tab-pane fade">
+                        <!-- Content for Pending Issuance tab -->
+                    </div>
+                    <div id="issuedIssuance" class="tab-pane fade">
+                        <!-- Content for Issued Issuance tab -->
+                    </div>
+                    <div id="receivedIssuance" class="tab-pane fade">
+                        <!-- Content for Received Issuance tab -->
+                    </div>
+                    <div id="cancelledIssuance" class="tab-pane fade">
+                        <!-- Content for Cancelled Issuance tab -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to load content based on the URL
+            function loadContent(url, tabId) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $(tabId).html(response);
+                        $(tabId).siblings('.tab-pane').empty(); // Clear content of other tabs
+                    },
+                    error: function() {
+                        $(tabId).html('<p>Error loading content.</p>');
+                    }
+                });
+            }
+
+            // Load the default content on page load
+            loadContent('/inventory/create-issuance', '#createIssuance');
+
+            // Handle click event on navigation tabs
+            $('.nav-tabs .nav-link').on('shown.bs.tab', function(e) {
+                e.preventDefault();
+                var tabId = $(e.target).attr('href');
+                var url = '';
+
+                // Determine the URL based on the clicked tab
+                switch (tabId) {
+                    case '#createIssuance':
+                        url = '/inventory/create-issuance';
+                        break;
+                    case '#pendingIssuance':
+                        url = '/inventory/pending-issuance';
+                        break;
+                    case '#issuedIssuance':
+                        url = '/inventory/issued-issuance';
+                        break;
+                    case '#receivedIssuance':
+                        url = '/inventory/received-issuance';
+                        break;
+                    case '#cancelledIssuance':
+                        url = '/inventory/cancelled-issuance';
+                        break;
+                    default:
+                        return;
+                }
+
+                // Load the content for the clicked tab
+                loadContent(url, tabId);
+            });
+        });
+    </script>
+</div>

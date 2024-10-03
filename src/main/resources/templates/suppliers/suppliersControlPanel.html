@@ -1,0 +1,580 @@
+<div th:fragment="settings-system">
+    <style>
+        /* Import Roboto font */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        /* Apply Roboto font to the messenger menu */
+        .messenger-menu {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .messenger-menu-link {
+            transition: all 0.2s ease-in-out;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 400; /* Regular weight for normal text */
+        }
+
+        .messenger-menu-item:not(.active) .messenger-menu-link:hover,
+        .messenger-menu-item:not(.active) .messenger-menu-link:focus {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .messenger-menu-item.active .messenger-menu-link {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            font-weight: 500; /* Medium weight for active item */
+        }
+
+        .messenger-menu-link:focus {
+            outline: 2px solid rgba(13, 110, 253, 0.5);
+            outline-offset: 2px;
+        }
+
+        .menu-label {
+            font-size: 14px;
+        }
+    </style>
+    <div class="col-lg-12">
+        <div class="card">
+
+            <div class="card-body fw-bold">
+                <div class="messenger rounded border p-0" id="messenger">
+
+
+                    <div class="messenger-menu d-flex flex-column bg-white shadow-sm rounded p-2" style="width: auto; min-width:220px;">
+                        <div class="messenger-menu-category mb-2">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Supplier Management</span>
+                        </div>
+                        <div class="messenger-menu-item active mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/form',event);" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="people-outline" class="me-2" style="font-size: 24px; color: #16a085;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px; color: #16a085;">Suppliers</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/list', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="list-outline" class="me-2" style="font-size: 24px; color: #2980b9;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Supplier List</span>
+                            </a>
+                        </div>
+
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Procurement</span>
+                        </div>
+
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/receive-stocks', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="archive-outline" class="me-2" style="font-size: 24px; color: #27ae60;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Receive Stocks</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/returns', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="return-down-back-outline" class="me-2" style="font-size: 24px; color: #8e44ad;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Returns</span>
+                            </a>
+                        </div>
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Financial</span>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/invoices', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="receipt-outline" class="me-2" style="font-size: 24px; color: #f39c12;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Invoices</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/payments', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="cash-outline" class="me-2" style="font-size: 24px; color: #2c3e50;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Payments</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/credit-notes', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="document-outline" class="me-2" style="font-size: 24px; color: #e67e22;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Credit Notes</span>
+                            </a>
+                        </div>
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Contracts & Compliance</span>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/contracts', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="document-text-outline" class="me-2" style="font-size: 24px; color: #3498db;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Contracts</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/compliance', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="shield-checkmark-outline" class="me-2" style="font-size: 24px; color: #1abc9c;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Compliance</span>
+                            </a>
+                        </div>
+
+                        <div class="messenger-menu-category mb-2 mt-3">
+                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Analytics</span>
+                        </div>
+                        <div class="messenger-menu-item mb-2">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/reports', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="bar-chart-outline" class="me-2" style="font-size: 24px; color: #9b59b6;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Reports</span>
+                            </a>
+                        </div>
+                        <div class="messenger-menu-item">
+                            <a href="#" onclick="supplierControlPanelFragment('/suppliers/analytics', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
+                                <ion-icon name="analytics-outline" class="me-2" style="font-size: 24px; color: #34495e;"></ion-icon>
+                                <span class="menu-label" style="font-size: 14px;">Analytics Dashboard</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="messenger-chat" style="display: none;">
+                        <div class="messenger-chat-header d-flex">
+                            <div class="flex-1 position-relative">
+                                <input type="text" class="form-control border-0 bg-light ps-30px" placeholder="Search" id="search-list" />
+                                <i class="fa fa-search position-absolute start-0 top-0 h-100 ps-2 ms-3px d-flex align-items-center justify-content-center"></i>
+                            </div>
+                            <div class="ps-2">
+                                <a href="#" onclick="productsControlPanelFragment('/products/adding-new-product')" class="btn border-0 bg-light shadow-none">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="messenger-chat-body">
+                            <div data-scrollbar="true" data-height="100%">
+                                <div class="messenger-chat-list">
+                                    <div class="messenger-chat-item">
+                                        <a href="javascript:;" class="messenger-chat-link" data-toggle-class="messenger-chat-content-mobile-toggled" data-target="#messenger">
+                                            <div class="messenger-chat-media">
+                                                <img alt="" src="assets/img/user/user-1.jpg" />
+                                            </div>
+                                            <div class="messenger-chat-content">
+                                                <div class="messenger-chat-title">
+                                                    <div>Daniel</div>
+                                                    <div class="messenger-chat-time">09:15 AM</div>
+                                                </div>
+                                                <div class="messenger-chat-desc"> Hey, how was your weekend?</div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="messenger-content">
+                        <div class="widget-chat">
+                            <!-- BEGIN widget-chat-header -->
+                            <div class="widget-chat-header">
+                                <div class="d-block d-lg-none">
+                                    <button type="button" class="btn border-0 shadow-none" data-toggle-class="messenger-chat-content-mobile-toggled" data-target="#messenger">
+                                        <i class="fa fa-chevron-left fa-lg"></i>
+                                    </button>
+                                </div>
+                                <div class="widget-chat-header-content" id="supplierDetailsContainer">
+
+
+                                </div>
+                                <div class="">
+                                    <button type="button" class="btn border-0 shadow-none" data-bs-toggle="dropdown">
+                                        <i class="fa fa-ellipsis fa-lg"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- END widget-chat-header -->
+                            <!-- BEGIN widget-chat-body -->
+                            <div class="widget-chat-body bg-white p-0" data-scrollbar="true" data-height="100%" id="supplierControlPanel">
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            </div>
+
+
+            </div>
+
+
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+            <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+<script>
+
+
+    function fetchSupplierDetails(supplierId) {
+        $.ajax({
+            url: `/api/suppliers/${supplierId}`,
+            method: 'GET',
+            success: function(data) {
+                updateSupplierDetails(data);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching supplier details:", error);
+                $('#supplierDetailsContainer').html('<p>Error loading supplier details.</p>');
+            }
+        });
+    }
+
+    function updateSupplierDetails(supplier) {
+        const deepBlue = '#0047AB';
+        const iconStyles = 'margin-right: 5px; vertical-align: middle;';
+
+        let supplierHtml = `
+    <div id="supplierContainer" style="font-family: Arial, sans-serif;">
+        <p style="margin: 0; font-size: 11px; line-height: 1.6;">
+            <span style="color: ${deepBlue}; font-weight: bold;"><i class="fas fa-building" style="${iconStyles}"></i>${supplier.creditorName}</span>
+            <span style="color: black;"><i class="fas fa-hashtag" style="${iconStyles}"></i>Supplier ID: ${supplier.id}</span>
+            <span style="color: ${deepBlue};"><i class="fas fa-map-marker-alt" style="${iconStyles}"></i>Address: ${supplier.creditorAddress}</span>
+            <span style="color: black;"><i class="fas fa-phone" style="${iconStyles}"></i>Contact: ${supplier.creditorContact}</span>
+            <span style="color: ${deepBlue};"><i class="fas fa-calendar-alt" style="${iconStyles}"></i>Credit Terms: ${supplier.creditTerms}</span>
+            <span style="color: black;"><i class="fas fa-id-card" style="${iconStyles}"></i>Tax PIN: ${supplier.taxPin}</span>
+            <span style="color: ${deepBlue};"><i class="fas fa-dollar-sign" style="${iconStyles}"></i>Credit Limit: ${supplier.creditlimit}</span>
+            <span style="color: black;"><i class="fas fa-envelope" style="${iconStyles}"></i>Email: ${supplier.email}</span>
+            <span style="color: ${deepBlue};"><i class="fas fa-tag" style="${iconStyles}"></i>Type: ${supplier.supplierType}</span>
+        </p>
+    </div>
+    `;
+
+        $('#supplierDetailsContainer').html(supplierHtml);
+        $('#supplier-id').html(`<span style="color: black;"><i class="fas fa-hashtag" style="${iconStyles}"></i>Supplier ID: ${supplier.id}</span>`);
+    }
+</script>
+
+
+
+    <script>
+        function supplierControlPanelFragment(url, event) {
+            if (event) {
+                event.preventDefault();
+            }
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#supplierControlPanel').html(data);
+                },
+                error: function() {
+                    console.log('Error loading fragment');
+                }
+            });
+        }
+        $(document).ready(function() {
+            supplierControlPanelFragment('/suppliers/form',event);
+        });
+    </script>
+
+
+
+
+
+
+
+<script>
+    $(document).ready(function() {
+        let allSuppliers = [];
+        let totalSupplierCount = 0;
+        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F06292', '#AED581', '#7986CB', '#4DB6AC', '#FFD54F'];
+        let searchTimeout;
+        let activeItemSupplierId = null;
+
+        function showLoading() {
+            $('#loading-overlay').show();
+        }
+
+        function hideLoading() {
+            $('#loading-overlay').hide();
+        }
+
+        function toSentenceCase(str) {
+            return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase();
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function updateTotalCountBadge() {
+            $('.messenger-menu-item.active').css('position', 'relative');
+            const badgeHtml = `
+            <span class="badge rounded-pill bg-danger total-count-badge"
+                  style="position: absolute; top: -1px; right: -4px;">
+                ${totalSupplierCount}
+            </span>`;
+            $('.messenger-menu-item.active').append(badgeHtml);
+        }
+
+        function renderSupplierList(suppliers) {
+            $('.messenger-chat-list').empty();
+            if (suppliers.length === 0) {
+                $('.messenger-chat-list').html('<p>No suppliers found.</p>');
+                totalSupplierCount = 0;
+            } else {
+                suppliers.forEach(function(supplier, index) {
+                    let initials = getInitials(supplier.creditorName);
+                    let colorIndex = index % colors.length;
+
+                    let chatItem = `
+                    <div class="messenger-chat-item position-relative mb-2" data-supplier-id="${supplier.id}">
+                        <div class="chat-item-content d-flex align-items-center p-2">
+                            <div class="messenger-chat-media rounded-circle flex-shrink-0 me-3" style="background-color: ${colors[colorIndex]}; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: small;">
+                                ${initials}
+                            </div>
+                            <div class="messenger-chat-content flex-grow-1">
+                                <div class="messenger-chat-title d-flex justify-content-between align-items-center">
+                                    <div class="fw-bold">${toSentenceCase(supplier.creditorName)}</div>
+                                </div>
+                                <div class="messenger-chat-desc text-muted small">
+                                    ${supplier.supplierType} | ${supplier.createdBy} | ${formatDate(supplier.created)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons position-absolute end-0 mb-6 me-1" style="display: none;">
+                            <button class="btn btn-primary btn-xs view-details me-1" data-supplier-id="${supplier.id}">View Details</button>
+                            <button class="btn btn-secondary btn-xs update" data-supplier-id="${supplier.id}">Update</button>
+                        </div>
+                    </div>
+                `;
+
+                    $('.messenger-chat-list').append(chatItem);
+                });
+                totalSupplierCount = suppliers.length;
+            }
+            updateTotalCountBadge();
+
+            if (activeItemSupplierId) {
+                setActiveItem(activeItemSupplierId);
+            }
+        }
+
+        function setActiveItem(supplierId) {
+            $('.messenger-chat-item.active').removeClass('active').find('.action-buttons').hide();
+            const $newActiveItem = $(`.messenger-chat-item[data-supplier-id="${supplierId}"]`);
+            activeItemSupplierId = supplierId;
+            fetchSupplierDetails(supplierId);
+            $(".messenger-chat").toggle();
+        }
+
+        function clearActiveItem() {
+            $('.messenger-chat-item.active').removeClass('active').find('.action-buttons').hide();
+            activeItemSupplierId = null;
+        }
+
+        $('.messenger-chat-list').on('click', '.chat-item-content', function(e) {
+            const $clickedItem = $(this).closest('.messenger-chat-item');
+            const clickedSupplierId = $clickedItem.data('supplier-id');
+
+            if (activeItemSupplierId === clickedSupplierId) {
+                clearActiveItem();
+            } else {
+                setActiveItem(clickedSupplierId);
+            }
+
+            e.stopPropagation();
+        });
+
+        $('.messenger-chat-list').on('mousedown', '.view-details, .update', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $('.messenger-chat-list').on('click', '.view-details, .update', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const $button = $(this);
+            const supplierId = $button.data('supplier-id');
+
+            if ($button.hasClass('view-details')) {
+                fetchSupplierDetails(supplierId);
+                console.log('View details for Supplier ID:', supplierId);
+            } else if ($button.hasClass('update')) {
+                alert('Update for Supplier ID: ' + supplierId);
+                console.log('Update for Supplier ID:', supplierId);
+                // Add your update logic here
+            }
+        });
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.messenger-chat-item').length) {
+                clearActiveItem();
+            }
+        });
+
+        function fetchSupplierData(searchTerm = '') {
+            showLoading();
+            $.ajax({
+                url: '/api/suppliers',
+                method: 'GET',
+                data: { search: searchTerm },
+                dataType: 'json',
+                success: function(data) {
+                    allSuppliers = data.sort((a, b) => new Date(b.created) - new Date(a.created));
+                    renderSupplierList(allSuppliers);
+                    hideLoading();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching suppliers:', error);
+                    $('.messenger-chat-list').html('<p>Error loading suppliers. Please try again later.</p>');
+                    totalSupplierCount = 0;
+                    updateTotalCountBadge();
+                    hideLoading();
+                }
+            });
+        }
+
+        function searchSuppliers(searchTerm) {
+            if (searchTerm === '') {
+                renderSupplierList(allSuppliers);
+            } else {
+                let filteredSuppliers = allSuppliers.filter(supplier =>
+                    supplier.creditorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    supplier.supplierType.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                renderSupplierList(filteredSuppliers);
+            }
+        }
+
+        $('#search-list').on('input', function() {
+            let searchTerm = $(this).val().trim();
+            clearTimeout(searchTimeout);
+
+            searchSuppliers(searchTerm);
+
+            searchTimeout = setTimeout(() => {
+                fetchSupplierData(searchTerm);
+            }, 300);
+        });
+
+        // Function to fetch supplier details (placeholder)
+
+
+        // Initial data fetch
+        fetchSupplierData();
+    });
+</script>
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Function to load content based on the URL
+            function loadContent(url, tabId) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $(tabId).html(response);
+                        $(tabId).siblings('.tab-pane').empty(); // Clear content of other tabs
+                    },
+                    error: function() {
+                        $(tabId).html('<p>Error loading content.</p>');
+                    }
+                });
+            }
+
+            // Load the default content on page load
+            loadContent('/patients/dr-management', '#dr-management');
+
+            // Handle click event on navigation tabs
+            $('.nav-link').on('click', function(e) {
+                e.preventDefault();
+                var url = '';
+                var tabId = $(this).attr('href');
+
+                // Determine the URL based on the clicked tab
+                switch (tabId) {
+                    case '#dr-management':
+                        url = '/patients/dr-management';
+                        break;
+                    case '#medical-records':
+                        url = '/patients/dr-management';
+                        break;
+                    default:
+                        return;
+                }
+
+                // Load the content for the clicked tab
+                loadContent(url, tabId);
+                $(tabId).tab('show'); // Show the clicked tab
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Click event handler for the messenger menu item
+            $(".messenger-menu-item.active").on("click", function(e) {
+                e.preventDefault(); // Prevent default link behavior
+
+                // Toggle the visibility of the messenger chat
+                $(".messenger-chat").toggle();
+            });
+        });
+    </script>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

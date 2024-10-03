@@ -1,0 +1,1071 @@
+2024-09-19 05:54:49 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - Starting BrsuiteApplication using Java 17.0.8 with PID 19764 (C:\Users\Geek\Documents\IdeaProjects\brsuite\target\classes started by Geek in C:\Users\Geek\Documents\IdeaProjects\brsuite)
+2024-09-19 05:54:49 [restartedMain] DEBUG c.ctecx.brsuite.BrsuiteApplication - Running with Spring Boot v3.3.0, Spring v6.1.8
+2024-09-19 05:54:49 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - The following 1 profile is active: "dev"
+2024-09-19 05:54:49 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-09-19 05:54:49 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.branch.BranchRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.brands.BrandRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.chartofaccounts.AccountChartRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.customers.CustomerRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.departments.DepartmentRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.packages.PackageTypeRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.packproducts.PackageProductRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.productcategory.CategoryRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.products.ProductRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.revenue.RevenueRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.stockmode.StockTransactionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.suppliers.SupplierRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.systemsetup.AppSetupRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.taxes.TaxClassRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.transactions.TransactionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.uom.UomRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.userroles.RoleRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.users.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.warehouse.StoreRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 05:54:51 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 108 ms. Found 0 JDBC repository interfaces.
+2024-09-19 05:54:52 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-19 05:54:52 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-19 05:54:52 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 101 ms. Found 19 JPA repository interfaces.
+2024-09-19 05:54:53 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2024-09-19 05:54:53 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2024-09-19 05:54:53 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-09-19 05:54:53 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+2024-09-19 05:54:53 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-09-19 05:54:53 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3547 ms
+2024-09-19 05:54:53 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-19 05:54:53 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-19 05:54:53 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-09-19 05:54:54 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-19 05:54:54 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-19 05:54:57 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-19 05:54:57 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-19 05:54:57 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - JSqlParser is in classpath; If applicable, JSqlParser will be used
+2024-09-19 05:54:57 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-09-19 05:54:58 [restartedMain] WARN  o.a.c.c.C.[Tomcat].[localhost].[/] - Cannot deserialize session attribute [SPRING_SECURITY_CONTEXT] for session [F1A4524ED3F2F3D36CC99CA55E69266B]
+2024-09-19 05:54:58 [restartedMain] ERROR o.a.catalina.session.StandardManager - Exception loading sessions from persistent storage
+java.lang.ClassCastException: class java.io.ObjectStreamClass cannot be cast to class java.lang.String (java.io.ObjectStreamClass and java.lang.String are in module java.base of loader 'bootstrap')
+	at java.base/java.io.ObjectInputStream.readTypeString(ObjectInputStream.java:1821)
+	at java.base/java.io.ObjectStreamClass.readNonProxy(ObjectStreamClass.java:712)
+	at java.base/java.io.ObjectInputStream.readClassDescriptor(ObjectInputStream.java:988)
+	at java.base/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:2034)
+	at java.base/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1909)
+	at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2235)
+	at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1744)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:514)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:472)
+	at org.apache.catalina.session.StandardSession.doReadObject(StandardSession.java:1198)
+	at org.apache.catalina.session.StandardSession.readObjectData(StandardSession.java:831)
+	at org.apache.catalina.session.StandardManager.doLoad(StandardManager.java:210)
+	at org.apache.catalina.session.StandardManager.load(StandardManager.java:156)
+	at org.apache.catalina.session.StandardManager.startInternal(StandardManager.java:345)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4441)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:874)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:516)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:222)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.ctecx.brsuite.BrsuiteApplication.main(BrsuiteApplication.java:14)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2024-09-19 05:54:58 [restartedMain] DEBUG c.ctecx.brsuite.security.DebugFilter - Filter 'debugFilter' configured for use
+2024-09-19 05:54:58 [restartedMain] DEBUG c.c.b.s.PinAuthenticationFilter - Filter 'pinAuthenticationFilter' configured for use
+2024-09-19 05:54:59 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Found 2 AuthenticationProvider beans, with names [pinAuthenticationProvider, daoAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2024-09-19 05:54:59 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name pmsDetailsService
+2024-09-19 05:55:00 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@50679a5c, org.springframework.security.web.session.ForceEagerSessionCreationFilter@12df0c3e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@382654ca, org.springframework.security.web.context.SecurityContextHolderFilter@152f9fa4, org.springframework.security.web.header.HeaderWriterFilter@43dea713, org.springframework.web.filter.CorsFilter@3590c574, org.springframework.security.web.authentication.logout.LogoutFilter@196a7389, com.ctecx.brsuite.security.PinAuthenticationFilter@2f45a61f, com.ctecx.brsuite.security.DebugFilter@314734ab, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@5b9e39a6, com.ctecx.brsuite.security.DebugFilter@314734ab, org.springframework.security.web.session.ConcurrentSessionFilter@6314480a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@33ccc9af, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4239f990, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@59491ce0, org.springframework.security.web.session.SessionManagementFilter@a4fb534, org.springframework.security.web.access.ExceptionTranslationFilter@28e85ab1, org.springframework.security.web.access.intercept.AuthorizationFilter@13ca2608]
+2024-09-19 05:55:00 [restartedMain] WARN  o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore Mvc [pattern='/assets/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2024-09-19 05:55:00 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will not secure Mvc [pattern='/assets/**']
+2024-09-19 05:55:00 [restartedMain] WARN  o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore Mvc [pattern='/error']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2024-09-19 05:55:00 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will not secure Mvc [pattern='/error']
+2024-09-19 05:55:01 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-09-19 05:55:01 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2024-09-19 05:55:01 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2024-09-19 05:55:01 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - Started BrsuiteApplication in 13.744 seconds (process running for 16.301)
+2024-09-19 05:58:33 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-19 05:58:33 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-09-19 05:58:33 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2024-09-19 05:58:33 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/
+2024-09-19 05:58:33 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /
+2024-09-19 05:58:33 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 302
+2024-09-19 05:58:33 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/login
+2024-09-19 05:58:33 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /login
+2024-09-19 05:58:33 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: AnonymousAuthenticationToken [Principal=anonymousUser, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[ROLE_ANONYMOUS]]
+2024-09-19 05:58:33 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:33 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/app.min.css
+2024-09-19 05:58:33 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/app.min.css
+2024-09-19 05:58:33 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/vendor.min.css
+2024-09-19 05:58:33 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/vendor.min.css
+2024-09-19 05:58:33 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/app.min.js
+2024-09-19 05:58:33 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/app.min.js
+2024-09-19 05:58:33 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/vendor.min.js
+2024-09-19 05:58:33 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/vendor.min.js
+2024-09-19 05:58:33 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:33 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/keypad/js/app.js
+2024-09-19 05:58:33 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:33 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/keypad/js/app.js
+2024-09-19 05:58:33 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:34 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:34 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 404
+2024-09-19 05:58:34 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:34 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:34 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/login-bg/login-bg-11.jpg
+2024-09-19 05:58:34 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:34 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/login-bg/login-bg-11.jpg
+2024-09-19 05:58:34 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-solid-900.woff2
+2024-09-19 05:58:34 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 05:58:34 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-solid-900.woff2
+2024-09-19 05:58:34 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:34 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 05:58:34 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 05:58:35 [http-nio-8081-exec-7] WARN  n.n.u.t.e.ExpressionProcessor - Fragment expression "layout" is being wrapped as a Thymeleaf 3 fragment expression (~{...}) for backwards compatibility purposes.  This wrapping will be dropped in the next major version of the expression processor, so please rewrite as a Thymeleaf 3 fragment expression to future-proof your code.  See https://github.com/thymeleaf/thymeleaf/issues/451 for more information.
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/login
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: POST
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /login
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.security.PmsDetailsService - Attempting to load user by email: admin@system.com
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Authentication success. Principal: com.ctecx.brsuite.security.PmsUserDetails@56981a8c
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Updating last login date for user: admin@system.com
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.security.PmsDetailsService - Updating last login date for user: admin@system.com
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Is user a Waiter? false
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Determined target URL: /
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Redirecting to: /
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:52 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 302
+2024-09-19 06:06:52 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/
+2024-09-19 06:06:52 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:52 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /
+2024-09-19 06:06:52 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/vendor.min.css
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/vendor.min.css
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/app.min.css
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/app.min.css
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/select2/dist/css/select2.min.css
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/select2/dist/css/select2.min.css
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/gritter/css/jquery.gritter.css
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/gritter/css/jquery.gritter.css
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/wnoty.css
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/wnoty.css
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/vendor.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/vendor.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/user/user-13.jpg
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/user/user-13.jpg
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/app.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/app.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/jquery.scannerdetection.js
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/jquery.scannerdetection.js
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/select2/dist/js/select2.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/select2/dist/js/select2.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/sweetalert/dist/sweetalert.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/sweetalert/dist/sweetalert.min.js
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/gritter/js/jquery.gritter.js
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/gritter/js/jquery.gritter.js
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/ionicons.js
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/ionicons.js
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/wnoty.js
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/wnoty.js
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/editor.css
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/editor.css
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/user/user-13.jpg
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/user/user-13.jpg
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/images/cover-sidebar-user.jpg
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/images/cover-sidebar-user.jpg
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 404
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-brands-400.woff2
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-brands-400.woff2
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/p-60d56620.system.js
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/p-60d56620.system.js
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/finance/revenueSummary
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /finance/revenueSummary
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/p-ea7bbed1.system.js
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/p-ea7bbed1.system.js
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:06:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:06:56 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/api/reports/stock-valuation
+2024-09-19 06:06:56 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:06:56 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /api/reports/stock-valuation
+2024-09-19 06:06:56 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:56 [http-nio-8081-exec-8] WARN  c.i.layout.renderer.TableWidths - Table width is more than expected due to min width of cell(s).
+2024-09-19 06:06:57 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:06:57 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:07:01 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/api/reports/stock-valuation
+2024-09-19 06:07:01 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:07:01 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /api/reports/stock-valuation
+2024-09-19 06:07:01 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:07:02 [http-nio-8081-exec-5] WARN  c.i.layout.renderer.TableWidths - Table width is more than expected due to min width of cell(s).
+2024-09-19 06:07:02 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:07:02 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:07:02 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/api/reports/stock-valuation
+2024-09-19 06:07:02 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:07:02 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /api/reports/stock-valuation
+2024-09-19 06:07:02 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:07:02 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/api/reports/stock-valuation
+2024-09-19 06:07:02 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:07:02 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /api/reports/stock-valuation
+2024-09-19 06:07:02 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:07:03 [http-nio-8081-exec-3] WARN  c.i.layout.renderer.TableWidths - Table width is more than expected due to min width of cell(s).
+2024-09-19 06:07:03 [http-nio-8081-exec-1] WARN  c.i.layout.renderer.TableWidths - Table width is more than expected due to min width of cell(s).
+2024-09-19 06:07:04 [http-nio-8081-exec-3] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to flush: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-09-19 06:07:04 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:07:04 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 206
+2024-09-19 06:07:04 [http-nio-8081-exec-1] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.context.request.async.AsyncRequestNotUsableException: ServletOutputStream failed to write: java.io.IOException: An established connection was aborted by the software in your host machine]
+2024-09-19 06:07:04 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@56981a8c, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D7C21306F20887DB742758B9FAB39B41], Granted Authorities=[Admin]]
+2024-09-19 06:07:04 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 206
+2024-09-19 06:14:23 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-19 06:14:42 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - Starting BrsuiteApplication using Java 17.0.8 with PID 15220 (C:\Users\Geek\Documents\IdeaProjects\brsuite\target\classes started by Geek in C:\Users\Geek\Documents\IdeaProjects\brsuite)
+2024-09-19 06:14:42 [restartedMain] DEBUG c.ctecx.brsuite.BrsuiteApplication - Running with Spring Boot v3.3.0, Spring v6.1.8
+2024-09-19 06:14:42 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - The following 1 profile is active: "dev"
+2024-09-19 06:14:43 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-09-19 06:14:43 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.branch.BranchRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.brands.BrandRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.chartofaccounts.AccountChartRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.customers.CustomerRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.departments.DepartmentRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.packages.PackageTypeRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.packproducts.PackageProductRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.productcategory.CategoryRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.products.ProductRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.revenue.RevenueRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.stockmode.StockTransactionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.suppliers.SupplierRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.systemsetup.AppSetupRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.taxes.TaxClassRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.transactions.TransactionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.uom.UomRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.userroles.RoleRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.users.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.warehouse.StoreRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 101 ms. Found 0 JDBC repository interfaces.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-19 06:14:45 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 127 ms. Found 19 JPA repository interfaces.
+2024-09-19 06:14:46 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2024-09-19 06:14:46 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2024-09-19 06:14:46 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-09-19 06:14:46 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+2024-09-19 06:14:47 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-09-19 06:14:47 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3515 ms
+2024-09-19 06:14:47 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-19 06:14:47 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-19 06:14:47 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-09-19 06:14:48 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-19 06:14:48 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-19 06:14:51 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-19 06:14:51 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-19 06:14:52 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - JSqlParser is in classpath; If applicable, JSqlParser will be used
+2024-09-19 06:14:52 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-09-19 06:14:52 [restartedMain] WARN  o.a.c.c.C.[Tomcat].[localhost].[/] - Cannot deserialize session attribute [SPRING_SECURITY_CONTEXT] for session [0434DF5D6238ADB0D879D4C9DC12AF5C]
+2024-09-19 06:14:52 [restartedMain] ERROR o.a.catalina.session.StandardManager - Exception loading sessions from persistent storage
+java.lang.ClassCastException: class java.io.ObjectStreamClass cannot be cast to class java.lang.String (java.io.ObjectStreamClass and java.lang.String are in module java.base of loader 'bootstrap')
+	at java.base/java.io.ObjectInputStream.readTypeString(ObjectInputStream.java:1821)
+	at java.base/java.io.ObjectStreamClass.readNonProxy(ObjectStreamClass.java:712)
+	at java.base/java.io.ObjectInputStream.readClassDescriptor(ObjectInputStream.java:988)
+	at java.base/java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:2034)
+	at java.base/java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1909)
+	at java.base/java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2235)
+	at java.base/java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1744)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:514)
+	at java.base/java.io.ObjectInputStream.readObject(ObjectInputStream.java:472)
+	at org.apache.catalina.session.StandardSession.doReadObject(StandardSession.java:1198)
+	at org.apache.catalina.session.StandardSession.readObjectData(StandardSession.java:831)
+	at org.apache.catalina.session.StandardManager.doLoad(StandardManager.java:210)
+	at org.apache.catalina.session.StandardManager.load(StandardManager.java:156)
+	at org.apache.catalina.session.StandardManager.startInternal(StandardManager.java:345)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4441)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203)
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145)
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749)
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:874)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171)
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128)
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:516)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:222)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.ctecx.brsuite.BrsuiteApplication.main(BrsuiteApplication.java:14)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2024-09-19 06:14:52 [restartedMain] DEBUG c.ctecx.brsuite.security.DebugFilter - Filter 'debugFilter' configured for use
+2024-09-19 06:14:52 [restartedMain] DEBUG c.c.b.s.PinAuthenticationFilter - Filter 'pinAuthenticationFilter' configured for use
+2024-09-19 06:14:54 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Found 2 AuthenticationProvider beans, with names [pinAuthenticationProvider, daoAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2024-09-19 06:14:54 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name pmsDetailsService
+2024-09-19 06:14:57 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@599a184e, org.springframework.security.web.session.ForceEagerSessionCreationFilter@196a7389, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7b09dfe7, org.springframework.security.web.context.SecurityContextHolderFilter@60985644, org.springframework.security.web.header.HeaderWriterFilter@5aa79103, org.springframework.web.filter.CorsFilter@23745247, org.springframework.security.web.authentication.logout.LogoutFilter@2b8291fb, com.ctecx.brsuite.security.PinAuthenticationFilter@2bbd8ced, com.ctecx.brsuite.security.DebugFilter@7a757f17, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@7432d67d, com.ctecx.brsuite.security.DebugFilter@7a757f17, org.springframework.security.web.session.ConcurrentSessionFilter@2d0fc498, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@9d849de, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1d80ca1a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2a25760f, org.springframework.security.web.session.SessionManagementFilter@22332b68, org.springframework.security.web.access.ExceptionTranslationFilter@4ddde33a, org.springframework.security.web.access.intercept.AuthorizationFilter@4bb16034]
+2024-09-19 06:14:57 [restartedMain] WARN  o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore Mvc [pattern='/assets/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2024-09-19 06:14:57 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will not secure Mvc [pattern='/assets/**']
+2024-09-19 06:14:57 [restartedMain] WARN  o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore Mvc [pattern='/error']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2024-09-19 06:14:57 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will not secure Mvc [pattern='/error']
+2024-09-19 06:14:59 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-09-19 06:14:59 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2024-09-19 06:14:59 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2024-09-19 06:14:59 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - Started BrsuiteApplication in 17.907 seconds (process running for 20.765)
+2024-09-19 06:37:04 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-19 06:37:22 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - Starting BrsuiteApplication using Java 17.0.8 with PID 19424 (C:\Users\Geek\Documents\IdeaProjects\brsuite\target\classes started by Geek in C:\Users\Geek\Documents\IdeaProjects\brsuite)
+2024-09-19 06:37:22 [restartedMain] DEBUG c.ctecx.brsuite.BrsuiteApplication - Running with Spring Boot v3.3.0, Spring v6.1.8
+2024-09-19 06:37:22 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - The following 1 profile is active: "dev"
+2024-09-19 06:37:23 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-09-19 06:37:23 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.branch.BranchRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.brands.BrandRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.chartofaccounts.AccountChartRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.customers.CustomerRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.departments.DepartmentRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.packages.PackageTypeRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.packproducts.PackageProductRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.productcategory.CategoryRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.products.ProductRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.revenue.RevenueRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.stockmode.StockTransactionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.suppliers.SupplierRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.systemsetup.AppSetupRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.taxes.TaxClassRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.transactions.TransactionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.uom.UomRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.userroles.RoleRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.users.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.ctecx.brsuite.warehouse.StoreRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 126 ms. Found 0 JDBC repository interfaces.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-19 06:37:25 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 127 ms. Found 19 JPA repository interfaces.
+2024-09-19 06:37:26 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8081 (http)
+2024-09-19 06:37:26 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8081"]
+2024-09-19 06:37:26 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2024-09-19 06:37:26 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+2024-09-19 06:37:26 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2024-09-19 06:37:26 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3246 ms
+2024-09-19 06:37:26 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-19 06:37:27 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-19 06:37:27 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2024-09-19 06:37:27 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-19 06:37:27 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-19 06:37:29 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-19 06:37:30 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-19 06:37:30 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - JSqlParser is in classpath; If applicable, JSqlParser will be used
+2024-09-19 06:37:30 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-09-19 06:37:30 [restartedMain] DEBUG c.ctecx.brsuite.security.DebugFilter - Filter 'debugFilter' configured for use
+2024-09-19 06:37:30 [restartedMain] DEBUG c.c.b.s.PinAuthenticationFilter - Filter 'pinAuthenticationFilter' configured for use
+2024-09-19 06:37:31 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Found 2 AuthenticationProvider beans, with names [pinAuthenticationProvider, daoAuthenticationProvider]. Global Authentication Manager will not be configured with AuthenticationProviders. Consider publishing a single AuthenticationProvider bean, or wiring your Providers directly using the DSL.
+2024-09-19 06:37:31 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name pmsDetailsService
+2024-09-19 06:37:32 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@377a1898, org.springframework.security.web.session.ForceEagerSessionCreationFilter@63220e9c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@50ac46dd, org.springframework.security.web.context.SecurityContextHolderFilter@3908ab86, org.springframework.security.web.header.HeaderWriterFilter@24f207cc, org.springframework.web.filter.CorsFilter@d37b2c1, org.springframework.security.web.authentication.logout.LogoutFilter@5b9e39a6, com.ctecx.brsuite.security.PinAuthenticationFilter@1289c5eb, com.ctecx.brsuite.security.DebugFilter@5aa97b88, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@ff7995c, com.ctecx.brsuite.security.DebugFilter@5aa97b88, org.springframework.security.web.session.ConcurrentSessionFilter@6accf0e2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4bb16034, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@81a17e6, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6aeed527, org.springframework.security.web.session.SessionManagementFilter@7e54345a, org.springframework.security.web.access.ExceptionTranslationFilter@261062a2, org.springframework.security.web.access.intercept.AuthorizationFilter@292fb467]
+2024-09-19 06:37:32 [restartedMain] WARN  o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore Mvc [pattern='/assets/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2024-09-19 06:37:32 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will not secure Mvc [pattern='/assets/**']
+2024-09-19 06:37:32 [restartedMain] WARN  o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore Mvc [pattern='/error']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2024-09-19 06:37:32 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will not secure Mvc [pattern='/error']
+2024-09-19 06:37:33 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2024-09-19 06:37:33 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8081"]
+2024-09-19 06:37:33 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8081 (http) with context path '/'
+2024-09-19 06:37:33 [restartedMain] INFO  c.ctecx.brsuite.BrsuiteApplication - Started BrsuiteApplication in 12.09 seconds (process running for 15.455)
+2024-09-19 06:37:41 [http-nio-8081-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-19 06:37:41 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2024-09-19 06:37:41 [http-nio-8081-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2024-09-19 06:37:41 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/
+2024-09-19 06:37:41 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:41 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /
+2024-09-19 06:37:41 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:41 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:41 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 302
+2024-09-19 06:37:41 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/login
+2024-09-19 06:37:41 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:41 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /login
+2024-09-19 06:37:41 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: AnonymousAuthenticationToken [Principal=anonymousUser, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[ROLE_ANONYMOUS]]
+2024-09-19 06:37:42 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:42 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/vendor.min.js
+2024-09-19 06:37:42 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/vendor.min.css
+2024-09-19 06:37:42 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/app.min.js
+2024-09-19 06:37:42 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/app.min.js
+2024-09-19 06:37:42 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/keypad/js/app.js
+2024-09-19 06:37:42 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/keypad/js/app.js
+2024-09-19 06:37:42 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/vendor.min.js
+2024-09-19 06:37:42 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/vendor.min.css
+2024-09-19 06:37:42 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/app.min.css
+2024-09-19 06:37:42 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/app.min.css
+2024-09-19 06:37:42 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 404
+2024-09-19 06:37:42 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:42 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:42 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:42 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:42 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/login-bg/login-bg-11.jpg
+2024-09-19 06:37:42 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/login-bg/login-bg-11.jpg
+2024-09-19 06:37:42 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:42 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:42 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:42 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:42 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:42 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:43 [http-nio-8081-exec-7] WARN  n.n.u.t.e.ExpressionProcessor - Fragment expression "layout" is being wrapped as a Thymeleaf 3 fragment expression (~{...}) for backwards compatibility purposes.  This wrapping will be dropped in the next major version of the expression processor, so please rewrite as a Thymeleaf 3 fragment expression to future-proof your code.  See https://github.com/thymeleaf/thymeleaf/issues/451 for more information.
+2024-09-19 06:37:44 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/login
+2024-09-19 06:37:44 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /login
+2024-09-19 06:37:44 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: AnonymousAuthenticationToken [Principal=anonymousUser, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[ROLE_ANONYMOUS]]
+2024-09-19 06:37:44 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/vendor.min.css
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/vendor.min.css
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/app.min.css
+2024-09-19 06:37:44 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/app.min.css
+2024-09-19 06:37:44 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:44 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/vendor.min.js
+2024-09-19 06:37:44 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/app.min.js
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/vendor.min.js
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/app.min.js
+2024-09-19 06:37:44 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:44 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/keypad/js/app.js
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/keypad/js/app.js
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 404
+2024-09-19 06:37:44 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/login-bg/login-bg-11.jpg
+2024-09-19 06:37:44 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/login-bg/login-bg-11.jpg
+2024-09-19 06:37:44 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:44 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:44 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:44 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:44 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:44 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/login
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: POST
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /login
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.c.b.security.PmsDetailsService - Attempting to load user by email: admin@system.com
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Authentication success. Principal: com.ctecx.brsuite.security.PmsUserDetails@33507253
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Updating last login date for user: admin@system.com
+2024-09-19 06:37:46 [http-nio-8081-exec-6] DEBUG c.c.b.security.PmsDetailsService - Updating last login date for user: admin@system.com
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Is user a Waiter? false
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Determined target URL: /
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.c.b.s.LastLoginSuccessHandler - Redirecting to: /
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 302
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/app.min.css
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/app.min.css
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/vendor.min.css
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/vendor.min.css
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/select2/dist/css/select2.min.css
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/select2/dist/css/select2.min.css
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/gritter/css/jquery.gritter.css
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/gritter/css/jquery.gritter.css
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/wnoty.css
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/wnoty.css
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/vendor.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/vendor.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/user/user-13.jpg
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/user/user-13.jpg
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/app.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/app.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/jquery.scannerdetection.js
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/jquery.scannerdetection.js
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/select2/dist/js/select2.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/select2/dist/js/select2.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/sweetalert/dist/sweetalert.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/sweetalert/dist/sweetalert.min.js
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/gritter/js/jquery.gritter.js
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/gritter/js/jquery.gritter.js
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/ionicons.js
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/editor.css
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/editor.css
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/wnoty.js
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/wnoty.js
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/ionicons.js
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/user/user-13.jpg
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/user/user-13.jpg
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/images/cover-sidebar-user.jpg
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/images/cover-sidebar-user.jpg
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 404
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-brands-400.woff2
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-brands-400.woff2
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/p-60d56620.system.js
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/p-60d56620.system.js
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/finance/revenueSummary
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /finance/revenueSummary
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:47 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/p-ea7bbed1.system.js
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/p-ea7bbed1.system.js
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:47 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:48 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/api/products-manager/revenue-summary/2024-09-19
+2024-09-19 06:37:48 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:48 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /api/products-manager/revenue-summary/2024-09-19
+2024-09-19 06:37:48 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:48 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:48 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/api/reports/stock-valuation
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /api/reports/stock-valuation
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:53 [http-nio-8081-exec-4] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: java.nio.file.InvalidPathException: Illegal char <:> at index 35: C:\Users\Geek\AppData\Local\Temp\\C:\Users\Geek\AppData\Local\Temp\stock_valuation_2024-09-01_to_2024-09-18.pdf] with root cause
+java.nio.file.InvalidPathException: Illegal char <:> at index 35: C:\Users\Geek\AppData\Local\Temp\\C:\Users\Geek\AppData\Local\Temp\stock_valuation_2024-09-01_to_2024-09-18.pdf
+	at java.base/sun.nio.fs.WindowsPathParser.normalize(WindowsPathParser.java:182)
+	at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:153)
+	at java.base/sun.nio.fs.WindowsPathParser.parse(WindowsPathParser.java:77)
+	at java.base/sun.nio.fs.WindowsPath.parse(WindowsPath.java:92)
+	at java.base/sun.nio.fs.WindowsFileSystem.getPath(WindowsFileSystem.java:232)
+	at java.base/java.nio.file.Path.of(Path.java:147)
+	at java.base/java.nio.file.Paths.get(Paths.java:69)
+	at com.ctecx.brsuite.util.DynamicReportGenerator.generateReport(DynamicReportGenerator.java:56)
+	at com.ctecx.brsuite.util.ReportService.generateReport(ReportService.java:116)
+	at com.ctecx.brsuite.util.ReportService.generateStockValuationReport(ReportService.java:91)
+	at com.ctecx.brsuite.util.ReportController.lambda$generateStockValuationReport$0(ReportController.java:32)
+	at com.ctecx.brsuite.util.ReportController.generateAndServePdf(ReportController.java:146)
+	at com.ctecx.brsuite.util.ReportController.generateStockValuationReport(ReportController.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:151)
+	at org.springframework.security.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:129)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.ctecx.brsuite.security.DebugFilter.doFilterInternal(DebugFilter.java:26)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:227)
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:221)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.ForceEagerSessionCreationFilter.doFilterInternal(ForceEagerSessionCreationFilter.java:45)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/app.min.css
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/app.min.css
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/gritter/css/jquery.gritter.css
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/gritter/css/jquery.gritter.css
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/select2/dist/css/select2.min.css
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/select2/dist/css/select2.min.css
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/wnoty.css
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/wnoty.css
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/vendor.min.css
+2024-09-19 06:37:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/vendor.min.css
+2024-09-19 06:37:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-8] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/vendor.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/vendor.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/user/user-13.jpg
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/user/user-13.jpg
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/app.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/app.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/js/jquery.scannerdetection.js
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/js/jquery.scannerdetection.js
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/select2/dist/js/select2.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/select2/dist/js/select2.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/sweetalert/dist/sweetalert.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/sweetalert/dist/sweetalert.min.js
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/gritter/js/jquery.gritter.js
+2024-09-19 06:37:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/gritter/js/jquery.gritter.js
+2024-09-19 06:37:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/wnoty.js
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/wnoty.js
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/ionicons.js
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/ionicons.js
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/custom/editor.css
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/custom/editor.css
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-6] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-5] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/img/user/user-13.jpg
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/img/user/user-13.jpg
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-3] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/css/default/images/cover-sidebar-user.jpg
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/css/default/images/cover-sidebar-user.jpg
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-9] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 404
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-brands-400.woff2
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-brands-400.woff2
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/webfonts/fa-solid-900.woff2
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-1] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:53 [http-nio-8081-exec-7] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:54 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/p-60d56620.system.js
+2024-09-19 06:37:54 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:54 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/p-60d56620.system.js
+2024-09-19 06:37:54 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:54 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:54 [http-nio-8081-exec-4] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:54 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/finance/revenueSummary
+2024-09-19 06:37:54 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:54 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /finance/revenueSummary
+2024-09-19 06:37:54 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:54 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: UsernamePasswordAuthenticationToken [Principal=com.ctecx.brsuite.security.PmsUserDetails@33507253, Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=0:0:0:0:0:0:0:1, SessionId=D1A8A0B8F617E5210207F588DF5F1127], Granted Authorities=[Admin]]
+2024-09-19 06:37:54 [http-nio-8081-exec-10] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:37:54 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URL: http://localhost:8081/assets/plugins/ionicons/dist/ionicons/p-ea7bbed1.system.js
+2024-09-19 06:37:54 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request Method: GET
+2024-09-19 06:37:54 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Request URI: /assets/plugins/ionicons/dist/ionicons/p-ea7bbed1.system.js
+2024-09-19 06:37:54 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - Before processing - Authentication: null
+2024-09-19 06:37:54 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Authentication: null
+2024-09-19 06:37:54 [http-nio-8081-exec-2] DEBUG c.ctecx.brsuite.security.DebugFilter - After processing - Response Status: 200
+2024-09-19 06:38:51 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'

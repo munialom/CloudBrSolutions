@@ -1,0 +1,109 @@
+
+<div th:fragment="template" >
+
+
+
+    <div class="card rounded border">
+        <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fab fa-magento fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Mail Template Settings
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+                <!-- BEGIN col-6 -->
+                <div class="col-md-12">
+
+                    <form id="mail-temps" class="form-horizontal" method="post" th:action="@{/settings/mailTemplate}">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Email Subject:</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" name="VERIFY_SUBJECT" th:value="${VERIFY_SUBJECT}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Email Content:</label>
+                            <div class="col-md-12">
+                                <!-- BEGIN panel -->
+                                <div class="panel panel-inverse">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">Email Template</h4>
+                                        <div class="panel-heading-btn">
+                                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body panel-body p-0">
+                                        <div id="txtEditor"></div>
+                                        <input type="hidden" name="VERIFY_CONTENT" th:value="${VERIFY_CONTENT}" id="hiddenContent"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-9 pull-right">
+                                <button type="submit" class="btn btn-sm btn-success">Submit Button</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialize the editor
+            $("#txtEditor").Editor();
+
+            // Load the content
+            var content = $("#hiddenContent").val();
+            $("#txtEditor").Editor("setText", content);
+
+            // Handle form submission
+            $('#mail-temps').on('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                // Update the hidden input with the current editor content
+                var updatedContent = $("#txtEditor").Editor("getText");
+                $("#hiddenContent").val(updatedContent);
+
+                // Serialize form data
+                var formData = $(this).serialize();
+
+                // Submit form data using AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        // Show success notification
+                        $.gritter.add({
+                            title: 'Success',
+                            text: 'Email Template Successfully Updated',
+                            class_name: 'gritter-success'
+                        });
+
+
+                    },
+                    error: function() {
+                        // Show failure notification
+                        $.gritter.add({
+                            title: 'Error',
+                            text: 'Failed to save Email Template',
+                            class_name: 'gritter-error'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+        </div>
+

@@ -1,0 +1,149 @@
+<div th:fragment="settings-system">
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                <div class="flex-1">
+                    <i class="fa fa-gears fa-lg fa-fw text-dark  me-1"></i>Church Groups Management:
+                </div>
+            </div>
+            <div class="card-body fw-bold">
+
+                <ul class="nav nav-tabs nav-tabs-v2 px-3 border">
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#group-types">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:list-check-bold-duotone"></span>
+                            STOCK RECORDS
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#group-names">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:checklist-bold-duotone"></span>
+                        STOCK VALUATION
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#members-groups">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:checklist-bold-duotone"></span>
+                           DAILY STOCK SHEET
+                        </a>
+                    </li>
+
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#members-groups">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:checklist-bold-duotone"></span>
+                            STOCK MOVEMENT
+                        </a>
+                    </li>
+
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#members-groups">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:checklist-bold-duotone"></span>
+                            STOCK AGING
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#members-groups">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:checklist-bold-duotone"></span>
+                            STOCK TURNOVER
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#members-groups">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:checklist-bold-duotone"></span>
+                            STOCK FORECASTING
+                        </a>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content border" >
+                    <div id="group-types" class="tab-pane fade show active">
+
+                    </div>
+                    <div id="group-names" class="tab-pane fade">
+
+                    </div>
+
+                    <div id="members-groups" class="tab-pane fade">
+
+                    </div>
+
+
+
+
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; text-align: center;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">
+            <i class="fas fa-spinner fa-pulse"></i> Submitting...
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            // Function to load content based on the URL
+            function loadContent(url, tabId) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $(tabId).html(response);
+                        $(tabId).siblings('.tab-pane').empty(); // Clear content of other tabs
+                    },
+                    error: function() {
+                        $(tabId).html('<p>Error loading content.</p>');
+                    }
+                });
+            }
+
+            // Load the default content on page load
+            loadContent('/groups-setup/create-new-group', '#group-types');
+
+            // Handle click event on navigation tabs
+            $('.nav-link').on('click', function(e) {
+                e.preventDefault();
+                var url = '';
+                var tabId = $(this).attr('href');
+
+                // Determine the URL based on the clicked tab
+                switch (tabId) {
+                    case '#group-types':
+                        url = '/groups-setup/create-new-group';
+                        break;
+                    case '#group-names':
+                        url = '/groups-setup/create-new';
+                        break;
+                    case '#members-groups':
+                        url = '/members/bulk-manager';
+                        break;
+
+                    default:
+                        return;
+                }
+
+                // Load the content for the clicked tab
+                loadContent(url, tabId);
+                $(tabId).tab('show'); // Show the clicked tab
+            });
+        });
+    </script>
+
+
+    </div>
+
+
+
+

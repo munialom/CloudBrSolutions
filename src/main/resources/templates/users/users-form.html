@@ -1,0 +1,247 @@
+<div th:fragment="users_form">
+
+
+
+   <form  id="userForm" data-parsley-validate="true" method="post"  >
+
+      <fieldset class="border p-2">
+         <legend class="float-none w-auto" style="font-size: small;">New User Card</legend>
+
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="row">
+                     <div class="col-lg-4">
+                        <div class="card rounded border">
+                           <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                              <div class="flex-1">
+                                 <i class="fa fa-bank fa-lg fa-fw text-black  me-1"></i>User Details
+                              </div>
+                           </div>
+                           <div class="card-body fw-bold">
+
+                              <div class="mb-3">
+                                 <label for="firstName" class="form-label">First Name</label>
+                                 <input class="form-control form-control-sm" name="firstName" type="text" id="firstName"  required/>
+                              </div>
+                              <div class="mb-3">
+                                 <label for="lastName" class="form-label">Second Name</label>
+                                 <input class="form-control form-control-sm" name="lastName" type="text" id="lastName"  required/>
+                              </div>
+                                 <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input class="form-control form-control-sm" name="email" type="email" id="email"  required/>
+                                 </div>
+
+                                 <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input class="form-control form-control-sm"  name="password" type="password" id="password"  required/>
+                                 </div>
+
+                                 <div class="mb-3">
+                                    <label for="branch" class="form-label">Branch</label>
+                                    <select class="form-control form-control-sm" id="branch" name="branch"  required>
+                                       <option value="">--Select Branch--</option>
+                                       <th:block th:each="branch: ${branches}">
+                                          <option th:text="${branch.branchName}" th:value="${branch.id}"></option>
+                                       </th:block>
+                                    </select>
+                                 </div>
+
+                                 <div class="mb-3">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input class="form-control form-control-sm"  name="phone" type="text" id="phone" required/>
+                                 </div>
+
+                              <div class="mb-3" style="display: flex; flex-wrap: nowrap; overflow-x: auto;">
+                                 <label class="form-label">Roles:</label>
+                                 <th:block th:each="iRole : ${rolesData}">
+                                    <div class="form-check" style="margin-right: 10px;">
+                                       <input type="checkbox" class="form-check-input" name="roles" th:value="${iRole.id}" id="${'role-' + iRole.id}" />
+                                       <label class="form-check-label" for="${'role-' + iRole.id}" th:text="${iRole.roleName}"></label>
+                                    </div>
+                                 </th:block>
+                              </div>
+
+
+
+                              <div class="mb-3" style="display: flex; flex-wrap: nowrap; overflow-x: auto;">
+                                 <label class="form-label" for="enabled">Status:</label>
+                                 <div class="form-check" style="margin-right: 10px;">
+                                    <input type="checkbox" class="form-check-input" name="enabled" id="enabled"/>
+                                    <label class="form-check-label" for="enabled">Enabled</label>
+                                 </div>
+                              </div>
+
+
+                           </div>
+
+                        </div>
+
+                     </div>
+                     <div class="col-lg-8">
+                        <div class="card rounded border">
+                           <div class="card-header h6 mb-0 bg-none p-3">
+                              <i class="fa fa-list-numeric fa-lg fa-fw text-black  me-1"></i>User List
+                           </div>
+                           <div class="card-body" id="all-users-data">
+
+
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+            </div>
+
+         </div>
+
+         </fieldset>
+      <fieldset class="border p-2">
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" id="saveStore-Btn" class="btn btn-primary ps-40px pe-40px">Add New User</button>
+      </div>
+      </fieldset>
+
+
+   </form>
+
+
+
+
+   <script>
+      $(document).ready(function() {
+         var isSubmitting = false; // Variable to track form submission
+
+         $('#userForm').submit(function(event) {
+            event.preventDefault();
+
+            if (isSubmitting) {
+               console.warn('Form is already being submitted. Please wait.');
+               return;
+            }
+
+            isSubmitting = true;
+
+            var firstName = $('#firstName').val(); // Added First Name
+            var lastName = $('#lastName').val();   // Added Last Name
+            var email = $('#email').val();
+            var password = $('#password').val();
+            var branch = $('#branch').val();
+            var phone = $('#phone').val();
+            var roles = [];
+            $('input[name="roles"]:checked').each(function() {
+               roles.push($(this).val());
+            });
+            var enabled = $('#enabled').is(':checked');
+
+            if (!firstName || !lastName || !email || !password || !branch || !phone || roles.length === 0) {
+               console.error('Form submission failed. Missing fields.');
+               isSubmitting = false; // Reset isSubmitting on failure
+               return; // Prevent form submission
+            }
+
+            var formData = {
+               firstName: firstName,   // Updated to First Name
+               lastName: lastName,     // Updated to Last Name
+               email: email,
+               password: password,
+               branch: branch,
+               phone: phone,
+               roles: roles,
+               enabled: enabled
+            };
+
+            $.ajax({
+               type: 'POST',
+               url: "/api-user/save", // Assuming this is the correct URL to handle user creation
+               data: JSON.stringify(formData),
+               contentType: 'application/json',
+               dataType: 'json',
+               success: function(response) {
+                  if (response.success) {
+                     console.log('Response:', response.message);
+
+                     Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message,
+                        timer: 2000, // 2 seconds
+                        showConfirmButton: false
+                     });
+
+                  } else {
+                     console.error('Error occurred:', response.message);
+
+                     Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                        timer: 2000, // 2 seconds
+                        showConfirmButton: false
+                     });
+                  }
+
+                  isSubmitting = false; // Reset isSubmitting after successful submission
+               },
+               error: function(xhr, status, error) {
+                  console.error('Error occurred:', error);
+
+                  Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: 'Failed to create user. Please try again.',
+                     timer: 3000, // 3 seconds
+                     showConfirmButton: false
+                  });
+
+                  isSubmitting = false; // Reset isSubmitting on error
+               }
+            });
+         });
+      });
+   </script>
+
+
+
+
+   <script>
+      $(document).ready(function() {
+         // Fetch data from the default URL on page load
+         fetchData('/users/data');
+
+         $('#view-ex-btn').click(function(event) {
+            event.preventDefault(); // Prevent the default behavior of the button click
+
+
+            // Fetch data from the updated URL on button click
+            fetchData('/users/data');
+         });
+
+         function fetchData(url) {
+            // Make the AJAX request to the server
+            $.ajax({
+               url: url,
+               method: 'GET',
+               success: function(response) {
+                  // Update the content of the auto-filter-mem-data element with the fetched data
+                  $('#all-users-data').html(response);
+               },
+               error: function() {
+                  alert('An error occurred while fetching data.');
+               }
+            });
+         }
+      });
+   </script>
+
+   <script th:src="@{/assets/plugins/parsleyjs/dist/parsley.min.js}"></script>
+
+
+</div>
+
+
+
+
+
+
+

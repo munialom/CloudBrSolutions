@@ -1,0 +1,187 @@
+<div th:fragment="school" th:remove="tag">
+
+
+   <form id="school-form" method="post" th:action="@{/settings/school}" >
+
+      <fieldset class="border p-2">
+         <legend class="float-none w-auto" style="font-size: small;">Company Details</legend>
+
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="row">
+                     <div class="col-lg-12">
+                        <div class="card rounded border">
+                           <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                              <div class="flex-1">
+                                 <i class="fa fa-bank fa-lg fa-fw text-black  me-1"></i>Company Setup
+                              </div>
+                           </div>
+                           <div class="card-body fw-bold">
+                              <div class="row">
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">COMPANY NAME:</label>
+                                       <input type="text" class="form-control form-control-sm" onkeyup="capitalize(this)" name="SCHOOL_NAME" th:value="${SCHOOL_NAME}" />
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">LOCATION:</label>
+                                       <input type="text" class="form-control form-control-sm" onkeyup="capitalize(this)" name="SCHOOL_LOCATION" th:value="${SCHOOL_LOCATION}" />
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">POSTAL ADRESS:</label>
+                                       <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="SCHOOL_POSTAL" th:value="${SCHOOL_POSTAL}" />
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">EMAIL:</label>
+                                       <input type="text" class="form-control form-control-sm"  name="SCHOOL_EMAIL"  th:value="${SCHOOL_EMAIL}" />
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">KRA PIN:</label>
+                                       <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="SCHOOL_KRA" th:value="${SCHOOL_KRA}" />
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">NSSF CODE:</label>
+                                       <input type="text" class="form-control form-control-sm"  name="SCHOOL_NSSF"  th:value="${SCHOOL_NSSF}" />
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">EMPLOYER NHIF CODE:</label>
+                                       <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="SCHOOL_NHIF" th:value="${SCHOOL_NHIF}" />
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">NITA CODE:</label>
+                                       <input type="text" class="form-control form-control-sm"  name="SCHOOL_NITA"  th:value="${SCHOOL_NITA}" />
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">PAYBILL/TILL :</label>
+                                       <input type="text" class="form-control form-control-sm"  onkeyup="capitalize(this)" name="SCHOOL_MOTTO" th:value="${SCHOOL_MOTTO}" />
+                                    </div>
+                                 </div>
+                                 <div class="col-lg-6">
+                                    <div class="mb-lg-0 mb-3">
+                                       <label class="form-label">PHONE:</label>
+                                       <input type="text" class="form-control form-control-sm" onkeyup="addCountryCode(this)" name="SCHOOL_PHONE" th:value="${SCHOOL_PHONE}" />
+                                    </div>
+                                 </div>
+                              </div>
+
+                           </div>
+                        </div>
+
+                     </div>
+
+                  </div>
+            </div>
+
+         </div>
+
+         </fieldset>
+
+      <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+         <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+         <button type="submit" id="saveBranch-Btn" class="btn btn-primary ps-40px pe-40px">Update</button>
+      </div>
+
+
+
+   </form>
+
+
+   <script>
+      $(document).ready(function() {
+         $('#school-form').submit(function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Serialize the form data
+            var formData = $(this).serialize();
+
+            // Submit the form data using AJAX
+            $.ajax({
+               url: $(this).attr('action'),
+               type: 'POST',
+               data: formData,
+               success: function(response) {
+                  // Display a success notification using SweetAlert
+                  swal({
+                     title: "Success",
+                     text: "Form submitted successfully",
+                     icon: "success",
+                     timer: 3000, // Set the timer for how long the alert should be visible (in milliseconds)
+                     buttons: false // Hide the "OK" button
+                  });
+
+                  // Optionally, you can reload the form or do any other necessary actions here
+               },
+               error: function(xhr, status, error) {
+                  // Handle the error if the form submission fails
+                  swal({
+                     title: "Error",
+                     text: "Form submission failed",
+                     icon: "error",
+                     button: "OK"
+                  });
+               }
+            });
+         });
+      });
+   </script>
+
+
+
+   <script>
+      $(document).ready(function() {
+         function showLogoThumbnail() {
+            var fileInput = document.getElementById('fileImage');
+            var thumbnail = document.getElementById('thumbnail');
+
+            fileInput.addEventListener('change', function() {
+               var file = fileInput.files[0];
+               var reader = new FileReader();
+
+               reader.onload = function(e) {
+                  thumbnail.src = e.target.result;
+               };
+
+               reader.readAsDataURL(file);
+            });
+         }
+
+         showLogoThumbnail();
+      });
+
+   </script>
+
+   <script th:src="@{/assets/plugins/parsleyjs/dist/parsley.min.js}"></script>
+
+
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,554 @@
+<div th:fragment="student">
+    <div class="col-md-12">
+
+        <!-- BEGIN panel -->
+        <div class="panel text-black rounded border" data-sortable-id="index-6">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">Suppliers Management</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+
+
+            <div class="panel-toolbar border rounded p-1">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="supplierForm">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label for="creditorName" class="form-label">Creditor Name</label>
+                                        <input type="text" class="form-control" id="creditorName" name="creditorName" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="creditorContact" class="form-label">Creditor Contact</label>
+                                        <input type="text" class="form-control" id="creditorContact" name="creditorContact" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="creditTerms" class="form-label">Credit Terms</label>
+                                        <input type="text" class="form-control" id="creditTerms" name="creditTerms" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="taxPin" class="form-label">Tax PIN</label>
+                                        <input type="text" class="form-control" id="taxPin" name="taxPin" required>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-4">
+                                        <label for="creditLimit" class="form-label">Credit Limit</label>
+                                        <input type="number" class="form-control" id="creditLimit" name="creditLimit" step="0.01" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="supplierType" class="form-label">Supplier Type</label>
+                                        <select class="form-select" id="supplierType" name="supplierType" required>
+                                            <option value="">Choose...</option>
+                                            <option value="COMPANY">Company</option>
+                                            <option value="INDIVIDUAL">Individual</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-12">
+                                        <label for="creditorAddress" class="form-label">Creditor Address</label>
+                                        <textarea class="form-control" id="creditorAddress" name="creditorAddress" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="button" class="btn btn-success btn-sm me-2" id="saveSupplierBtn">
+                                            <i class="fas fa-save me-1"></i>Save Supplier
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm" id="resetFormBtn">
+                                            <i class="fas fa-undo me-1"></i>Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+
+            <hr class="divider mt-0 p-0">
+
+            <div class="panel-body mt-0">
+
+                <div id="stockControlPanelBulkUpdates">
+
+                </div>
+
+            </div>
+            <!-- END panel -->
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#member-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Function to fetch data
+
+
+            fetchStaffList();
+        });
+    </script>
+
+
+<script>
+    function showLoading() {
+        $('#loading-overlay').show();
+    }
+
+    function hideLoading() {
+        $('#loading-overlay').hide();
+    }
+    function fetchStaffList() {
+        // Show the loading overlay
+
+
+        // Construct the URL with query parameters
+        var url = '/api/suppliers';
+
+        // Make the AJAX request to the server
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+
+                /*  $('#stockControlPanelBulkUpdates').html(response);*/
+                productStockManager(response);
+
+
+            },
+            error: function() {
+                alert('An error occurred while fetching data.');
+                // Hide the loading overlay
+
+            }
+        });
+    }
+</script>
+
+
+
+    <script>
+        function productStockManager(data) {
+            var itemsPerPage = 15;
+            var currentPage = 1;
+            var selectedRows = [];
+            var previousSearchQuery = "";
+            var editedPrices = {};
+            var stockChanges = {};
+            var stockOperation = "";
+
+            // Create the table and pagination controls
+            var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Build table headers
+            for (var key in data[0]) {
+                if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                    thead.find('tr').append('<th>' + key + '</th>');
+                }
+            }
+            thead.find('tr').append('<th id="stock-operation-header" style="display: none;"></th><th>Actions</th>');
+            table.append(thead);
+            table.append(tbody);
+
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+            $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+            // Select all functionality
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                selectedRows = isChecked ? getAllRowIndices() : [];
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                if ($(this).prop('checked')) {
+                    selectedRows.push(rowIndex);
+                } else {
+                    selectedRows = selectedRows.filter(function (index) {
+                        return index !== rowIndex;
+                    });
+                }
+                var allChecked = selectedRows.length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            function getAllRowIndices() {
+                return $('.rowCheckbox').map(function (index, element) {
+                    return $(element).closest('tr').data('original-index');
+                }).toArray();
+            }
+
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+                $('#stockControlPanelBulkUpdates').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>').data('original-index', startIndex + i);
+                        var rowIndex = startIndex + i;
+                        var isChecked = selectedRows.includes(rowIndex);
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                        tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                        // Unique Product ID Column (Column index 2)
+                        var productId = itemsToShow[i]['Product ID'];
+                        var costPriceKey = productId + '-CostPrice';
+                        var sellingPriceKey = productId + '-SellingPrice';
+
+                        for (var key in itemsToShow[i]) {
+                            if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                                var value = itemsToShow[i][key];
+                                var td = $('<td/>');
+                                if (key === 'Cost Price' || key === 'Selling Price') {
+                                    var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                                    var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                                    td.text(inputValue);
+                                } else {
+                                    td.text(value);
+                                }
+                                tr.append(td);
+                            }
+                        }
+
+                        if (stockOperation) {
+                            var stockKey = productId + '-StockChange';
+                            var stockValue = stockChanges[stockKey] !== undefined ? stockChanges[stockKey] : '';
+                            var stockInputId = 'stock-change-' + productId;
+
+                            var stockTd = $('<td/>').html('<input id="' + stockInputId + '" type="text" class="form-control form-control-sm" value="' + stockValue + '" />');
+                            stockTd.find('input').on('focus', function () {
+                                $(this).select();
+                                $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                                var focusedRowIndex = $(this).closest('tr').data('original-index');
+                                if (!selectedRows.includes(focusedRowIndex)) {
+                                    selectedRows.push(focusedRowIndex);
+                                }
+                                var productNameTd = $(this).closest('tr').find('td').eq(3); // Assuming the 4th column is Product Name
+                                if (!productNameTd.find('span.text-danger').length) {
+                                    productNameTd.append(' <span class="text-danger">' + (stockOperation === 'option1' ? 'Adding' : 'Subtracting') + ' qty</span>');
+                                }
+                            });
+                            stockTd.find('input').on('input', function () {
+                                var newValue = $(this).val();
+                                var inputId = $(this).attr('id');
+                                var row = $(this).closest('tr').data('original-index');
+                                var productId = itemsToShow[row]['Product ID'];
+                                var stockKey = productId + '-StockChange';
+                                stockChanges[stockKey] = newValue;
+                            });
+                            stockTd.find('input').on('keydown', function (e) {
+                                var row = $(this).closest('tr');
+                                if (e.key === "ArrowDown") {
+                                    row.next().find('input').focus();
+                                    e.preventDefault();
+                                } else if (e.key === "ArrowUp") {
+                                    row.prev().find('input').focus();
+                                    e.preventDefault();
+                                }
+                            });
+                            $('#stock-operation-header').text(stockOperation === 'option1' ? 'Add Stock' : 'Subtract Stock').show();
+                            tr.append(stockTd);
+                        } else {
+                            $('#stock-operation-header').hide();
+                        }
+
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            displayTableData();
+            createPagination(data.length);
+
+            // Handle Search
+            $('#search-pos').on('keyup', function () {
+                previousSearchQuery = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(previousSearchQuery);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+
+            // Handle Stock Operation Radio Buttons
+            $('input[name="filterOptions"]').on('change', function () {
+                stockOperation = $(this).val();
+                displayTableData();
+            });
+
+            // Handle Actions
+            $(document).on('click', '.btn-info', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Edit row: ' + (rowIndex + 1));
+            });
+
+            $(document).on('click', '.btn-danger', function () {
+                var rowIndex = $(this).closest('tr').data('original-index');
+                alert('Delete row: ' + (rowIndex + 1));
+            });
+        }
+    </script>
+
+
+
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- JavaScript code will be added here -->
+
+    <script>
+        // Function to convert string to sentence case
+        function toSentenceCase(str) {
+            return str.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, function(c) {
+                return c.toUpperCase();
+            });
+        }
+
+        // Function to handle input changes
+        function handleInputChange(event) {
+            if (event.target.id !== 'email') {
+                event.target.value = toSentenceCase(event.target.value);
+            }
+        }
+
+        // Add event listeners to all input fields
+        document.querySelectorAll('#supplierForm input, #supplierForm textarea').forEach(input => {
+            if (input.id !== 'email') {
+                input.addEventListener('blur', handleInputChange);
+            }
+        });
+
+        // Special handling for select element
+        document.getElementById('supplierType').addEventListener('change', function(event) {
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            selectedOption.textContent = toSentenceCase(selectedOption.textContent);
+        });
+
+
+
+        // Handle form reset
+        document.getElementById('resetFormBtn').addEventListener('click', function() {
+            document.getElementById('supplierForm').reset();
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Save Vendor
+            $('#saveSupplierBtn').click(function() {
+                if (!validateForm()) {
+                    return;
+                }
+
+                var formData = {
+                    creditorName: $('#creditorName').val(),
+                    creditorAddress: $('#creditorAddress').val(),
+                    creditorContact: $('#creditorContact').val(),
+                    creditTerms: $('#creditTerms').val(),
+                    taxPin: $('#taxPin').val(),
+                    creditlimit: parseFloat($('#creditLimit').val()),
+                    email: $('#email').val(),
+                    supplierType: $('#supplierType').val()
+                };
+
+                console.log('Supplier data being sent:', JSON.stringify(formData, null, 2));
+
+                showLoading();
+
+                $.ajax({
+                    url: '/api/suppliers',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        hideLoading();
+                        console.log('Response received:', response);
+                        $.wnoty({
+                            type: 'success',
+                            message: 'Supplier saved successfully',
+                            position: 'top-right'
+                        });
+                        resetForm();
+                    },
+                    error: function(xhr, status, error) {
+                        hideLoading();
+                        console.error('Error response:', xhr.responseText);
+                        var errorMessage = 'Failed to save supplier';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        $.wnoty({
+                            type: 'error',
+                            message: errorMessage,
+                            position: 'top-right'
+                        });
+                    }
+                });
+            });
+
+            // Reset Form
+            $('#resetFormBtn').click(function() {
+                resetForm();
+            });
+
+            function validateForm() {
+                var isValid = true;
+                $('#supplierForm input, #supplierForm textarea, #supplierForm select').each(function() {
+                    if ($(this).prop('required') && !$(this).val()) {
+                        isValid = false;
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    $.wnoty({
+                        type: 'warning',
+                        message: 'Please fill in all required fields',
+                        position: 'top-right'
+                    });
+                }
+
+                return isValid;
+            }
+
+            function resetForm() {
+                $('#supplierForm')[0].reset();
+                $('#supplierForm input, #supplierForm textarea, #supplierForm select').removeClass('is-invalid');
+            }
+
+            function showLoading() {
+                $('#loading-overlay').show();
+            }
+
+            function hideLoading() {
+                $('#loading-overlay').hide();
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+

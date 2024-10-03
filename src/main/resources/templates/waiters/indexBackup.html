@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>POS - Customer Order System</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN core-css -->
+    <link th:href="@{/assets/css/vendor.min.css}" rel="stylesheet" />
+    <link th:href="@{/assets/css/default/app.min.css}" rel="stylesheet" />
+    <!-- END core-css -->
+</head>
+<body class='pace-top'>
+<!-- BEGIN #loader -->
+<div id="loader" class="app-loader">
+    <span class="spinner"></span>
+</div>
+<!-- END #loader -->
+
+<!-- BEGIN #app -->
+<div id="app" class="app app-content-full-height app-without-sidebar app-without-header">
+    <!-- BEGIN #content -->
+    <div id="content" class="app-content p-0">
+        <!-- BEGIN pos -->
+        <div class="pos pos-with-menu pos-with-sidebar" id="pos">
+
+            <!-- BEGIN pos-menu -->
+            <div class="pos-menu">
+
+                <div class="nav-container">
+                    <div data-scrollbar="true" data-height="100%" data-skip-mobile="true">
+                        <ul class="nav nav-tabs" id="categoryMenu">
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END pos-menu -->
+
+            <!-- BEGIN pos-content -->
+            <!-- BEGIN pos-content -->
+            <div class="pos-content bg-white rounded border">
+            <!--    <div class="pos-content-container">
+                    <div class="product-row p-0" id="currentOrders">
+                        &lt;!&ndash; Products will be dynamically inserted here &ndash;&gt;
+                    </div>
+                </div>-->
+                <div class="pos-content-container" style="height: 100vh; padding: 20px;">
+                    <div class="product-row p-0" id="currentOrders" style="max-height: calc(100% - 40px); overflow-y: auto;">
+                        <!-- Products will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+            <!-- END pos-content -->
+            <!-- END pos-content -->
+
+            <!-- BEGIN pos-sidebar -->
+            <div class="pos-sidebar" id="sideBarClose">
+                <div class="h-100 d-flex flex-column p-0">
+                    <div class="pos-sidebar-header">
+                        <div class="back-btn">
+                            <button type="button" data-dismiss-class="pos-sidebar-mobile-toggled" data-target="#pos" class="btn border-0">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        <div class="icon"><i class="fa fa-server"></i></div>
+                        <div class="title"  th:text="${currentUser}"></div>
+                        <div class="order"><b id="CurrentorderNumber"></b><input type="checkbox" id="addingOrder" disabled ></div>
+                    </div>
+                    <div class="pos-sidebar-nav">
+                        <ul class="nav nav-tabs nav-fill">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" data-bs-toggle="tab" data-bs-target="#newOrderTab">New Order (<span id="itemCount">0</span>)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="tab" data-bs-target="#orderHistoryTab">Order History (0)</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pos-sidebar-body tab-content" data-scrollbar="true" data-height="100%">
+                        <div class="tab-pane fade h-100 show active" id="newOrderTab">
+                            <div class="pos-table" id="orderItems">
+                                <!-- Order items will be dynamically added here -->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade h-100" id="orderHistoryTab">
+                            <!-- Order history content -->
+                        </div>
+                    </div>
+                    <div class="pos-sidebar-footer">
+                        <div class="d-flex align-items-center mb-2">
+                            <div>Subtotal</div>
+                            <div class="flex-1 text-end h6 mb-0" id="subtotal">0.00</div>
+                        </div>
+
+                        <hr class="opacity-1 my-10px">
+                        <div class="d-flex align-items-center mb-2">
+                            <div>Total</div>
+                            <div class="flex-1 text-end h4 mb-0" id="total">0.00</div>
+                        </div>
+                        <div class="d-flex align-items-center mt-3">
+                            <a href="#" id="WaiterLogoutLink" class="btn btn-default rounded-3 text-center me-10px w-70px"><i class="fa fa-power-off text-danger d-block fs-18px my-1"></i>LogOut</a>
+                            <a href="#" onclick="ordersControlPanelFragment('/sales/open-sales', event)"  class="btn btn-default rounded-3 text-center me-10px w-70px"><i class="fa fa-receipt d-block fs-18px my-1"></i>Orders</a>
+                            <a href="#" class="btn btn-theme rounded-3 text-center flex-1" id="submitOrder"><i class="fa fa-shopping-cart d-block fs-18px my-1"></i> Submit Order</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END pos-sidebar -->
+        </div>
+        <!-- END pos -->
+
+        <!-- BEGIN pos-mobile-sidebar-toggler -->
+        <a href="#" class="pos-mobile-sidebar-toggler" data-toggle-class="pos-sidebar-mobile-toggled" data-target="#pos">
+            <i class="iconify display-6" data-icon="solar:bag-smile-bold-duotone"></i>
+            <span class="badge">5</span>
+        </a>
+        <!-- END pos-mobile-sidebar-toggler -->
+    </div>
+    <!-- END #content -->
+    <!-- END #loader -->
+    <form th:action="@{/logout}" th:hidden="true" method="post" name="logoutForm">
+        <input type="submit">
+    </form>
+    <!-- BEGIN #app -->
+
+    <!-- BEGIN scroll-top-btn -->
+    <a href="javascript:;" class="btn btn-icon btn-circle btn-theme btn-scroll-to-top" data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+    <!-- END scroll-top-btn -->
+</div>
+<!-- END #app -->
+
+
+
+
+
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<!-- ================== END page-js ================== -->
+
+<!-- ================== BEGIN core-js ================== -->
+<script th:src="@{/assets/js/vendor.min.js}"></script>
+<script th:src="@{/assets/js/app.min.js}"></script>
+<script th:src="@{/assets/js/jquery.scannerdetection.js}"></script>
+<!-- ================== END core-js ================== -->
+
+<script th:src="@{/assets/plugins/select2/dist/js/select2.min.js}"></script>
+<script th:src="@{/assets/plugins/sweetalert/dist/sweetalert.min.js}"></script>
+<script th:src="@{/assets/plugins/gritter/js/jquery.gritter.js}"></script>
+
+<script th:src="@{/assets/custom/wnoty.js}"></script>
+
+
+
+<div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+        <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+    </div>
+</div>
+
+<style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+
+<script>
+    $("#WaiterLogoutLink").on('click', function (e) {
+        e.preventDefault();
+
+        swal({
+            title: "Confirm Logout",
+            text: "Are you sure you want to log out?",
+            icon: "info",
+            buttons: {
+                cancel: "No",
+                confirm: {
+                    text: "Yes",
+                    value: true,
+                },
+            },
+        }).then((willLogout) => {
+            if (willLogout) {
+                document.logoutForm.submit();
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+<script>
+    // Function to hide the sidebar
+    function hideSidebar() {
+        $('#sideBarClose').css('display', 'none');
+    }
+
+    // Function to show the sidebar
+    function showSidebar() {
+        $('#sideBarClose').css('display', 'block');
+    }
+
+    // Modified ordersControlPanelFragment function
+    function ordersControlPanelFragment(url, event) {
+        if (event) {
+            event.preventDefault();
+        }
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(data) {
+                $('#currentOrders').html(data);
+                hideSidebar();
+            },
+            error: function() {
+                console.log('Error loading fragment');
+            }
+        });
+    }
+
+    // Function to toggle sidebar visibility
+    function toggleSidebar() {
+        var sideBar = $('#sideBarClose');
+        if (sideBar.css('display') === 'none') {
+            showSidebar();
+        } else {
+            hideSidebar();
+        }
+    }
+</script>
+
+<!--<script>
+    $(document).ready(function() {
+        // Global variables
+        let orderItems = {};
+
+        // Initialize
+        loadWaiterMenuCategories();
+
+        function showLoading() {
+            $('#loading-overlay').show();
+        }
+
+        function hideLoading() {
+            $('#loading-overlay').hide();
+        }
+
+        // Category loading and display
+        function loadWaiterMenuCategories() {
+            $.ajax({
+                url: '/api/waiter-menu-categories',
+                method: 'GET',
+                dataType: 'json',
+                success: function(categories) {
+                    var categoryMenu = $('#categoryMenu');
+                    categoryMenu.find('li:not(:first)').remove();
+
+                    categories.forEach(function(category) {
+                        var [iconClass, iconColor] = getCategoryIcon(category.category_name).split('|');
+                        var listItem = `
+                        <li class="nav-item">
+                          <a class="nav-link" href="#" data-category-id="${category.id}">
+                            <div class="nav-icon">
+                              <i class="fa fa-fw ${iconClass}" style="color: ${iconColor};"></i>
+                            </div>
+                            <div class="nav-text">${category.category_name}</div>
+                          </a>
+                        </li>
+                      `;
+                        categoryMenu.append(listItem);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading waiter menu categories:", error);
+                    showNotification('error', 'Failed to load menu categories. Please try again.');
+                }
+            });
+        }
+
+        function getCategoryIcon(categoryName) {
+            var iconMap = {
+                'Wine': 'fa-wine-glass|#722F37',
+                'Beer': 'fa-wine-bottle|#FFA500',
+                'Pizza': 'fa-pizza-slice|#FF6347',
+                'Soft Drinks': 'fa-martini-glass-citrus|#1E90FF',
+                'Desserts': 'fa-ice-cream|#FF69B4',
+                'Snacks': 'fa-cookie-bite|#CD853F',
+                'Vodka': 'fa-bottle-droplet|#C0C0C0',
+                'Whiskey': 'fa-whiskey-glass|#8B4513',
+                'Brandy': 'fa-champagne-glasses|#DAA520',
+                'Meals': 'fa-utensils|#228B22'
+            };
+
+            return iconMap[categoryName] || 'fa-utensils|#808080';
+        }
+
+        // Product loading and display function
+        function loadProductsByCategory(categoryId) {
+            $.ajax({
+                url: '/api/waiter-menu-categories/products-by-category',
+                method: 'GET',
+                data: { categoryId: categoryId },
+                dataType: 'json',
+                success: function(products) {
+                    var productRow = $('.product-row');
+                    showSidebar();
+                    productRow.empty();
+                    if (products.length === 0) {
+                        productRow.append('<div class="no-products">No Products in this Category</div>');
+                    } else {
+                        products.forEach(function(product) {
+                            var isOutOfStock = product.current_stock <= 0;
+                            var productHtml = `
+                    <div style="display: inline-block; width: 150px; margin: 5px;">
+                        <a href="#" class="product border rounded p-2 d-block text-decoration-none ${isOutOfStock ? 'text-muted' : 'text-dark'}"
+                           style="transition: box-shadow 0.3s ease; ${isOutOfStock ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                           ${isOutOfStock ? '' : 'onmouseover="this.style.boxShadow=\'0 4px 8px rgba(0,0,0,0.1)\';"'}
+                           ${isOutOfStock ? '' : 'onmouseout="this.style.boxShadow=\'none\';"'}
+                           data-product-id="${product.product_id}"
+                           data-product-name="${product.product_name}"
+                           data-sale-price="${product.sale_price}"
+                           data-current-stock="${product.current_stock}"
+                           data-product-code="${product.product_code}"
+                           ${isOutOfStock ? 'data-out-of-stock="true"' : ''}>
+                            <div style="text-align: center;">
+                                <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">${product.product_name}</div>
+                                <div style="font-size: 0.8em; color: #666; margin-bottom: 3px;">
+                                    ${isOutOfStock ? 'Out of Stock' : `Stock: ${product.current_stock}`}
+                                </div>
+                                <div style="font-weight: bold; color: ${isOutOfStock ? '#6c757d' : '#007bff'}; font-size: 0.9em;">
+                                    Price: ${parseFloat(product.sale_price).toFixed(2)}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                            productRow.append(productHtml);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading products:", error);
+                    showNotification('error', 'Failed to load products. Please try again.');
+                }
+            });
+        }
+
+        // Order management functions
+        function addOrUpdateItem(productId, name, price, stock, productCode) {
+            if (stock <= 0) {
+                showNotification('warning', 'This product is out of stock.');
+                return;
+            }
+            if (orderItems[productId]) {
+                if (orderItems[productId].quantity < stock) {
+                    orderItems[productId].quantity++;
+                } else {
+                    showNotification('warning', 'Cannot add more. Stock limit reached.');
+                    return;
+                }
+            } else {
+                orderItems[productId] = {
+                    name: name,
+                    price: parseFloat(price),
+                    quantity: 1,
+                    stock: stock,
+                    preference: '',
+                    productCode: productCode
+                };
+            }
+            renderOrderItems();
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            let subtotal = 0;
+            let itemCount = 0;
+
+            for (let id in orderItems) {
+                subtotal += orderItems[id].price * orderItems[id].quantity;
+                itemCount += orderItems[id].quantity;
+            }
+
+            let total = subtotal;
+
+            $('#subtotal').text(subtotal.toFixed(2));
+            $('#total').text(total.toFixed(2));
+            $('#itemCount').text(itemCount);
+        }
+
+        function renderOrderItems() {
+            let html = '<div style="background-color: #fff; border: 1px solid #e0e0e0;">';
+            let netTotal = 0;
+            for (let id in orderItems) {
+                let item = orderItems[id];
+                let itemTotal = item.price * item.quantity;
+                netTotal += itemTotal;
+                html += `
+        <div class="order-item" data-product-id="${id}" style="padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
+                <div style="flex: 1;">
+                    <h5 style="margin: 0; font-size: 16px; color: #333;">${item.name}</h5>
+                    <small style="color: #6c757d;">${item.price.toFixed(2)}</small>
+                </div>
+                <div style="font-weight: bold; font-size: 16px; color: #28a745;">${itemTotal.toFixed(2)}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 5px; padding: 0 10px;">
+                <div class="input-group quantity-control" style="width: 90px; margin-right: 5px;">
+                    <button class="btn btn-outline-secondary btn-sm decrease-qty" type="button" style="padding: 2px 8px; background-color: #f8f9fa; border-color: #ced4da;">-</button>
+                    <input type="text" class="form-control form-control-sm text-center" value="${item.quantity}" readonly style="padding: 2px 5px; border-left: none; border-right: none;">
+                    <button class="btn btn-outline-secondary btn-sm increase-qty" type="button" style="padding: 2px 8px; background-color: #f8f9fa; border-color: #ced4da;">+</button>
+                </div>
+                <button type="button" class="btn btn-outline-danger btn-sm remove-item" style="padding: 2px 8px;">×</button>
+            </div>
+        </div>
+    `;
+            }
+            html += `
+    <div style="padding: 10px; font-weight: bold; text-align: right; border-top: 1px solid #e0e0e0;">
+        Net Total: ${netTotal.toFixed(2)}
+    </div>
+</div>`;
+            document.getElementById('orderItems').innerHTML = html;
+            addEventListeners();
+        }
+
+        function addEventListeners() {
+            document.querySelectorAll('.decrease-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    updateQuantity(this, -1);
+                });
+            });
+
+            document.querySelectorAll('.increase-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    updateQuantity(this, 1);
+                });
+            });
+
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    removeItem(this);
+                });
+            });
+        }
+
+        function updateQuantity(btn, change) {
+            const itemElement = btn.closest('.order-item');
+            const id = itemElement.dataset.productId;
+            orderItems[id].quantity = Math.max(0, orderItems[id].quantity + change);
+            renderOrderItems();
+            updateOrderSummary();
+        }
+
+        function removeItem(btn) {
+            const itemElement = btn.closest('.order-item');
+            const id = itemElement.dataset.productId;
+
+            const confirmHtml = `
+    <div style="text-align: center; padding: 10px;">
+        <div><i class="far fa-trash-can fa-2x text-danger"></i></div>
+        <div style="margin: 10px 0;">Confirm to remove this item?</div>
+        <button class="btn btn-secondary btn-sm me-2 cancel-remove">No</button>
+        <button class="btn btn-danger btn-sm confirm-remove">Yes</button>
+    </div>
+`;
+
+            itemElement.innerHTML = confirmHtml;
+
+            itemElement.querySelector('.cancel-remove').addEventListener('click', renderOrderItems);
+            itemElement.querySelector('.confirm-remove').addEventListener('click', function() {
+                delete orderItems[id];
+                renderOrderItems();
+                updateOrderSummary();
+            });
+        }
+
+        function showConfirmationModal(salesData) {
+            let itemsHtml = salesData.saleStocks.map(item =>
+                `<tr>
+            <td>${item.productName}</td>
+            <td>${item.qty}</td>
+            <td>${item.subtotal.toFixed(2)}</td>
+        </tr>`
+            ).join('');
+
+            let modalHtml = `
+        <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Order</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${itemsHtml}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Total</th>
+                                    <th>${salesData.totalAmount.toFixed(2)}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="confirmSubmit">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+            $('body').append(modalHtml);
+            let modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            modal.show();
+
+            $('#confirmSubmit').on('click', function() {
+                submitSalesData(salesData);
+                modal.hide();
+            });
+
+            $('#confirmationModal').on('hidden.bs.modal', function () {
+                $(this).remove();
+            });
+        }
+
+        // Data preparation and submission
+        function prepareSalesData() {
+            let saleStocks = [];
+            let totalAmount = 0;
+            let amountPaid = 0;
+            let customerNumber = 1;
+
+            // Use the checkbox state to determine if we're adding to an existing order
+            let isAddingToExistingOrder = $('#addingOrder').prop('checked');
+            let currentOrderNumber = $('#CurrentorderNumber').text().trim();
+
+            for (let id in orderItems) {
+                let item = orderItems[id];
+                let saleStock = {
+                    productId: parseInt(id),
+                    productCode: item.productCode,
+                    productName: item.name,
+                    qty: item.quantity,
+                    cost: item.price,
+                    discount: 0,
+                    tax: 0,
+                    netTax: 0,
+                    subtotal: item.price * item.quantity
+                };
+                saleStocks.push(saleStock);
+                totalAmount += saleStock.subtotal;
+            }
+
+            let salesStockDTO = {
+                saleStocks: saleStocks,
+                branchId: 1,
+                salesDate: new Date().toISOString().split('T')[0],
+                customerId: customerNumber,
+                amountPaid: amountPaid,
+                totalAmount: totalAmount,
+                changeOut: 0,
+                addItems: isAddingToExistingOrder,
+                existingSerialNumber: isAddingToExistingOrder ? currentOrderNumber : null
+            };
+
+            return salesStockDTO;
+        }
+
+        function submitSalesData(salesData) {
+            showLoading();
+
+            $.ajax({
+                url: '/api/stocks/sales',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(salesData),
+                success: function(response) {
+                    hideLoading();
+                    showNotification('success', 'Order submitted successfully. Transaction ID: ' + response.transactionId);
+
+                    // Update the current order number
+                    $('#CurrentorderNumber').text('');
+
+                    // Enable the "Add to existing order" checkbox
+                    $('#addingOrder').prop('disabled', false);
+                    $('#addingOrder').prop('checked', false);
+
+                    orderItems = {};
+                    renderOrderItems();
+                    updateOrderSummary();
+                },
+                error: function(xhr, status, error) {
+                    hideLoading();
+                    showNotification('error', 'Failed to submit order. Please try again.');
+                    console.error("Error submitting order:", error);
+                }
+            });
+        }
+
+        // Utility functions
+        $('body').append(`
+        <div id="notificationOverlay" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+            <div id="notificationArea"></div>
+        </div>
+    `);
+
+        function showNotification(type, message) {
+            let alertClass = 'alert-info';
+            let iconClass = 'fa-info-circle';
+            switch(type) {
+                case 'success':
+                    alertClass = 'alert-success';
+                    iconClass = 'fa-check-circle';
+                    break;
+                case 'warning':
+                    alertClass = 'alert-warning';
+                    iconClass = 'fa-exclamation-triangle';
+                    break;
+                case 'error':
+                    alertClass = 'alert-danger';
+                    iconClass = 'fa-times-circle';
+                    break;
+            }
+
+            let alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert"
+             style="margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <i class="fas ${iconClass} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        `;
+
+            $('#notificationArea').append(alertHtml);
+
+            // Remove the notification after 5 seconds
+            setTimeout(function() {
+                $('.alert').first().alert('close');
+            }, 2000);
+        }
+
+        // Event listeners
+        $('#categoryMenu').on('click', 'a.nav-link', function(e) {
+            e.preventDefault();
+            var categoryId = $(this).data('category-id');
+
+            $('#categoryMenu .nav-link').removeClass('active');
+            $(this).addClass('active');
+
+            loadProductsByCategory(categoryId);
+        });
+
+        $('.product-row').on('click', '.product', function(e) {
+            e.preventDefault();
+            if ($(this).data('out-of-stock')) {
+                showNotification('warning', 'This product is out of stock.');
+                return;
+            }
+            var productId = $(this).data('product-id');
+            var productName = $(this).data('product-name');
+            var salePrice = $(this).data('sale-price');
+            var currentStock = $(this).data('current-stock');
+            var productCode = $(this).data('product-code');
+            addOrUpdateItem(productId, productName, salePrice, currentStock, productCode);
+        });
+
+        $('#orderItems').on('click', '.increase-qty', function(e) {
+            e.preventDefault();
+            let productId = $(this).closest('.order-item').data('product-id');
+            if (orderItems[productId].quantity < orderItems[productId].stock) {
+                orderItems[productId].quantity++;
+                renderOrderItems();
+                updateOrderSummary();
+            } else {
+                showNotification('warning', 'Cannot add more. Stock limit reached.');
+            }
+        });
+
+        $('#orderItems').on('click', '.decrease-qty', function(e) {
+            e.preventDefault();
+            let productId = $(this).closest('.order-item').data('product-id');
+            if (orderItems[productId].quantity > 1) {
+                orderItems[productId].quantity&#45;&#45;;
+            } else {
+                delete orderItems[productId];
+            }
+            renderOrderItems();
+            updateOrderSummary();
+        });
+
+        $('#orderItems').on('click', '.remove-item', function(e) {
+            e.preventDefault();
+            removeItem(this);
+        });
+
+        $('#submitOrder').on('click', function(e) {
+            e.preventDefault();
+            if (Object.keys(orderItems).length === 0) {
+                showNotification('warning', 'Please add items to the order before submitting.');
+                return;
+            }
+            let salesData = prepareSalesData();
+            showConfirmationModal(salesData);
+        });
+
+
+
+        // Initial setup
+        $('#addingOrder').prop('disabled', true);
+    });
+</script>-->
+
+<script>
+    $(document).ready(function() {
+        // Global variables
+        let orderItems = {};
+
+        // Initialize
+        loadWaiterMenuCategories();
+
+        function showLoading() {
+            $('#loading-overlay').show();
+        }
+
+        function hideLoading() {
+            $('#loading-overlay').hide();
+        }
+
+        // Category loading and display
+        function loadWaiterMenuCategories() {
+            $.ajax({
+                url: '/api/waiter-menu-categories',
+                method: 'GET',
+                dataType: 'json',
+                success: function(categories) {
+                    var categoryMenu = $('#categoryMenu');
+                    categoryMenu.find('li:not(:first)').remove();
+
+                    categories.forEach(function(category) {
+                        var [iconClass, iconColor] = getCategoryIcon(category.category_name).split('|');
+                        var listItem = `
+                    <li class="nav-item">
+                      <a class="nav-link" href="#" data-category-id="${category.id}">
+                        <div class="nav-icon">
+                          <i class="fa fa-fw ${iconClass}" style="color: ${iconColor};"></i>
+                        </div>
+                        <div class="nav-text">${category.category_name}</div>
+                      </a>
+                    </li>
+                  `;
+                        categoryMenu.append(listItem);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading waiter menu categories:", error);
+                    showNotification('error', 'Failed to load menu categories. Please try again.');
+                }
+            });
+        }
+
+        function getCategoryIcon(categoryName) {
+            var iconMap = {
+                'Wine': 'fa-wine-glass|#722F37',
+                'Beer': 'fa-wine-bottle|#FFA500',
+                'Pizza': 'fa-pizza-slice|#FF6347',
+                'Soft Drinks': 'fa-martini-glass-citrus|#1E90FF',
+                'Desserts': 'fa-ice-cream|#FF69B4',
+                'Snacks': 'fa-cookie-bite|#CD853F',
+                'Vodka': 'fa-bottle-droplet|#C0C0C0',
+                'Whiskey': 'fa-whiskey-glass|#8B4513',
+                'Brandy': 'fa-champagne-glasses|#DAA520',
+                'Meals': 'fa-utensils|#228B22'
+            };
+
+            return iconMap[categoryName] || 'fa-utensils|#808080';
+        }
+
+        // Updated Product loading and display function
+        function loadProductsByCategory(categoryId) {
+            $.ajax({
+                url: '/api/waiter-menu-categories/products-by-category',
+                method: 'GET',
+                data: { categoryId: categoryId },
+                dataType: 'json',
+                success: function(products) {
+                    var productRow = $('.product-row');
+                    showSidebar();
+                    productRow.empty();
+                    if (products.length === 0) {
+                        productRow.append('<div class="no-products">No Products in this Category</div>');
+                    } else {
+                        products.forEach(function(product) {
+                            var isOutOfStock = product.current_stock <= 0;
+                            var canSellWhenOutOfStock = (product.category_id == 13 || product.category_id == 15);
+                            var isDisabled = isOutOfStock && !canSellWhenOutOfStock;
+
+                            var productHtml = `
+                            <div style="display: inline-block; width: 150px; margin: 5px;">
+                                <a href="#" class="product border rounded p-2 d-block text-decoration-none ${isDisabled ? 'text-muted' : 'text-dark'}"
+                                   style="transition: box-shadow 0.3s ease; ${isDisabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                                   ${isDisabled ? '' : 'onmouseover="this.style.boxShadow=\'0 4px 8px rgba(0,0,0,0.1)\';"'}
+                                   ${isDisabled ? '' : 'onmouseout="this.style.boxShadow=\'none\';"'}
+                                   data-product-id="${product.product_id}"
+                                   data-product-name="${product.product_name}"
+                                   data-sale-price="${product.sale_price}"
+                                   data-current-stock="${product.current_stock}"
+                                   data-product-code="${product.product_code || ''}"
+                                   data-category-id="${product.category_id}"
+                                   ${isDisabled ? 'data-out-of-stock="true"' : ''}>
+                                    <div style="text-align: center;">
+                                        <div style="font-weight: bold; margin-bottom: 3px; font-size: 0.9em;">${product.product_name}</div>
+                                        <div style="font-size: 0.8em; color: #666; margin-bottom: 3px;">
+                                            ${isOutOfStock ? (canSellWhenOutOfStock ? 'Can be sold' : 'Out of Stock') : `Stock: ${product.current_stock}`}
+                                        </div>
+                                        <div style="font-weight: bold; color: ${isDisabled ? '#6c757d' : '#007bff'}; font-size: 0.9em;">
+                                            Price: ${parseFloat(product.sale_price).toFixed(2)}
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        `;
+                            productRow.append(productHtml);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading products:", error);
+                    showNotification('error', 'Failed to load products. Please try again.');
+                }
+            });
+        }
+
+        // Order management functions
+        function addOrUpdateItem(productId, name, price, stock, productCode, categoryId) {
+            var canSellWhenOutOfStock = (categoryId == 13 || categoryId == 15);
+            if (stock <= 0 && !canSellWhenOutOfStock) {
+                showNotification('warning', 'This product is out of stock.');
+                return;
+            }
+            if (orderItems[productId]) {
+                if (canSellWhenOutOfStock || orderItems[productId].quantity < stock) {
+                    orderItems[productId].quantity++;
+                } else {
+                    showNotification('warning', 'Cannot add more. Stock limit reached.');
+                    return;
+                }
+            } else {
+                orderItems[productId] = {
+                    name: name,
+                    price: parseFloat(price),
+                    quantity: 1,
+                    stock: stock,
+                    preference: '',
+                    productCode: productCode,
+                    categoryId: categoryId
+                };
+            }
+            renderOrderItems();
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            let subtotal = 0;
+            let itemCount = 0;
+
+            for (let id in orderItems) {
+                subtotal += orderItems[id].price * orderItems[id].quantity;
+                itemCount += orderItems[id].quantity;
+            }
+
+            let total = subtotal;
+
+            $('#subtotal').text(subtotal.toFixed(2));
+            $('#total').text(total.toFixed(2));
+            $('#itemCount').text(itemCount);
+        }
+
+        function renderOrderItems() {
+            let html = '<div style="background-color: #fff; border: 1px solid #e0e0e0;">';
+            let netTotal = 0;
+            for (let id in orderItems) {
+                let item = orderItems[id];
+                let itemTotal = item.price * item.quantity;
+                netTotal += itemTotal;
+                html += `
+        <div class="order-item" data-product-id="${id}" style="padding: 10px 0; border-bottom: 1px solid #e0e0e0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px;">
+                <div style="flex: 1;">
+                    <h5 style="margin: 0; font-size: 16px; color: #333;">${item.name}</h5>
+                    <small style="color: #6c757d;">${item.price.toFixed(2)}</small>
+                </div>
+                <div style="font-weight: bold; font-size: 16px; color: #28a745;">${itemTotal.toFixed(2)}</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-top: 5px; padding: 0 10px;">
+                <div class="input-group quantity-control" style="width: 90px; margin-right: 5px;">
+                    <button class="btn btn-outline-secondary btn-sm decrease-qty" type="button" style="padding: 2px 8px; background-color: #f8f9fa; border-color: #ced4da;">-</button>
+                    <input type="text" class="form-control form-control-sm text-center" value="${item.quantity}" readonly style="padding: 2px 5px; border-left: none; border-right: none;">
+                    <button class="btn btn-outline-secondary btn-sm increase-qty" type="button" style="padding: 2px 8px; background-color: #f8f9fa; border-color: #ced4da;">+</button>
+                </div>
+                <button type="button" class="btn btn-outline-danger btn-sm remove-item" style="padding: 2px 8px;">×</button>
+            </div>
+        </div>
+    `;
+            }
+            html += `
+    <div style="padding: 10px; font-weight: bold; text-align: right; border-top: 1px solid #e0e0e0;">
+        Net Total: ${netTotal.toFixed(2)}
+    </div>
+</div>`;
+            document.getElementById('orderItems').innerHTML = html;
+            addEventListeners();
+        }
+
+
+
+        function addEventListeners() {
+            document.querySelectorAll('.decrease-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    updateQuantity(this, -1);
+                });
+            });
+
+            document.querySelectorAll('.increase-qty').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    updateQuantity(this, 1);
+                });
+            });
+
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    removeItem(this);
+                });
+            });
+        }
+
+        function updateQuantity(btn, change) {
+            const itemElement = btn.closest('.order-item');
+            const id = itemElement.dataset.productId;
+            const item = orderItems[id];
+
+            if (change < 0 && item.quantity <= 1) {
+                // If trying to decrease and quantity is already 1, do nothing
+                return;
+            }
+
+            if (change > 0) {
+                if (item.categoryId == 13 || item.categoryId == 15 || item.quantity < item.stock) {
+                    item.quantity++;
+                } else {
+                    showNotification('warning', 'Cannot add more. Stock limit reached.');
+                    return;
+                }
+            } else {
+                item.quantity--;
+            }
+
+            renderOrderItems();
+            updateOrderSummary();
+        }
+
+// The removeItem function remains unchanged
+        function removeItem(btn) {
+            const itemElement = btn.closest('.order-item');
+            const id = itemElement.dataset.productId;
+
+            const confirmHtml = `
+    <div style="text-align: center; padding: 10px;">
+        <div><i class="far fa-trash-can fa-2x text-danger"></i></div>
+        <div style="margin: 10px 0;">Confirm to remove this item?</div>
+        <button class="btn btn-secondary btn-sm me-2 cancel-remove">No</button>
+        <button class="btn btn-danger btn-sm confirm-remove">Yes</button>
+    </div>
+    `;
+
+            itemElement.innerHTML = confirmHtml;
+
+            itemElement.querySelector('.cancel-remove').addEventListener('click', renderOrderItems);
+            itemElement.querySelector('.confirm-remove').addEventListener('click', function() {
+                delete orderItems[id];
+                renderOrderItems();
+                updateOrderSummary();
+            });
+        }
+
+        function showConfirmationModal(salesData) {
+            let itemsHtml = salesData.saleStocks.map(item =>
+                `<tr>
+        <td>${item.productName}</td>
+        <td>${item.qty}</td>
+        <td>${item.subtotal.toFixed(2)}</td>
+    </tr>`
+            ).join('');
+
+            let modalHtml = `
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2">Total</th>
+                                <th>${salesData.totalAmount.toFixed(2)}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmSubmit">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+            $('body').append(modalHtml);
+            let modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            modal.show();
+
+            $('#confirmSubmit').on('click', function() {
+                submitSalesData(salesData);
+                modal.hide();
+            });
+
+            $('#confirmationModal').on('hidden.bs.modal', function () {
+                $(this).remove();
+            });
+        }
+
+        // Data preparation and submission
+        function prepareSalesData() {
+            let saleStocks = [];
+            let totalAmount = 0;
+            let amountPaid = 0;
+            let customerNumber = 1;
+
+            // Use the checkbox state to determine if we're adding to an existing order
+            let isAddingToExistingOrder = $('#addingOrder').prop('checked');
+            let currentOrderNumber = $('#CurrentorderNumber').text().trim();
+
+            for (let id in orderItems) {
+                let item = orderItems[id];
+                let saleStock = {
+                    productId: parseInt(id),
+                    productCode: item.productCode,
+                    productName: item.name,
+                    qty: item.quantity,
+                    cost: item.price,
+                    discount: 0,
+                    tax: 0,
+                    netTax: 0,
+                    subtotal: item.price * item.quantity
+                };
+                saleStocks.push(saleStock);
+                totalAmount += saleStock.subtotal;
+            }
+
+            let salesStockDTO = {
+                saleStocks: saleStocks,
+                branchId: 1,
+                salesDate: new Date().toISOString().split('T')[0],
+                customerId: customerNumber,
+                amountPaid: amountPaid,
+                totalAmount: totalAmount,
+                changeOut: 0,
+                addItems: isAddingToExistingOrder,
+                existingSerialNumber: isAddingToExistingOrder ? currentOrderNumber : null
+            };
+
+            return salesStockDTO;
+        }
+
+        function submitSalesData(salesData) {
+            showLoading();
+
+            $.ajax({
+                url: '/api/stocks/sales',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(salesData),
+                success: function(response) {
+                    hideLoading();
+                    showNotification('success', 'Order submitted successfully. Transaction ID: ' + response.transactionId);
+
+                    // Update the current order number
+                    $('#CurrentorderNumber').text('');
+
+                    // Enable the "Add to existing order" checkbox
+                    $('#addingOrder').prop('disabled', false);
+                    $('#addingOrder').prop('checked', false);
+
+                    orderItems = {};
+                    renderOrderItems();
+                    updateOrderSummary();
+                },
+                error: function(xhr, status, error) {
+                    hideLoading();
+                    showNotification('error', 'Failed to submit order. Please try again.');
+                    console.error("Error submitting order:", error);
+                }
+            });
+        }
+
+        // Utility functions
+        $('body').append(`
+        <div id="notificationOverlay" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+            <div id="notificationArea"></div>
+        </div>
+    `);
+
+        function showNotification(type, message) {
+            let alertClass = 'alert-info';
+            let iconClass = 'fa-info-circle';
+            switch(type) {
+                case 'success':
+                    alertClass = 'alert-success';
+                    iconClass = 'fa-check-circle';
+                    break;
+                case 'warning':
+                    alertClass = 'alert-warning';
+                    iconClass = 'fa-exclamation-triangle';
+                    break;
+                case 'error':
+                    alertClass = 'alert-danger';
+                    iconClass = 'fa-times-circle';
+                    break;
+            }
+
+            let alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert"
+             style="margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            <i class="fas ${iconClass} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        `;
+
+            $('#notificationArea').append(alertHtml);
+
+            // Remove the notification after 5 seconds
+            setTimeout(function() {
+                $('.alert').first().alert('close');
+            }, 2000);
+        }
+
+        // Event listeners
+        $('#categoryMenu').on('click', 'a.nav-link', function(e) {
+            e.preventDefault();
+            var categoryId = $(this).data('category-id');
+
+            $('#categoryMenu .nav-link').removeClass('active');
+            $(this).addClass('active');
+
+            loadProductsByCategory(categoryId);
+        });
+
+        $('.product-row').on('click', '.product', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var productId = $this.data('product-id');
+            var productName = $this.data('product-name');
+            var salePrice = $this.data('sale-price');
+            var currentStock = $this.data('current-stock');
+            var productCode = $this.data('product-code');
+            var categoryId = $this.data('category-id');
+
+            if ($this.data('out-of-stock') && !(categoryId == 13 || categoryId == 15)) {
+                showNotification('warning', 'This product is out of stock.');
+                return;
+            }
+
+            addOrUpdateItem(productId, productName, salePrice, currentStock, productCode, categoryId);
+        });
+
+        $('#orderItems').on('click', '.increase-qty', function(e) {
+            e.preventDefault();
+            let productId = $(this).closest('.order-item').data('product-id');
+            let item = orderItems[productId];
+            if (item.categoryId == 13 || item.categoryId == 15 || item.quantity < item.stock) {
+                item.quantity++;
+                renderOrderItems();
+                updateOrderSummary();
+            } else {
+                showNotification('warning', 'Cannot add more. Stock limit reached.');
+            }
+        });
+
+        $('#orderItems').on('click', '.decrease-qty', function(e) {
+            e.preventDefault();
+            let productId = $(this).closest('.order-item').data('product-id');
+            if (orderItems[productId].quantity > 1) {
+                orderItems[productId].quantity--;
+            } else {
+                delete orderItems[productId];
+            }
+            renderOrderItems();
+            updateOrderSummary();
+        });
+
+        $('#orderItems').on('click', '.remove-item', function(e) {
+            e.preventDefault();
+            removeItem(this);
+        });
+
+        $('#submitOrder').on('click', function(e) {
+            e.preventDefault();
+            if (Object.keys(orderItems).length === 0) {
+                showNotification('warning', 'Please add items to the order before submitting.');
+                return;
+            }
+            let salesData = prepareSalesData();
+            showConfirmationModal(salesData);
+        });
+
+        // Initial setup
+        $('#addingOrder').prop('disabled', true);
+    });
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

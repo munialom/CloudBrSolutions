@@ -1,0 +1,86 @@
+
+<div th:fragment="sms" th:remove="tag">
+
+
+
+
+
+
+    <div class="card rounded border">
+        <div class="card-header h6 mb-0 bg-none p-3">
+            <i class="fab fa-mailchimp fa-lg fa-fw text-dark text-opacity-50 me-1"></i>Sms Server Settings
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-xl-12">
+                    <form id="sms-form" method="post" th:action="@{/settings/sms}">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label class="form-label">SENDER ID:</label>
+                                    <input type="text" class="form-control form-control-sm" name="SENDER_ID" th:value="${SENDER_ID}"/>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label class="form-label">SMS KEY:</label>
+                                    <input type="text" class="form-control form-control-sm" name="SMS_KEY" th:value="${SMS_KEY}"/>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label class="form-label">SMS URL:</label>
+                                    <input type="text" class="form-control form-control-sm" name="SMS_URL" th:value="${SMS_URL}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100px me-5px">Save Details</button>
+                        <button type="submit" class="btn btn-default w-100px">Cancel</button>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <script>
+
+        // Submit form data using AJAX
+        $('#sms-form').submit(function(e) {
+            e.preventDefault(); // Prevent form submission
+            var formData = $(this).serialize(); // Serialize form data
+
+            $.ajax({
+                url: $(this).attr('action'), // Form action URL
+                type: 'POST', // Request type
+                data: formData, // Form data
+                success: function(response) {
+                    // Show success notification
+                    $.gritter.add({
+                        title: 'Success',
+                        text: 'Form data saved successfully',
+                        class_name: 'success'
+                    });
+
+                    // Load the 'system' view
+                    loadFragment('/settings/system');
+                },
+                error: function() {
+                    // Show failure notification
+                    $.gritter.add({
+                        title: 'Failure',
+                        text: 'Failed to save form data',
+                        class_name: 'error'
+                    });
+                }
+            });
+        });
+
+    </script>
+
+
+
+
+</div>

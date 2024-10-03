@@ -1,0 +1,145 @@
+
+
+
+<div th:fragment="stock-sheet">
+
+    <div class="row" style="margin-bottom: 15px ; margin-top: 15px">
+        <div class="d-lg-flex align-items-center mb-n2">
+            <div class="d-lg-flex d-none align-items-center text-nowrap">
+                Current page:
+                <span id="paginationLabel"></span>
+            </div>
+            <div class="d-lg-block d-none ms-2 text-body text-opacity-50">
+                <span id="totalRecords"></span>
+            </div>
+
+
+            <ul class="pagination pagination-sm mb-0 ms-auto justify-content-center">
+                <li class="page-item" id="previousPage"><a class="page-link">Previous</a></li>
+                <li class="page-item d-lg-block d-none2" id="page1"><a class="page-link" href="#">1</a></li>
+                <li class="page-item d-lg-block d-none2" id="page2"><a class="page-link" href="#">2</a></li>
+                <li class="page-item d-lg-block d-none2" id="page3"><a class="page-link" href="#">3</a></li>
+                <li class="page-item d-lg-block d-none2" id="page4"><a class="page-link" href="#">4</a></li>
+                <li class="page-item d-lg-block d-none2" id="page5"><a class="page-link" href="#">5</a></li>
+                <li class="page-item" id="nextPage"><a class="page-link">Next</a></li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-thead-sticky table-tfoot-sticky table-bordered table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0" id="products-records">
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>Product Code</th>
+                <th>Product Name</th>
+                <th>Adding</th>
+                <th>Subtracting</th>
+                <th>Sales</th>
+                <th>Purchases</th>
+                <th>Opening</th>
+                <th>Closing</th>
+            </tr>
+            </thead>
+            <tbody th:each="transaction ,status: ${stockTransactions}">
+            <tr>
+                <td th:text="${status.count}"></td>
+                <td th:text="${transaction.productCode}"></td>
+                <td th:text="${transaction.productName}"></td>
+                <td th:text="${transaction.adding}"></td>
+                <td th:text="${transaction.subtracting}"></td>
+                <td th:text="${transaction.sales}"></td>
+                <td th:text="${transaction.purchases}"></td>
+                <td th:text="${transaction.openingStock}"></td>
+                <td th:text="${transaction.closing}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            var currentPage = [[${currentPage}]];
+            var totalPages = [[${totalPages}]];
+
+            function updatePagination() {
+                $('#currentPage').text(currentPage);
+
+                // Enable/disable "First" and "Previous" based on current page
+                if (currentPage === 1) {
+                    $('#firstPage').addClass('disabled');
+                    $('#previousPage').addClass('disabled');
+                } else {
+                    $('#firstPage').removeClass('disabled');
+                    $('#previousPage').removeClass('disabled');
+                }
+
+                // Enable/disable "Next" and "Last" based on current page
+                if (currentPage === totalPages) {
+                    $('#nextPage').addClass('disabled');
+                    $('#lastPage').addClass('disabled');
+                } else {
+                    $('#nextPage').removeClass('disabled');
+                    $('#lastPage').removeClass('disabled');
+                }
+
+                // Show total records
+                var totalItems = [[${totalItems}]];
+                var pageSize = [[${pageSize}]];
+
+                var startItem = (currentPage - 1) * pageSize + 1;
+                var endItem = Math.min(startItem + pageSize - 1, totalItems);
+
+                $('#paginationLabel').text('Page ' + currentPage + ' of ' + totalPages);
+                $('#totalRecords').text('Showing ' + startItem + ' - ' + endItem + ' of ' + totalItems + ' records');
+            }
+
+            updatePagination();
+
+            $('#firstPage').on('click', function () {
+                if (currentPage !== 1) {
+                    currentPage = 1;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#previousPage').on('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#nextPage').on('click', function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            $('#lastPage').on('click', function () {
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                    updatePagination();
+                    navigateToPage(currentPage);
+                }
+            });
+
+            function navigateToPage(page) {
+                var url = '/stocks/stock-transactions?page=' + page;
+                loadFragment(url);
+            }
+
+
+        });
+    </script>
+
+</div>
+
+
+
+

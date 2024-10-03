@@ -1,0 +1,573 @@
+<div th:fragment="stock-opening">
+
+    <div class="col-lg-12">
+        <div class="card rounded border" style="margin: auto">
+
+            <div class="card-body"  style="height:100%;">
+        <div class="card rounded border">
+            <ul class="nav nav-tabs nav-tabs-v2 px-3">
+                <li class="nav-item me-2"><a href="#allTab" class="nav-link px-2 active" data-bs-toggle="tab">  <span class="me-10px"><i class="fa fa-fw t-plus-1 text-green fa-lg fa-folder-plus"></i>Add New Stock </span></a></li>
+                <li class="nav-item me-2"><a href="#price" class="nav-link px-2" data-bs-toggle="tab">  <span class="me-10px"><i class="fa fa-fw t-plus-1 text-blue fa-lg fa-folder-minus"></i>Price Adjustment </span></a></li>
+            </ul>
+            <div class="tab-content p-3">
+                <div class="tab-pane fade show active" id="allTab">
+                    <!-- BEGIN input-group -->
+                    <div class="input-group mb-3">
+                        <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"><span class="d-none d-md-inline">Search Products</span><span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span> <b class="caret"></b></button>
+
+                        <div class="flex-fill position-relative">
+                            <div class="input-group">
+                                <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1;">
+                                    <i class="fa fa-search opacity-5"></i>
+                                </div>
+                                <input type="text" class="form-control px-35px bg-light" placeholder="Search products..." id="search-pos" />
+                                <div id="productTableContainer" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END input-group -->
+
+
+
+
+                    <!-- BEGIN panel -->
+                    <div class="panel rounded border" data-sortable-id="ui-widget-16">
+                        <div class="panel-heading bg-blue-700 text-white">
+
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                            </div>
+
+                        </div>
+
+                        <div class="panel-toolbar" style="display: flex; align-items: center;">
+                            <div class="form-group">
+                                <div class="col-md-12 pt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="add-stock" value="Add" name="inlineRadio" />
+                                        <label class="form-check-label" for="add-stock">Add Stock</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="less-stock" value="Less" name="inlineRadio" />
+                                        <label class="form-check-label" for="less-stock">Subtract Stock</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="panel-body">
+                            <!-- BEGIN table -->
+                            <div class="table-responsive mb-3">
+                                <table class="table table-hover table-panel table-striped table-bordered text-nowrap align-middle  rounded border " id="selectedProducts">
+                                    <thead>
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Product Name</th>
+                                        <th>Product Quantity</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+
+                                <fieldset class="border p-2">
+                                    <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+                                        <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+                                        <button type="submit" id="opening-stock-btn" class="btn btn-primary ps-40px pe-40px">Post Opening Stocks</button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <!-- END table -->
+                        </div>
+
+                    </div>
+                    <!-- END panel -->
+
+                </div>
+
+                <div class="tab-pane fade show" id="price">
+                    <!-- BEGIN input-group -->
+                    <div class="input-group mb-3">
+                        <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"><span class="d-none d-md-inline">Search Products</span><span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span> <b class="caret"></b></button>
+
+                        <div class="flex-fill position-relative">
+                            <div class="input-group">
+                                <div class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0" style="z-index: 1;">
+                                    <i class="fa fa-search opacity-5"></i>
+                                </div>
+                                <input type="text" class="form-control px-35px bg-light" placeholder="Search products..." id="search-prices" />
+                                <div id="productTableContainer-prices" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END input-group -->
+
+
+
+
+                    <!-- BEGIN panel -->
+                    <div class="panel rounded border" data-sortable-id="ui-widget-16">
+                        <div class="panel-heading bg-blue-700 text-white">
+
+                            <div class="panel-heading-btn">
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                            </div>
+
+                        </div>
+
+                        <div class="panel-toolbar" style="display: flex; align-items: center;">
+                            <div class="form-group">
+                                <div class="col-md-12 pt-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="sale-price" value="sale" name="inlineRadio-price" />
+                                        <label class="form-check-label" for="add-stock">Adjust Sale Price</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="cost-price" value="cost" name="inlineRadio-price" />
+                                        <label class="form-check-label" for="less-stock">Adjust Cost Price</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="panel-body">
+                            <!-- BEGIN table -->
+                            <div class="table-responsive mb-3">
+                                <table class="table table-hover table-panel table-striped table-bordered text-nowrap align-middle  rounded border " id="selectedProducts-prices">
+                                    <thead>
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Product Name</th>
+                                        <th>Buying Price</th>
+                                        <th>Sale Price</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+
+                                <fieldset class="border p-2">
+                                    <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+                                        <button type="submit" class="btn btn-white ps-40px pe-40px me-5px">Discard</button>
+                                        <button type="submit" id="prices-stock-btn" class="btn btn-primary ps-40px pe-40px">Save Price Adjustment</button>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <!-- END table -->
+                        </div>
+
+                    </div>
+                    <!-- END panel -->
+                </div>
+
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').keyup(function() {
+                var productName = $(this).val();
+                $.ajax({
+                    url: '/products/searchResults',
+                    type: 'GET',
+                    data: { productName: productName },
+                    success: function(response) {
+                        var productTableContainer = $('#productTableContainer');
+                        productTableContainer.html(response);
+
+                        if (productName.trim() === '') {
+                            productTableContainer.hide();
+                        } else {
+                            productTableContainer.show();
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    }
+                });
+            });
+
+            // Add click event listener to rows in the search results table
+            $(document).on('click', '#productTableContainer tr', function() {
+                $('#productTableContainer').hide();
+            });
+        });
+    </script>
+
+<!--    search prices adjustment-->
+    <script>
+        $(document).ready(function() {
+            $('#search-prices').keyup(function() {
+                var productName = $(this).val();
+                $.ajax({
+                    url: '/products/searchResults-prices',
+                    type: 'GET',
+                    data: { productName: productName },
+                    success: function(response) {
+                        var productTableContainer = $('#productTableContainer-prices');
+                        productTableContainer.html(response);
+
+                        if (productName.trim() === '') {
+                            productTableContainer.hide();
+                        } else {
+                            productTableContainer.show();
+                        }
+                    },
+                    error: function(e) {
+                        console.log(e);
+                    }
+                });
+            });
+
+            // Add click event listener to rows in the search results table
+            $(document).on('click', '#productTableContainer-prices tr', function() {
+                $('#productTableContainer-prices').hide();
+            });
+        });
+    </script>
+
+
+<!--     insert dynamic button on stock adj-->
+    <script>
+        $(document).ready(function() {
+            // Attach click event handler to table rows
+            $('#selectedProducts').on('click', 'tbody tr', function() {
+                // Remove any existing button groups
+                $('.btn-group').remove();
+
+                // Remove the selected class from all rows
+                $('tr').removeClass('selected-row');
+
+                // Add the selected class to the clicked row
+                $(this).addClass('selected-row');
+
+                // Find the selected row's Product Code
+                var productCode = $(this).find('td:first').text();
+
+                // Create a button group
+                var buttonGroup = $('<div>')
+                    .addClass('btn-group')
+                    .append(
+                        $('<button>')
+                            .text('Dynamic Button')
+                            .addClass('btn btn-primary btn-xs dynamic-button')
+                            .click(function() {
+                                // Your button click logic here
+                                alert('Dynamic Button clicked for Product Code: ' + productCode);
+                            }),
+                        $('<button>')
+                            .text('Remove Item')
+                            .addClass('btn btn-danger btn-xs remove-button')
+                            .click(function() {
+                                // Your remove button click logic here
+                                $(this).closest('tr').remove();
+                            })
+                    );
+
+                // Find the cell to place the button group and append it
+                var cell = $(this).find('td:nth-child(2)');
+                cell.addClass('cell-with-buttons');
+                cell.append(buttonGroup);
+            });
+        });
+    </script>
+
+    <!--     insert dynamic button on prices adj-->
+
+    <script>
+        $(document).ready(function() {
+            // Attach click event handler to table rows
+            $('#selectedProducts-prices').on('click', 'tbody tr', function() {
+                // Remove any existing button groups
+                $('.btn-group').remove();
+
+                // Remove the selected class from all rows
+                $('tr').removeClass('selected-row');
+
+                // Add the selected class to the clicked row
+                $(this).addClass('selected-row');
+
+                // Find the selected row's Product Code
+                var productCode = $(this).find('td:first').text();
+
+                // Create a button group
+                var buttonGroup = $('<div>')
+                    .addClass('btn-group')
+                    .append(
+                        $('<button>')
+                            .text('Dynamic Button')
+                            .addClass('btn btn-primary btn-xs dynamic-button')
+                            .click(function() {
+                                // Your button click logic here
+                                alert('Dynamic Button clicked for Product Code: ' + productCode);
+                            }),
+                        $('<button>')
+                            .text('Remove Item')
+                            .addClass('btn btn-danger btn-xs remove-button')
+                            .click(function() {
+                                // Your remove button click logic here
+                                $(this).closest('tr').remove();
+                            })
+                    );
+
+                // Find the cell to place the button group and append it
+                var cell = $(this).find('td:nth-child(2)');
+                cell.addClass('cell-with-buttons');
+                cell.append(buttonGroup);
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            let isSubmitting = false;
+
+            $("#opening-stock-btn").on("click", function(e) {
+                e.preventDefault();
+
+                const rows = $("#selectedProducts tbody tr");
+                var stockmode = $("input[name='inlineRadio']:checked").val();
+
+                // Check if a radio button is selected
+                if (!stockmode) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Option Selected',
+                        text: 'Please select a stock mode.',
+                        showConfirmButton: true
+                    });
+                    return; // Exit the function early
+                }
+
+                // Check if there are no rows in the table
+                if (rows.length === 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Data',
+                        text: 'There are no records to save.',
+                        showConfirmButton: true
+                    });
+                    return; // Exit the function early
+                }
+
+                const aData = [];
+
+                rows.each(function() {
+                    const tableRow = $(this);
+
+                    const getTextByAttribute = function(attrValue) {
+                        return tableRow.find(`td[key-id="${attrValue}"]`).text();
+                    };
+
+                    const getValByAttribute = function(attrValue) {
+                        return tableRow.find(`input[name="${attrValue}"]`).val();
+                    };
+
+                    const data = {
+                        productCode: getTextByAttribute("productCode"),
+                        productName: getTextByAttribute("productName"),
+                        qty: getValByAttribute("qty")
+                    };
+
+                    aData.push(data);
+                });
+
+                let stocks = {
+                    opcode: stockmode,
+                    openingStocks: aData
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/stocks/opening",
+                    data: JSON.stringify(stocks),
+                    contentType: 'application/json',
+                    dataType: 'text',
+                    success: function(response) {
+                        if (response.toLowerCase().includes("success")) {
+                            // Use SweetAlert for success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+
+                            // Clear the table after successful save
+                            $("#selectedProducts tbody").empty();
+                        } else {
+                            // Use SweetAlert for unexpected response
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unexpected response from the server',
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Use SweetAlert for error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseText,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            let isSubmitting = false;
+
+            $("#prices-stock-btn").on("click", function(e) {
+                e.preventDefault();
+
+                const rows = $("#selectedProducts-prices tbody tr");
+                var stockmode = $("input[name='inlineRadio-price']:checked").val();
+
+                // Check if a radio button is selected
+                if (!stockmode) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Option Selected',
+                        text: 'Please select a price Adjustment mode.',
+                        showConfirmButton: true
+                    });
+                    return; // Exit the function early
+                }
+
+                // Check if there are no rows in the table
+                if (rows.length === 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Data',
+                        text: 'There are no records to save.',
+                        showConfirmButton: true
+                    });
+                    return; // Exit the function early
+                }
+
+                const aData = [];
+
+                rows.each(function() {
+                    const tableRow = $(this);
+
+                    const getTextByAttribute = function(attrValue) {
+                        return tableRow.find(`td[key-id="${attrValue}"]`).text();
+                    };
+
+                    const getValByAttribute = function(attrValue) {
+                        return parseFloat(tableRow.find(`input[name="${attrValue}"]`).val());
+                    };
+
+                    const data = {
+                        productCode: getTextByAttribute("productCode"),
+                        productName: getTextByAttribute("productName"),
+                        productBuy: getValByAttribute("productBuy"),
+                        productSale: getValByAttribute("productSale")
+                    };
+
+                    aData.push(data);
+                });
+
+                let stocks = {
+                    opcode: stockmode,
+                    openingStocks: aData
+                };
+
+                console.log(stocks);
+                $.ajax({
+                    type: "POST",
+                    url: "/api/stocks/prices",
+                    data: JSON.stringify(stocks),
+                    contentType: 'application/json',
+                    dataType: 'text',
+                    success: function(response) {
+                        if (response.toLowerCase().includes("success")) {
+                            // Use SweetAlert for success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+
+                            console.log(response);
+
+                            // Clear the table after successful save
+                            $("#selectedProducts-prices tbody").empty();
+                        } else {
+                            // Use SweetAlert for unexpected response
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Unexpected response from the server',
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Use SweetAlert for error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseText,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+    <script th:src="@{/assets/plugins/parsleyjs/dist/parsley.min.js}"></script>
+    <script th:src="@{/assets/plugins/select2/dist/js/select2.min.js}"></script>
+
+</div>

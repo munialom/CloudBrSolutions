@@ -1,0 +1,116 @@
+<div th:fragment="procurement-system">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                <div class="flex-1">
+                    <i class="fa fa-list-numeric fa-lg fa-fw text-dark me-1"></i>Purchase Orders:
+                </div>
+            </div>
+
+            <div class="card-body fw-bold">
+                <ul class="nav nav-tabs nav-tabs-v2 px-3 border">
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2 active" data-bs-toggle="tab" href="#createPurchaseOrder">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:document-add-bold-duotone"></span>
+                            CREATE PURCHASE ORDER
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#pendingOrders">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:hourglass-bold-duotone"></span>
+                            PENDING
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#approvedOrders">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:check-circle-bold-duotone"></span>
+                            APPROVED
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#cancelledOrders">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:close-circle-bold-duotone"></span>
+                            CANCELLED
+                        </a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link px-2" data-bs-toggle="tab" href="#completedOrders">
+                            <span class="iconify fs-18px me-2 ms-n1 text-dark" data-icon="solar:check-square-bold-duotone"></span>
+                            COMPLETED
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content border">
+                    <div id="createPurchaseOrder" class="tab-pane fade show active">
+                        <!-- Content for Create Purchase Order tab -->
+                    </div>
+                    <div id="pendingOrders" class="tab-pane fade">
+                        <!-- Content for Pending Orders tab -->
+                    </div>
+                    <div id="approvedOrders" class="tab-pane fade">
+                        <!-- Content for Approved Orders tab -->
+                    </div>
+                    <div id="cancelledOrders" class="tab-pane fade">
+                        <!-- Content for Cancelled Orders tab -->
+                    </div>
+                    <div id="completedOrders" class="tab-pane fade">
+                        <!-- Content for Completed Orders tab -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to load content based on the URL
+            function loadContent(url, tabId) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $(tabId).html(response);
+                        $(tabId).siblings('.tab-pane').empty(); // Clear content of other tabs
+                    },
+                    error: function() {
+                        $(tabId).html('<p>Error loading content.</p>');
+                    }
+                });
+            }
+
+            // Load the default content on page load
+            loadContent('/suppliers/purchase-order', '#createPurchaseOrder');
+
+            // Handle click event on navigation tabs
+            $('.nav-tabs .nav-link').on('shown.bs.tab', function(e) {
+                e.preventDefault();
+                var tabId = $(e.target).attr('href');
+                var url = '';
+
+                // Determine the URL based on the clicked tab
+                switch (tabId) {
+                    case '#createPurchaseOrder':
+                        url = '/suppliers/purchase-order';
+                        break;
+                    case '#pendingOrders':
+                        url = '/suppliers/pending-orders';
+                        break;
+                    case '#approvedOrders':
+                        url = '/suppliers/approved-orders';
+                        break;
+                    case '#cancelledOrders':
+                        url = '/suppliers/cancelled-orders';
+                        break;
+                    case '#completedOrders':
+                        url = '/suppliers/completed-orders';
+                        break;
+                    default:
+                        return;
+                }
+
+                // Load the content for the clicked tab
+                loadContent(url, tabId);
+            });
+        });
+    </script>
+</div>

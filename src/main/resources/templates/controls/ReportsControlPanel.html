@@ -1,0 +1,115 @@
+<div th:fragment="cp">
+
+    <div class="app-content-padding px-4 py-3">
+        <div class="d-lg-flex mb-lg-3 mb-2">
+            <h1 class="page-header mb-0 flex-1">
+                <i class="fa fa-folder-open fa-lg fa-fw me-2" style="color:#2de0a7;"></i>
+                Payroll Reports:
+            </h1>&nbsp;
+            <h1 class="alert alert-danger page-header mb-0 flex-1" role="alert" style="display: none; font-size: xx-small"></h1>
+            <span class="d-none d-lg-flex align-items-center">
+
+                        <a href="#" id="view-data" class="btn btn-secondary btn-sm d-flex me-2 pe-3 rounded-3">
+							<span class="iconify fs-18px me-2 ms-n1" data-icon="solar:archive-down-minimlistic-bold-duotone"></span>
+							Load Result
+						</a>
+
+                        <a href="#" onclick="printClassList()" class="btn btn-secondary btn-sm d-flex me-2 pe-3 rounded-3">
+							<span class="iconify fs-18px me-2 ms-n1" data-icon="solar:printer-bold-duotone"></span>
+							Print Result
+						</a>
+					</span>
+        </div>
+        <div class="row gx-2 pb-10px">
+            <div class="col-lg-3 d-lg-block d-none">
+                <select class="selectpicker form-control"  id="payRunSearch" name="payRunSearch" required >
+                    <option value="" disabled selected>Search by Monthly PayRun</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="col-lg-3 d-lg-block d-none">
+
+                    <a href="#" class="btn btn-white d-flex align-items-center rounded-3" data-bs-toggle="dropdown" id="statusButton">
+                        <i class="fa fa-lg fa-tags me-10px text-body text-opacity-50 d-none"></i>
+                        <span class="iconify fs-20px my-n1 me-2 ms-n1 text-theme" data-icon="solar:tag-linear"></span>
+                        Report Type
+                        <i class="fa ms-auto fa-chevron-down"></i>
+                    </a>
+                    <ul class="dropdown-menu" id="statusMenu">
+                        <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-danger"></i>Control Account</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-primary"></i>Master Roll</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center" href="#"><i class="fa fa-circle fs-7px me-2 ms-n1 text-yellow-500"></i>Bank Report</a></li>
+                    </ul>
+
+            </div>
+
+            <div class="col-lg-3 d-lg-block d-none">
+                <select class="selectpicker form-control form-select-sm" id="bankId" name="bankId" style="width: 100%;">
+                    <option value="" disabled selected style="opacity: 0.5;">Select Bank</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 d-lg-block d-none">
+                <a href="#" class="btn btn-white d-flex align-items-center rounded-3" data-bs-toggle="dropdown" id="statusButtonR">
+                    <i class="fa fa-lg fa-tags me-10px text-body text-opacity-50 d-none"></i>
+                    <span class="iconify fs-20px my-n1 me-2 ms-n1 text-theme" data-icon="solar:tuning-linear"></span>
+                    Export Formats
+                    <i class="fa ms-auto fa-chevron-down"></i>
+                </a>
+                <ul class="dropdown-menu" id="statusMenuR">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-excel" style="color:green;"></i> Excel</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf" style="color:red;"></i> PDF</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-csv" style="color:blue;"></i> CSV</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-envelope" style="color:orange;"></i> Email</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-archive" style="color:purple;"></i> Zipped</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-code" style="color:grey;"></i> XML</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-code" style="color:grey;"></i> JSON</a></li>
+                </ul>
+
+            </div>
+        </div>
+
+
+        <div class="d-lg-flex align-items-center mb-n2">
+            <div class="d-lg-flex d-none align-items-center text-nowrap text-dark text-muted">
+                <i class="fa fa-clock fa-lg fa-fw me-2" style="color:deeppink;"></i>
+                Period:
+            </div>
+            <div class="d-lg-block d-none ms-2 text-body text-opacity-50">
+                <span id="Year" class="text-dark"></span>
+                <span id="Month" class="text-dark"></span>
+                <span id="Status" class="text-dark"></span>
+            </div>
+
+
+            <ul class="pagination pagination-sm mb-0 ms-auto justify-content-center">
+                <li class="page-item" id="previousPage">
+                    <a class="page-link bg-dark text-white">
+                        <i class="fa fa-gears"></i> Process
+                    </a>
+                </li>
+                <li class="page-item" id="nextPage">
+                    <a class="page-link bg-danger text-white" href="#" >
+                        <i class="fa fa-times"></i> Clear
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+        $('#statusMenu a').click(function(event) {
+            event.preventDefault(); // Prevent the default behavior of the click
+            // Display the selected item id value
+            $('#statusButton').html($(this).text());
+        });
+    </script>
+
+
+
+
+
+</div>

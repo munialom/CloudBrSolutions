@@ -1,0 +1,732 @@
+<div th:fragment="personal_data">
+
+
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div class="card border rounded mb-4">
+
+            <div class="card-header bg-none p-3 h6 m-0 d-flex align-items-center">
+               <i class="fa fa-user-circle fa-lg fa-fw text-black me-1"></i>
+               Add New Product:
+               <span class="me-2 member-info text-muted" style="display: none">(Showing Current: <span class="member-name"></span> | ID: <span id="member-id"></span>)</span>
+               <div class="ms-auto d-flex align-items-center">
+                  <a href="#" class="btn btn-success btn-sm me-2" id="saveBtn"><i class="fas fa-save fa-lg me-1"></i>Save Record</a>
+                  <a href="#" class="btn btn-danger btn-sm me-2" id="updateBtn"><i class="fas fa-user-edit fa-lg me-1"></i>Update Record</a>
+                  <a href="#" onclick="loadFragment('/products/product-details')" class="btn btn-warning btn-sm me-2" id="viewBtn"><i class="fas fa-list-numeric fa-lg me-1"></i>View</a>
+                  <div class="dropdown">
+                     <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v fa-lg"></i>
+                     </button>
+                     <!-- Dropdown menu structure -->
+                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item text-primary" href="#"><i class="fas fa-search fa-lg me-1"></i>Search Products</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item text-success" href="#" data-bs-toggle="modal" data-bs-target="#productDetailsModal" ><i class="fas fa-list fa-lg me-1"></i>Add Extra Details</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item text-info" href="#"><i class="fas fa-balance-scale fa-lg me-1"></i>View Units of Measure</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-tags fa-lg me-1"></i>View Brands</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-receipt fa-lg me-1"></i>View Revenue Codes</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a class="dropdown-item text-secondary" href="#"><i class="fas fa-percentage fa-lg me-1"></i>View Tax Categories</a></li>
+                        <hr class="dropdown-divider">
+                     </ul>
+
+                  </div>
+               </div>
+            </div>
+
+            <div class="card-body">
+               <div class="row mb-3 align-items-end">
+                  <div class="col-md-4">
+                     <label for="productCode" class="form-label">Product Code</label>
+                     <div class="input-group">
+                        <input type="text" id="productCode" name="productCode" class="form-control form-control-sm bg-light-200" placeholder="Product Code" readonly>
+                        <button class="btn btn-secondary btn-sm" type="button"><i class="fa fa-search-plus"></i></button>
+                     </div>
+                  </div>
+                  <div class="col-md-4">
+                     <label for="product-type" class="form-label">Product Type</label>
+                     <div class="input-group">
+                        <select id="product-type" name="product-type" class="form-select form-select-sm">
+                           <option value="">Select Product Type</option>
+                           <option value="Inventory">Inventory</option>
+                           <option value="Service">Service</option>
+                           <option value="No Inventory">No Inventory</option>
+                           <option value="Bundle">Bundle</option>
+                        </select>
+                        <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#revenueCodeModal">
+                           <i class="fa fa-plus-circle"></i>
+                        </button>
+                     </div>
+                  </div>
+
+               </div>
+
+               <h6>Product Details</h6>
+               <hr class="divider mt-0">
+
+               <div class="row mb-3">
+                  <div class="col-md-3">
+                     <label for="productName" class="form-label">Product Name</label>
+                     <input type="text" id="productName" name="productName" class="form-control form-control-sm" placeholder="Product Name" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="col-md-3">
+                     <label for="category" class="form-label">Category</label>
+                     <div class="input-group">
+                        <select id="category" name="category" class="form-select form-select-sm">
+                           <option value="">Select Category</option>
+                           <!-- Options for categories will be dynamically added here -->
+                        </select>
+                        <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                           <i class="fa fa-plus-circle"></i>
+                        </button>
+                     </div>
+                  </div>
+                  <div class="col-md-3">
+                     <label for="brand" class="form-label">Brand</label>
+                     <div class="input-group">
+                        <select id="brand" name="brand" class="form-select form-select-sm">
+                           <option value="">Select Brand</option>
+                           <!-- Options for brands will be dynamically added here -->
+                        </select>
+                        <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#brandModal">
+                           <i class="fa fa-plus-circle"></i>
+                        </button>
+                     </div>
+                  </div>
+                  <div class="col-md-3">
+                     <label for="revenueCode" class="form-label">Revenue Code</label>
+                     <div class="input-group">
+                        <select id="revenueCode" name="revenueCode" class="form-select form-select-sm">
+                           <option value="">Select Revenue Code</option>
+                           <!-- Options for revenue codes will be dynamically added here -->
+                        </select>
+                        <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#revenueCodeModal">
+                           <i class="fa fa-plus-circle"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row mb-3">
+                  <div class="col-md-3">
+                     <label for="productCost" class="form-label">Product Cost</label>
+                     <input type="number" id="productCost" name="productCost" class="form-control form-control-sm" placeholder="Product Cost">
+                  </div>
+                  <div class="col-md-3">
+                     <label for="salePrice" class="form-label">Sale Price</label>
+                     <input type="number" id="salePrice" name="salePrice" class="form-control form-control-sm" placeholder="Sale Price">
+                  </div>
+                  <div class="col-md-3">
+                     <label for="minimumStockQuantity" class="form-label">Minimum Stock Quantity</label>
+                     <input type="number" id="minimumStockQuantity" name="minimumStockQuantity" class="form-control form-control-sm" placeholder="Minimum Stock Quantity">
+                  </div>
+                  <div class="col-md-3">
+                     <label for="productUnit" class="form-label">Product Unit</label>
+                     <div class="input-group">
+                        <select id="productUnit" name="productUnit" class="form-select form-select-sm">
+                           <option value="">[Units of Measure]</option>
+                           <!-- Options for product units will be dynamically added here -->
+                        </select>
+                        <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#productUnitModal">
+                           <i class="fa fa-plus-circle"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+
+               <h6>Product Tax Details</h6>
+               <hr class="divider mt-0">
+
+               <div class="row mb-3">
+                  <div class="col-md-12">
+                     <label class="form-label me-3">Select Product Tax:</label>
+                     <div id="taxCheckboxes"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   </div>
+
+
+
+   <!-- Categories Modal -->
+   <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="categoryForm">
+                  <div class="mb-3">
+                     <label for="categoryName" class="form-label">Category Name</label>
+                     <input type="text" class="form-control" id="categoryName" name="categoryName" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="categoryAlias" class="form-label">Category Alias</label>
+                     <input type="text" class="form-control" id="categoryAlias" name="categoryAlias" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="parentCategory" class="form-label">Parent Category</label>
+                     <select class="form-select" id="parentCategory" name="parentCategory">
+                        <option value="">None</option>
+                        <!-- Options for parent categories will be dynamically added here -->
+                     </select>
+                  </div>
+                  <div class="mb-3 form-check">
+                     <input type="checkbox" class="form-check-input" id="onWaiterMenu" name="onWaiterMenu">
+                     <label class="form-check-label" for="onWaiterMenu">Show on Waiter Menu</label>
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary" id="saveCategory">Save Category</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Brands Modal -->
+   <div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="brandModalLabel">Add Brand</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="brandForm">
+                  <div class="mb-3">
+                     <label for="brandName" class="form-label">Brand Name</label>
+                     <input type="text" class="form-control" id="brandName" name="brandName" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="brandDescription" class="form-label">Brand Description</label>
+                     <textarea class="form-control" id="brandDescription" name="brandDescription" onkeyup="capitalizeCaseWise(this)"></textarea>
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary" id="saveBrand">Save Brand</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Revenue Codes Modal -->
+   <div class="modal fade" id="revenueCodeModal" tabindex="-1" aria-labelledby="revenueCodeModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="revenueCodeModalLabel">Add Revenue Code</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="revenueCodeForm">
+                  <div class="mb-3">
+                     <label for="revenueName" class="form-label">Revenue Name</label>
+                     <input type="text" class="form-control" id="revenueName" name="revenueName" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary" id="saveRevenueCode">Save Revenue Code</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Product Units Modal -->
+   <div class="modal fade" id="productUnitModal" tabindex="-1" aria-labelledby="productUnitModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="productUnitModalLabel">Add Product Unit</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form id="productUnitForm">
+                  <div class="mb-3">
+                     <label for="productUnitName" class="form-label">Unit</label>
+                     <input type="text" class="form-control" id="productUnitName" name="productUnitName" onkeyup="capitalizeCaseWise(this)">
+                  </div>
+                  <div class="mb-3">
+                     <label for="productUnitDescription" class="form-label">Description</label>
+                     <textarea class="form-control" id="productUnitDescription" name="productUnitDescription" onkeyup="capitalizeCaseWise(this)"></textarea>
+                  </div>
+               </form>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary" id="saveProductUnit">Save Product Unit</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+   <script>
+      $(document).ready(function() {
+         function fetchProductCode() {
+            $.ajax({
+               url: '/api-bulk/generate-code',
+               type: 'GET',
+               success: function(productCode) {
+                  $('#productCode').val(productCode);
+               },
+               error: function(xhr, status, error) {
+                  console.error('Error fetching product code:', error);
+                  $.wnoty({
+                     type: 'error',
+                     message: 'Failed to generate product code',
+                     position: 'top-right'
+                  });
+               }
+            });
+         }
+
+         fetchProductCode();
+
+         $('#saveBtn').on('click', function(e) {
+            e.preventDefault();
+            const productData = {
+               brandId: $('#brand').val(),
+               categoryId: $('#category').val(),
+               revenueId: $('#revenueCode').val(),
+               taxClassIds: $('#taxCheckboxes input:checked').map(function() {
+                  return $(this).val();
+               }).get(),
+               uomId: $('#productUnit').val(),
+               productType: $('#product-type').val(),
+               productName: $('#productName').val(),
+               productCode: $('#productCode').val(),
+               productCost: $('#productCost').val(),
+               productPrice: $('#salePrice').val(),
+               alertQuantity: $('#minimumStockQuantity').val() || '0', // Default to '0' if empty
+               taxMode: $('input[name="taxMode"]:checked').val()
+            };
+
+            const emptyFields = [];
+            $.each(productData, function(key, value) {
+               if (key !== 'alertQuantity' && (value === '' || (Array.isArray(value) && value.length === 0))) {
+                  emptyFields.push(key);
+               }
+            });
+
+            if (emptyFields.length > 0) {
+               $.wnoty({
+                  type: 'error',
+                  message: `Please provide data for: ${emptyFields.join(', ')}`,
+                  position: 'top-right'
+               });
+               return;
+            }
+
+            $('#loading-overlay').show();
+
+            $.ajax({
+               url: '/api-bulk/api/products',
+               type: 'POST',
+               data: JSON.stringify(productData),
+               contentType: 'application/json',
+               success: function(response, status, xhr) {
+                  if (xhr.status === 201) {
+                     $.wnoty({
+                        type: 'success',
+                        message: 'Product saved successfully',
+                        position: 'top-right'
+                     });
+                     clearProductForm();
+                     fetchProductCode();
+                  } else {
+                     handleErrorResponse(response);
+                  }
+                  $('#loading-overlay').hide();
+               },
+               error: function(xhr, status, error) {
+                  handleErrorResponse(xhr.responseJSON || xhr.responseText);
+                  $('#loading-overlay').hide();
+               }
+            });
+         });
+
+         function handleErrorResponse(response) {
+            let errorMessage = 'An unexpected error occurred';
+            if (typeof response === 'string') {
+               errorMessage = response;
+            } else if (response && response.errors) {
+               errorMessage = Object.values(response.errors).flat().join(', ');
+            }
+            $.wnoty({
+               type: 'error',
+               message: errorMessage,
+               position: 'top-right'
+            });
+         }
+
+         function clearProductForm() {
+            $('#productForm').find('input:not([type="radio"]), select').not('#productCode').val('');
+            $('#productForm').find('input[type="checkbox"]').prop('checked', false);
+            $('input[name="taxMode"][value="inclusive"]').prop('checked', true); // Reset to default value
+         }
+
+         $('#refreshProductCode').click(function(e) {
+            e.preventDefault();
+            fetchProductCode();
+         });
+      });
+   </script>
+
+
+
+<script>
+   $(document).ready(function() {
+      let batchCounter = 0;
+
+      $('#addBatchInfo').click(function() {
+         batchCounter++;
+         const batchHtml = `
+      <div class="batch-info">
+        <h5>Batch ${batchCounter}</h5>
+        <div class="form-group">
+          <label for="batchNumber${batchCounter}">Batch Number</label>
+          <input type="text" class="form-control" id="batchNumber${batchCounter}" name="batchInfos[${batchCounter-1}].batchNumber">
+        </div>
+        <div class="form-group">
+          <label for="manufacturingDate${batchCounter}">Manufacturing Date</label>
+          <input type="date" class="form-control" id="manufacturingDate${batchCounter}" name="batchInfos[${batchCounter-1}].manufacturingDate">
+        </div>
+        <div class="form-group">
+          <label for="expiryDate${batchCounter}">Expiry Date</label>
+          <input type="date" class="form-control" id="expiryDate${batchCounter}" name="batchInfos[${batchCounter-1}].expiryDate">
+        </div>
+        <div class="form-group">
+          <label for="quantity${batchCounter}">Quantity</label>
+          <input type="number" class="form-control" id="quantity${batchCounter}" name="batchInfos[${batchCounter-1}].quantity">
+        </div>
+      </div>
+    `;
+         $('#batchInfoContainer').append(batchHtml);
+      });
+
+      $('#saveProductDetails').click(function() {
+         const formData = $('#productDetailsForm').serializeArray();
+         const jsonData = {};
+
+         $.each(formData, function() {
+            if (jsonData[this.name]) {
+               if (!jsonData[this.name].push) {
+                  jsonData[this.name] = [jsonData[this.name]];
+               }
+               jsonData[this.name].push(this.value || '');
+            } else {
+               jsonData[this.name] = this.value || '';
+            }
+         });
+
+         // Convert batch info array to objects
+         if (jsonData.batchInfos) {
+            jsonData.batchInfos = jsonData.batchInfos.map(batch => ({
+               batchNumber: batch.batchNumber,
+               manufacturingDate: batch.manufacturingDate,
+               expiryDate: batch.expiryDate,
+               quantity: parseInt(batch.quantity)
+            }));
+         }
+
+         $.ajax({
+            url: `/api/products/${jsonData.productId}/details`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(jsonData),
+            success: function(response) {
+               alert('Product details saved successfully!');
+               $('#productDetailsModal').modal('hide');
+            },
+            error: function(xhr, status, error) {
+               alert('Error saving product details: ' + error);
+            }
+         });
+      });
+   });
+</script>
+
+
+
+
+
+   <script>
+      $(document).ready(function() {
+         loadCategories();
+         loadBrands();
+         loadRevenueCodes();
+         loadProductUnits();
+
+         // Save Category
+         $('#saveCategory').click(function() {
+            var categoryName = $('#categoryName').val();
+            var categoryAlias = $('#categoryAlias').val();
+            var parentCategoryId = $('#parentCategory').val() || null;
+            var onWaiterMenu = $('#onWaiterMenu').is(':checked');
+
+            $.ajax({
+               type: 'POST',
+               url: '/api/categories',
+               data: JSON.stringify({
+                  name: categoryName,
+                  alias: categoryAlias,
+                  parent: { id: parentCategoryId },
+                  onWaiterMenu: onWaiterMenu
+               }),
+               contentType: 'application/json',
+               success: function(data) {
+                  loadCategories();
+                  showNotification('success', 'Category saved successfully');
+                  $('#categoryName').val('');
+                  $('#categoryAlias').val('');
+                  $('#parentCategory').val('');
+                  $('#onWaiterMenu').prop('checked', false);
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error saving category: ' + error);
+                  console.error(error);
+               }
+            });
+         });
+
+         // Save Brand
+         $('#saveBrand').click(function() {
+            var brandName = $('#brandName').val();
+            var brandDescription = $('#brandDescription').val();
+
+            $.ajax({
+               type: 'POST',
+               url: '/api/brands',
+               data: JSON.stringify({
+                  name: brandName,
+                  description: brandDescription
+               }),
+               contentType: 'application/json',
+               success: function(data) {
+                  loadBrands();
+                  showNotification('success', 'Brand saved successfully');
+                  $('#brandName').val('');
+                  $('#brandDescription').val('');
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error saving brand: ' + error);
+                  console.error(error);
+               }
+            });
+         });
+
+         // Save Revenue Code
+         $('#saveRevenueCode').click(function() {
+            var revenueName = $('#revenueName').val();
+
+            $.ajax({
+               type: 'POST',
+               url: '/api/revenue-codes',
+               data: JSON.stringify({
+                  revenueName: revenueName
+               }),
+               contentType: 'application/json',
+               success: function(data) {
+                  loadRevenueCodes();
+                  showNotification('success', 'Revenue Code saved successfully');
+                  $('#revenueName').val('');
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error saving revenue code: ' + error);
+                  console.error(error);
+               }
+            });
+         });
+
+         // Save Product Unit
+         $('#saveProductUnit').click(function() {
+            var productUnit = $('#productUnit').val();
+            var productUnitDescription = $('#productUnitDescription').val();
+
+            $.ajax({
+               type: 'POST',
+               url: '/api/product-units',
+               data: JSON.stringify({
+                  unit: productUnit,
+                  description: productUnitDescription
+               }),
+               contentType: 'application/json',
+               success: function(data) {
+                  loadProductUnits();
+                  showNotification('success', 'Product Unit saved successfully');
+                  $('#productUnitName').val('');
+                  $('#productUnitDescription').val('');
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error saving product unit: ' + error);
+                  console.error(error);
+               }
+            });
+         });
+
+         // Load Categories
+         function loadCategories() {
+            $.ajax({
+               type: 'GET',
+               url: '/api/categories',
+               success: function(data) {
+                  var categoriesSelect = $('#category');
+                  var parentCategoriesSelect = $('#parentCategory');
+
+                  categoriesSelect.empty();
+                  parentCategoriesSelect.empty();
+
+                  categoriesSelect.append('<option value="">Select Category</option>');
+                  parentCategoriesSelect.append('<option value="">None</option>');
+
+                  $.each(data, function(index, category) {
+                     var optionText = category.name + (category.onWaiterMenu ? ' (On Waiter Menu)' : '');
+                     categoriesSelect.append('<option value="' + category.id + '">' + optionText + '</option>');
+                     parentCategoriesSelect.append('<option value="' + category.id + '">' + optionText + '</option>');
+                  });
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error loading categories: ' + error);
+                  console.error(error);
+               }
+            });
+         }
+
+         // Load Brands
+         function loadBrands() {
+            $.ajax({
+               type: 'GET',
+               url: '/api/brands',
+               success: function(data) {
+                  var brandsSelect = $('#brand');
+                  brandsSelect.empty();
+                  brandsSelect.append('<option value="">Select Brand</option>');
+
+                  $.each(data, function(index, brand) {
+                     brandsSelect.append('<option value="' + brand.id + '">' + brand.name + '</option>');
+                  });
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error loading brands: ' + error);
+                  console.error(error);
+               }
+            });
+         }
+
+         // Load Revenue Codes
+         function loadRevenueCodes() {
+            $.ajax({
+               type: 'GET',
+               url: '/api/revenue-codes',
+               success: function(data) {
+                  var revenueCodesSelect = $('#revenueCode');
+                  revenueCodesSelect.empty();
+                  revenueCodesSelect.append('<option value="">Select Revenue Code</option>');
+
+                  $.each(data, function(index, revenueCode) {
+                     revenueCodesSelect.append('<option value="' + revenueCode.id + '">' + revenueCode.revenueName + '</option>');
+                  });
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error loading revenue codes: ' + error);
+                  console.error(error);
+               }
+            });
+         }
+
+         // Load Product Units
+         function loadProductUnits() {
+            $.ajax({
+               type: 'GET',
+               url: '/api/product-units',
+               success: function(data) {
+                  var productUnitsSelect = $('#productUnit');
+                  productUnitsSelect.empty();
+                  productUnitsSelect.append('<option value="">[Units of Measure]</option>');
+
+                  $.each(data, function(index, productUnit) {
+                     productUnitsSelect.append('<option value="' + productUnit.id + '">' + productUnit.unit + '</option>');
+                  });
+               },
+               error: function(xhr, status, error) {
+                  showNotification('error', 'Error loading product units: ' + error);
+                  console.error(error);
+               }
+            });
+         }
+
+         // Show notification
+         function showNotification(type, message) {
+            $.wnoty({
+               type: type,
+               message: message,
+               position: 'top-right',
+               container: $('.modal-content') // Show the notification on top of the modal
+            });
+         }
+      });
+   </script>
+
+
+
+
+
+   <script>
+      $(document).ready(function() {
+         fetchTaxClasses();
+      });
+
+      function fetchTaxClasses() {
+         $.ajax({
+            url: '/api/taxclasses',
+            type: 'GET',
+            success: function(data) {
+               displayTaxClasses(data);
+            },
+            error: function(xhr, status, error) {
+               console.error('Error fetching tax classes:', error);
+            }
+         });
+      }
+
+      function displayTaxClasses(taxClasses) {
+         var checkboxesContainer = $('#taxCheckboxes');
+         checkboxesContainer.empty();
+
+         taxClasses.forEach(function(taxClass, index) {
+            var checkboxHtml = `
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" id="taxCheckbox${index}" value="${taxClass.id}">
+          <label class="form-check-label" for="taxCheckbox${index}">${taxClass.name} (${taxClass.rate}%)</label>
+        </div>
+      `;
+            checkboxesContainer.append(checkboxHtml);
+         });
+      }
+   </script>
+
+
+
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,375 @@
+<div th:fragment="student">
+    <div class="col-md-12">
+
+        <!-- BEGIN panel -->
+        <div class="panel text-black rounded border" data-sortable-id="index-6">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">Suppliers Records</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+            <div class="panel-toolbar">
+
+
+                    <div class="row mb-1">
+                        <!-- Flexbox container -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- Search input container -->
+                            <div class="flex-grow-1 me-2">
+                                <div class="input-group position-relative">
+                                    <div class="input-group-text bg-none border-0" style="z-index: 1; position: absolute; top: 50%; transform: translateY(-50%); left: 10px;">
+                                        <i class="fa fa-barcode"></i>
+                                    </div>
+                                    <input type="text" class="form-control ps-5 bg-light" placeholder="Search By Name..." id="search-pos" />
+                                    <div id="search-salary-components-td" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Button group container -->
+                            <div class="d-flex">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#supplierModal" class="btn btn-success btn-sm me-1" id="saveBtn">
+                                    <i class="fas fa-circle-plus fa-lg me-1"></i>Add New
+                                </a>
+                                <a href="#" class="btn btn-danger btn-sm me-1" id="updateBtn">
+                                    <i class="fas fa-print fa-lg me-1"></i>Print
+                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v fa-lg"></i>
+                                    </button>
+                                    <!-- Dropdown menu structure -->
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item open-member-list-modal text-primary" href="#" data-bs-toggle="modal" data-bs-target="#patientListModal">
+                                            <i class="fas fa-download fa-lg me-1"></i>Import Items</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-success" href="#"><i class="fas fa-upload fa-lg me-1"></i>Export Items</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-info" href="#"><i class="fas fa-eye fa-lg me-1"></i>Export Current View</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-cog fa-lg me-1"></i>Preferences</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sync fa-lg me-1"></i>Refresh List</a></li>
+                                        <hr class="dropdown-divider">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+            </div>
+            <hr class="divider mt-0">
+            <div class="panel-body mt-0">
+
+                <div id="stockControlPanelBulkUpdates">
+
+                </div>
+
+            </div>
+            <!-- END panel -->
+
+        </div>
+
+
+    </div>
+
+
+    <div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="supplierModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="supplierModalLabel">Add/Edit Supplier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="supplierForm">
+                        <input type="hidden" id="supplierId">
+                        <div class="form-group">
+                            <label for="creditorName">Creditor Name</label>
+                            <input type="text" class="form-control" id="creditorName" required onkeyup="capitalizeCaseWise(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="creditorAddress">Creditor Address</label>
+                            <input type="text" class="form-control" id="creditorAddress" required onkeyup="capitalizeCaseWise(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="creditorContact">Creditor Contact</label>
+                            <input type="text" class="form-control" id="creditorContact" required onkeyup="capitalizeCaseWise(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="creditTerms">Credit Terms</label>
+                            <input type="text" class="form-control" id="creditTerms" required onkeyup="capitalizeCaseWise(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="taxPin">Tax PIN</label>
+                            <input type="text" class="form-control" id="taxPin" required onkeyup="capitalizeCaseWise(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="creditLimit">Credit Limit</label>
+                            <input type="number" class="form-control" id="creditLimit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required onkeyup="capitalizeCaseWise(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerType">Customer Type</label>
+                            <select class="form-control" id="customerType" required>
+                                <option value="COMPANY">Company</option>
+                                <option value="INDIVIDUAL">Individual</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveSupplier">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#member-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            $('#saveSupplier').click(function() {
+                var supplier = {
+                    id: $('#supplierId').val(),
+                    creditorName: $('#creditorName').val(),
+                    creditorAddress: $('#creditorAddress').val(),
+                    creditorContact: $('#creditorContact').val(),
+                    creditTerms: $('#creditTerms').val(),
+                    taxPin: $('#taxPin').val(),
+                    creditLimit: $('#creditLimit').val(),
+                    email: $('#email').val(),
+                    customerType: $('#customerType').val()
+                };
+
+                $.ajax({
+                    url: '/api/suppliers',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(supplier),
+                    success: function(response) {
+                        $('#supplierModal').modal('hide');
+                        showNotification('success', 'Supplier saved successfully');
+                        // Refresh the supplier list or update the table
+                        fetchSuppliers();
+                    },
+                    error: function(xhr, status, error) {
+                        showNotification('error', 'Error saving supplier: ' + error);
+                    }
+                });
+            });
+
+            function fetchSuppliers() {
+                $.ajax({
+                    url: '/api/suppliers',
+                    type: 'GET',
+                    success: function(suppliers) {
+                        // Update the table or list with the fetched suppliers
+                        generateBulkEmployeesTable(suppliers);
+                    },
+                    error: function(xhr, status, error) {
+                        showNotification('error', 'Error fetching suppliers: ' + error);
+                    }
+                });
+            }
+
+
+
+            // Fetch suppliers when the page loads
+            fetchSuppliers();
+        });
+
+        function showNotification(type, message) {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right',
+                container: $('.modal-content') // Show the notification on top of the modal
+            });
+        }
+    </script>
+
+
+
+
+
+    <script>
+        function generateBulkEmployeesTable(data) {
+            // Default settings
+            var itemsPerPage = 15;
+            var currentPage = 1;
+
+            // Create a new table and append thead and tbody
+            var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Add table headers
+            for (var key in data[0]) {
+                thead.find('tr').append('<th>' + key + '</th>');
+            }
+
+            // Add an actions header
+            thead.find('tr').append('<th>Actions</th>');
+
+            // Append table to the body
+            table.append(thead);
+            table.append(tbody);
+
+            // Create a div with class "table-responsive" and append the table to it
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+
+            // Append the new div to the stockControlPanel div
+            $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+            // Event listener for the "Select All" checkbox
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+            });
+
+            // Event listener for the row checkboxes
+            $(document).on('change', '.rowCheckbox', function () {
+                var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            // Function to create pagination
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+
+                $('#stockControlPanelBulkUpdates').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            // Function to display table data with pagination
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>');
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" /></div></td>');
+                        tr.append('<td>' + (startIndex + i + 1) + '</td>');
+                        for (var key in itemsToShow[i]) {
+                            tr.append('<td>' + itemsToShow[i][key] + '</td>');
+                        }
+                        // Add action buttons with Font Awesome icons and tooltips
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+
+                // Update select all checkbox
+                $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
+
+                // Initialize tooltips
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            // Initial display of table data
+            displayTableData();
+            createPagination(data.length);
+
+            // Event listener for external search input
+            $('#search-pos').on('keyup', function () {
+                var query = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(query);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+

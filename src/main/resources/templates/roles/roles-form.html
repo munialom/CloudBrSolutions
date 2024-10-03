@@ -1,0 +1,389 @@
+<div th:fragment="roles_form">
+
+      <fieldset class="border p-2">
+         <legend class="float-none w-auto" style="font-size: small;">New User Groups Card</legend>
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="row">
+                  <div class="col-lg-4">
+                     <div class="card rounded border">
+                        <div class="card-header h6 mb-0 bg-none p-3 d-flex">
+                           <div class="flex-1">
+                              <i class="fa fa-bank fa-lg fa-fw text-black me-1"></i>User Groups
+                           </div>
+                        </div>
+                        <div class="card-body fw-bold">
+                           <div class="mb-3">
+                              <label class="form-label" for="roleName">Role Name</label>
+                              <input class="form-control form-control-sm" type="text" id="roleName" name="roleName" required />
+                           </div>
+                           <div class="mb-3">
+                              <label class="form-label" for="roleDescription">Role Description</label>
+                              <input class="form-control form-control-sm" type="text" id="roleDescription" name="roleDescription" required />
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8">
+                     <div class="card rounded border">
+                        <div class="card-header h6 mb-0 bg-none p-3">
+                           <i class="fa fa-list-numeric fa-lg fa-fw text-black me-1"></i>List Of User Roles
+                        </div>
+                        <div class="card-body">
+                           <div id="stockControlPanelBulkUpdates">
+
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </fieldset>
+      <fieldset class="border p-2">
+         <div class="mailbox-content-footer d-flex align-items-center justify-content-center">
+            <button type="button" class="btn btn-white ps-40px pe-40px me-5px" id="discardBtn">Discard</button>
+            <button type="submit" id="saveRoleBtn" class="btn btn-primary ps-40px pe-40px">Add New Role</button>
+         </div>
+      </fieldset>
+
+
+   <script>
+      $(document).ready(function() {
+         loadRoles();
+
+         $('#rolesTable').on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+
+            Swal.fire({
+               title: 'Are you sure?',
+               text: 'This action cannot be undone!',
+               icon: 'warning',
+               showCancelButton: true,
+               confirmButtonText: 'Yes, delete it!',
+               cancelButtonText: 'Cancel'
+            }).then((result) => {
+               if (result.isConfirmed) {
+                  $.ajax({
+                     url: '/api/roles/' + id,
+                     type: 'DELETE',
+                     success: function() {
+                        $.gritter.add({
+                           title: 'Success',
+                           text: 'Role Deleted',
+                           class_name: 'success'
+                        });
+                        loadRoles();
+                     },
+                     error: function() {
+                        $.gritter.add({
+                           title: 'Error',
+                           text: 'Error deleting role',
+                           class_name: 'danger'
+                        });
+                     }
+                  });
+               }
+            });
+         });
+
+         $('#saveRoleBtn').click(function(e) {
+            e.preventDefault();
+
+            var roleName = $('#roleName').val();
+            var roleDescription = $('#roleDescription').val();
+
+            if (!roleName || !roleDescription) {
+               $.gritter.add({
+                  title: 'Error',
+                  text: 'All fields are required.',
+                  class_name: 'gritter-error'
+               });
+               return;
+            }
+
+            var formData = {
+               roleName: roleName,
+               roleDescription: roleDescription
+            };
+
+            $.ajax({
+               type: 'POST',
+               url: "/api/roles",
+               data: JSON.stringify(formData),
+               contentType: 'application/json',
+               dataType: 'json',
+               success: function(response) {
+                  $.gritter.add({
+                     title: 'Success',
+                     text: 'Role ' + response.roleName + ' created successfully.',
+                     class_name: 'gritter-success'
+                  });
+
+                  loadRoles();
+
+                  $('#roleName').val('');
+                  $('#roleDescription').val('');
+               },
+               error: function(xhr, status, error) {
+                  $.gritter.add({
+                     title: 'Error',
+                     text: 'Failed to create Role. Please try again.',
+                     class_name: 'gritter-error'
+                  });
+               }
+            });
+         });
+
+         $('#discardBtn').click(function(e) {
+            e.preventDefault();
+            $('#roleName').val('');
+            $('#roleDescription').val('');
+         });
+
+         function loadRoles() {
+            $.ajax({
+               url: '/api/roles',
+               type: 'GET',
+               success: function(data) {
+                  productStockManager(data);
+               },
+               error: function() {
+                  $.gritter.add({
+                     title: 'Error',
+                     text: 'Failed to load roles',
+                     class_name: 'gritter-error'
+                  });
+               }
+            });
+         }
+      });
+
+
+      function productStockManager(data) {
+         var itemsPerPage = 15;
+         var currentPage = 1;
+         var selectedRows = [];
+         var previousSearchQuery = "";
+         var editedPrices = {};
+         var stockChanges = {};
+         var stockOperation = "";
+
+         // Create the table and pagination controls
+         var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+         var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+         var tbody = $('<tbody/>');
+
+         // Build table headers
+         for (var key in data[0]) {
+            if (key !== "Profit Percentage" && key !== "Profit Amount") {
+               thead.find('tr').append('<th>' + key + '</th>');
+            }
+         }
+         thead.find('tr').append('<th id="stock-operation-header" style="display: none;"></th><th>Actions</th>');
+         table.append(thead);
+         table.append(tbody);
+
+         var responsiveDiv = $('<div class="table-responsive"/>');
+         responsiveDiv.append(table);
+         $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+         // Select all functionality
+         $('#selectAll').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('.rowCheckbox').prop('checked', isChecked);
+            selectedRows = isChecked ? getAllRowIndices() : [];
+         });
+
+         $(document).on('change', '.rowCheckbox', function () {
+            var rowIndex = $(this).closest('tr').data('original-index');
+            if ($(this).prop('checked')) {
+               selectedRows.push(rowIndex);
+            } else {
+               selectedRows = selectedRows.filter(function (index) {
+                  return index !== rowIndex;
+               });
+            }
+            var allChecked = selectedRows.length === $('.rowCheckbox').length;
+            $('#selectAll').prop('checked', allChecked);
+         });
+
+         function getAllRowIndices() {
+            return $('.rowCheckbox').map(function (index, element) {
+               return $(element).closest('tr').data('original-index');
+            }).toArray();
+         }
+
+         function createPagination(totalItems) {
+            var totalPages = Math.ceil(totalItems / itemsPerPage);
+            var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+            var leftControls = $('<div class="d-flex align-items-center"/>');
+            var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+            leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+            leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+            rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+            rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+            pagination.append(leftControls);
+            pagination.append(rightControls);
+            $('#stockControlPanelBulkUpdates').append(pagination);
+
+            $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+               itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+               currentPage = 1;
+               displayTableData();
+            });
+
+            $('#prevPage').on('click', function () {
+               if (currentPage > 1) {
+                  currentPage--;
+                  displayTableData();
+               }
+            });
+
+            $('#nextPage').on('click', function () {
+               if (currentPage < totalPages) {
+                  currentPage++;
+                  displayTableData();
+               }
+            });
+         }
+
+         function displayTableData(filteredData) {
+            var displayData = filteredData || data;
+            var totalItems = displayData.length;
+            var startIndex = (currentPage - 1) * itemsPerPage;
+            var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+            var itemsToShow = displayData.slice(startIndex, endIndex);
+
+            tbody.empty();
+            if (itemsToShow.length === 0) {
+               tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+            } else {
+               for (var i = 0; i < itemsToShow.length; i++) {
+                  var tr = $('<tr/>').data('original-index', startIndex + i);
+                  var rowIndex = startIndex + i;
+                  var isChecked = selectedRows.includes(rowIndex);
+                  tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ' + (isChecked ? 'checked' : '') + ' /></div></td>');
+                  tr.append('<td>' + (rowIndex + 1) + '</td>');
+
+                  // Unique Product ID Column (Column index 2)
+                  var productId = itemsToShow[i]['Product ID'];
+                  var costPriceKey = productId + '-CostPrice';
+                  var sellingPriceKey = productId + '-SellingPrice';
+
+                  for (var key in itemsToShow[i]) {
+                     if (key !== "Profit Percentage" && key !== "Profit Amount") {
+                        var value = itemsToShow[i][key];
+                        var td = $('<td/>');
+                        if (key === 'Cost Price' || key === 'Selling Price') {
+                           var priceKey = key === 'Cost Price' ? costPriceKey : sellingPriceKey;
+                           var inputValue = editedPrices[priceKey] !== undefined ? editedPrices[priceKey] : value;
+                           td.text(inputValue);
+                        } else {
+                           td.text(value);
+                        }
+                        tr.append(td);
+                     }
+                  }
+
+                  if (stockOperation) {
+                     var stockKey = productId + '-StockChange';
+                     var stockValue = stockChanges[stockKey] !== undefined ? stockChanges[stockKey] : '';
+                     var stockInputId = 'stock-change-' + productId;
+
+                     var stockTd = $('<td/>').html('<input id="' + stockInputId + '" type="text" class="form-control form-control-sm" value="' + stockValue + '" />');
+                     stockTd.find('input').on('focus', function () {
+                        $(this).select();
+                        $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                        var focusedRowIndex = $(this).closest('tr').data('original-index');
+                        if (!selectedRows.includes(focusedRowIndex)) {
+                           selectedRows.push(focusedRowIndex);
+                        }
+                        var productNameTd = $(this).closest('tr').find('td').eq(3); // Assuming the 4th column is Product Name
+                        if (!productNameTd.find('span.text-danger').length) {
+                           productNameTd.append(' <span class="text-danger">' + (stockOperation === 'option1' ? 'Adding' : 'Subtracting') + ' qty</span>');
+                        }
+                     });
+                     stockTd.find('input').on('input', function () {
+                        var newValue = $(this).val();
+                        var inputId = $(this).attr('id');
+                        var row = $(this).closest('tr').data('original-index');
+                        var productId = itemsToShow[row]['Product ID'];
+                        var stockKey = productId + '-StockChange';
+                        stockChanges[stockKey] = newValue;
+                     });
+                     stockTd.find('input').on('keydown', function (e) {
+                        var row = $(this).closest('tr');
+                        if (e.key === "ArrowDown") {
+                           row.next().find('input').focus();
+                           e.preventDefault();
+                        } else if (e.key === "ArrowUp") {
+                           row.prev().find('input').focus();
+                           e.preventDefault();
+                        }
+                     });
+                     $('#stock-operation-header').text(stockOperation === 'option1' ? 'Add Stock' : 'Subtract Stock').show();
+                     tr.append(stockTd);
+                  } else {
+                     $('#stock-operation-header').hide();
+                  }
+
+                  tr.append('<td>' +
+                          '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                          '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                          '</td>');
+                  tbody.append(tr);
+               }
+            }
+
+            var totalPages = Math.ceil(totalItems / itemsPerPage);
+            $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+            $('#selectAll').prop('checked', selectedRows.length === $('.rowCheckbox').length);
+            $('[data-toggle="tooltip"]').tooltip();
+         }
+
+         displayTableData();
+         createPagination(data.length);
+
+         // Handle Search
+         $('#search-pos').on('keyup', function () {
+            previousSearchQuery = $(this).val().toLowerCase();
+            var filteredData = data.filter(function (item) {
+               return Object.values(item).some(function (value) {
+                  return value.toString().toLowerCase().includes(previousSearchQuery);
+               });
+            });
+            currentPage = 1;
+            displayTableData(filteredData);
+            $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+            createPagination(filteredData.length);
+         });
+
+         // Handle Stock Operation Radio Buttons
+         $('input[name="filterOptions"]').on('change', function () {
+            stockOperation = $(this).val();
+            displayTableData();
+         });
+
+         // Handle Actions
+         $(document).on('click', '.btn-info', function () {
+            var rowIndex = $(this).closest('tr').data('original-index');
+            alert('Edit row: ' + (rowIndex + 1));
+         });
+
+         $(document).on('click', '.btn-danger', function () {
+            var rowIndex = $(this).closest('tr').data('original-index');
+            alert('Delete row: ' + (rowIndex + 1));
+         });
+      }
+   </script>
+</div>

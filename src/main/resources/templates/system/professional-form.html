@@ -1,0 +1,120 @@
+<div th:fragment="branch_form">
+
+      <div class="row">
+         <div class="col-lg-12">
+            <div class="card rounded border">
+               <div class="card-header h6 mb-0 bg-none p-3">
+                  <i class="fa fa-list-numeric fa-lg fa-fw text-black  me-1"></i>Professional Body List
+               </div>
+               <div class="card-body">
+                  <table id="professionalBodies" class="table table-thead-sticky table-tfoot-sticky table-bordered table-px-10px table-py-4px table-sm table-striped text-nowrap mb-0" style="width: 100%">
+                     <thead>
+                     <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                     </tr>
+                     </thead>
+                     <tbody></tbody>
+                  </table>
+
+               </div>
+            </div>
+         </div>
+      </div>
+
+
+
+
+
+
+   <script>
+      $(document).ready(function() {
+         var dataTable = $('#professionalBodies').DataTable({
+            "serverSide": true,
+            "ajax": {
+               "url": "/api/professionalBody",
+               "type": "GET",
+               "data": function(d) {
+                  d.draw = d.draw;
+                  d.start = d.start;
+                  d.length = d.length;
+               }
+            },
+            "columns": [
+               { "data": "id" },
+               { "data": "bodyName" },
+               {
+                  "data": null,
+                  "render": function(data, type, row) {
+                     return `<button class="btn btn-primary btn-xs edit-btn" data-id="${row.id}">Edit</button> <button class="btn btn-danger btn-xs delete-btn" data-id="${row.id}">Delete</button>`;
+                  }
+               }
+            ],
+            "pageLength": 10
+         });
+
+         $('#professionalBodies').on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var $row = $(this).closest('tr');
+
+            Swal.fire({
+               title: 'Are you sure?',
+               text: 'This action cannot be undone!',
+               icon: 'warning',
+               showCancelButton: true,
+               confirmButtonText: 'Yes, delete it!',
+               cancelButtonText: 'Cancel'
+            }).then((result) => {
+               if (result.isConfirmed) {
+                  $.ajax({
+                     url: '/api/professionalBody/' + id,
+                     type: 'DELETE',
+                     success: function() {
+                        $.gritter.add({
+                           title: 'Success',
+                           text: 'Professional Body Deleted',
+                           class_name: 'success'
+                        });
+                        $row.remove();
+                     },
+                     error: function() {
+                        $.gritter.add({
+                           title: 'Error',
+                           text: 'Error deleting professional body',
+                           class_name: 'danger'
+                        });
+                     }
+                  });
+               }
+            });
+         });
+
+         $('#professionalBodies').on('click', '.edit-btn', function() {
+            var id = $(this).data('id');
+            // Handle edit action using the ID
+            // For example: window.editData(id);
+         });
+
+         window.addToDataTable = function(data) {
+            dataTable.row.add(data).draw(false);
+         };
+      });
+   </script>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+

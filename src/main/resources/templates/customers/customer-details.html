@@ -1,0 +1,567 @@
+<div th:fragment="student">
+    <div class="col-md-12">
+
+        <!-- BEGIN panel -->
+        <div class="panel text-black rounded border" data-sortable-id="index-6">
+            <div class="panel-heading bg-light-200 border-bottom">
+                <h4 class="panel-title">Customers Records</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+            <div class="panel-toolbar">
+
+
+                    <div class="row mb-1">
+                        <!-- Flexbox container -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- Search input container -->
+                            <div class="flex-grow-1 me-2">
+                                <div class="input-group position-relative">
+                                    <div class="input-group-text bg-none border-0" style="z-index: 1; position: absolute; top: 50%; transform: translateY(-50%); left: 10px;">
+                                        <i class="fa fa-barcode"></i>
+                                    </div>
+                                    <input type="text" class="form-control ps-5 bg-light" placeholder="Search By Name..." id="search-pos" />
+                                    <div id="search-salary-components-td" style="position: absolute; top: 100%; left: 0; right: 0; background-color: white; border: 1px solid #ccc; display: none;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Button group container -->
+                            <div class="d-flex">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#customerModal" class="btn btn-success btn-sm me-1" id="saveBtn">
+                                    <i class="fas fa-circle-plus fa-lg me-1"></i>Add New
+                                </a>
+                                <a href="#" class="btn btn-danger btn-sm me-1" id="updateBtn">
+                                    <i class="fas fa-print fa-lg me-1"></i>Print
+                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v fa-lg"></i>
+                                    </button>
+                                    <!-- Dropdown menu structure -->
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item open-member-list-modal text-primary" href="#" data-bs-toggle="modal" data-bs-target="#patientListModal">
+                                            <i class="fas fa-download fa-lg me-1"></i>Import Items</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-success" href="#"><i class="fas fa-upload fa-lg me-1"></i>Export Items</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-info" href="#"><i class="fas fa-eye fa-lg me-1"></i>Export Current View</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-cog fa-lg me-1"></i>Preferences</a></li>
+                                        <hr class="dropdown-divider">
+                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sync fa-lg me-1"></i>Refresh List</a></li>
+                                        <hr class="dropdown-divider">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+            </div>
+            <hr class="divider mt-0">
+            <div class="panel-body mt-0">
+
+                <div id="stockControlPanelBulkUpdates">
+
+                </div>
+
+            </div>
+            <!-- END panel -->
+
+        </div>
+
+
+    </div>
+
+
+    <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalLabel">Add/Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="customerForm">
+                        <input type="hidden" id="custId">
+                        <div class="form-group">
+                            <label for="customerName">Customer Name</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Customer Address</label>
+                            <input type="text" class="form-control" id="customerAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerContact">Customer Contact</label>
+                            <input type="text" class="form-control" id="customerContact" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditTerm">Credit Term</label>
+                            <input type="number" class="form-control" id="creditTerm" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taxPin">Tax PIN</label>
+                            <input type="text" class="form-control" id="taxPin" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditLimit">Credit Limit</label>
+                            <input type="number" class="form-control" id="creditLimit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerType">Customer Type</label>
+                            <select class="form-control" id="customerType" required>
+                                <option value="COMPANY">Company</option>
+                                <option value="INDIVIDUAL">Individual</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCustomer">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#search-pos').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#member-table tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+
+
+
+<!--<script>
+    $(document).ready(function() {
+        // Initialize select2 for customer search
+        refreshCustomerList();
+        $("#customerSearch").select2({
+            ajax: {
+                url: "/api/customers/search",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        keyword: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                id: item.custid,
+                                text: item.customername
+                            }
+                        })
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+            placeholder: "Search for a customer"
+        });
+
+        // Open modal for new customer
+        $("#addCustomerBtn").click(function() {
+            $("#customerModalLabel").text("Add New Customer");
+            $("#customerForm")[0].reset();
+            $("#custId").val("");
+            $("#customerModal").modal('show');
+        });
+
+        // Open modal for editing customer
+        $(document).on("click", ".editCustomerBtn", function() {
+            var customerId = $(this).data("id");
+            $("#customerModalLabel").text("Edit Customer");
+            $.get("/api/customers/" + customerId, function(data) {
+                $("#custId").val(data.custid);
+                $("#customerName").val(data.customername);
+                $("#customerAddress").val(data.customeraddress);
+                $("#customerContact").val(data.customercontact);
+                $("#creditTerm").val(data.creditterm);
+                $("#taxPin").val(data.taxPin);
+                $("#creditLimit").val(data.creditlimit);
+                $("#email").val(data.email);
+                $("#customerType").val(data.customerType);
+                $("#customerModal").modal('show');
+            });
+        });
+
+        // Save customer
+        $("#saveCustomer").click(function() {
+            saveCustomer();
+        });
+    });
+    function saveCustomer() {
+        var customer = {
+            custid: $("#custId").val(),
+            customername: $("#customerName").val(),
+            customeraddress: $("#customerAddress").val(),
+            customercontact: $("#customerContact").val(),
+            creditterm: $("#creditTerm").val(),
+            taxPin: $("#taxPin").val(),
+            creditlimit: $("#creditLimit").val(),
+            email: $("#email").val(),
+            customerType: $("#customerType").val()
+        };
+
+        var url = customer.custid ? "/api/customers/" + customer.custid : "/api/customers";
+        var method = customer.custid ? "PUT" : "POST";
+
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: "application/json",
+            data: JSON.stringify(customer),
+            success: function(response) {
+                $("#customerModal").modal('hide');
+                showNotification('success', 'Customer saved successfully');
+                refreshCustomerList();
+            },
+            error: function(xhr, status, error) {
+                showNotification('error', 'Error saving customer: ' + xhr.responseText);
+            }
+        });
+    }
+
+    function refreshCustomerList() {
+        $.ajax({
+            url: '/api/customers',
+            type: 'GET',
+            success: function(suppliers) {
+                // Update the table or list with the fetched suppliers
+                generateBulkEmployeesTable(suppliers);
+            },
+            error: function(xhr, status, error) {
+                showNotification('error', 'Error fetching suppliers: ' + error);
+            }
+        });
+    }
+
+    function showNotification(type, message) {
+        $.wnoty({
+            type: type,
+            message: message,
+            position: 'top-right'
+        });
+    }
+</script>-->
+
+    <script>
+        $(document).ready(function() {
+            // Initialize select2 for customer search
+            refreshCustomerList();
+            $("#customerSearch").select2({
+                ajax: {
+                    url: "/api/customers/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.custid,
+                                    text: item.customername
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                placeholder: "Search for a customer"
+            });
+
+            // Open modal for new customer
+            $("#addCustomerBtn").click(function() {
+                $("#customerModalLabel").text("Add New Customer");
+                $("#customerForm")[0].reset();
+                $("#custId").val("");
+                $("#customerModal").modal('show');
+            });
+
+            // Open modal for editing customer
+            $(document).on("click", ".editCustomerBtn", function() {
+                var customerId = $(this).data("id");
+                $("#customerModalLabel").text("Edit Customer");
+                $.get("/api/customers/" + customerId, function(data) {
+                    $("#custId").val(data.custid);
+                    $("#customerName").val(data.customername);
+                    $("#customerAddress").val(data.customeraddress);
+                    $("#customerContact").val(data.customercontact);
+                    $("#creditTerm").val(data.creditterm);
+                    $("#taxPin").val(data.taxPin);
+                    $("#creditLimit").val(data.creditlimit);
+                    $("#email").val(data.email);
+                    $("#customerType").val(data.customerType);
+                    $("#customerModal").modal('show');
+                });
+            });
+
+            // Save customer
+            $("#saveCustomer").click(function() {
+                if (validateForm()) {
+                    saveCustomer();
+                }
+            });
+        });
+
+        function validateForm() {
+            var fields = ['customerName', 'customerAddress', 'customerContact', 'creditTerm', 'taxPin', 'creditLimit', 'email', 'customerType'];
+            var emptyFields = [];
+
+            fields.forEach(function(field) {
+                if (!$("#" + field).val().trim()) {
+                    emptyFields.push(field);
+                }
+            });
+
+            if (emptyFields.length > 0) {
+                var errorMessage = 'Please fill in the following fields: ' + emptyFields.join(', ');
+                showNotification('error', errorMessage);
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveCustomer() {
+            var customer = {
+                custid: $("#custId").val(),
+                customername: $("#customerName").val().trim(),
+                customeraddress: $("#customerAddress").val().trim(),
+                customercontact: $("#customerContact").val().trim(),
+                creditterm: $("#creditTerm").val().trim(),
+                taxPin: $("#taxPin").val().trim(),
+                creditlimit: $("#creditLimit").val().trim(),
+                email: $("#email").val().trim(),
+                customerType: $("#customerType").val().trim()
+            };
+
+            var url = customer.custid ? "/api/customers/" + customer.custid : "/api/customers";
+            var method = customer.custid ? "PUT" : "POST";
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: "application/json",
+                data: JSON.stringify(customer),
+                success: function(response) {
+                    $("#customerModal").modal('hide');
+                    showNotification('success', 'Customer saved successfully');
+                    refreshCustomerList();
+                },
+                error: function(xhr, status, error) {
+                    showNotification('error', 'Error saving customer: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function refreshCustomerList() {
+            $.ajax({
+                url: '/api/customers',
+                type: 'GET',
+                success: function(customers) {
+                    // Update the table or list with the fetched customers
+                    generateBulkEmployeesTable(customers);
+                },
+                error: function(xhr, status, error) {
+                    showNotification('error', 'Error fetching customers: ' + error);
+                }
+            });
+        }
+
+        function showNotification(type, message) {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        }
+    </script>
+
+
+
+
+
+    <script>
+        function generateBulkEmployeesTable(data) {
+            // Default settings
+            var itemsPerPage = 15;
+            var currentPage = 1;
+
+            // Create a new table and append thead and tbody
+            var table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            var thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            var tbody = $('<tbody/>');
+
+            // Add table headers
+            for (var key in data[0]) {
+                thead.find('tr').append('<th>' + key + '</th>');
+            }
+
+            // Add an actions header
+            thead.find('tr').append('<th>Actions</th>');
+
+            // Append table to the body
+            table.append(thead);
+            table.append(tbody);
+
+            // Create a div with class "table-responsive" and append the table to it
+            var responsiveDiv = $('<div class="table-responsive"/>');
+            responsiveDiv.append(table);
+
+            // Append the new div to the stockControlPanel div
+            $('#stockControlPanelBulkUpdates').html(responsiveDiv);
+
+            // Event listener for the "Select All" checkbox
+            $('#selectAll').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+            });
+
+            // Event listener for the row checkboxes
+            $(document).on('change', '.rowCheckbox', function () {
+                var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            // Function to create pagination
+            function createPagination(totalItems) {
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                var pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+                var leftControls = $('<div class="d-flex align-items-center"/>');
+                var rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+                leftControls.append('<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">' +
+                    '<option value="15">15</option>' +
+                    '<option value="50">50</option>' +
+                    '<option value="100">100</option>' +
+                    '<option value="all">All</option>' +
+                    '</select>');
+                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+                pagination.append(leftControls);
+                pagination.append(rightControls);
+
+                $('#stockControlPanelBulkUpdates').append(pagination);
+
+                $('#itemsPerPage').val(itemsPerPage).on('change', function () {
+                    itemsPerPage = $(this).val() === 'all' ? totalItems : parseInt($(this).val());
+                    currentPage = 1;
+                    displayTableData();
+                });
+
+                $('#prevPage').on('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        displayTableData();
+                    }
+                });
+
+                $('#nextPage').on('click', function () {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        displayTableData();
+                    }
+                });
+            }
+
+            // Function to display table data with pagination
+            function displayTableData(filteredData) {
+                var displayData = filteredData || data;
+                var totalItems = displayData.length;
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = itemsPerPage === totalItems ? totalItems : Math.min(startIndex + itemsPerPage, totalItems);
+                var itemsToShow = displayData.slice(startIndex, endIndex);
+
+                tbody.empty();
+
+                if (itemsToShow.length === 0) {
+                    tbody.append('<tr><td colspan="' + (Object.keys(data[0]).length + 3) + '" class="text-center">No Records</td></tr>');
+                } else {
+                    for (var i = 0; i < itemsToShow.length; i++) {
+                        var tr = $('<tr/>');
+                        tr.append('<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" /></div></td>');
+                        tr.append('<td>' + (startIndex + i + 1) + '</td>');
+                        for (var key in itemsToShow[i]) {
+                            tr.append('<td>' + itemsToShow[i][key] + '</td>');
+                        }
+                        // Add action buttons with Font Awesome icons and tooltips
+                        tr.append('<td>' +
+                            '<button class="btn btn-xs btn-info" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></button> ' +
+                            '<button class="btn btn-xs btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>' +
+                            '</td>');
+                        tbody.append(tr);
+                    }
+                }
+
+                var totalPages = Math.ceil(totalItems / itemsPerPage);
+                $('#paginationInfo').text('Page ' + currentPage + ' of ' + totalPages);
+
+                // Update select all checkbox
+                $('#selectAll').prop('checked', $('.rowCheckbox:checked').length === $('.rowCheckbox').length);
+
+                // Initialize tooltips
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+
+            // Initial display of table data
+            displayTableData();
+            createPagination(data.length);
+
+            // Event listener for external search input
+            $('#search-pos').on('keyup', function () {
+                var query = $(this).val().toLowerCase();
+                var filteredData = data.filter(function (item) {
+                    return Object.values(item).some(function (value) {
+                        return value.toString().toLowerCase().includes(query);
+                    });
+                });
+                currentPage = 1;
+                displayTableData(filteredData);
+                $('#stockControlPanelBulkUpdates .pagination-controls').remove();
+                createPagination(filteredData.length);
+            });
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+

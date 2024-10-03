@@ -1,0 +1,87 @@
+<div th:fragment="settings-users">
+
+    <div class="col-lg-12">
+        <div class="card rounded border" style="margin: auto">
+
+
+            <div class="card-body" id="settings-users" style="height:100%;">
+
+                <div class="card rounded border">
+                    <ul class="nav nav-tabs nav-tabs-v2 px-3">
+                        <li class="nav-item me-2"><a class="nav-link px-2 active" data-bs-toggle="tab" href="#allTab"><span
+                                class="me-10px"><i
+                                class="fa fa-fw t-plus-1 text-blue fa-lg fa-users"></i>User Groups</span></a></li>
+
+
+                        <li class="nav-item me-2" ><a class="nav-link px-2" data-bs-toggle="tab" href="#sms"><span class="me-10px"><i
+                                class="fa fa-fw t-plus-1 text-black fa-lg fa-user-circle"></i>Add User</span></a></li>
+                        <li class="nav-item me-2" ><a class="nav-link px-2" data-bs-toggle="tab" href="#email"><span class="me-10px"><i
+                                class="fa fa-fw t-plus-1 text-black-500 fa-user-lock"></i>Grant/Deny Access</span></a></li>
+                        <li class="nav-item me-2" ><a class="nav-link px-2" data-bs-toggle="tab" href="#rooms1"><span class="me-10px"><i
+                                class="fa fa-fw t-plus-1 text-black fa-lg fa-edit"></i>Edit Users</span></a></li>
+
+
+                    </ul>
+                    <div class="tab-content p-3">
+                        <div class="tab-pane fade show active" id="allTab">
+                            <div th:replace="configs/school::school"></div>
+
+                        </div>
+
+
+                        <div class="tab-pane fade show " id="sms">
+                            <div th:replace="configs/sms::sms"></div>
+
+                        </div>
+                        <div class="tab-pane fade show " id="email">
+
+
+                        </div>
+                        <div class="tab-pane fade show " id="rooms1">
+
+
+                        </div>
+                        <div class="tab-pane fade show " id="board">
+
+
+                        </div>
+                        <div class="tab-pane fade show " id="rooms">
+
+
+                        </div>
+
+                        <div class="tab-pane fade show " id="tax">
+
+
+                        </div>
+
+                        <div class="tab-pane fade show " id="rates">
+
+
+                        </div>
+
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
