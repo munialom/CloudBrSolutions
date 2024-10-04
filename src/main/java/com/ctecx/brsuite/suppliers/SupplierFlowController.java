@@ -70,4 +70,11 @@ public class SupplierFlowController {
         // Add any necessary attributes to the model
         return "suppliers/my-suppliers-manager";
     }
+
+
+    @GetMapping("historical-data")
+    public String historicalData(Model model) {
+        // Add any necessary attributes to the model
+        return "suppliers/historical-data";
+    }
 }

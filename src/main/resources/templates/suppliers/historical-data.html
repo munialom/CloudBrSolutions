@@ -1,0 +1,288 @@
+<div th:fragment="suppliers">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-4">
+                <div id="table_div_supplier_info">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        ($ => {
+            let fullData = [];
+            let currentPage = 1;
+            let itemsPerPage = 10;
+
+            const generateDynamicTableSuppliers = (data, targetElementId) => {
+                const $target = $(`#${targetElementId}`);
+                const $wrapper = $('<div>').addClass('table-responsive');
+
+                const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+                $buttonGroup.append(
+                    $('<button>').addClass('btn btn-success excel-export')
+                        .html('<i class="fas fa-file-excel mr-2"></i> Excel'),
+                    $('<button>').addClass('btn btn-danger print-table')
+                        .html('<i class="fas fa-print mr-2"></i> Print'),
+                    $('<button>').addClass('btn btn-warning download-pdf')
+                        .html('<i class="fas fa-file-pdf mr-2"></i> Download')
+                );
+                $wrapper.append($buttonGroup);
+
+                const $searchInput = $('<input>')
+                    .attr('type', 'text')
+                    .attr('placeholder', 'Search suppliers...')
+                    .addClass('form-control mb-3 search-input');
+                $wrapper.append($searchInput);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    $wrapper.append('<p>No data available</p>');
+                    $target.empty().append($wrapper);
+                    applyStyles();
+                    return;
+                }
+
+                const headers = Object.keys(data[0]);
+                const $table = $('<table>').addClass('dynamic-table');
+                const $thead = $('<thead>').appendTo($table);
+                const $tbody = $('<tbody>').appendTo($table);
+
+                const $headerRow = $('<tr>');
+                headers.forEach(h => $headerRow.append($('<th>').text(h)));
+                $headerRow.append($('<th>').text('Actions'));
+                $headerRow.appendTo($thead);
+
+                data.forEach(row => {
+                    const $dataRow = $('<tr>');
+                    headers.forEach(h => {
+                        const val = row[h];
+                        $dataRow.append($('<td>').text(val !== null && val !== undefined ? val : 'N/A'));
+                    });
+                    $dataRow.append(
+                        $('<td>').addClass('action-buttons').append(
+                            $('<button>').addClass('btn btn-sm btn-outline-primary view-orders')
+                                .html('<i class="fas fa-shopping-cart"></i> Orders')
+                                .attr('data-supplier-id', row[headers[0]]),
+                            $('<button>').addClass('btn btn-sm btn-outline-success view-performance')
+                                .html('<i class="fas fa-chart-line"></i> Performance')
+                                .attr('data-supplier-id', row[headers[0]]),
+                            $('<button>').addClass('btn btn-sm btn-outline-info view-contact')
+                                .html('<i class="fas fa-address-book"></i> Contact')
+                                .attr('data-supplier-id', row[headers[0]])
+                        )
+                    );
+                    $dataRow.appendTo($tbody);
+                });
+
+                $wrapper.append($table);
+
+                const $paginationWrapper = $('<div>').addClass('pagination-wrapper d-flex justify-content-between align-items-center mt-3');
+
+                const $rowsPerPageWrapper = $('<div>').addClass('rows-per-page-wrapper d-flex align-items-center');
+                $rowsPerPageWrapper.append($('<span>').text('Rows per page:'));
+                const $rowsPerPageSelect = $('<select>').addClass('form-control form-control-sm ml-2').css('width', 'auto');
+                [10, 20, 50, 100].forEach(value => {
+                    $rowsPerPageSelect.append($('<option>').attr('value', value).text(value));
+                });
+                $rowsPerPageWrapper.append($rowsPerPageSelect);
+                $paginationWrapper.append($rowsPerPageWrapper);
+
+                const $paginationControls = $('<div>').addClass('pagination-controls d-flex align-items-center');
+                $paginationControls.append($('<span>').addClass('pagination-info mr-3'));
+                const $paginationButtons = $('<div>').addClass('btn-group');
+                $paginationButtons.append(
+                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&lt;'),
+                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&gt;')
+                );
+                $paginationControls.append($paginationButtons);
+                $paginationWrapper.append($paginationControls);
+
+                $wrapper.append($paginationWrapper);
+                $target.empty().append($wrapper);
+                updatePagination();
+                applyStyles();
+            };
+
+            const updatePagination = () => {
+                const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                const startItem = (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, fullData.length);
+
+                $('.pagination-info').text(`${startItem}-${endItem} of ${fullData.length}`);
+
+                $('.pagination-controls button').first().prop('disabled', currentPage === 1);
+                $('.pagination-controls button').last().prop('disabled', currentPage === totalPages);
+            };
+
+            const filterTable = (searchTerm) => {
+                const $rows = $('.dynamic-table tbody tr');
+                $rows.each(function() {
+                    const $row = $(this);
+                    const text = $row.text().toLowerCase();
+                    if (text.indexOf(searchTerm) === -1) {
+                        $row.hide();
+                    } else {
+                        $row.show();
+                    }
+                });
+            };
+
+            const fetchAndDisplaySupplierInfo = (page = 1) => {
+                const tableDiv = 'table_div_supplier_info';
+                $(`#${tableDiv}`).html('<p>Loading data...</p>');
+
+                const apiUrl = '/api/suppliers';
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: data => {
+                        fullData = data;
+                        const startIndex = (page - 1) * itemsPerPage;
+                        const endIndex = startIndex + itemsPerPage;
+                        const paginatedData = data.slice(startIndex, endIndex);
+                        generateDynamicTableSuppliers(paginatedData, tableDiv);
+                    },
+                    error: (_, textStatus, errorThrown) => {
+                        console.error('Error fetching data:', textStatus, errorThrown);
+                        $(`#${tableDiv}`).html('<p>Error loading data. Please try again later.</p>');
+                    }
+                });
+            };
+
+            const exportToExcel = () => {
+                console.log('Exporting to Excel...');
+                alert('Excel export functionality to be implemented');
+            };
+
+            const printTable = () => {
+                window.print();
+            };
+
+            const downloadPDF = () => {
+                console.log('Downloading PDF...');
+                alert('PDF download functionality to be implemented');
+            };
+
+            const applyStyles = () => {
+                $('head').append(`
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+                        .table-responsive {
+                            overflow-x: auto;
+                            margin-bottom: 1rem;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            border-radius: 4px;
+                            padding: 15px;
+                        }
+                        .dynamic-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-family: 'Roboto', sans-serif;
+                            font-size: 11px;
+                        }
+                        .dynamic-table th, .dynamic-table td {
+                            padding: 8px 12px;
+                            border-bottom: 1px solid #e0e0e0;
+                            text-align: left;
+                        }
+                        .dynamic-table th {
+                            background-color: #f8f9fa;
+                            font-weight: 700;
+                            color: #495057;
+                            text-transform: uppercase;
+                        }
+                        .dynamic-table tr:last-child td { border-bottom: none; }
+                        .dynamic-table tr:hover { background-color: #f1f3f5; }
+                        .action-buttons {
+                            white-space: nowrap;
+                        }
+                        .action-buttons .btn {
+                            padding: 2px 4px;
+                            font-size: 10px;
+                            margin-right: 2px;
+                        }
+                        .action-buttons .btn i { margin-right: 3px; }
+                        .btn-group .btn {
+                            margin-right: 10px;
+                        }
+                        .btn-group .btn i {
+                            margin-right: 5px;
+                        }
+                        .pagination-wrapper {
+                            font-size: 12px;
+                        }
+                        .pagination-wrapper select {
+                            font-size: 12px;
+                        }
+                        .pagination-controls .btn {
+                            font-size: 12px;
+                            padding: 2px 8px;
+                        }
+                        @media print {
+                            .btn-group, .search-input, .pagination-wrapper {
+                                display: none;
+                            }
+                        }
+                    </style>
+                `);
+            };
+
+            $(() => {
+                fetchAndDisplaySupplierInfo();
+
+                $(document).on('input', '.search-input', function() {
+                    const searchTerm = $(this).val().toLowerCase();
+                    filterTable(searchTerm);
+                });
+
+                $(document).on('click', '.excel-export', exportToExcel);
+                $(document).on('click', '.print-table', printTable);
+                $(document).on('click', '.download-pdf', downloadPDF);
+
+                $(document).on('click', '.view-orders', function() {
+                    const supplierId = $(this).data('supplier-id');
+                    console.log('Viewing orders for supplier ID:', supplierId);
+                    // Implement order viewing functionality here
+                });
+
+                $(document).on('click', '.view-performance', function() {
+                    const supplierId = $(this).data('supplier-id');
+                    console.log('Viewing performance for supplier ID:', supplierId);
+                    // Implement performance viewing functionality here
+                });
+
+                $(document).on('click', '.view-contact', function() {
+                    const supplierId = $(this).data('supplier-id');
+                    console.log('Viewing contact info for supplier ID:', supplierId);
+                    // Implement contact info viewing functionality here
+                });
+
+                $(document).on('change', '.rows-per-page-wrapper select', function() {
+                    itemsPerPage = parseInt($(this).val());
+                    currentPage = 1;
+                    fetchAndDisplaySupplierInfo(currentPage);
+                });
+
+                $(document).on('click', '.pagination-controls button', function() {
+                    if ($(this).html() === '&lt;') {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            fetchAndDisplaySupplierInfo(currentPage);
+                        }
+                    } else {
+                        const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            fetchAndDisplaySupplierInfo(currentPage);
+                        }
+                    }
+                });
+            });
+        })(jQuery);
+    </script>
+</div>
