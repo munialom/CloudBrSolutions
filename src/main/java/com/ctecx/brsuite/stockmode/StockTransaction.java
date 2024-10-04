@@ -60,6 +60,8 @@ public class StockTransaction extends AuditableBase {
     private String subModule;
     private Integer stockIn;
     private Integer stockOut;
+
+    @Column(columnDefinition = "TEXT")
     private String productName;
     @ManyToOne
     @JoinColumn(name = "revenue_id")

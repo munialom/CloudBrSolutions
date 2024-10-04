@@ -21,4 +21,10 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     public List<Map<String, Object>> getAllProducts() {
         return jdbcTemplate.queryForList("CALL GetProductDetails()");
     }
+
+    @Override
+    public List<Map<String, Object>> searchProductsWithPositiveStock(String searchKey, int pageSize, int offset) {
+        String sql = "CALL search_products_with_positive_stock(?, ?, ?)";
+        return jdbcTemplate.queryForList(sql, searchKey, pageSize, offset);
+    }
 }

@@ -33,6 +33,9 @@ public class ProductRestController {
     }
 
 
+
+
+
     @GetMapping("/generate-code")
     public ResponseEntity<String> generateProductCode() {
         String productCode = ProductCodeGenerator.generateProductCode();

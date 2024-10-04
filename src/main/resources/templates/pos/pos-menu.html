@@ -759,99 +759,109 @@
 
 
 
-
-
-
-
     <script>
-        $(document).ready(function() {
-            var isScannerActive = false; // Flag to check if scanner is active
+        $(document).ready(() => {
+            const searchInput = $('#search-pos');
+            const productTableContainer = $('#productTableContainer-pos');
+            let isScannerActive = false;
+            let lastInputTime = Date.now();
+            const inputDelay = 50;
 
-            $('#search-pos').focus(); // Set default focus to 'search-pos'
+            const initializeSearch = () => {
+                searchInput.focus();
+                setupScannerDetection();
+                setupManualSearch();
+                setupTableRowClick();
+                setupInputFocusHandling();
+            };
 
-            var lastTime = Date.now();
-            var delay = 50; // delay between key events that will be considered as typing
+            const setupScannerDetection = () => {
+                searchInput.scannerDetection({
+                    timeBeforeScanTest: 200,
+                    avgTimeByChar: 40,
+                    endChar: [13],
+                    onComplete: handleScannerInput,
+                    onKeyDetect: () => { lastInputTime = Date.now(); }
+                });
+            };
 
-            $('#search-pos').scannerDetection({
-                timeBeforeScanTest: 200, // wait for the next character for upto 200ms
-                avgTimeByChar: 40, // it's not a barcode if a character takes longer than 100ms
-                endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
-                onComplete: function(barcode, qty) {
-                    $('#productTableContainer-pos').hide();
-                    // Check if the barcode is a sequence of numbers
-                    if (/^\d+$/.test(barcode)) {
-                        isScannerActive = true; // Set the flag to true when scanner is active
-
-                        // Prevent the default action of the tab key
-                        $(window).keydown(function(event){
-                            if(event.keyCode == 9) {
-                                event.preventDefault();
-                            }
-                        });
-
-                        getProductAndAddRow(barcode);
-
-
-                        // Clear the 'search-pos' input field and set focus back to it
-                        $('#search-pos').val('').focus();
-
-
-                        isScannerActive = false; // Reset the flag after scanner use
-
-                    }
-                },
-                onKeyDetect: function() {
-                    lastTime = Date.now();
+            const handleScannerInput = (barcode) => {
+                if (/^\d+$/.test(barcode)) {
+                    isScannerActive = true;
+                    preventTabDefault();
+                    getProductAndAddRow(barcode);
+                    resetSearchInput();
+                    isScannerActive = false;
                 }
-            });
+            };
 
-            $('#search-pos').on('input', function() {
-                if (!isScannerActive && Date.now() - lastTime > delay) { // Check if scanner is not active
-                    var inputValue = $(this).val();
+            const preventTabDefault = () => {
+                $(window).keydown((event) => {
+                    if (event.keyCode === 9) event.preventDefault();
+                });
+            };
 
-                    // If the input value is a search key
+            const getProductAndAddRow = (barcode) => {
+                // Implement the logic to get product details and add a row
+                console.log(`Getting product for barcode: ${barcode}`);
+            };
+
+            const resetSearchInput = () => {
+                searchInput.val('').focus();
+            };
+
+            const setupManualSearch = () => {
+                searchInput.on('input', debounce(handleManualSearch, 300));
+            };
+
+            const handleManualSearch = () => {
+                if (!isScannerActive && Date.now() - lastInputTime > inputDelay) {
+                    const inputValue = searchInput.val();
                     if (inputValue.length < 10) {
-                        var page = 0; // start from the first page
-                        var size = 5; // number of records per page
-                        $.ajax({
-                            url: '/products/sales',
-                            type: 'GET',
-                            data: {
-                                searchKey: inputValue,
-                                page: page,
-                                size: size
-                            },
-                            success: function(response) {
-                                var productTableContainer = $('#productTableContainer-pos');
-                                productTableContainer.html(response);
-
-                                if (inputValue.trim() === '') {
-                                    productTableContainer.hide();
-                                } else {
-                                    productTableContainer.show();
-                                }
-                            },
-                            error: function(e) {
-                                console.log(e);
-                            }
-                        });
+                        fetchSearchResults(inputValue);
                     }
                 }
-            });
+            };
 
-            // Add click event listener to rows in the search results table
-            $(document).on('click', '#productTableContainer-pos tr', function() {
-                $('#productTableContainer-pos').hide();
-            });
+            const fetchSearchResults = (searchKey, page = 0, size = 5) => {
+                $.ajax({
+                    url: '/products/sales-data',
+                    type: 'GET',
+                    data: { searchKey, page, size },
+                    success: handleSearchSuccess,
+                    error: (e) => console.error('Search error:', e)
+                });
+            };
 
-            // Add 'focusout' event handler to all input fields except '#search-pos'
-            $('input').not('#search-pos').on('focusout', function() {
-                setTimeout(function() {
-                    $('#search-pos').focus();
-                }, 0);
-            });
+            const handleSearchSuccess = (response) => {
+                productTableContainer.html(response);
+                productTableContainer.toggle(searchInput.val().trim() !== '');
+            };
+
+            const setupTableRowClick = () => {
+                $(document).on('click', '#productTableContainer-pos tr', () => {
+                    productTableContainer.hide();
+                });
+            };
+
+            const setupInputFocusHandling = () => {
+                $('input').not('#search-pos').on('focusout', () => {
+                    setTimeout(() => searchInput.focus(), 0);
+                });
+            };
+
+            const debounce = (func, delay) => {
+                let debounceTimer;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => func.apply(context, args), delay);
+                };
+            };
+
+            initializeSearch();
         });
-
     </script>
 
 
@@ -938,30 +948,6 @@
 
 
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

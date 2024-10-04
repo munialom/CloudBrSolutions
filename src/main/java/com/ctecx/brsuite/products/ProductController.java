@@ -24,6 +24,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final CustomProductService customProductService;
     private final CategoryService categoryService;
     private final BrandService brandService;
     private final UomService uomService;
@@ -182,6 +183,21 @@ public class ProductController {
     }
 
 
+
+    @GetMapping("/sales-data")
+    public String searchProductsForSales(
+            @RequestParam(value = "searchKey", required = false) String searchKey,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            Model model) {
+
+        if (searchKey != null && !searchKey.isEmpty()) {
+            Page<ProductSaleDTO> productPage = customProductService.salesByProductNameAndCode(searchKey, page, size);
+            model.addAttribute("products", productPage);
+        }
+
+        return "pos/search-table-pos";
+    }
 
     @GetMapping("/all")
     public String getAllProducts(Model model,

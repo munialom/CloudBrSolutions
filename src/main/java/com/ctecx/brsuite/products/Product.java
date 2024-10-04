@@ -51,7 +51,7 @@ public class Product extends AuditableBase {
     @Column(name = "product_type")
     private String productType;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", columnDefinition = "TEXT")
     private String productName;
 
     @Column(name = "product_code")

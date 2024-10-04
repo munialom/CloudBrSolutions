@@ -8,4 +8,6 @@ public interface CustomProductRepository {
 
 
     List<Map<String, Object>> getAllProducts();
+
+    List<Map<String, Object>> searchProductsWithPositiveStock(String searchKey, int pageSize, int offset);
 }

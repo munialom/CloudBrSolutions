@@ -48,6 +48,77 @@
                 <!-- pos-content -->
                 <div class="pos-content">
                  <div class="col-md-9">
+                     <div class="panel-toolbar border rounded bg-light-100">
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <div class="form-group">
+                                     <label for="customerSearch" class="form-label">Customer:</label>
+                                     <div class="input-group">
+                                         <select id="customerSearch" name="customerSearch" class="form-select form-select-sm">
+                                             <option value="">Select Customer</option>
+                                             <!-- Options for categories will be dynamically added here -->
+                                         </select>
+                                         <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#customerModal">
+                                             <i class="fa fa-plus-circle"></i>
+                                         </button>
+                                     </div>
+                                 </div>
+                                 <div class="form-group">
+                                     <label for="billingAddress" class="form-label">Bill To:</label>
+                                     <textarea class="form-control form-control-sm" id="billingAddress" rows="2" placeholder="Enter billing address"></textarea>
+                                 </div>
+                             </div>
+                             <div class="col-md-6">
+                                 <!-- First Row: Invoice Number and Create From -->
+                                 <div class="row">
+                                     <div class="col-md-6">
+                                         <div class="form-group">
+                                             <label for="invoiceNumber" class="form-label">Serial Number:</label>
+                                             <input type="text" class="form-control form-control-sm" id="invoiceNumber" value="10001" readonly>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                         <div class="form-group">
+                                             <label for="transactionType" class="form-label">Create From:</label>
+                                             <select class="form-control form-control-sm" id="transactionType">
+                                                 <option value="cashsale" selected>Cash Sale</option>
+                                                 <option value="invoice">Invoice</option>
+                                                 <option value="quote">Quote</option>
+                                             </select>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <!-- Second Row: Date and Terms -->
+                                 <div class="row">
+                                     <div class="col-md-6">
+                                         <div class="form-group">
+                                             <label for="invoiceDate" class="form-label">Date:</label>
+                                             <div class="input-group date trxDate">
+                                                 <input type="text" id="invoiceDate" name="invoiceDate" class="form-control form-control-sm bg-light-200"  readonly/>
+                                                 <span class="input-group-text input-group-addon"><i class="fa fa-calendar"></i></span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                         <div class="form-group">
+                                             <label for="terms" class="form-label">Terms:</label>
+                                             <div class="input-group">
+                                                 <select class="form-control form-control-sm" id="terms">
+                                                     <option value="COD" selected>COD</option>
+                                                     <option value="PAY IN DAYS">Pay in Days</option>
+                                                     <option value="MAX DAYS">Net 30</option>
+                                                 </select>
+                                                 <div class="input-group-append">
+                                                     <input type="number" class="form-control form-control-sm" id="termsDays" value="30" min="0" step="1">
+                                                 </div>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <hr class="divider mt-0">
                     <!-- pos-content-container -->
                     <div class="pos-content-container">
                         <div class="pos-table-row">
@@ -56,7 +127,6 @@
 
                             <!-- BEGIN input-group -->
                             <div class="input-group mb-3" style="margin-top: 0;">
-      <!--                          <button class="btn btn-black dropdown-toggle" type="button" data-bs-toggle="dropdown"><span class="d-none d-md-inline">Search Products</span><span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span> <b class="caret"></b></button>-->
                                 <button class="btn btn-black dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                     <span class="d-none d-md-inline">Search Products</span>
                                     <span class="d-inline d-md-none"><i class="fa fa-credit-card"></i></span>
@@ -95,7 +165,7 @@
                                 <div class="panel-body">
                                     <!-- BEGIN table -->
                                     <div class="table-responsive mb-3">
-                                        <table class="table table-hover table-bordered table-sm table-striped text-nowrap  mb-0 rounded border bg-gradient " id="selectedProducts-pos" >
+                                        <table class="table table-hover table-bordered table-sm  text-nowrap  mb-0 rounded border bg-gradient " id="selectedProducts-pos" >
                                             <thead>
                                             <tr>
                                                 <th>Code</th>
@@ -147,19 +217,19 @@
                                     OSCU Status: <a href="#" class="ms-auto text-decoration-none text-black-500">
                                     <i class="fa fa-fw fa-lg fs-12px me-2 connectivity-icon"></i>
                                     <span class="status-text"></span>
-                                    <span class="status-value"></span>
+                                    <span class="status-value" id="customer-id" style="display: none;"></span>
                                 </a>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex justify-content-between">
                                             <div class="mb-3 flex-grow-1 pe-1">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-2">
+                                                <div class="d-flex align-items-center bg-light-100" style="padding: 10px;">
+                                                    <div style="flex: 0 0 auto; margin-right: 20px;">
                                                         <i class="fab fa-cc-amazon-pay fa-4x"></i>
                                                     </div>
-                                                    <div class="flex-grow-1">
-                                                        <h3 class="text-center mb-0" id="totalAmount"><b>0.00</b></h3>
+                                                    <div style="flex: 1 1 auto; text-align: right;">
+                                                        <span id="totalAmount" style="font-size: 2.5rem; font-weight: bold;">0.00</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -287,141 +357,241 @@
 
 
 
+    <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalLabel">Add/Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="customerForm">
+                        <input type="hidden" id="custId">
+                        <div class="form-group">
+                            <label for="customerName">Customer Name</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Customer Address</label>
+                            <input type="text" class="form-control" id="customerAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerContact">Customer Contact</label>
+                            <input type="text" class="form-control" id="customerContact" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditTerm">Credit Term</label>
+                            <input type="number" class="form-control" id="creditTerm" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taxPin">Tax PIN</label>
+                            <input type="text" class="form-control" id="taxPin" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditLimit">Credit Limit</label>
+                            <input type="number" class="form-control" id="creditLimit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerType">Customer Type</label>
+                            <select class="form-control" id="customerType" required>
+                                <option value="COMPANY">Company</option>
+                                <option value="INDIVIDUAL">Individual</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCustomer">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
 
-
-<script>
-    $(document).ready(function() {
-        let isSubmitting = false;
-
-        function saveForm() {
-            if (isSubmitting) {
-                console.log('Form is already being submitted. Please wait.');
-                return;
-            }
-
-            const rows = $("#selectedProducts-pos tbody tr");
-            var totalAmountValue = $("#totalAmount").text();
-            var totalAmountFloat = parseFloat(totalAmountValue);
-            const receivedAmount = $("#receivedAmount").val();
-            const customerID = $("#customer-id").text();
-
-            if (rows.length === 0) {
-                swal({
-                    title: "No Records to Save",
-                    text: "You cannot save empty records.",
-                    icon: "error",
-                    dangerMode: true,
+    <script>
+        $(document).ready(function() {
+            function updateSerialNumber() {
+                var type = $("#transactionType").val();
+                $.ajax({
+                    url: '/api/stocks/generate/serial-number',
+                    type: 'GET',
+                    data: { type: type },
+                    success: function(serialNumber) {
+                        $("#invoiceNumber").val(serialNumber);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error generating serial number:", error);
+                        $("#invoiceNumber").val("Error");
+                    }
                 });
-
-                setTimeout(function(){
-                    swal.close();
-                }, 1000);
-
-                return;
             }
 
-            if (receivedAmount === "0.00") {
-                $('.alert-danger').show().html("Amount paid should not be zero.");
+            // Initial serial number generation
+            updateSerialNumber();
 
-                setTimeout(function(){
-                    $('.alert-danger').hide();
-                }, 3000);
+            // Update serial number when transaction type changes
+            $("#transactionType").change(function() {
+                updateSerialNumber();
+            });
+        });
+    </script>
+    <script>
 
-                return;
-            }
+        $(document).ready(function() {
+            // Initialize date pickers
+            $('.trxDate').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            })
 
-            const aData = [];
-            rows.each(function() {
-                const tableRow = $(this);
-                const data = {
-                    productCode: tableRow.find('td[key-id="productCode"]').text(),
-                    productName: tableRow.find('td[key-id="productName"]').text(),
-                    cost: tableRow.find('td[key-id="SalePrice"]').text(),
-                    discount: tableRow.find('td[key-id="discount"]').text(),
-                    tax: tableRow.find('td[key-id="unitTax"]').text(),
-                    netTax: tableRow.find('td[key-id="finalTax"]').text(),
-                    subtotal: tableRow.find('td[key-id="subtotal"]').text(),
-                    qty: tableRow.find('input.product-input').val()
-                };
-                aData.push(data);
+            // Set the current date on page load
+            var currentDate = new Date();
+            var formattedDate = moment(currentDate).format('DD/MM/YYYY');
+            $('#invoiceDate').val(formattedDate);
+
+            // Disable manual input for the regDate field
+            $('#invoiceDate').prop('readonly', true);
+
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Initialize select2 for customer search
+            refreshCustomerList();
+            $("#customerSearch").select2({
+                ajax: {
+                    url: "/api/customers/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.custid,
+                                    text: item.customername
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                placeholder: "Search for a customer",
+                templateSelection: function (data) {
+                    if (data.id === '') {
+                        return $('<span>').text("ID: 1 - Search for a customer").attr('data-id', '1');
+                    }
+                    return $('<span>').text("ID: " + data.id + " - " + data.text).attr('data-id', data.id);
+                }
+            }).on('select2:select', function (e) {
+                $('#customer-id').text(e.params.data.id);
             });
 
-            let selectedModes = [];
-            if ($('#inlineCheckbox1').is(':checked')) {
-                selectedModes.push('CASH');
-            }
-            if ($('#inlineCheckbox2').is(':checked')) {
-                selectedModes.push('MPESA');
-            }
-            if ($('#inlineCheckbox3').is(':checked')) {
-                selectedModes.push('VISA');
-            }
+            // Set initial customer-id to 1
+            $('#customer-id').text('1');
 
-            let stocks = {
-                saleStocks: aData,
-                amountPaid: receivedAmount,
-                totalAmount: totalAmountFloat,
-                customerId: customerID,
-                payMode: selectedModes
+            // Open modal for new customer
+            $("#addCustomerBtn").click(function() {
+                $("#customerModalLabel").text("Add New Customer");
+                $("#customerForm")[0].reset();
+                $("#custId").val("");
+                $("#customerModal").modal('show');
+            });
+
+            // Open modal for editing customer
+            $(document).on("click", ".editCustomerBtn", function() {
+                var customerId = $(this).data("id");
+                $("#customerModalLabel").text("Edit Customer");
+                $.get("/api/customers/" + customerId, function(data) {
+                    $("#custId").val(data.custid);
+                    $("#customerName").val(data.customername);
+                    $("#customerAddress").val(data.customeraddress);
+                    $("#customerContact").val(data.customercontact);
+                    $("#creditTerm").val(data.creditterm);
+                    $("#taxPin").val(data.taxPin);
+                    $("#creditLimit").val(data.creditlimit);
+                    $("#email").val(data.email);
+                    $("#customerType").val(data.customerType);
+                    $("#customerModal").modal('show');
+                });
+            });
+
+            // Save customer
+            $("#saveCustomer").click(function() {
+                saveCustomer();
+            });
+        });
+
+        function saveCustomer() {
+            var customer = {
+                custid: $("#custId").val(),
+                customername: $("#customerName").val(),
+                customeraddress: $("#customerAddress").val(),
+                customercontact: $("#customerContact").val(),
+                creditterm: $("#creditTerm").val(),
+                taxPin: $("#taxPin").val(),
+                creditlimit: $("#creditLimit").val(),
+                email: $("#email").val(),
+                customerType: $("#customerType").val()
             };
-            isSubmitting = true;
 
-            $('.alert-info').show();
+            var url = customer.custid ? "/api/customers/" + customer.custid : "/api/customers";
+            var method = customer.custid ? "PUT" : "POST";
 
-            var xhr = new window.XMLHttpRequest();
-
-            xhr.onload = function() {
-                isSubmitting = false;
-                if (xhr.status === 201) {
-                    $('.alert-info').hide();
-                    $('.alert-success').show();
-                    var response = JSON.parse(xhr.responseText);
-                    var serialNumber = response.transactionId;
-
-                    $("#selectedProducts-pos tbody").empty();
-                    updateSidebar();
-
-                    setTimeout(function() {
-                        $('.alert-success').hide();
-                    }, 125);
-                    if ($('#inlineCheckbox2').is(':checked')) {
-                        $('#inlineCheckbox2').prop('checked', false);
-                    }
-
-                    if ($('#inlineCheckbox3').is(':checked')) {
-                        $('#inlineCheckbox3').prop('checked', false);
-                    }
-
-                } else {
-                    $('.alert-danger').show();
-                    console.log('Unexpected response from the server');
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: "application/json",
+                data: JSON.stringify(customer),
+                success: function(response) {
+                    $("#customerModal").modal('hide');
+                    showNotification('success', 'Customer saved successfully');
+                    refreshCustomerList();
+                },
+                error: function(xhr, status, error) {
+                    showNotification('error', 'Error saving customer: ' + xhr.responseText);
                 }
-            };
-
-            xhr.onerror = function() {
-                isSubmitting = false;
-            };
-
-            xhr.open("POST", "/api/stocks/sales");
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify(stocks));
+            });
         }
 
-        $("#saleClose").on("click", saveForm);
+        function refreshCustomerList() {
+            $.ajax({
+                url: '/api/customers',
+                type: 'GET',
+                success: function(suppliers) {
+                    // Update the table or list with the fetched suppliers
+                    generateBulkEmployeesTable(suppliers);
+                },
+                error: function(xhr, status, error) {
+                    showNotification('error', 'Error fetching suppliers: ' + error);
+                }
+            });
+        }
 
-        $(document).keypress(function(e) {
-            if (e.which === 13) { // Enter key code
-                saveForm();
-                $('#search-pos').val('').focus();
-            }
-        });
-    });
-</script>
-
-
+        function showNotification(type, message) {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        }
+    </script>
 
 
 
@@ -429,6 +599,171 @@
 
 
     <script>
+        $(document).ready(function() {
+            let isSubmitting = false;
+
+            function updateSerialNumber() {
+                var type = $("#transactionType").val();
+                $.ajax({
+                    url: '/api/stocks/generate/serial-number',
+                    type: 'GET',
+                    data: { type: type },
+                    success: function(serialNumber) {
+                        $("#invoiceNumber").val(serialNumber);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error generating serial number:", error);
+                        $("#invoiceNumber").val("Error");
+                    }
+                });
+            }
+
+            // Initial serial number generation
+            updateSerialNumber();
+
+            // Update serial number when transaction type changes
+            $("#transactionType").change(function() {
+                updateSerialNumber();
+            });
+
+            function saveForm() {
+                if (isSubmitting) {
+                    console.log('Form is already being submitted. Please wait.');
+                    return;
+                }
+
+                const rows = $("#selectedProducts-pos tbody tr");
+                var totalAmountValue = $("#totalAmount").text();
+                var totalAmountFloat = parseFloat(totalAmountValue);
+                const receivedAmount = $("#receivedAmount").val();
+                const customerID = $("#customer-id").text();
+                const transactionType = $("#transactionType").val();
+
+                if (rows.length === 0) {
+                    swal({
+                        title: "No Records to Save",
+                        text: "You cannot save empty records.",
+                        icon: "error",
+                        dangerMode: true,
+                    });
+
+                    setTimeout(function(){
+                        swal.close();
+                    }, 1000);
+
+                    return;
+                }
+
+                if (receivedAmount === "0.00") {
+                    $('.alert-danger').show().html("Amount paid should not be zero.");
+
+                    setTimeout(function(){
+                        $('.alert-danger').hide();
+                    }, 3000);
+
+                    return;
+                }
+
+                const aData = [];
+                rows.each(function() {
+                    const tableRow = $(this);
+                    const data = {
+                        productCode: tableRow.find('td[key-id="productCode"]').text(),
+                        productName: tableRow.find('td[key-id="productName"]').text(),
+                        cost: tableRow.find('td[key-id="SalePrice"]').text(),
+                        discount: tableRow.find('td[key-id="discount"]').text(),
+                        tax: tableRow.find('td[key-id="unitTax"]').text(),
+                        netTax: tableRow.find('td[key-id="finalTax"]').text(),
+                        subtotal: tableRow.find('td[key-id="subtotal"]').text(),
+                        qty: tableRow.find('input.product-input').val()
+                    };
+                    aData.push(data);
+                });
+
+                let selectedModes = [];
+                if ($('#inlineCheckbox1').is(':checked')) {
+                    selectedModes.push('CASH');
+                }
+                if ($('#inlineCheckbox2').is(':checked')) {
+                    selectedModes.push('MPESA');
+                }
+                if ($('#inlineCheckbox3').is(':checked')) {
+                    selectedModes.push('VISA');
+                }
+
+                let stocks = {
+                    saleStocks: aData,
+                    amountPaid: receivedAmount,
+                    totalAmount: totalAmountFloat,
+                    customerId: customerID,
+                    payMode: selectedModes,
+                    transactionType: transactionType
+                };
+                isSubmitting = true;
+                let stocksJson = JSON.stringify(stocks);
+                console.log("data"+stocksJson)
+
+                $('.alert-info').show();
+
+                var xhr = new window.XMLHttpRequest();
+
+                xhr.onload = function() {
+                    isSubmitting = false;
+                    if (xhr.status === 201) {
+                        $('.alert-info').hide();
+                        $('.alert-success').show();
+                        var response = JSON.parse(xhr.responseText);
+                        var serialNumber = response.transactionId;
+
+                        $("#selectedProducts-pos tbody").empty();
+                        updateSidebar();
+                        updateSerialNumber();
+
+                        setTimeout(function() {
+                            $('.alert-success').hide();
+                        }, 125);
+                        if ($('#inlineCheckbox2').is(':checked')) {
+                            $('#inlineCheckbox2').prop('checked', false);
+                        }
+
+                        if ($('#inlineCheckbox3').is(':checked')) {
+                            $('#inlineCheckbox3').prop('checked', false);
+                        }
+
+                    } else {
+                        $('.alert-danger').show();
+                        console.log('Unexpected response from the server');
+                    }
+                };
+
+                xhr.onerror = function() {
+                    isSubmitting = false;
+                };
+
+                xhr.open("POST", "/api/stocks/counter-sales");
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.send(JSON.stringify(stocks));
+            }
+
+            $("#saleClose").on("click", saveForm);
+
+            $(document).keypress(function(e) {
+                if (e.which === 13) { // Enter key code
+                    saveForm();
+                    $('#search-pos').val('').focus();
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+<!--    <script>
         $(document).ready(function() {
             var isScannerActive = false; // Flag to check if scanner is active
 
@@ -517,6 +852,111 @@
             });
         });
 
+    </script>-->
+
+    <script>
+        $(document).ready(() => {
+            const searchInput = $('#search-pos');
+            const productTableContainer = $('#productTableContainer-pos');
+            let isScannerActive = false;
+            let lastInputTime = Date.now();
+            const inputDelay = 50;
+
+            const initializeSearch = () => {
+                searchInput.focus();
+                setupScannerDetection();
+                setupManualSearch();
+                setupTableRowClick();
+                setupInputFocusHandling();
+            };
+
+            const setupScannerDetection = () => {
+                searchInput.scannerDetection({
+                    timeBeforeScanTest: 200,
+                    avgTimeByChar: 40,
+                    endChar: [13],
+                    onComplete: handleScannerInput,
+                    onKeyDetect: () => { lastInputTime = Date.now(); }
+                });
+            };
+
+            const handleScannerInput = (barcode) => {
+                if (/^\d+$/.test(barcode)) {
+                    isScannerActive = true;
+                    preventTabDefault();
+                    getProductAndAddRow(barcode);
+                    resetSearchInput();
+                    isScannerActive = false;
+                }
+            };
+
+            const preventTabDefault = () => {
+                $(window).keydown((event) => {
+                    if (event.keyCode === 9) event.preventDefault();
+                });
+            };
+
+            const getProductAndAddRow = (barcode) => {
+                // Implement the logic to get product details and add a row
+                console.log(`Getting product for barcode: ${barcode}`);
+            };
+
+            const resetSearchInput = () => {
+                searchInput.val('').focus();
+            };
+
+            const setupManualSearch = () => {
+                searchInput.on('input', debounce(handleManualSearch, 300));
+            };
+
+            const handleManualSearch = () => {
+                if (!isScannerActive && Date.now() - lastInputTime > inputDelay) {
+                    const inputValue = searchInput.val();
+                    if (inputValue.length < 10) {
+                        fetchSearchResults(inputValue);
+                    }
+                }
+            };
+
+            const fetchSearchResults = (searchKey, page = 0, size = 5) => {
+                $.ajax({
+                    url: '/products/sales-data',
+                    type: 'GET',
+                    data: { searchKey, page, size },
+                    success: handleSearchSuccess,
+                    error: (e) => console.error('Search error:', e)
+                });
+            };
+
+            const handleSearchSuccess = (response) => {
+                productTableContainer.html(response);
+                productTableContainer.toggle(searchInput.val().trim() !== '');
+            };
+
+            const setupTableRowClick = () => {
+                $(document).on('click', '#productTableContainer-pos tr', () => {
+                    productTableContainer.hide();
+                });
+            };
+
+            const setupInputFocusHandling = () => {
+                $('input').not('#search-pos').on('focusout', () => {
+                    setTimeout(() => searchInput.focus(), 0);
+                });
+            };
+
+            const debounce = (func, delay) => {
+                let debounceTimer;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => func.apply(context, args), delay);
+                };
+            };
+
+            initializeSearch();
+        });
     </script>
 
 
@@ -607,30 +1047,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <script>
         function updateProductDetails(productCode) {
             var productCodeExists = false;
@@ -701,71 +1117,7 @@
 <script>
 
 
-/*   function getProductAndAddRow(productCode) {
-       $.ajax({
-           url: `/api-bulk/sales?searchKey=${productCode}`,
-           type: 'GET',
-           success: function(data) {
-               const product = data[0]; // Assuming the response is an array and we're interested in the first object
 
-               // Check if a row with this product code already exists
-               let existingRow = $(`#selectedProducts-pos tbody tr[data-product-code="${product.productCode}"]`);
-
-               if (existingRow.length > 0) {
-                   // If the row exists, increment the quantity and update the prices
-                   let qtyInput = existingRow.find('input.product-input');
-                   let currentQty = parseInt(qtyInput.val());
-                   qtyInput.val(currentQty + 1);
-
-                   let newQty = currentQty + 1;
-                   let unitTax = product.tax;
-                   let salePriceCell = existingRow.find('td[key-id="SalePrice"]');
-                   let unitTaxCell = existingRow.find('td[key-id="unitTax"]');
-                   let finalTaxCell = existingRow.find('td[key-id="finalTax"]');
-                   let subtotalCell = existingRow.find('td[key-id="subtotal"]');
-
-                   salePriceCell.text((product.productPrice * newQty).toFixed(2));
-                   unitTaxCell.text(unitTax.toFixed(2));
-                   finalTaxCell.text((unitTax * newQty).toFixed(2));
-                   subtotalCell.text(((product.productPrice * newQty) - (unitTax * newQty)).toFixed(2));
-               } else {
-                   // If the row does not exist, create a new one
-                   const uniqueRowId = 0; // Generate a unique ID for the row
-                   const DefaultQty = 1;
-                   const DefaultDiscount = 0; // Replace with your default discount value
-                   const unitTax = product.tax;
-
-                   var newRow = '<tr data-row-id="' + uniqueRowId + '" data-product-code="' + product.productCode + '">' +
-                       '<td key-id="productCode">' + product.productCode + '</td>' +
-                       '<td key-id="productName">' + product.productName + '</td>' +
-                       '<td key-id="productQty">' +
-                       '<div class="input-group qty">' +
-                       '<div class="input-group-prepend">' +
-                       '<a href="#" class="btn btn-danger btn-xs"><i class="fa fa-minus fa-sm"></i></a>' +
-                       '</div>' +
-                       '<input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 15px; margin:auto; border: none" />' +
-                       '<div class="input-group-append" style="margin-left: -1px;">' +
-                       '<a href="#" class="btn btn-success btn-xs"><i class="fa fa-plus fa-sm"></i></a>' +
-                       '</div>' +
-                       '</div>' +
-                       '</td>' +
-                       '<td key-id="SalePrice">' + product.productPrice.toFixed(2) + '</td>' +
-                       '<td key-id="unitTax">' + unitTax.toFixed(2) + '</td>' +
-                       '<td key-id="discount">' + DefaultDiscount + '</td>' +
-                       '<td key-id="finalTax">' + (unitTax * DefaultQty).toFixed(2) + '</td>' +
-                       '<td key-id="subtotal">' + ((product.productPrice * DefaultQty) - (DefaultDiscount + (unitTax * DefaultQty))).toFixed(2) + '</td>' +
-                       '</tr>';
-
-                   $('#selectedProducts-pos tbody').prepend(newRow);
-               }
-
-               updateSidebar();
-           },
-           error: function(error) {
-               console.error('Error:', error);
-           }
-       });
-   }*/
 
 function getProductAndAddRow(productCode) {
     $.ajax({
