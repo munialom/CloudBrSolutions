@@ -17,6 +17,19 @@ public class ProductFlowController {
         return "products/productsControlPanel";
     }
 
+
+    @GetMapping("current-list")
+    public String updatedDataList() {
+
+        return "products/my-products-list-data";
+    }
+
+    @GetMapping("history-data")
+    public String allHistoryDataList() {
+
+        return "products/historical-data";
+    }
+
     @GetMapping("brands")
     public String addBrand() {
 

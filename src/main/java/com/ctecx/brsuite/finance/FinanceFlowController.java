@@ -48,8 +48,14 @@ public class FinanceFlowController {
     @GetMapping("stock-sheet")
     public String stockSheet(Model model) {
 
-        return "reports/stock-sheet";
+        return "reports/new-stock-sheet-data";
     }
+
+ /*   @GetMapping("stock-sheet")
+    public String stockSheet(Model model) {
+
+        return "reports/stock-sheet";
+    }*/
 
     @GetMapping("stock-sheet-meals")
     public String stockSheetMeals(Model model) {

@@ -45,11 +45,13 @@ public class ProductController {
     }
 
 
-    @GetMapping("product-controls")
+
+   @GetMapping("product-controls")
     public String productManager() {
 
         return "products/my-products-manager";
     }
+
 
 
     @GetMapping("product-price-controls")

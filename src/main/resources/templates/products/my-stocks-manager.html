@@ -1,0 +1,425 @@
+<div th:fragment="products">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-4">
+                <div class="panel-toolbar border rounded p-1 mb-3">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="stationId" class="form-label">Store/Location:</label>
+                                <div class="input-group input-group-sm">
+                                    <select id="stationId" name="stationId" class="form-select">
+                                        <option value="">Select Store</option>
+                                    </select>
+                                    <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#storeModal">
+                                        <i class="fa fa-plus-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mt-4">
+                                <div class="form-check me-3">
+                                    <input class="form-check-input" type="radio" name="filterOptions" id="radio1" value="option1">
+                                    <label class="form-check-label" for="radio1">Add Stock</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="filterOptions" id="radio2" value="option2">
+                                    <label class="form-check-label" for="radio2">Subtract Stock</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="fa fa-barcode"></i></span>
+                                <input type="text" class="form-control" placeholder="Search Product..." id="search-pos">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 text-end">
+                            <a href="#" class="btn btn-success btn-sm me-1" id="saveOpeningStockBtn">
+                                <i class="fas fa-save me-1"></i>Save Record
+                            </a>
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="moreActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreActionsDropdown">
+                                    <li><a class="dropdown-item text-primary" href="#"><i class="fas fa-search me-2"></i>Search Products</a></li>
+                                    <li><a class="dropdown-item text-success" href="#" data-bs-toggle="modal" data-bs-target="#productDetailsModal"><i class="fas fa-list me-2"></i>Add Extra Details</a></li>
+                                    <li><a class="dropdown-item text-info" href="#"><i class="fas fa-balance-scale me-2"></i>View Units of Measure</a></li>
+                                    <li><a class="dropdown-item text-warning" href="#"><i class="fas fa-tags me-2"></i>View Brands</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-receipt me-2"></i>View Revenue Codes</a></li>
+                                    <li><a class="dropdown-item text-secondary" href="#"><i class="fas fa-percentage me-2"></i>View Tax Categories</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="table_div_product_info">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        ($ => {
+            let fullData = [];
+            let currentPage = 1;
+            let itemsPerPage = 10;
+            let selectedRows = [];
+            let stockChanges = {};
+            let stockOperation = "";
+
+            const generateDynamicTableProducts = (data, targetElementId) => {
+                const $target = $(`#${targetElementId}`);
+                const $wrapper = $('<div>').addClass('table-responsive');
+
+                // Button group
+                const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+                $buttonGroup.append(
+                    $('<button>').addClass('btn btn-success excel-export')
+                        .html('<i class="fas fa-file-excel mr-2"></i> Excel'),
+                    $('<button>').addClass('btn btn-danger print-table')
+                        .html('<i class="fas fa-print mr-2"></i> Print'),
+                    $('<button>').addClass('btn btn-warning download-pdf')
+                        .html('<i class="fas fa-file-pdf mr-2"></i> Download'),
+                    $('<button>').addClass('btn btn-primary save-changes')
+                        .html('<i class="fas fa-save mr-2"></i> Save Changes')
+                );
+                $wrapper.append($buttonGroup);
+
+                // Search input
+                const $searchInput = $('<input>')
+                    .attr('type', 'text')
+                    .attr('placeholder', 'Search products...')
+                    .addClass('form-control mb-3 search-input');
+                $wrapper.append($searchInput);
+
+                // Store selector
+                const $storeSelector = $('<select>').attr('id', 'stationId').addClass('form-control mb-3');
+                $storeSelector.append($('<option>').attr('value', '').text('Select Store'));
+                $wrapper.append($storeSelector);
+
+                // Radio buttons for stock operation
+                const $radioGroup = $('<div>').addClass('btn-group btn-group-toggle mb-3').attr('data-toggle', 'buttons');
+                $radioGroup.append(
+                    $('<label>').addClass('btn btn-outline-primary').append(
+                        $('<input>').attr({type: 'radio', name: 'stockOperation', value: 'add'}).text('Add Stock')
+                    ),
+                    $('<label>').addClass('btn btn-outline-primary').append(
+                        $('<input>').attr({type: 'radio', name: 'stockOperation', value: 'subtract'}).text('Subtract Stock')
+                    )
+                );
+                $wrapper.append($radioGroup);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    $wrapper.append('<p>No data available</p>');
+                    $target.empty().append($wrapper);
+                    applyStyles();
+                    return;
+                }
+
+                const headers = Object.keys(data[0]);
+                const $table = $('<table>').addClass('dynamic-table');
+                const $thead = $('<thead>').appendTo($table);
+                const $tbody = $('<tbody>').appendTo($table);
+
+                const $headerRow = $('<tr>');
+                $headerRow.append($('<th>').html('<input type="checkbox" id="selectAll">'));
+                headers.forEach(h => $headerRow.append($('<th>').text(h)));
+                $headerRow.append($('<th>').text('Stock Change'));
+                $headerRow.append($('<th>').text('Actions'));
+                $headerRow.appendTo($thead);
+
+                data.forEach((row, index) => {
+                    const $dataRow = $('<tr>');
+                    $dataRow.append($('<td>').html(`<input type="checkbox" class="row-select" data-index="${index}">`));
+                    headers.forEach(h => {
+                        const val = row[h];
+                        $dataRow.append($('<td>').text(val !== null && val !== undefined ? val : 'N/A'));
+                    });
+                    $dataRow.append($('<td>').html('<input type="number" class="stock-change" value="0">'));
+                    $dataRow.append(
+                        $('<td>').addClass('action-buttons').append(
+                            $('<button>').addClass('btn btn-sm btn-outline-info edit-product')
+                                .html('<i class="fas fa-edit"></i>')
+                                .attr('data-product-id', row['Product ID']),
+                            $('<button>').addClass('btn btn-sm btn-outline-danger delete-product')
+                                .html('<i class="fas fa-trash"></i>')
+                                .attr('data-product-id', row['Product ID'])
+                        )
+                    );
+                    $dataRow.appendTo($tbody);
+                });
+
+                $wrapper.append($table);
+
+                // Pagination
+                const $paginationWrapper = $('<div>').addClass('pagination-wrapper d-flex justify-content-between align-items-center mt-3');
+                const $rowsPerPageWrapper = $('<div>').addClass('rows-per-page-wrapper d-flex align-items-center');
+                $rowsPerPageWrapper.append($('<span>').text('Rows per page:'));
+                const $rowsPerPageSelect = $('<select>').addClass('form-control form-control-sm ml-2').css('width', 'auto');
+                [10, 20, 50, 100].forEach(value => {
+                    $rowsPerPageSelect.append($('<option>').attr('value', value).text(value));
+                });
+                $rowsPerPageWrapper.append($rowsPerPageSelect);
+                $paginationWrapper.append($rowsPerPageWrapper);
+
+                const $paginationControls = $('<div>').addClass('pagination-controls d-flex align-items-center');
+                $paginationControls.append($('<span>').addClass('pagination-info mr-3'));
+                const $paginationButtons = $('<div>').addClass('btn-group');
+                $paginationButtons.append(
+                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&lt;'),
+                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&gt;')
+                );
+                $paginationControls.append($paginationButtons);
+                $paginationWrapper.append($paginationControls);
+
+                $wrapper.append($paginationWrapper);
+                $target.empty().append($wrapper);
+                updatePagination();
+                applyStyles();
+            };
+
+            const updatePagination = () => {
+                const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                const startItem = (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, fullData.length);
+
+                $('.pagination-info').text(`${startItem}-${endItem} of ${fullData.length}`);
+
+                $('.pagination-controls button').first().prop('disabled', currentPage === 1);
+                $('.pagination-controls button').last().prop('disabled', currentPage === totalPages);
+            };
+
+            const filterTable = (searchTerm) => {
+                const $rows = $('.dynamic-table tbody tr');
+                $rows.each(function() {
+                    const $row = $(this);
+                    const text = $row.text().toLowerCase();
+                    if (text.indexOf(searchTerm) === -1) {
+                        $row.hide();
+                    } else {
+                        $row.show();
+                    }
+                });
+            };
+
+            const fetchAndDisplayProductInfo = (page = 1) => {
+                const tableDiv = 'table_div_product_info';
+                $(`#${tableDiv}`).html('<p>Loading data...</p>');
+
+                const apiUrl = '/api/products-manager/products';
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: data => {
+                        fullData = data;
+                        const startIndex = (page - 1) * itemsPerPage;
+                        const endIndex = startIndex + itemsPerPage;
+                        const paginatedData = data.slice(startIndex, endIndex);
+                        generateDynamicTableProducts(paginatedData, tableDiv);
+                    },
+                    error: (_, textStatus, errorThrown) => {
+                        console.error('Error fetching data:', textStatus, errorThrown);
+                        $(`#${tableDiv}`).html('<p>Error loading data. Please try again later.</p>');
+                    }
+                });
+            };
+
+            const saveChanges = () => {
+                const selectedProducts = $('.row-select:checked').map(function() {
+                    const row = $(this).closest('tr');
+                    const productId = row.find('.edit-product').data('product-id');
+                    const stockChange = parseInt(row.find('.stock-change').val()) || 0;
+                    return {
+                        productId: productId,
+                        stockChange: stockOperation === 'add' ? stockChange : -stockChange
+                    };
+                }).get();
+
+                const storeId = $('#stationId').val();
+
+                if (!storeId) {
+                    alert('Please select a store.');
+                    return;
+                }
+
+                if (selectedProducts.length === 0) {
+                    alert('Please select at least one product and enter a stock change.');
+                    return;
+                }
+
+                const data = {
+                    storeId: storeId,
+                    products: selectedProducts
+                };
+
+                $.ajax({
+                    url: '/api/update-stock',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: response => {
+                        alert('Stock updated successfully');
+                        fetchAndDisplayProductInfo(currentPage);
+                    },
+                    error: (_, textStatus, errorThrown) => {
+                        console.error('Error updating stock:', textStatus, errorThrown);
+                        alert('Error updating stock. Please try again.');
+                    }
+                });
+            };
+
+            const applyStyles = () => {
+                $('head').append(`
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+                        .table-responsive {
+                            overflow-x: auto;
+                            margin-bottom: 1rem;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            border-radius: 4px;
+                            padding: 15px;
+                        }
+                        .dynamic-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-family: 'Roboto', sans-serif;
+                            font-size: 11px;
+                        }
+                        .dynamic-table th, .dynamic-table td {
+                            padding: 8px 12px;
+                            border-bottom: 1px solid #e0e0e0;
+                            text-align: left;
+                        }
+                        .dynamic-table th {
+                            background-color: #f8f9fa;
+                            font-weight: 700;
+                            color: #495057;
+                            text-transform: uppercase;
+                        }
+                        .dynamic-table tr:last-child td { border-bottom: none; }
+                        .dynamic-table tr:hover { background-color: #f1f3f5; }
+                        .btn-group .btn {
+                            margin-right: 10px;
+                        }
+                        .btn-group .btn i {
+                            margin-right: 5px;
+                        }
+                        .pagination-wrapper {
+                            font-size: 12px;
+                        }
+                        .pagination-wrapper select {
+                            font-size: 12px;
+                        }
+                        .pagination-controls .btn {
+                            font-size: 12px;
+                            padding: 2px 8px;
+                        }
+                        @media print {
+                            .btn-group, .search-input, .pagination-wrapper {
+                                display: none;
+                            }
+                        }
+                    </style>
+                `);
+            };
+
+            $(() => {
+                fetchAndDisplayProductInfo();
+
+                $(document).on('input', '.search-input', function() {
+                    const searchTerm = $(this).val().toLowerCase();
+                    filterTable(searchTerm);
+                });
+
+                $(document).on('click', '#selectAll', function() {
+                    $('.row-select').prop('checked', this.checked);
+                });
+
+                $(document).on('change', '.row-select', function() {
+                    const allChecked = $('.row-select:checked').length === $('.row-select').length;
+                    $('#selectAll').prop('checked', allChecked);
+                });
+
+                $(document).on('change', 'input[name="stockOperation"]', function() {
+                    stockOperation = $(this).val();
+                });
+
+                $(document).on('click', '.save-changes', saveChanges);
+
+                $(document).on('click', '.edit-product', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Editing product ID:', productId);
+                    // Implement edit functionality here
+                });
+
+                $(document).on('click', '.delete-product', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Deleting product ID:', productId);
+                    // Implement delete functionality here
+                });
+
+                $(document).on('change', '.rows-per-page-wrapper select', function() {
+                    itemsPerPage = parseInt($(this).val());
+                    currentPage = 1;
+                    fetchAndDisplayProductInfo(currentPage);
+                });
+
+                $(document).on('click', '.pagination-controls button', function() {
+                    if ($(this).html() === '&lt;') {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            fetchAndDisplayProductInfo(currentPage);
+                        }
+                    } else {
+                        const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            fetchAndDisplayProductInfo(currentPage);
+                        }
+                    }
+                });
+
+                // Initialize store selector
+                $('#stationId').select2({
+                    ajax: {
+                        url: '/api/stores/search',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            return {
+                                keyword: params.term
+                            };
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(obj) {
+                                    return {
+                                        id: obj.id,
+                                        text: obj.storeName + (obj.counterStore ? ' (Counter Store)' : '')
+                                    };
+                                })
+                            };
+                        }
+                    },
+                    minimumInputLength: 1,
+                    placeholder: 'Search for a store...',
+                    allowClear: true
+                });
+            });
+        })(jQuery);
+    </script>
+</div>

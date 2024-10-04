@@ -1,0 +1,293 @@
+<div id="stockValuationReportSystem">
+    <div class="row p-3">
+        <div class="col-xl-12">
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h6 class="mb-0">Stock Valuation Report</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="stockValuationStartDate" class="form-label">Start Date:</label>
+                            <input type="date" id="stockValuationStartDate" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="stockValuationEndDate" class="form-label">End Date:</label>
+                            <input type="date" id="stockValuationEndDate" class="form-control">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button id="loadStockValuationReport" class="btn btn-primary">Load Report</button>
+                        </div>
+                    </div>
+                    <div id="stockValuationReportTableContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    ($ => {
+        let fullData = [];
+        let currentPage = 1;
+        let itemsPerPage = 10;
+
+        const stockValuationStartDate = $('#stockValuationStartDate');
+        const stockValuationEndDate = $('#stockValuationEndDate');
+        const loadReportBtn = $('#loadStockValuationReport');
+
+        // Set default dates to current day
+        const today = new Date().toISOString().split('T')[0];
+        stockValuationStartDate.val(today);
+        stockValuationEndDate.val(today);
+
+        loadStockValuationReport(today, today);
+
+        loadReportBtn.on('click', function() {
+            loadStockValuationReport(stockValuationStartDate.val(), stockValuationEndDate.val());
+        });
+
+        const generateDynamicTableProducts = (data, targetElementId) => {
+            const $target = $(`#${targetElementId}`);
+            const $wrapper = $('<div>').addClass('table-responsive');
+
+            const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+            $buttonGroup.append(
+                $('<button>').addClass('btn btn-success excel-export')
+                    .html('<i class="fas fa-file-excel mr-2"></i> Excel'),
+                $('<button>').addClass('btn btn-danger print-table')
+                    .html('<i class="fas fa-print mr-2"></i> Print'),
+                $('<button>').addClass('btn btn-warning download-pdf')
+                    .html('<i class="fas fa-file-pdf mr-2"></i> Download')
+            );
+            $wrapper.append($buttonGroup);
+
+            const $searchInput = $('<input>')
+                .attr('type', 'text')
+                .attr('placeholder', 'Search products...')
+                .addClass('form-control mb-3 search-input');
+            $wrapper.append($searchInput);
+
+            if (!Array.isArray(data) || data.length === 0) {
+                $wrapper.append('<p>No data available</p>');
+                $target.empty().append($wrapper);
+                applyStyles();
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const $table = $('<table>').addClass('dynamic-table');
+            const $thead = $('<thead>').appendTo($table);
+            const $tbody = $('<tbody>').appendTo($table);
+
+            const $headerRow = $('<tr>');
+            headers.forEach(h => $headerRow.append($('<th>').text(h)));
+            $headerRow.appendTo($thead);
+
+            data.forEach(row => {
+                const $dataRow = $('<tr>');
+                headers.forEach(h => {
+                    const val = row[h];
+                    let $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A');
+
+                    if (h === 'Product Name') {
+                        $cell.addClass('product-name');
+                    } else if (['Current Value', 'Average Cost', 'Total Value'].includes(h)) {
+                        const value = parseFloat(val);
+                        $cell.addClass(value < 0 ? 'negative' : 'positive');
+                    }
+
+                    $dataRow.append($cell);
+                });
+                $dataRow.appendTo($tbody);
+            });
+
+            $wrapper.append($table);
+
+            const $paginationWrapper = $('<div>').addClass('pagination-wrapper d-flex justify-content-between align-items-center mt-3');
+
+            const $rowsPerPageWrapper = $('<div>').addClass('rows-per-page-wrapper d-flex align-items-center');
+            $rowsPerPageWrapper.append($('<span>').text('Rows per page:'));
+            const $rowsPerPageSelect = $('<select>').addClass('form-control form-control-sm ml-2').css('width', 'auto');
+            [10, 20, 50, 100].forEach(value => {
+                $rowsPerPageSelect.append($('<option>').attr('value', value).text(value));
+            });
+            $rowsPerPageWrapper.append($rowsPerPageSelect);
+            $paginationWrapper.append($rowsPerPageWrapper);
+
+            const $paginationControls = $('<div>').addClass('pagination-controls d-flex align-items-center');
+            $paginationControls.append($('<span>').addClass('pagination-info mr-3'));
+            const $paginationButtons = $('<div>').addClass('btn-group');
+            $paginationButtons.append(
+                $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&lt;'),
+                $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&gt;')
+            );
+            $paginationControls.append($paginationButtons);
+            $paginationWrapper.append($paginationControls);
+
+            $wrapper.append($paginationWrapper);
+            $target.empty().append($wrapper);
+            updatePagination();
+            applyStyles();
+        };
+
+        const updatePagination = () => {
+            const totalPages = Math.ceil(fullData.length / itemsPerPage);
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, fullData.length);
+
+            $('.pagination-info').text(`${startItem}-${endItem} of ${fullData.length}`);
+
+            $('.pagination-controls button').first().prop('disabled', currentPage === 1);
+            $('.pagination-controls button').last().prop('disabled', currentPage === totalPages);
+        };
+
+        const filterTable = (searchTerm) => {
+            const $rows = $('.dynamic-table tbody tr');
+            $rows.each(function() {
+                const $row = $(this);
+                const text = $row.text().toLowerCase();
+                if (text.indexOf(searchTerm) === -1) {
+                    $row.hide();
+                } else {
+                    $row.show();
+                }
+            });
+        };
+
+        function loadStockValuationReport(startDate, endDate) {
+            const tableDiv = 'stockValuationReportTableContainer';
+            $(`#${tableDiv}`).html('<p>Loading data...</p>');
+
+            $.ajax({
+                type: 'GET',
+                url: `/api/products-manager/stock-valuation-report?startDate=${startDate}&endDate=${endDate}`,
+                success: function(data) {
+                    fullData = data;
+                    const paginatedData = data.slice(0, itemsPerPage);
+                    generateDynamicTableProducts(paginatedData, tableDiv);
+                },
+                error: function(xhr, status, error) {
+                    showNotification('error', 'Error loading stock valuation report: ' + error);
+                    console.error(error);
+                }
+            });
+        }
+
+        const exportToExcel = () => {
+            console.log('Exporting to Excel...');
+            alert('Excel export functionality to be implemented');
+        };
+
+        const printTable = () => {
+            window.print();
+        };
+
+        const downloadPDF = () => {
+            console.log('Downloading PDF...');
+            alert('PDF download functionality to be implemented');
+        };
+
+        const applyStyles = () => {
+            $('head').append(`
+            <style>
+               @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+               @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+               .table-responsive {
+                  overflow-x: auto;
+                  margin-bottom: 1rem;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                  border-radius: 4px;
+                  padding: 15px;
+               }
+               .dynamic-table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-family: 'Roboto', sans-serif;
+                  font-size: 11px;
+               }
+               .dynamic-table th, .dynamic-table td {
+                  padding: 8px 12px;
+                  border-bottom: 1px solid #e0e0e0;
+                  text-align: left;
+               }
+               .dynamic-table th {
+                  background-color: #f8f9fa;
+                  font-weight: 700;
+                  color: #495057;
+                  text-transform: uppercase;
+               }
+               .dynamic-table tr:last-child td { border-bottom: none; }
+               .dynamic-table tr:hover { background-color: #f1f3f5; }
+               .dynamic-table .product-name { font-weight: bold; }
+               .dynamic-table .negative { color: #d32f2f; }
+               .dynamic-table .positive { color: #388e3c; }
+               .btn-group .btn {
+                  margin-right: 10px;
+               }
+               .btn-group .btn i {
+                  margin-right: 5px;
+               }
+               .pagination-wrapper {
+                  font-size: 12px;
+               }
+               .pagination-wrapper select {
+                  font-size: 12px;
+               }
+               .pagination-controls .btn {
+                  font-size: 12px;
+                  padding: 2px 8px;
+               }
+               @media print {
+                  .btn-group, .search-input, .pagination-wrapper {
+                     display: none;
+                  }
+               }
+            </style>
+         `);
+        };
+
+        $(() => {
+            $(document).on('input', '.search-input', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                filterTable(searchTerm);
+            });
+
+            $(document).on('click', '.excel-export', exportToExcel);
+            $(document).on('click', '.print-table', printTable);
+            $(document).on('click', '.download-pdf', downloadPDF);
+
+            $(document).on('change', '.rows-per-page-wrapper select', function() {
+                itemsPerPage = parseInt($(this).val());
+                currentPage = 1;
+                const paginatedData = fullData.slice(0, itemsPerPage);
+                generateDynamicTableProducts(paginatedData, 'stockValuationReportTableContainer');
+            });
+
+            $(document).on('click', '.pagination-controls button', function() {
+                if ($(this).html() === '&lt;') {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        const startIndex = (currentPage - 1) * itemsPerPage;
+                        const paginatedData = fullData.slice(startIndex, startIndex + itemsPerPage);
+                        generateDynamicTableProducts(paginatedData, 'stockValuationReportTableContainer');
+                    }
+                } else {
+                    const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        const startIndex = (currentPage - 1) * itemsPerPage;
+                        const paginatedData = fullData.slice(startIndex, startIndex + itemsPerPage);
+                        generateDynamicTableProducts(paginatedData, 'stockValuationReportTableContainer');
+                    }
+                }
+            });
+        });
+
+        function showNotification(type, message) {
+            // Implement your notification logic here
+            console.log(`${type}: ${message}`);
+        }
+    })(jQuery);
+</script>
