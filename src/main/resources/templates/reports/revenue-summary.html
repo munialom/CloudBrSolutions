@@ -1,11 +1,6 @@
-
-
-<!-- HTML structure -->
 <div id="revenueSummaryDashboard">
    <style type="text/css">
-      .stats-row {
-         margin-bottom: 10px;
-      }
+      .stats-row { margin-bottom: 20px; }
       .stats-card {
          background-color: #fff;
          border-radius: 4px;
@@ -16,39 +11,46 @@
          overflow: hidden;
       }
       .icon-box {
-         width: 100px;
+         width: 80px;
          display: flex;
          align-items: center;
          justify-content: center;
       }
       .icon-box i {
-         font-size: 40px;
+         font-size: 32px;
          color: #fff;
       }
       .stats-content {
          flex-grow: 1;
-         padding: 15px;
+         padding: 10px;
          display: flex;
          flex-direction: column;
          justify-content: center;
       }
       .stats-content h3 {
-         font-size: 24px;
+         font-size: 18px;
          margin: 0;
          line-height: 1;
       }
       .stats-content p {
-         margin: 5px 0 0;
-         font-size: 14px;
+         margin: 3px 0 0;
+         font-size: 12px;
          color: #777;
       }
-      .stats-content small {
-         font-size: 12px;
-         color: #999;
+      .dashboard-card {
+         height: 100%;
+         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
+      .card-title { font-size: 0.9rem; font-weight: bold; }
+      .large-number { font-size: 1.2rem; font-weight: bold; }
+      .progress { height: 4px; }
+      .chart-container { height: 300px; margin-bottom: 20px; }
+      #revenueSummaryDashboard {
+         max-height: 800px;
+         overflow-y: auto;
       }
    </style>
    <div class="col-md-12">
-      <!-- BEGIN panel -->
       <div class="panel text-black rounded border" data-sortable-id="index-6">
          <div class="panel-heading bg-light-200 border-bottom">
             <h4 class="panel-title">Revenue Summary</h4>
@@ -60,99 +62,54 @@
             </div>
          </div>
          <div class="panel-toolbar mb-3">
-            <div class="row">
+            <div class="card">
+               <div class="card-body">
+                  <div class="row">
+                     <div class="col-md-4">
+                        <label for="datePicker">Select Date:</label>
+                        <input type="date" id="datePicker" class="form-control">
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="panel-toolbar mb-3">
+            <div id="statsCards" class="row stats-row">
+               <!-- Stats cards will be dynamically inserted here -->
+            </div>
+         </div>
+         <div class="panel-body">
+            <div id="dataCards" class="row g-3">
+               <!-- Data cards will be dynamically inserted here -->
+            </div>
+            <div class="row g-3 mt-1">
                <div class="col-md-4">
-                  <label for="datePicker">Select Date:</label>
-                  <input type="date" id="datePicker" class="form-control">
-               </div>
-            </div>
-         </div>
-         <div class="panel-toolbar mb-0">
-            <div class="row text-center justify-content-center">
-               <div class="row stats-row">
-                  <div class="col-md-3">
-                     <div class="stats-card">
-                        <div class="icon-box" style="background-color: deeppink;">
-                           <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="stats-content">
-                           <h3 id="totalAmount">0</h3>
-                           <p>Total Amount</p>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-md-3">
-                     <div class="stats-card">
-                        <div class="icon-box" style="background-color: lightseagreen">
-                           <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stats-content">
-                           <h3 id="paidAmount">0</h3>
-                           <p>Paid Amount</p>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-md-3">
-                     <div class="stats-card">
-                        <div class="icon-box" style="background-color: deepskyblue">
-                           <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stats-content">
-                           <h3 id="pendingAmount">0</h3>
-                           <p>Pending Amount</p>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-md-3">
-                     <div class="stats-card">
-                        <div class="icon-box" style="background-color: #ff8d8a">
-                           <i class="fas fa-times-circle"></i>
-                        </div>
-                        <div class="stats-content">
-                           <h3 id="cancelledAmount">0</h3>
-                           <p>Cancelled Amount</p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="panel-body mt-0">
-            <div class="row mt-4">
-               <div class="col-md-6 mb-4">
-                  <div class="card">
+                  <div class="card dashboard-card">
                      <div class="card-body">
-                        <div id="pieChart" style="width: 100%; height: 300px;"></div>
+                        <h5 class="card-title">Revenue Distribution (Donut Chart)</h5>
+                        <div id="donutChart" class="chart-container"></div>
                      </div>
                   </div>
                </div>
-               <div class="col-md-6 mb-4">
-                  <div class="card">
+               <div class="col-md-4">
+                  <div class="card dashboard-card">
                      <div class="card-body">
-                        <div id="barChart" style="width: 100%; height: 300px;"></div>
+                        <h5 class="card-title">Transaction Distribution (Pie Chart)</h5>
+                        <div id="pieChart" class="chart-container"></div>
                      </div>
                   </div>
                </div>
-            </div>
-            <div class="row mt-4">
-               <div class="col-md-6 mb-4">
-                  <div class="card">
+               <div class="col-md-4">
+                  <div class="card dashboard-card">
                      <div class="card-body">
-                        <div id="transactionStatusChart" style="width: 100%; height: 300px;"></div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-md-6 mb-4">
-                  <div class="card">
-                     <div class="card-body">
-                        <div id="amountDistributionChart" style="width: 100%; height: 300px;"></div>
+                        <h5 class="card-title">Revenue and Profit (Combo Chart)</h5>
+                        <div id="comboChart" class="chart-container"></div>
                      </div>
                   </div>
                </div>
             </div>
          </div>
       </div>
-      <!-- END panel -->
    </div>
 </div>
 
@@ -160,20 +117,10 @@
    // Revenue Summary Dashboard Module
    const RevenueSummaryDashboard = (function() {
       // Private variables
-      let chartState = {
-         charts: {},
-         data: null
-      };
+      let data = null;
+      let chartsLoaded = false;
 
       // Private functions
-      const formatNumber = (number) => {
-         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      };
-
-      const formatCurrency = (amount) => {
-         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' }).format(amount);
-      };
-
       const fetchData = (date) => {
          return $.ajax({
             url: `/api/products-manager/revenue-summary/${date}`,
@@ -182,159 +129,216 @@
          });
       };
 
-      const updateStats = (data) => {
-         const totals = data.find(item => item['Revenue Category'] === 'TOTAL');
-         if (totals) {
-            $('#totalAmount').text(formatCurrency(parseFloat(totals['Total Amount'].replace(',', ''))));
-            $('#paidAmount').text(formatCurrency(parseFloat(totals['Paid Amount'].replace(',', ''))));
-            $('#pendingAmount').text(formatCurrency(parseFloat(totals['Pending Amount'].replace(',', ''))));
-            $('#cancelledAmount').text(formatCurrency(parseFloat(totals['Cancelled Amount'].replace(',', ''))));
-         }
+      const createStatsCard = (icon, amount, title, color) => {
+         return `
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stats-card">
+                        <div class="icon-box" style="background-color: ${color};">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3>KES ${amount}</h3>
+                            <p>${title}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
       };
 
-      const drawPieChart = (data) => {
-         const chartData = new google.visualization.DataTable();
-         chartData.addColumn('string', 'Revenue Category');
-         chartData.addColumn('number', 'Total Amount');
+      const createDataCard = (title, content) => {
+         return `
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${title}</h5>
+                            ${content}
+                        </div>
+                    </div>
+                </div>
+            `;
+      };
 
-         data.filter(item => item['Revenue Category'] !== 'TOTAL').forEach(item => {
-            chartData.addRow([item['Revenue Category'], parseFloat(item['Total Amount'].replace(',', ''))]);
+      const createCategoryCard = (category) => {
+         const totalAmount = category['Total Amount'];
+         const paidAmount = category['Paid Amount'];
+         const pendingAmount = category['Pending Amount'];
+         const profit = category['Profit'];
+         const loss = category['Loss'];
+         const profitMargin = category['Profit Margin %'];
+
+         const paidWidth = parseFloat(paidAmount) / parseFloat(totalAmount) * 100;
+         const pendingWidth = parseFloat(pendingAmount) / parseFloat(totalAmount) * 100;
+
+         return createDataCard(category['Revenue Category'], `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div>
+                        <div class="large-number">KES ${totalAmount}</div>
+                        <small class="text-muted">Total Amount</small>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <div>Paid: KES ${paidAmount}</div>
+                    <div>Pending: KES ${pendingAmount}</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: ${paidWidth}%"></div>
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: ${pendingWidth}%"></div>
+                </div>
+                <div>Profit: KES ${profit}</div>
+                <div>Loss: KES ${loss}</div>
+                <div>Profit Margin: ${profitMargin}%</div>
+            `);
+      };
+
+      const updateStatsCards = (totals) => {
+         const statsCardsHtml = `
+                ${createStatsCard('fa-dollar-sign', totals['Total Amount'], 'Total Amount', 'deeppink')}
+                ${createStatsCard('fa-check-circle', totals['Paid Amount'], 'Paid Amount', 'lightseagreen')}
+                ${createStatsCard('fa-clock', totals['Pending Amount'], 'Pending Amount', 'deepskyblue')}
+                ${createStatsCard('fa-times-circle', totals['Cancelled Amount'], 'Cancelled Amount', '#ff8d8a')}
+            `;
+         $('#statsCards').html(statsCardsHtml);
+      };
+
+      const updateDataCards = (categories) => {
+         const dataCardsHtml = categories.map(createCategoryCard).join('');
+         $('#dataCards').html(dataCardsHtml);
+      };
+
+      const drawDonutChart = (categories) => {
+         if (!window.google || !window.google.visualization) return;
+
+         const chartData = new google.visualization.DataTable();
+         chartData.addColumn('string', 'Category');
+         chartData.addColumn('number', 'Amount');
+
+         categories.forEach(category => {
+            chartData.addRow([category['Revenue Category'], parseFloat(category['Total Amount'])]);
          });
 
          const options = {
-            title: 'Revenue Category Distribution',
-            is3D: true,
-         };
-
-         chartState.charts.pieChart = new google.visualization.PieChart($('#pieChart')[0]);
-         chartState.charts.pieChart.draw(chartData, options);
-      };
-
-      const drawBarChart = (data) => {
-         const chartData = new google.visualization.DataTable();
-         chartData.addColumn('string', 'Revenue Category');
-         chartData.addColumn('number', 'Paid Amount');
-         chartData.addColumn('number', 'Pending Amount');
-
-         data.filter(item => item['Revenue Category'] !== 'TOTAL').forEach(item => {
-            chartData.addRow([
-               item['Revenue Category'],
-               parseFloat(item['Paid Amount'].replace(',', '')),
-               parseFloat(item['Pending Amount'].replace(',', ''))
-            ]);
-         });
-
-         const options = {
-            title: 'Paid vs Pending Amount by Category',
-            isStacked: true,
-            hAxis: { title: 'Amount (KES)' },
-            vAxis: { title: 'Revenue Category' },
-            legend: { position: 'top' }
-         };
-
-         chartState.charts.barChart = new google.visualization.BarChart($('#barChart')[0]);
-         chartState.charts.barChart.draw(chartData, options);
-      };
-
-      const drawTransactionStatusChart = (data) => {
-         const chartData = new google.visualization.DataTable();
-         chartData.addColumn('string', 'Transaction Status');
-         chartData.addColumn('number', 'Count');
-
-         const totals = data.find(item => item['Revenue Category'] === 'TOTAL');
-         if (totals) {
-            chartData.addRows([
-               ['Paid', totals['Paid Transactions']],
-               ['Pending', totals['Pending Transactions']],
-               ['Cancelled', totals['Cancelled Transactions']]
-            ]);
-         }
-
-         const options = {
-            title: 'Transaction Status Distribution',
             pieHole: 0.4,
-            colors: ['#4CAF50', '#FFC107', '#F44336']
+            legend: { position: 'bottom' },
+            chartArea: { width: '100%', height: '80%' }
          };
 
-         chartState.charts.transactionStatusChart = new google.visualization.PieChart($('#transactionStatusChart')[0]);
-         chartState.charts.transactionStatusChart.draw(chartData, options);
+         const chart = new google.visualization.PieChart(document.getElementById('donutChart'));
+         chart.draw(chartData, options);
       };
 
-      const drawAmountDistributionChart = (data) => {
-         const chartData = new google.visualization.DataTable();
-         chartData.addColumn('string', 'Revenue Category');
-         chartData.addColumn('number', 'Paid Amount');
-         chartData.addColumn('number', 'Pending Amount');
-         chartData.addColumn('number', 'Cancelled Amount');
+      const drawPieChart = (categories) => {
+         if (!window.google || !window.google.visualization) return;
 
-         data.filter(item => item['Revenue Category'] !== 'TOTAL').forEach(item => {
+         const chartData = new google.visualization.DataTable();
+         chartData.addColumn('string', 'Category');
+         chartData.addColumn('number', 'Transactions');
+
+         categories.forEach(category => {
+            chartData.addRow([category['Revenue Category'], parseInt(category['Total Transactions'])]);
+         });
+
+         const options = {
+            legend: { position: 'bottom' },
+            chartArea: { width: '100%', height: '80%' }
+         };
+
+         const chart = new google.visualization.PieChart(document.getElementById('pieChart'));
+         chart.draw(chartData, options);
+      };
+
+      const drawComboChart = (categories) => {
+         if (!window.google || !window.google.visualization) return;
+
+         const chartData = new google.visualization.DataTable();
+         chartData.addColumn('string', 'Category');
+         chartData.addColumn('number', 'Revenue');
+         chartData.addColumn('number', 'Profit');
+
+         categories.forEach(category => {
             chartData.addRow([
-               item['Revenue Category'],
-               parseFloat(item['Paid Amount'].replace(',', '')),
-               parseFloat(item['Pending Amount'].replace(',', '')),
-               parseFloat(item['Cancelled Amount'].replace(',', ''))
+               category['Revenue Category'],
+               parseFloat(category['Total Amount']),
+               parseFloat(category['Profit'])
             ]);
          });
 
          const options = {
-            title: 'Amount Distribution by Category',
-            isStacked: true,
-            hAxis: { title: 'Revenue Category' },
             vAxis: { title: 'Amount (KES)' },
-            colors: ['#4CAF50', '#FFC107', '#F44336']
+            hAxis: { title: 'Category' },
+            seriesType: 'bars',
+            series: { 1: { type: 'line' } },
+            legend: { position: 'bottom' },
+            chartArea: { width: '80%', height: '70%' }
          };
 
-         chartState.charts.amountDistributionChart = new google.visualization.ColumnChart($('#amountDistributionChart')[0]);
-         chartState.charts.amountDistributionChart.draw(chartData, options);
+         const chart = new google.visualization.ComboChart(document.getElementById('comboChart'));
+         chart.draw(chartData, options);
       };
 
-      const updateDashboard = (data) => {
-         chartState.data = data;
-         updateStats(data);
-         drawPieChart(data);
-         drawBarChart(data);
-         drawTransactionStatusChart(data);
-         drawAmountDistributionChart(data);
-      };
-
-      const redrawAllCharts = () => {
-         if (chartState.data) {
-            updateDashboard(chartState.data);
+      const drawCharts = () => {
+         if (data && chartsLoaded) {
+            const categories = data.filter(item => item['Revenue Category'] !== 'TOTAL');
+            drawDonutChart(categories);
+            drawPieChart(categories);
+            drawComboChart(categories);
          }
+      };
+
+      const defaultData = {
+         'Revenue Category': 'TOTAL',
+         'Total Amount': '0.00',
+         'Paid Amount': '0.00',
+         'Pending Amount': '0.00',
+         'Cancelled Amount': '0.00',
+         'Total Transactions': '0',
+         'Profit': '0.00',
+         'Loss': '0.00',
+         'Profit Margin %': '0.00'
+      };
+
+      const updateDashboard = (dashboardData) => {
+         data = dashboardData || [defaultData];
+
+         const totals = data.find(item => item['Revenue Category'] === 'TOTAL') || defaultData;
+         const categories = data.filter(item => item['Revenue Category'] !== 'TOTAL');
+
+         updateStatsCards(totals);
+         updateDataCards(categories.length ? categories : [defaultData]);
+         drawCharts();
       };
 
       // Public methods
       return {
          init: function() {
-            google.charts.load('current', {'packages':['corechart']});
-            google.charts.setOnLoadCallback(() => {
-               const datePicker = $('#datePicker');
-               const today = new Date().toISOString().split('T')[0];
-               datePicker.val(today);
+            const datePicker = $('#datePicker');
+            const today = new Date().toISOString().split('T')[0];
+            datePicker.val(today);
 
-               this.loadData(today);
+            // Show default stats cards immediately
+            updateDashboard([defaultData]);
 
-               datePicker.on('change', (e) => {
-                  this.loadData(e.target.value);
+            // Load Google Charts
+            $.getScript('https://www.gstatic.com/charts/loader.js', function() {
+               google.charts.load('current', {'packages':['corechart']});
+               google.charts.setOnLoadCallback(() => {
+                  chartsLoaded = true;
+                  RevenueSummaryDashboard.loadData(today);
                });
+            });
 
-               $(window).on('resize', redrawAllCharts);
-
-               document.addEventListener('visibilitychange', () => {
-                  if (!document.hidden) {
-                     redrawAllCharts();
-                  }
-               });
+            datePicker.on('change', (e) => {
+               this.loadData(e.target.value);
             });
          },
 
          loadData: function(date) {
             fetchData(date)
-                    .done((data) => {
-                       updateDashboard(data);
+                    .done((responseData) => {
+                       updateDashboard(responseData);
                     })
                     .fail((xhr, status, error) => {
                        console.error('Error fetching data:', error);
+                       updateDashboard(null); // Update with default values on error
                     });
          },
 
