@@ -140,4 +140,11 @@ public class CustomManagerProductService {
 
         return customProductManagerRepository.GetStockValuationReport(startDate,endDate);
     }
+
+
+    public List<Map<String, Object>> GetProductStockTransactions(int productID) {
+
+        return customProductManagerRepository.GetProductStockTransactions(productID);
+    }
+
 }

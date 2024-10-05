@@ -1,0 +1,341 @@
+<!-- HTML structure -->
+<div th:fragment="products">
+    <!-- Row to align the content -->
+    <div class="row">
+        <!-- Column to control width and responsiveness -->
+        <div class="col-md-12">
+            <!-- Card component with padding -->
+            <div class="card p-4">
+                <!-- Content inside the card -->
+                <div id="table_div_product_info">
+                    <!-- Your dynamic content like tables or charts will go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        ($ => {
+            let fullData = []; // Store the full dataset
+            let filteredData = []; // Store the filtered dataset
+            let currentPage = 1;
+            let itemsPerPage = 10; // Default to 10 items per page
+
+            const generateDynamicTableProducts = (data, targetElementId, isTransactionsView = false) => {
+                const $target = $(`#${targetElementId}`);
+                const $wrapper = $('<div>').addClass('table-responsive');
+
+                if (isTransactionsView) {
+                    $wrapper.append(
+                        $('<button>').addClass('btn btn-primary mb-3 back-to-products')
+                            .html('<i class="fas fa-arrow-left mr-2"></i> Back to Products')
+                    );
+                } else {
+                    const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+                    $buttonGroup.append(
+                        $('<button>').addClass('btn btn-success excel-export')
+                            .html('<i class="fas fa-file-excel mr-2"></i> Excel'),
+                        $('<button>').addClass('btn btn-danger print-table')
+                            .html('<i class="fas fa-print mr-2"></i> Print'),
+                        $('<button>').addClass('btn btn-warning download-pdf')
+                            .html('<i class="fas fa-file-pdf mr-2"></i> Download')
+                    );
+                    $wrapper.append($buttonGroup);
+
+                    // Add search input
+                    const $searchInput = $('<input>')
+                        .attr('type', 'text')
+                        .attr('placeholder', 'Search products...')
+                        .addClass('form-control mb-3 search-input');
+                    $wrapper.append($searchInput);
+                }
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    $wrapper.append('<p>No data available</p>');
+                    $target.empty().append($wrapper);
+                    applyStyles();
+                    return;
+                }
+
+                const headers = Object.keys(data[0]);
+                const $table = $('<table>').addClass('dynamic-table');
+                const $thead = $('<thead>').appendTo($table);
+                const $tbody = $('<tbody>').appendTo($table);
+
+                const $headerRow = $('<tr>');
+                headers.forEach(h => $headerRow.append($('<th>').text(h)));
+                if (!isTransactionsView) {
+                    $headerRow.append($('<th>').text('Actions'));
+                }
+                $headerRow.appendTo($thead);
+
+                data.forEach(row => {
+                    const $dataRow = $('<tr>');
+                    headers.forEach(h => {
+                        const val = row[h];
+                        $dataRow.append($('<td>').text(val !== null && val !== undefined ? val : 'N/A'));
+                    });
+                    if (!isTransactionsView) {
+                        $dataRow.append(
+                            $('<td>').addClass('action-buttons').append(
+                                $('<button>').addClass('btn btn-sm btn-outline-info edit-product')
+                                    .html('<i class="fas fa-edit"></i>')
+                                    .attr('data-product-id', row['Product ID']),
+                                $('<button>').addClass('btn btn-sm btn-outline-danger delete-product')
+                                    .html('<i class="fas fa-trash"></i>')
+                                    .attr('data-product-id', row['Product ID']),
+                                $('<button>').addClass('btn btn-sm btn-outline-secondary audit-trail')
+                                    .html('<i class="fas fa-history"></i>')
+                                    .attr('data-product-id', row['Product ID'])
+                            )
+                        );
+                    }
+                    $dataRow.appendTo($tbody);
+                });
+
+                $wrapper.append($table);
+
+                if (!isTransactionsView) {
+                    // Add pagination footer
+                    const $paginationWrapper = $('<div>').addClass('pagination-wrapper d-flex justify-content-between align-items-center mt-3');
+
+                    // Rows per page dropdown
+                    const $rowsPerPageWrapper = $('<div>').addClass('rows-per-page-wrapper d-flex align-items-center');
+                    $rowsPerPageWrapper.append($('<span>').text('Rows per page:'));
+                    const $rowsPerPageSelect = $('<select>').addClass('form-control form-control-sm ml-2').css('width', 'auto');
+                    [10, 20, 50, 100].forEach(value => {
+                        $rowsPerPageSelect.append($('<option>').attr('value', value).text(value));
+                    });
+                    $rowsPerPageWrapper.append($rowsPerPageSelect);
+                    $paginationWrapper.append($rowsPerPageWrapper);
+
+                    // Pagination info and controls
+                    const $paginationControls = $('<div>').addClass('pagination-controls d-flex align-items-center');
+                    $paginationControls.append($('<span>').addClass('pagination-info mr-3'));
+                    const $paginationButtons = $('<div>').addClass('btn-group');
+                    $paginationButtons.append(
+                        $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&lt;'),
+                        $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&gt;')
+                    );
+                    $paginationControls.append($paginationButtons);
+                    $paginationWrapper.append($paginationControls);
+
+                    $wrapper.append($paginationWrapper);
+                }
+
+                $target.empty().append($wrapper);
+                if (!isTransactionsView) {
+                    updatePagination();
+                }
+                applyStyles();
+            };
+
+            const updatePagination = () => {
+                const totalItems = filteredData.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                const startItem = (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+                $('.pagination-info').text(`${startItem}-${endItem} of ${totalItems}`);
+
+                $('.pagination-controls button').first().prop('disabled', currentPage === 1);
+                $('.pagination-controls button').last().prop('disabled', currentPage === totalPages);
+            };
+
+            const filterAndPaginateData = (searchTerm = '') => {
+                filteredData = fullData.filter(item =>
+                    Object.values(item).some(val =>
+                        String(val).toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                );
+
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedData = filteredData.slice(startIndex, endIndex);
+
+                generateDynamicTableProducts(paginatedData, 'table_div_product_info');
+            };
+
+            const fetchAndDisplayProductInfo = () => {
+                const tableDiv = 'table_div_product_info';
+                $(`#${tableDiv}`).html('<p>Loading data...</p>');
+
+                const apiUrl = '/api/products-manager/products';
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: data => {
+                        fullData = data; // Store the full dataset
+                        filteredData = [...fullData]; // Initialize filtered data
+                        filterAndPaginateData();
+                    },
+                    error: (_, textStatus, errorThrown) => {
+                        console.error('Error fetching data:', textStatus, errorThrown);
+                        $(`#${tableDiv}`).html('<p>Error loading data. Please try again later.</p>');
+                    }
+                });
+            };
+
+            const fetchAndDisplayTransactions = (productId) => {
+                const tableDiv = 'table_div_product_info';
+                $(`#${tableDiv}`).html('<p>Loading transaction data...</p>');
+
+                const apiUrl = `/api/products-manager/product-stock-transactions/${productId}`;
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: data => generateDynamicTableProducts(data, tableDiv, true),
+                    error: (xhr, textStatus, errorThrown) => {
+                        console.error('Error fetching transaction data:', textStatus, errorThrown);
+                        const $wrapper = $('<div>').addClass('table-responsive');
+                        $wrapper.append(
+                            $('<button>').addClass('btn btn-primary mb-3 back-to-products')
+                                .html('<i class="fas fa-arrow-left mr-2"></i> Back to Products')
+                        );
+                        $wrapper.append(`<p>Error loading transaction data. Please try again later. (${xhr.status}: ${xhr.statusText})</p>`);
+                        $(`#${tableDiv}`).empty().append($wrapper);
+                        applyStyles();
+                    }
+                });
+            };
+
+            const exportToExcel = () => {
+                // Implement Excel export functionality here
+                console.log('Exporting to Excel...');
+                alert('Excel export functionality to be implemented');
+            };
+
+            const printTable = () => {
+                window.print();
+            };
+
+            const downloadPDF = () => {
+                // Implement PDF download functionality here
+                console.log('Downloading PDF...');
+                alert('PDF download functionality to be implemented');
+            };
+
+            const applyStyles = () => {
+                $('head').append(`
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+          @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+          .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 15px;
+          }
+          .dynamic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Roboto', sans-serif;
+            font-size: 11px;
+          }
+          .dynamic-table th, .dynamic-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+          }
+          .dynamic-table th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+            color: #495057;
+            text-transform: uppercase;
+          }
+          .dynamic-table tr:last-child td { border-bottom: none; }
+          .dynamic-table tr:hover { background-color: #f1f3f5; }
+          .action-buttons {
+            white-space: nowrap;
+          }
+          .action-buttons .btn {
+            padding: 2px 4px;
+            font-size: 10px;
+            margin-right: 2px;
+          }
+          .action-buttons .btn i { margin-right: 0; }
+          .btn-group .btn {
+            margin-right: 10px;
+          }
+          .btn-group .btn i {
+            margin-right: 5px;
+          }
+          .pagination-wrapper {
+            font-size: 12px;
+          }
+          .pagination-wrapper select {
+            font-size: 12px;
+          }
+          .pagination-controls .btn {
+            font-size: 12px;
+            padding: 2px 8px;
+          }
+          @media print {
+            .btn-group, .search-input, .pagination-wrapper {
+              display: none;
+            }
+          }
+        </style>
+      `);
+            };
+
+            $(() => {
+                fetchAndDisplayProductInfo();
+
+                $(document).on('input', '.search-input', function() {
+                    const searchTerm = $(this).val();
+                    currentPage = 1; // Reset to first page when searching
+                    filterAndPaginateData(searchTerm);
+                });
+
+                $(document).on('click', '.excel-export', exportToExcel);
+                $(document).on('click', '.print-table', printTable);
+                $(document).on('click', '.download-pdf', downloadPDF);
+
+                $(document).on('click', '.edit-product', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Editing product ID:', productId);
+                    // Implement edit functionality here
+                });
+
+                $(document).on('click', '.delete-product', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Deleting product ID:', productId);
+                    // Implement delete functionality here
+                });
+
+                $(document).on('click', '.audit-trail', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Viewing audit trail for product ID:', productId);
+                    fetchAndDisplayTransactions(productId);
+                });
+
+                $(document).on('click', '.back-to-products', function() {
+                    fetchAndDisplayProductInfo();
+                });
+
+                $(document).on('change', '.rows-per-page-wrapper select', function() {
+                    itemsPerPage = parseInt($(this).val());
+                    currentPage = 1; // Reset to first page when changing items per page
+                    filterAndPaginateData($('.search-input').val());
+                });
+
+                $(document).on('click', '.pagination-controls button', function() {
+                    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                    if ($(this).html() === '&lt;' && currentPage > 1) {
+                        currentPage--;
+                    } else if ($(this).html() === '&gt;' && currentPage < totalPages) {
+                        currentPage++;
+                    }
+                    filterAndPaginateData($('.search-input').val());
+                });
+            });
+        })(jQuery);
+    </script>
+</div>

@@ -17,6 +17,13 @@ public class ProductFlowController {
         return "products/productsControlPanel";
     }
 
+    @GetMapping("audit-trail")
+    public String auditTrail() {
+
+        return "products/my-audit-trail-data";
+    }
+
+
 
     @GetMapping("current-list")
     public String updatedDataList() {

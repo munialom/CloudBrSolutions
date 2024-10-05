@@ -61,4 +61,5 @@ public interface CustomProductManagerRepository {
     List<Map<String, Object>>GetStockValuationReportMeals(LocalDate startDate, LocalDate endDate);
 
     List<Map<String, Object>>GetStockReportStores(LocalDate startDate, LocalDate endDate);
+    List<Map<String, Object>>GetProductStockTransactions(int productID);
 }

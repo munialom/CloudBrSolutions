@@ -155,4 +155,10 @@ public class CustomProductManagerRestController {
   return ResponseEntity.ok(report);
  }
 
+ @GetMapping("/product-stock-transactions/{productID}")
+ public ResponseEntity<List<Map<String, Object>>> getProductStockTransactions(@PathVariable int productID) {
+  List<Map<String, Object>> transactions = customManagerProductService.GetProductStockTransactions(productID);
+  return ResponseEntity.ok(transactions);
+ }
+
 }

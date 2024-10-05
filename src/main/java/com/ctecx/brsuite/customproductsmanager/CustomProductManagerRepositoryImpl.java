@@ -199,4 +199,10 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
         return jdbcTemplate.queryForList("CALL GetStockReportStores(?,?)",startDate, endDate);
     }
 
+    @Override
+    public List<Map<String, Object>> GetProductStockTransactions(int productID) {
+
+        return jdbcTemplate.queryForList("CALL GetProductStockTransactions(?)",productID);
+    }
+
 }
