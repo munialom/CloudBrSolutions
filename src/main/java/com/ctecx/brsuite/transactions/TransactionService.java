@@ -13,7 +13,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
-
     private final TransactionRepository transactionRepository;
     private final CustomManagerProductService customManagerProductService;
 
@@ -23,38 +22,26 @@ public class TransactionService {
         BigDecimal totalAmount = dto.getTotalAmount();
         BigDecimal receivedAmount = dto.getReceivedAmount();
         List<String> paymentModes = dto.getPaymentModes();
+        BigDecimal changeOut = dto.getChangeOut();
 
         // Validate input
-        if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Total amount must be greater than zero");
-        }
-        if (receivedAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Received amount must be greater than zero");
-        }
-        if (receivedAmount.compareTo(totalAmount) > 0) {
-            throw new IllegalArgumentException("Received amount cannot exceed total amount");
-        }
-        if (paymentModes.isEmpty()) {
-            throw new IllegalArgumentException("At least one payment mode must be selected");
-        }
+        validateSaleTransaction(totalAmount, receivedAmount, paymentModes);
 
-        BigDecimal remainingTotal = totalAmount;
-        BigDecimal remainingReceived = receivedAmount;
+        BigDecimal actualReceivedAmount = receivedAmount.subtract(changeOut);
 
         // Process CASH first if it's a selected payment mode
         if (paymentModes.contains("CASH")) {
-            BigDecimal cashAmount = remainingReceived;
+            BigDecimal cashAmount = actualReceivedAmount.min(totalAmount);
             transactions.add(createTransaction(dto, "CASH", cashAmount));
-            remainingTotal = remainingTotal.subtract(cashAmount);
-            remainingReceived = BigDecimal.ZERO;
+            totalAmount = totalAmount.subtract(cashAmount);
         }
 
         // Distribute remaining total amount to other payment modes
         for (String mode : paymentModes) {
-            if (!mode.equals("CASH") && remainingTotal.compareTo(BigDecimal.ZERO) > 0) {
-                BigDecimal amount = remainingTotal;
+            if (!mode.equals("CASH") && totalAmount.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal amount = totalAmount;
                 transactions.add(createTransaction(dto, mode, amount));
-                remainingTotal = BigDecimal.ZERO;
+                totalAmount = BigDecimal.ZERO;
                 break; // Only one additional transaction needed
             }
         }
@@ -62,8 +49,24 @@ public class TransactionService {
         if (transactions.isEmpty()) {
             throw new IllegalArgumentException("No valid payment amounts calculated");
         }
-         int updatedCount=customManagerProductService.updateStatus(dto.getSerialNumber());
+
+        int updatedCount = customManagerProductService.updateStatus(dto.getSerialNumber());
         return transactionRepository.saveAll(transactions);
+    }
+
+    private void validateSaleTransaction(BigDecimal totalAmount, BigDecimal receivedAmount, List<String> paymentModes) {
+        if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Total amount must be greater than zero");
+        }
+        if (receivedAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Received amount must be greater than zero");
+        }
+        if (receivedAmount.compareTo(totalAmount) < 0) {
+            throw new IllegalArgumentException("Received amount cannot be less than total amount");
+        }
+        if (paymentModes.isEmpty()) {
+            throw new IllegalArgumentException("At least one payment mode must be selected");
+        }
     }
 
     private Transaction createTransaction(SaleTransactionDTO dto, String paymentMode, BigDecimal amount) {
@@ -74,7 +77,7 @@ public class TransactionService {
         transaction.setDebit(BigDecimal.ZERO);
         transaction.setDescription(dto.getDescription());
         transaction.setStatus("COMPLETED");
-        transaction.setAccountName("Sales Account"); // This should be set based on your business logic
+        transaction.setAccountName("Sales Account");
         transaction.setPaymentMode(paymentMode);
         transaction.setModule("SALES");
         transaction.setRef(dto.getSerialNumber());

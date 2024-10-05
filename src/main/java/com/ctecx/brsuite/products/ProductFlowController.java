@@ -24,6 +24,20 @@ public class ProductFlowController {
         return "products/my-products-list-data";
     }
 
+
+    @GetMapping("stock-levels")
+    public String stockLevels() {
+
+        return "products/stock-levels";
+    }
+
+
+    @GetMapping("below-stock")
+    public String belowStockLevels() {
+
+        return "products/below-stock-levels";
+    }
+
     @GetMapping("history-data")
     public String allHistoryDataList() {
 

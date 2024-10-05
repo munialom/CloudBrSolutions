@@ -76,14 +76,6 @@ public class StockRestController {
 
 
 
-    @PostMapping("/sales")
-    public ResponseEntity<Map<String, String>> createSales(@RequestBody SalesStockDTO salesStockDTO) {
-        String transactionId = salesService.createSalesWaiters(salesStockDTO);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Sales Transaction Saved successfully");
-        response.put("transactionId", transactionId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
 
     @PostMapping("/counter-sales")

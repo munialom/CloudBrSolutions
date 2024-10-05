@@ -20,6 +20,15 @@ public class CustomProductService {
     }
 
 
+    public List<Map<String, Object>> GetBelowLowStockLevels() {
+        return productRepository.GetBelowLowStockLevels();
+    }
+
+
+    public List<Map<String, Object>> GetLowStockLevels() {
+        return productRepository.GetLowStockLevels();
+    }
+
 
     public Page<ProductSaleDTO> salesByProductNameAndCode(String searchKey, int pageNumber, int pageSize) {
         List<Map<String, Object>> results = productRepository.searchProductsWithPositiveStock(

@@ -7,6 +7,8 @@ import com.ctecx.brsuite.products.Product;
 import com.ctecx.brsuite.products.ProductRepository;
 import com.ctecx.brsuite.transactions.OrderState;
 import com.ctecx.brsuite.transactions.PaymentState;
+import com.ctecx.brsuite.transactions.SaleTransactionDTO;
+import com.ctecx.brsuite.transactions.TransactionService;
 import com.ctecx.brsuite.util.SalesDateTimeManager;
 import com.ctecx.brsuite.warehouse.StoreService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,44 +35,90 @@ public class SalesService {
     private final SalesDateTimeManager salesDateTimeManager;
     private final TransactionTemplate transactionTemplate;
     private final CustomManagerProductService customManagerProductService;
-
     private final StoreService storeService;
-
-
+    private final TransactionService transactionService;
 
     @Transactional
     public String createCounterSales(SalesStockDTO salesStockDTO) {
-
         String sn = generateUniqueSerialNumber();
-        String orderNumber=generateNewOrderNumber();
+        String orderNumber = generateNewOrderNumber();
 
-        salesStockDTO.saleStocks.forEach(saleStock -> {
+        BigDecimal totalAmount = salesStockDTO.getTotalAmount();
+        BigDecimal receivedAmount = salesStockDTO.getAmountPaid();
+        BigDecimal changeOut = calculateChangeOut(totalAmount, receivedAmount);
+
+        List<StockTransaction> stockTransactions = new ArrayList<>();
+        for (SaleStock saleStock : salesStockDTO.getSaleStocks()) {
             Product product = productRepository.findByProductCode(saleStock.getProductCode());
+            StockTransaction stockTransaction = createStockTransaction(saleStock, product, sn, orderNumber, salesStockDTO, changeOut);
+            stockTransactions.add(stockTransaction);
+        }
+        stockTransactionRepository.saveAll(stockTransactions);
 
-            StockTransaction stockTransaction = createStockTransaction(saleStock, product, sn,orderNumber, salesStockDTO);
-
-            stockTransactionRepository.save(stockTransaction);
-        });
+        // Create and process financial transactions
+        SaleTransactionDTO saleTransactionDTO = createSaleTransactionDTO(salesStockDTO, sn, changeOut);
+        transactionService.processSaleTransaction(saleTransactionDTO);
 
         return orderNumber;
     }
 
+    private BigDecimal calculateChangeOut(BigDecimal totalAmount, BigDecimal receivedAmount) {
+        return receivedAmount.subtract(totalAmount).max(BigDecimal.ZERO);
+    }
 
-   @Transactional
-    public String createSalesWaiters(SalesStockDTO salesStockDTO) {
+    private SaleTransactionDTO createSaleTransactionDTO(SalesStockDTO salesStockDTO, String serialNumber, BigDecimal changeOut) {
+        SaleTransactionDTO dto = new SaleTransactionDTO();
+        dto.setSerialNumber(serialNumber);
+        dto.setTotalAmount(salesStockDTO.getTotalAmount());
+        dto.setReceivedAmount(salesStockDTO.getAmountPaid());
+        dto.setPaymentModes(salesStockDTO.getPayMode());
+        dto.setDescription("Counter Sale");
+        dto.setChangeOut(changeOut);
+        return dto;
+    }
 
-        String sn = generateUniqueSerialNumber();
-        String orderNumber=generateNewOrderNumber();
+    private StockTransaction createStockTransaction(SaleStock saleStock, Product product, String sn, String orderNumber, SalesStockDTO salesStockDTO, BigDecimal changeOut) {
+        StockTransaction stockTransaction = new StockTransaction();
+        ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
+        LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
 
-        salesStockDTO.saleStocks.forEach(saleStock -> {
-            Product product = productRepository.findProductById(saleStock.getProductId());
+        stockTransaction.setProductCode(product.getProductCode());
+        stockTransaction.setProductName(product.getProductName());
+        stockTransaction.setTransactionDate(salesDate);
+        stockTransaction.setProduct(product);
+        stockTransaction.setModule("SALES");
+        stockTransaction.setSubModule("CASH SALE");
+        stockTransaction.setStockIn(0);
+        stockTransaction.setRevenue(product.getRevenue());
+        stockTransaction.setRevenue_code(product.getRevenue().getRevenueName());
 
-            StockTransaction stockTransaction = createStockTransaction(saleStock, product, sn,orderNumber, salesStockDTO);
+        Optional<Customer> optionalCustomer = Optional.ofNullable(customerService.getCustomerById(salesStockDTO.getCustomerId()));
+        optionalCustomer.ifPresent(stockTransaction::setCustomer);
 
-            stockTransactionRepository.save(stockTransaction);
-        });
+        stockTransaction.setStockOut(saleStock.getQty());
+        stockTransaction.setDescription("Stock Sale for " + product.getProductName());
+        stockTransaction.setStatus("Active");
 
-        return orderNumber;
+        if (salesStockDTO.isAddItems()) {
+            stockTransaction.setSerialNumber(salesStockDTO.getExistingSerialNumber());
+        } else {
+            stockTransaction.setSerialNumber(sn);
+        }
+
+        stockTransaction.setProductCost(product.getProductCost());
+        stockTransaction.setProductSalePrice(product.getProductPrice());
+        stockTransaction.setDiscount(saleStock.getDiscount());
+        stockTransaction.setTax(saleStock.getTax());
+        stockTransaction.setNetTax(saleStock.getNetTax());
+        stockTransaction.setSubtotal(saleStock.getSubtotal());
+        stockTransaction.setChangeOut(changeOut);
+        stockTransaction.setPaymentState(PaymentState.PENDING);
+        stockTransaction.setOrderState(OrderState.OPEN);
+        stockTransaction.setTransactionDate(salesDate);
+        stockTransaction.setStore(storeService.getDefaultCounterStore());
+        stockTransaction.setOrderNumber(orderNumber);
+
+        return stockTransaction;
     }
 
 
@@ -84,7 +133,7 @@ public class SalesService {
         return serialNumber;
     }
 
-    private StockTransaction createStockTransaction(SaleStock saleStock, Product product, String sn,String oderNumber, SalesStockDTO salesStockDTO) {
+/*    private StockTransaction createStockTransaction(SaleStock saleStock, Product product, String sn,String oderNumber, SalesStockDTO salesStockDTO) {
         StockTransaction stockTransaction = new StockTransaction();
         ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
         LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
@@ -92,7 +141,7 @@ public class SalesService {
         System.out.println("Date"+salesDate);
         log.info("Processing sale at {} for sales date {}", transactionDateTime, salesDate);
 
-        BigDecimal changeOut = salesStockDTO.calculateChangeOut();
+
 
         stockTransaction.setProductCode(product.getProductCode());
         stockTransaction.setProductName(product.getProductName());
@@ -134,10 +183,7 @@ public class SalesService {
         stockTransaction.setOrderNumber(oderNumber);
 
         return stockTransaction;
-    }
-
-
-
+    }*/
 
 
 

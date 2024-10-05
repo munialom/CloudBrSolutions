@@ -1,0 +1,292 @@
+
+<!-- HTML structure -->
+<div th:fragment="products">
+    <!-- Row to align the content -->
+    <div class="row">
+        <!-- Column to control width and responsiveness -->
+        <div class="col-md-12">
+            <!-- Card component with padding -->
+            <div class="card p-4">
+                <!-- Content inside the card -->
+                <div id="table_div_product_info">
+                    <!-- Your dynamic content like tables or charts will go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        ($ => {
+            let fullData = []; // Store the full dataset
+            let currentPage = 1;
+            let itemsPerPage = 10; // Default to 10 items per page
+
+            const generateDynamicTableProducts = (data, targetElementId) => {
+                const $target = $(`#${targetElementId}`);
+                const $wrapper = $('<div>').addClass('table-responsive');
+
+                const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+                $buttonGroup.append(
+                    $('<button>').addClass('btn btn-success excel-export')
+                        .html('<i class="fas fa-file-excel mr-2"></i> Excel'),
+                    $('<button>').addClass('btn btn-danger print-table')
+                        .html('<i class="fas fa-print mr-2"></i> Print'),
+                    $('<button>').addClass('btn btn-warning download-pdf')
+                        .html('<i class="fas fa-file-pdf mr-2"></i> Download')
+                );
+                $wrapper.append($buttonGroup);
+
+                // Add search input
+                const $searchInput = $('<input>')
+                    .attr('type', 'text')
+                    .attr('placeholder', 'Search products...')
+                    .addClass('form-control mb-3 search-input');
+                $wrapper.append($searchInput);
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    $wrapper.append('<p>No data available</p>');
+                    $target.empty().append($wrapper);
+                    applyStyles();
+                    return;
+                }
+
+                const headers = Object.keys(data[0]);
+                const $table = $('<table>').addClass('dynamic-table');
+                const $thead = $('<thead>').appendTo($table);
+                const $tbody = $('<tbody>').appendTo($table);
+
+                const $headerRow = $('<tr>');
+                headers.forEach(h => $headerRow.append($('<th>').text(h)));
+                $headerRow.append($('<th>').text('Actions'));
+                $headerRow.appendTo($thead);
+
+                data.forEach(row => {
+                    const $dataRow = $('<tr>');
+                    headers.forEach(h => {
+                        const val = row[h];
+                        $dataRow.append($('<td>').text(val !== null && val !== undefined ? val : 'N/A'));
+                    });
+                    $dataRow.append(
+                        $('<td>').addClass('action-buttons').append(
+                            $('<button>').addClass('btn btn-sm btn-outline-info edit-product')
+                                .html('<i class="fas fa-edit"></i>')
+                                .attr('data-product-id', row['Product ID']),
+                            $('<button>').addClass('btn btn-sm btn-outline-danger delete-product')
+                                .html('<i class="fas fa-trash"></i>')
+                                .attr('data-product-id', row['Product ID'])
+                        )
+                    );
+                    $dataRow.appendTo($tbody);
+                });
+
+                $wrapper.append($table);
+
+                // Add pagination footer
+                const $paginationWrapper = $('<div>').addClass('pagination-wrapper d-flex justify-content-between align-items-center mt-3');
+
+                // Rows per page dropdown
+                const $rowsPerPageWrapper = $('<div>').addClass('rows-per-page-wrapper d-flex align-items-center');
+                $rowsPerPageWrapper.append($('<span>').text('Rows per page:'));
+                const $rowsPerPageSelect = $('<select>').addClass('form-control form-control-sm ml-2').css('width', 'auto');
+                [10, 20, 50, 100].forEach(value => {
+                    $rowsPerPageSelect.append($('<option>').attr('value', value).text(value));
+                });
+                $rowsPerPageWrapper.append($rowsPerPageSelect);
+                $paginationWrapper.append($rowsPerPageWrapper);
+
+                // Pagination info and controls
+                const $paginationControls = $('<div>').addClass('pagination-controls d-flex align-items-center');
+                $paginationControls.append($('<span>').addClass('pagination-info mr-3'));
+                const $paginationButtons = $('<div>').addClass('btn-group');
+                $paginationButtons.append(
+                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&lt;'),
+                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&gt;')
+                );
+                $paginationControls.append($paginationButtons);
+                $paginationWrapper.append($paginationControls);
+
+                $wrapper.append($paginationWrapper);
+                $target.empty().append($wrapper);
+                updatePagination();
+                applyStyles();
+            };
+
+            const updatePagination = () => {
+                const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                const startItem = (currentPage - 1) * itemsPerPage + 1;
+                const endItem = Math.min(currentPage * itemsPerPage, fullData.length);
+
+                $('.pagination-info').text(`${startItem}-${endItem} of ${fullData.length}`);
+
+                $('.pagination-controls button').first().prop('disabled', currentPage === 1);
+                $('.pagination-controls button').last().prop('disabled', currentPage === totalPages);
+            };
+
+            const filterTable = (searchTerm) => {
+                const $rows = $('.dynamic-table tbody tr');
+                $rows.each(function() {
+                    const $row = $(this);
+                    const text = $row.text().toLowerCase();
+                    if (text.indexOf(searchTerm) === -1) {
+                        $row.hide();
+                    } else {
+                        $row.show();
+                    }
+                });
+            };
+
+            const fetchAndDisplayProductInfo = (page = 1) => {
+                const tableDiv = 'table_div_product_info';
+                $(`#${tableDiv}`).html('<p>Loading data...</p>');
+
+                const apiUrl = '/api-bulk/below-low-stock';
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    success: data => {
+                        fullData = data; // Store the full dataset
+                        const startIndex = (page - 1) * itemsPerPage;
+                        const endIndex = startIndex + itemsPerPage;
+                        const paginatedData = data.slice(startIndex, endIndex);
+                        generateDynamicTableProducts(paginatedData, tableDiv);
+                    },
+                    error: (_, textStatus, errorThrown) => {
+                        console.error('Error fetching data:', textStatus, errorThrown);
+                        $(`#${tableDiv}`).html('<p>Error loading data. Please try again later.</p>');
+                    }
+                });
+            };
+
+            const exportToExcel = () => {
+                // Implement Excel export functionality here
+                console.log('Exporting to Excel...');
+                alert('Excel export functionality to be implemented');
+            };
+
+            const printTable = () => {
+                window.print();
+            };
+
+            const downloadPDF = () => {
+                // Implement PDF download functionality here
+                console.log('Downloading PDF...');
+                alert('PDF download functionality to be implemented');
+            };
+
+            const applyStyles = () => {
+                $('head').append(`
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+          @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+          .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 15px;
+          }
+          .dynamic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Roboto', sans-serif;
+            font-size: 11px;
+          }
+          .dynamic-table th, .dynamic-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+          }
+          .dynamic-table th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+            color: #495057;
+            text-transform: uppercase;
+          }
+          .dynamic-table tr:last-child td { border-bottom: none; }
+          .dynamic-table tr:hover { background-color: #f1f3f5; }
+          .action-buttons {
+            white-space: nowrap;
+          }
+          .action-buttons .btn {
+            padding: 2px 4px;
+            font-size: 10px;
+            margin-right: 2px;
+          }
+          .action-buttons .btn i { margin-right: 0; }
+          .btn-group .btn {
+            margin-right: 10px;
+          }
+          .btn-group .btn i {
+            margin-right: 5px;
+          }
+          .pagination-wrapper {
+            font-size: 12px;
+          }
+          .pagination-wrapper select {
+            font-size: 12px;
+          }
+          .pagination-controls .btn {
+            font-size: 12px;
+            padding: 2px 8px;
+          }
+          @media print {
+            .btn-group, .search-input, .pagination-wrapper {
+              display: none;
+            }
+          }
+        </style>
+      `);
+            };
+
+            $(() => {
+                fetchAndDisplayProductInfo();
+
+                $(document).on('input', '.search-input', function() {
+                    const searchTerm = $(this).val().toLowerCase();
+                    filterTable(searchTerm);
+                });
+
+                $(document).on('click', '.excel-export', exportToExcel);
+                $(document).on('click', '.print-table', printTable);
+                $(document).on('click', '.download-pdf', downloadPDF);
+
+                $(document).on('click', '.edit-product', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Editing product ID:', productId);
+                    // Implement edit functionality here
+                });
+
+                $(document).on('click', '.delete-product', function() {
+                    const productId = $(this).data('product-id');
+                    console.log('Deleting product ID:', productId);
+                    // Implement delete functionality here
+                });
+
+                $(document).on('change', '.rows-per-page-wrapper select', function() {
+                    itemsPerPage = parseInt($(this).val());
+                    currentPage = 1;
+                    fetchAndDisplayProductInfo(currentPage);
+                });
+
+                $(document).on('click', '.pagination-controls button', function() {
+                    if ($(this).html() === '&lt;') {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            fetchAndDisplayProductInfo(currentPage);
+                        }
+                    } else {
+                        const totalPages = Math.ceil(fullData.length / itemsPerPage);
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            fetchAndDisplayProductInfo(currentPage);
+                        }
+                    }
+                });
+            });
+        })(jQuery);
+    </script>
+</div>
+

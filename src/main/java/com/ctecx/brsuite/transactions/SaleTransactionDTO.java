@@ -12,5 +12,6 @@ public class SaleTransactionDTO {
     private BigDecimal totalAmount;
     private BigDecimal receivedAmount;
     private List<String> paymentModes;
+    private BigDecimal changeOut;
     private String description;
 }
