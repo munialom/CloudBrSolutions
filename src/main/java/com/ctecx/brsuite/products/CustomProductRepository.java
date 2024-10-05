@@ -14,5 +14,5 @@ public interface CustomProductRepository {
     List<Map<String, Object>> GetBelowLowStockLevels();
     List<Map<String, Object>> GetLowStockLevels ();
 
-    List<Map<String, Object>> search_products_by_code(String productCode);
+
 }
