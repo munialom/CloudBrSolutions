@@ -236,7 +236,7 @@
                                         </div>
                                     </div>
                                     <div class="form-floating mb-15px">
-                                        <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder="Amount Paid" id="receivedAmount" value="0.00"/>
+                                        <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder="0.00" id="receivedAmount"  />
                                         <label for="receivedAmount" class="d-flex align-items-center fs-13px text-gray-600">Amount Paid</label>
                                     </div>
                                     <div class="row mb-2">
@@ -718,7 +718,7 @@
                         $("#selectedProducts-pos tbody").empty();
                         updateSidebar();
                         updateSerialNumber();
-
+                        $("#receivedAmount").val("");
                         setTimeout(function() {
                             $('.alert-success').hide();
                         }, 125);
