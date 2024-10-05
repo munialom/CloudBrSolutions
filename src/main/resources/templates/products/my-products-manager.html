@@ -102,7 +102,14 @@
     </div>
 
 
-
+    <!--    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                    <i class="fas fa-spinner fa-pulse" style="margin-right: 10px;"></i>
+                    <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+                </div>
+            </div>
+        </div>-->
 
     <script>
         $(document).ready(function() {
@@ -125,40 +132,40 @@
     </script>
 
 
-<script>
-    function showLoading() {
-        $('#loading-overlay').show();
-    }
+    <script>
+        function showLoading() {
+            $('#loading-overlay').show();
+        }
 
-    function hideLoading() {
-        $('#loading-overlay').hide();
-    }
-    function fetchStaffList() {
-        // Show the loading overlay
-
-
-        // Construct the URL with query parameters
-        var url = '/api-bulk/products-database';
-
-        // Make the AJAX request to the server
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(response) {
-
-                /*  $('#stockControlPanelBulkUpdates').html(response);*/
-                productStockManager(response);
+        function hideLoading() {
+            $('#loading-overlay').hide();
+        }
+        function fetchStaffList() {
+            // Show the loading overlay
 
 
-            },
-            error: function() {
-                alert('An error occurred while fetching data.');
-                // Hide the loading overlay
+            // Construct the URL with query parameters
+            var url = '/api-bulk/products-database';
 
-            }
-        });
-    }
-</script>
+            // Make the AJAX request to the server
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(response) {
+
+                    /*  $('#stockControlPanelBulkUpdates').html(response);*/
+                    productStockManager(response);
+
+
+                },
+                error: function() {
+                    alert('An error occurred while fetching data.');
+                    // Hide the loading overlay
+
+                }
+            });
+        }
+    </script>
 
 
 
@@ -392,7 +399,7 @@
 
 
 
-        <script>
+    <script>
         $(document).ready(function() {
             // Initialize Select2 for store search
             $("#stationId").select2({
@@ -479,7 +486,7 @@
 
             // Step 6: Validate the data
             if (openingStocks.length === 0) {
-               // $('#loading-
+                // $('#loading-
                 hideLoading();
                 $.wnoty({
                     type: 'error',
