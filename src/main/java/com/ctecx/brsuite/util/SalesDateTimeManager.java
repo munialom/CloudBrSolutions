@@ -6,8 +6,8 @@ import java.time.*;
 @Component
 public class SalesDateTimeManager {
     private static final ZoneId TIMEZONE_UTC_PLUS_3 = ZoneId.of("UTC+3");
-    private static final LocalTime SALES_START_TIME = LocalTime.of(8, 0);
-
+  /*  private static final LocalTime SALES_START_TIME = LocalTime.of(8, 0);*/
+    private static final LocalTime SALES_START_TIME = LocalTime.of(5, 0);
     public ZonedDateTime getCurrentTransactionDateTime() {
         return ZonedDateTime.now(TIMEZONE_UTC_PLUS_3);
     }

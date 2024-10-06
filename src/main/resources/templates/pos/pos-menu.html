@@ -48,7 +48,7 @@
                 <!-- pos-content -->
                 <div class="pos-content">
                     <div class="col-md-9">
-                        <div class="panel-toolbar border rounded bg-light-100">
+                        <div class="panel-toolbar border rounded bg-light-100" style="display: none">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -595,9 +595,6 @@
 
 
 
-
-
-
     <script>
         $(document).ready(function() {
             let isSubmitting = false;
@@ -761,350 +758,215 @@
 
 
 
-
-
     <script>
-        $(document).ready(function() {
-            var isScannerActive = false; // Flag to check if scanner is active
-
-            $('#search-pos').focus(); // Set default focus to 'search-pos'
-
-            var lastTime = Date.now();
-            var delay = 50; // delay between key events that will be considered as typing
-
-            $('#search-pos').scannerDetection({
-                timeBeforeScanTest: 200, // wait for the next character for upto 200ms
-                avgTimeByChar: 40, // it's not a barcode if a character takes longer than 100ms
-                endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
-                onComplete: function(barcode, qty) {
-                    $('#productTableContainer-pos').hide();
-                    // Check if the barcode is a sequence of numbers
-                    if (/^\d+$/.test(barcode)) {
-                        isScannerActive = true; // Set the flag to true when scanner is active
-
-                        // Prevent the default action of the tab key
-                        $(window).keydown(function(event){
-                            if(event.keyCode == 9) {
-                                event.preventDefault();
-                            }
-                        });
-
-                        getProductAndAddRow(barcode);
-
-
-                        // Clear the 'search-pos' input field and set focus back to it
-                        $('#search-pos').val('').focus();
-
-
-                        isScannerActive = false; // Reset the flag after scanner use
-
-                    }
-                },
-                onKeyDetect: function() {
-                    lastTime = Date.now();
-                }
-            });
-
-            $('#search-pos').on('input', function() {
-                if (!isScannerActive && Date.now() - lastTime > delay) { // Check if scanner is not active
-                    var inputValue = $(this).val();
-
-                    // If the input value is a search key
-                    if (inputValue.length < 10) {
-                        var page = 0; // start from the first page
-                        var size = 5; // number of records per page
-                        $.ajax({
-                            url: '/products/sales',
-                            type: 'GET',
-                            data: {
-                                searchKey: inputValue,
-                                page: page,
-                                size: size
-                            },
-                            success: function(response) {
-                                var productTableContainer = $('#productTableContainer-pos');
-                                productTableContainer.html(response);
-
-                                if (inputValue.trim() === '') {
-                                    productTableContainer.hide();
-                                } else {
-                                    productTableContainer.show();
-                                }
-                            },
-                            error: function(e) {
-                                console.log(e);
-                            }
-                        });
-                    }
-                }
-            });
-
-            // Add click event listener to rows in the search results table
-            $(document).on('click', '#productTableContainer-pos tr', function() {
-                $('#productTableContainer-pos').hide();
-            });
-
-            // Add 'focusout' event handler to all input fields except '#search-pos'
-            $('input').not('#search-pos').on('focusout', function() {
-                setTimeout(function() {
+        $(() => {
+            const POS = {
+                init() {
+                    this.bindEvents();
                     $('#search-pos').focus();
-                }, 0);
-            });
-        });
-
-    </script>
-
-
-
-    <script>
-
-        $(document).ready(function(){
-            $('#selectedProducts-pos').on('click', 'tbody tr', function(event) {
-                // Check if a button was clicked
-                if (!$(event.target).is('button')) {
-                    // Remove any existing button groups
-                    $('.btn-group').remove();
-
-                    // Remove the selected class from all rows
-                    $('tr').removeClass('selected-row');
-
-                    // Add the selected class to the clicked row
-                    $(this).addClass('selected-row');
-
-                    // Find the selected row's Product Code
-                    var productCode = $(this).find('td:first').text();
-
-                    // Create a button group with two buttons: Return Item and Resale Item
-                    var buttonGroup = $('<div>')
-                        .addClass('btn-group')
-                        .append(
-                            $('<button>')
-                                .attr('id', 'return-button')
-                                .addClass('btn btn-xs btn-success dynamic-button')
-                                .text('Return'),
-                            $('<button>')
-                                .attr('id', 'resale-button')
-                                .addClass('btn btn-xs  btn-primary dynamic-button')
-                                .text('Resale')
-                                .hide(),
-                            $('<button>')
-                                .attr('id', 'remove-button')
-                                .addClass('btn btn-danger btn-xs ')
-                                .text('Remove')
-                        );
-
-                    // Find the cell to place the button group and append it
-                    var cell = $(this).find('td:nth-child(2)');
-                    cell.addClass('cell-with-buttons');
-                    cell.append(buttonGroup);
-                }
-            });
-
-            // Use event delegation for click events on dynamically added buttons
-            $('#selectedProducts-pos').on('click', '#return-button', function() {
-                // Perform Return action
-                var productCode = $(this).closest('tr').find('td:first').text();
-                updateProductDetails(productCode);
-                updateSidebar();
-                // Show the Resale button
-                $(this).siblings('#resale-button').show();
-                // Hide the Return button
-                $(this).hide();
-            });
-
-            $('#selectedProducts-pos').on('click', '#resale-button', function() {
-                // Perform Resale action
-                var productCode = $(this).closest('tr').find('td:first').text();
-                updateProductDetails(productCode);
-                updateSidebar();
-                // Show the Return button
-                $(this).siblings('#return-button').show();
-                // Hide the Resale button
-                $(this).hide();
-            });
-
-            $('#selectedProducts-pos').on('click', '#remove-button', function() {
-                $(this).closest('tr').remove();
-                updateSidebar();
-            });
-
-
-        });
-
-
-
-
-
-
-
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <script>
-        function updateProductDetails(productCode) {
-            var productCodeExists = false;
-
-            $('#selectedProducts-pos tbody tr').each(function () {
-                if ($(this).find('td[key-id="productCode"]').text() === productCode) {
-                    productCodeExists = true;
-                    var pQ = parseInt($(this).find('td[key-id="productQty"] .product-input').val());
-                    var qty = -1*pQ; // Default quantity is -1 for multiplication
-
-                    var productPrice = parseFloat($(this).find('td[key-id="SalePrice"]').text());
-                    var unitTax = parseFloat($(this).find('td[key-id="unitTax"]').text());
-                    var discount = parseFloat($(this).find('td[key-id="discount"]').text());
-
-                    var subTotal = (productPrice * qty) - ((discount * qty) + (qty * unitTax)); // Calculate subtotal
-
-                    $(this).find('td[key-id="productQty"] .product-input').val(qty);
-                    $(this).find('td[key-id="finalTax"]').text((unitTax * qty).toFixed(2));
-                    $(this).find('td[key-id="subtotal"]').text(subTotal.toFixed(2));
-                    updateSidebar();
-                    return false; // Exit loop
-                }
-            });
-
-            if (!productCodeExists) {
-                console.log("Product with code " + productCode + " not found in selected products.");
-            }
-        }
-
-    </script>
-
-
-    <script>
-        function updateProductDetailsResale(productCode) {
-            var productCodeExists = false;
-
-            $('#selectedProducts-pos tbody tr').each(function () {
-                if ($(this).find('td[key-id="productCode"]').text() === productCode) {
-                    productCodeExists = true;
-                    var pQ = parseInt($(this).find('td[key-id="productQty"] .product-input').val());
-
-                    var qty = -1*-pQ; // Default quantity is -1 for multiplication
-
-                    var productPrice = parseFloat($(this).find('td[key-id="SalePrice"]').text());
-                    var unitTax = parseFloat($(this).find('td[key-id="unitTax"]').text());
-                    var discount = parseFloat($(this).find('td[key-id="discount"]').text());
-
-                    var subTotal = (productPrice * qty) - ((discount * qty) + (qty * unitTax)); // Calculate subtotal
-
-                    $(this).find('td[key-id="productQty"] .product-input').val(qty);
-                    $(this).find('td[key-id="finalTax"]').text((unitTax * qty).toFixed(2));
-                    $(this).find('td[key-id="subtotal"]').text(subTotal.toFixed(2));
-                    updateSidebar();
-                    return false; // Exit loop
-                }
-            });
-
-            if (!productCodeExists) {
-                console.log("Product with code " + productCode + " not found in selected products.");
-            }
-        }
-
-    </script>
-
-
-
-
-    <script>
-
-
-
-
-        function getProductAndAddRow(productCode) {
-            $.ajax({
-                url: `/api-bulk/sales?searchKey=${productCode}`,
-                type: 'GET',
-                success: function(data) {
-                    const product = data[0]; // Assuming the response is an array and we're interested in the first object
-
-                    // Check if a row with this product code already exists
-                    let existingRow = $(`#selectedProducts-pos tbody tr[data-product-code="${product.productCode}"]`);
-
-                    if (existingRow.length > 0) {
-                        // If the row exists, increment the quantity and update the prices
-                        let qtyInput = existingRow.find('input.product-input');
-                        let currentQty = parseInt(qtyInput.val());
-                        qtyInput.val(currentQty + 1);
-
-                        let newQty = currentQty + 1;
-                        let unitTax = product.tax;
-                        let finalTaxCell = existingRow.find('td[key-id="finalTax"]');
-                        let subtotalCell = existingRow.find('td[key-id="subtotal"]');
-
-                        finalTaxCell.text((unitTax * newQty).toFixed(2));
-                        subtotalCell.text(((product.productPrice * newQty) - (unitTax * newQty)).toFixed(2));
-                    } else {
-                        // If the row does not exist, create a new one
-                        const uniqueRowId = 0; // Generate a unique ID for the row
-                        const DefaultQty = 1;
-                        const DefaultDiscount = 0; // Replace with your default discount value
-                        const unitTax = product.tax;
-
-                        var newRow = '<tr data-row-id="' + uniqueRowId + '" data-product-code="' + product.productCode + '">' +
-                            '<td key-id="productCode">' + product.productCode + '</td>' +
-                            '<td key-id="productName">' + product.productName + '</td>' +
-                            '<td key-id="productQty">' +
-                            '<div class="input-group qty">' +
-                            '<div class="input-group-prepend">' +
-                            '<a href="#" class="btn btn-danger btn-xs"><i class="fa fa-minus fa-sm"></i></a>' +
-                            '</div>' +
-                            '<input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 15px; margin:auto; border: none" />' +
-                            '<div class="input-group-append" style="margin-left: -1px;">' +
-                            '<a href="#" class="btn btn-success btn-xs"><i class="fa fa-plus fa-sm"></i></a>' +
-                            '</div>' +
-                            '</div>' +
-                            '</td>' +
-                            '<td key-id="SalePrice">' + product.productPrice.toFixed(2) + '</td>' +
-                            '<td key-id="unitTax">' + unitTax.toFixed(2) + '</td>' +
-                            '<td key-id="discount">' + DefaultDiscount + '</td>' +
-                            '<td key-id="finalTax">' + (unitTax * DefaultQty).toFixed(2) + '</td>' +
-                            '<td key-id="subtotal">' + ((product.productPrice * DefaultQty) - (DefaultDiscount + (unitTax * DefaultQty))).toFixed(2) + '</td>' +
-                            '</tr>';
-
-                        $('#selectedProducts-pos tbody').prepend(newRow);
-                    }
-
-                    updateSidebar();
                 },
-                error: function(error) {
-                    console.error('Error:', error);
+                bindEvents() {
+                    $('#search-pos').on('input', this.debounce(this.handleManualSearch, 300));
+                    $('#productTableContainer-pos').on('click', 'tbody tr', this.handleProductSelection);
+
+                    // Additional event bindings from the new code
+                    $(document).on('input', '.product-input', function() {
+                        handleQuantityChange($(this));
+                    });
+                    $(document).on('click', '.increase-qty', function() {
+                        handleQuantityAdjust($(this), 1);
+                    });
+                    $(document).on('click', '.decrease-qty', function() {
+                        handleQuantityAdjust($(this), -1);
+                    });
+                    $(document).on('click', '.remove-row', function() {
+                        removeRow($(this).closest('tr'));
+                    });
+                    $('#receivedAmount').on('input', updateSidebar);
+                },
+                debounce(func, wait) {
+                    let timeout;
+                    return function(...args) {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(this, args), wait);
+                    };
+                },
+                handleManualSearch() {
+                    const inputValue = $('#search-pos').val().trim();
+                    if (inputValue.length > 0) {
+                        POS.searchProducts(inputValue);
+                    } else {
+                        $('#productTableContainer-pos').hide();
+                    }
+                },
+                searchProducts(searchKey, page = 0, size = 5) {
+                    $.ajax({
+                        url: '/products/sales',
+                        type: 'GET',
+                        data: { searchKey, page, size },
+                        success: (response) => {
+                            $('#productTableContainer-pos').html(response).show();
+                        },
+                        error: (e) => {
+                            console.log('Search error:', e);
+                            $('#productTableContainer-pos').html('<p>Error loading products.</p>').show();
+                        }
+                    });
+                },
+                handleProductSelection(event) {
+                    event.preventDefault();
+                    const $selectedRow = $(event.currentTarget);
+                    addProductToSelection($selectedRow);
+                    $('#productTableContainer-pos').hide();
+                    $('#search-pos').val('').focus();
                 }
-            });
-        }
+            };
 
+            // Utility functions from the new code
+            const formatNumber = (num) => parseFloat(num).toFixed(2);
 
+            const calculateSubtotal = (price, qty, discount, tax) => {
+                return (price * qty) - (discount * qty) + (tax * qty);
+            };
 
+            const updateRowTotals = (row) => {
+                const qty = parseInt(row.find('.product-input').val()) || 0;
+                const price = parseFloat(row.find('[key-id="SalePrice"]').text()) || 0;
+                const discount = parseFloat(row.find('[key-id="discount"]').text()) || 0;
+                const unitTax = parseFloat(row.find('[key-id="unitTax"]').text()) || 0;
 
+                const finalTax = unitTax * qty;
+                const subtotal = calculateSubtotal(price, qty, discount, unitTax);
 
+                row.find('[key-id="finalTax"]').text(formatNumber(finalTax));
+                row.find('[key-id="subtotal"]').text(formatNumber(subtotal));
+            };
+
+            const updateSidebar = () => {
+                let subtotal = 0;
+                let tax = 0;
+                let discount = 0;
+
+                $('#selectedProducts-pos tbody tr').each(function() {
+                    const qty = parseInt($(this).find('.product-input').val()) || 0;
+                    const finalTax = parseFloat($(this).find('[key-id="finalTax"]').text()) || 0;
+                    const productDiscount = parseFloat($(this).find('[key-id="discount"]').text()) || 0;
+                    const subTotalItem = parseFloat($(this).find('[key-id="subtotal"]').text()) || 0;
+
+                    subtotal += subTotalItem;
+                    tax += finalTax;
+                    discount += productDiscount * qty;
+                });
+
+                const totalAmount = subtotal + tax;
+                const receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
+                const change = receivedAmount - totalAmount;
+
+                $('#subtotal').text(formatNumber(subtotal));
+                $('#tax').text(formatNumber(tax));
+                $('#discount').text(formatNumber(discount));
+                $('#totalAmount').text(formatNumber(totalAmount));
+                $('#change-balance').text(formatNumber(change));
+            };
+
+            const removeRow = (row) => {
+                row.remove();
+                updateSidebar();
+            };
+
+            // Event handlers from the new code
+            const handleQuantityChange = (input) => {
+                const row = input.closest('tr');
+                let qty = parseInt(input.val());
+
+                if (isNaN(qty) || qty < 0) {
+                    qty = 1;
+                }
+
+                input.val(qty);
+
+                if (qty === 0) {
+                    removeRow(row);
+                } else {
+                    updateRowTotals(row);
+                    updateSidebar();
+                }
+            };
+
+            const handleQuantityAdjust = (button, increment) => {
+                const input = button.closest('.qty').find('.product-input');
+                let qty = parseInt(input.val()) + increment;
+                qty = Math.max(0, qty);
+                input.val(qty);
+                handleQuantityChange(input);
+            };
+
+            // Function to add product to selection
+            function addProductToSelection(productRow) {
+                const productCode = productRow.find('td:nth-child(1)').text();
+                const productName = productRow.find('td:nth-child(2)').text();
+                const productPrice = parseFloat(productRow.find('td:nth-child(4)').text()) || 0;
+                const unitTax = parseFloat(productRow.find('td:nth-child(5)').text()) || 0;
+
+                const existingRow = $(`#selectedProducts-pos tbody tr[data-product-code="${productCode}"]`);
+
+                if (existingRow.length) {
+                    const qtyInput = existingRow.find('.product-input');
+                    qtyInput.val(parseInt(qtyInput.val()) + 1);
+                    handleQuantityChange(qtyInput);
+                } else {
+                    const newRow = `
+        <tr data-product-code="${productCode}">
+          <td key-id="productCode">${productCode}</td>
+          <td key-id="productName">${productName}</td>
+          <td key-id="productQty">
+            <div class="input-group qty">
+              <div class="input-group-prepend">
+                <button class="btn btn-danger btn-xs decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
+              </div>
+              <input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 50px; margin:auto; border: none" />
+              <div class="input-group-append">
+                <button class="btn btn-success btn-xs increase-qty"><i class="fa fa-plus fa-sm"></i></button>
+              </div>
+              <div class="input-group-append ml-2">
+                <button class="btn btn-danger btn-xs remove-row"><i class="fa fa-trash fa-sm"></i></button>
+              </div>
+            </div>
+          </td>
+          <td key-id="SalePrice">${formatNumber(productPrice)}</td>
+          <td key-id="unitTax">${formatNumber(unitTax)}</td>
+          <td key-id="discount">0.00</td>
+          <td key-id="finalTax">${formatNumber(unitTax)}</td>
+          <td key-id="subtotal">${formatNumber(productPrice + unitTax)}</td>
+        </tr>
+      `;
+
+                    $('#selectedProducts-pos tbody').prepend(newRow);
+                    updateRowTotals($(`#selectedProducts-pos tbody tr[data-product-code="${productCode}"]`));
+                }
+
+                updateSidebar();
+            }
+
+            POS.init();
+
+            // Error handling and logging
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.error("An error occurred:", message, "at", source, ":", lineno, ":", colno);
+                // You could also send this error to a logging service
+            };
+
+            // Periodic update to ensure consistency
+            setInterval(updateSidebar, 5000);
+        });
     </script>
+
+
+
+
+
+
+
 
 
 
