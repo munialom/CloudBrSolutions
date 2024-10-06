@@ -40,7 +40,10 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         return jdbcTemplate.queryForList(sql);
     }
 
-
-
+    @Override
+    public Map<String, Object> search_product_by_code(String productCode) {
+        String sql = "CALL search_products_by_code(?)";
+        return jdbcTemplate.queryForMap(sql, productCode);
+    }
 
 }
