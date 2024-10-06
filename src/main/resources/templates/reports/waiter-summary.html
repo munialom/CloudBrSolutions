@@ -4,7 +4,7 @@
       <div class="col-xl-12">
          <div class="card mt-2">
             <div class="card-header">
-               <h6 class="mb-0">Waiters Summary</h6>
+               <h6 class="mb-0">Cashiers Summary</h6>
             </div>
             <div class="card-body">
                <div class="mb-3">
@@ -56,7 +56,7 @@
                const $dataRow = $('<tr>');
                headers.forEach(header => {
                   let $cell;
-                  if (header === 'Waiter Name') {
+                  if (header === 'Cashier Name') {
                      $cell = $('<td>').text(row[header]).addClass('waiter-name');
                   } else if (header === 'Total Sales' || header === 'Commission Amount') {
                      const value = parseFloat(row[header]);
@@ -252,7 +252,7 @@
 
       function printWaiterReport(data) {
          // Use the data directly without additional formatting
-         printGeneratePdf(data, 'Waiter Summary');
+         printGeneratePdf(data, 'Cashier Summary');
       }
       function showNotification(type, message) {
          // Implement your notification logic here
