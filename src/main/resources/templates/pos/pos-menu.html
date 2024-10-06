@@ -141,6 +141,7 @@
                                     </div>
                                 </div>
                                 <!-- END input-group -->
+                                <input type="hidden" id="barcode-input">
 
                                 <!-- BEGIN panel -->
                                 <div class="panel rounded border" data-sortable-id="ui-widget-16">
@@ -224,8 +225,8 @@
                                             </div>
                                         </div>
                                         <div class="form-floating mb-15px">
-                                            <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder="Amount Paid" id="receivedAmount" value="0.00"/>
-                                            <label for="receivedAmount" class="d-flex align-items-center fs-13px text-gray-600">Amount Paid</label>
+                                            <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder=" " id="receivedAmount" />
+                                            <label for="receivedAmount" class="d-flex align-items-center fs-13px text-gray-600">AmountPaid[0.00]</label>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-md-12 pt-2">
@@ -583,44 +584,44 @@
 
 
 
-    <script>
-        $(document).ready(function() {
+
+
+    <!--<script>
+        $(() => {
             let isSubmitting = false;
 
-            function updateSerialNumber() {
-                var type = $("#transactionType").val();
+            const updateSerialNumber = () => {
+                const type = $("#transactionType").val();
                 $.ajax({
                     url: '/api/stocks/generate/serial-number',
                     type: 'GET',
-                    data: { type: type },
-                    success: function(serialNumber) {
+                    data: { type },
+                    success: (serialNumber) => {
                         $("#invoiceNumber").val(serialNumber);
                     },
-                    error: function(xhr, status, error) {
+                    error: (xhr, status, error) => {
                         console.error("Error generating serial number:", error);
                         $("#invoiceNumber").val("Error");
                     }
                 });
-            }
+            };
 
             // Initial serial number generation
             updateSerialNumber();
 
             // Update serial number when transaction type changes
-            $("#transactionType").change(function() {
-                updateSerialNumber();
-            });
+            $("#transactionType").change(updateSerialNumber);
 
-            function saveForm() {
+            const saveForm = () => {
                 if (isSubmitting) {
                     console.log('Form is already being submitted. Please wait.');
                     return;
                 }
 
                 const rows = $("#selectedProducts-pos tbody tr");
-                var totalAmountValue = $("#totalAmount").text();
-                var totalAmountFloat = parseFloat(totalAmountValue);
-                const receivedAmount = $("#receivedAmount").val();
+                const totalAmountValue = $("#totalAmount").text();
+                const totalAmountFloat = parseFloat(totalAmountValue);
+                const receivedAmount = $("#receivedAmount").val().trim();
                 const customerID = $("#customer-id").text();
                 const transactionType = $("#transactionType").val();
 
@@ -632,27 +633,19 @@
                         dangerMode: true,
                     });
 
-                    setTimeout(function(){
-                        swal.close();
-                    }, 1000);
-
+                    setTimeout(() => swal.close(), 1000);
                     return;
                 }
 
-                if (receivedAmount === "0.00") {
-                    $('.alert-danger').show().html("Amount paid should not be zero.");
-
-                    setTimeout(function(){
-                        $('.alert-danger').hide();
-                    }, 3000);
-
+                if (!receivedAmount || receivedAmount === "0" || receivedAmount === "0.00" || parseFloat(receivedAmount) === 0) {
+                    $('.alert-danger').show().html("Amount paid should not be empty or zero.");
+                    setTimeout(() => $('.alert-danger').hide(), 3000);
                     return;
                 }
 
-                const aData = [];
-                rows.each(function() {
+                const aData = rows.map(function() {
                     const tableRow = $(this);
-                    const data = {
+                    return {
                         productCode: tableRow.find('td[key-id="productCode"]').text(),
                         productName: tableRow.find('td[key-id="productName"]').text(),
                         cost: tableRow.find('td[key-id="SalePrice"]').text(),
@@ -662,289 +655,549 @@
                         subtotal: tableRow.find('td[key-id="subtotal"]').text(),
                         qty: tableRow.find('input.product-input').val()
                     };
-                    aData.push(data);
-                });
+                }).get();
 
-                let selectedModes = [];
-                if ($('#inlineCheckbox1').is(':checked')) {
-                    selectedModes.push('CASH');
-                }
-                if ($('#inlineCheckbox2').is(':checked')) {
-                    selectedModes.push('MPESA');
-                }
-                if ($('#inlineCheckbox3').is(':checked')) {
-                    selectedModes.push('VISA');
-                }
+                const selectedModes = ['inlineCheckbox1', 'inlineCheckbox2', 'inlineCheckbox3']
+                    .filter(id => $(`#${id}`).is(':checked'))
+                    .map(id => id === 'inlineCheckbox1' ? 'CASH' : id === 'inlineCheckbox2' ? 'MPESA' : 'VISA');
 
-                let stocks = {
+                const stocks = {
                     saleStocks: aData,
                     amountPaid: receivedAmount,
                     totalAmount: totalAmountFloat,
                     customerId: customerID,
                     payMode: selectedModes,
-                    transactionType: transactionType
+                    transactionType
                 };
-                isSubmitting = true;
-                let stocksJson = JSON.stringify(stocks);
-                console.log("data"+stocksJson)
 
+                isSubmitting = true;
                 $('.alert-info').show();
 
-                var xhr = new window.XMLHttpRequest();
-
-                xhr.onload = function() {
-                    isSubmitting = false;
-                    if (xhr.status === 201) {
+                $.ajax({
+                    url: "/api/stocks/counter-sales",
+                    type: "POST",
+                    contentType: "application/json;charset=UTF-8",
+                    data: JSON.stringify(stocks),
+                    success: (response) => {
+                        isSubmitting = false;
                         $('.alert-info').hide();
                         $('.alert-success').show();
-                        var response = JSON.parse(xhr.responseText);
-                        var serialNumber = response.transactionId;
 
                         $("#selectedProducts-pos tbody").empty();
                         updateSidebar();
                         updateSerialNumber();
 
-                        setTimeout(function() {
-                            $('.alert-success').hide();
-                        }, 125);
-                        if ($('#inlineCheckbox2').is(':checked')) {
-                            $('#inlineCheckbox2').prop('checked', false);
-                        }
+                        setTimeout(() => $('.alert-success').hide(), 125);
 
-                        if ($('#inlineCheckbox3').is(':checked')) {
-                            $('#inlineCheckbox3').prop('checked', false);
-                        }
+                        $('#inlineCheckbox2, #inlineCheckbox3').prop('checked', false);
 
-                    } else {
+                        // Clear all input fields
+                        $('input').not(':checkbox, :radio').val('');
+
+                        // Explicitly clear receivedAmount and ensure it's updated in the DOM
+                        $("#receivedAmount").val('').trigger('change');
+
+                        // Clear any other specific fields that might not be caught by the general input clearing
+                        $("#totalAmount").text('0.00');
+                        $("#customer-id").text('');
+
+                        // Reset the label for receivedAmount
+                        $("label[for='receivedAmount']").text("AmountPaid[0.00]");
+
+                        $('#search-pos').focus();
+                    },
+                    error: (xhr, status, error) => {
+                        isSubmitting = false;
                         $('.alert-danger').show();
-                        console.log('Unexpected response from the server');
+                        console.log('Unexpected response from the server', error);
                     }
-                };
+                });
+            };
 
-                xhr.onerror = function() {
-                    isSubmitting = false;
-                };
+            // Click event for the save button
+            $("#saleClose").on("click", (e) => {
+                e.preventDefault();
+                saveForm();
+            });
+        });
+    </script>-->
+    <script>
+        $(() => {
+            let isSubmitting = false;
 
-                xhr.open("POST", "/api/stocks/counter-sales");
-                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                xhr.send(JSON.stringify(stocks));
-            }
+            const updateSerialNumber = () => {
+                const type = $("#transactionType").val();
+                $.ajax({
+                    url: '/api/stocks/generate/serial-number',
+                    type: 'GET',
+                    data: { type },
+                    success: (serialNumber) => {
+                        $("#invoiceNumber").val(serialNumber);
+                    },
+                    error: (xhr, status, error) => {
+                        console.error("Error generating serial number:", error);
+                        $("#invoiceNumber").val("Error");
+                    }
+                });
+            };
 
-            $("#saleClose").on("click", saveForm);
+            // Initial serial number generation
+            updateSerialNumber();
 
-            $(document).keypress(function(e) {
-                if (e.which === 13) { // Enter key code
-                    saveForm();
-                    $('#search-pos').val('').focus();
+            // Update serial number when transaction type changes
+            $("#transactionType").change(updateSerialNumber);
+
+            // Function to reset float label inputs
+            const resetFloatLabelInput = (inputId) => {
+                const $input = $(`#${inputId}`);
+                const $label = $(`label[for="${inputId}"]`);
+
+                // Clear the input
+                $input.val('');
+
+                // Trigger input and change events
+                $input.trigger('input').trigger('change');
+
+                // Update label state
+                $label.removeClass('active');
+            };
+
+            // Function to initialize float labels
+            const initFloatLabels = () => {
+                $('.form-floating input').on('input', function() {
+                    const $label = $(this).siblings('label');
+                    if ($(this).val()) {
+                        $label.addClass('active');
+                    } else {
+                        $label.removeClass('active');
+                    }
+                });
+            };
+
+            // Initialize float labels
+            initFloatLabels();
+
+            const saveForm = () => {
+                if (isSubmitting) {
+                    console.log('Form is already being submitted. Please wait.');
+                    return;
                 }
+
+                const rows = $("#selectedProducts-pos tbody tr");
+                const totalAmountValue = $("#totalAmount").text();
+                const totalAmountFloat = parseFloat(totalAmountValue);
+                const receivedAmount = $("#receivedAmount").val().trim();
+                const customerID = $("#customer-id").text();
+                const transactionType = $("#transactionType").val();
+
+                if (rows.length === 0) {
+                    swal({
+                        title: "No Records to Save",
+                        text: "You cannot save empty records.",
+                        icon: "error",
+                        dangerMode: true,
+                    });
+
+                    setTimeout(() => swal.close(), 1000);
+                    return;
+                }
+
+                if (!receivedAmount || receivedAmount === "0" || receivedAmount === "0.00" || parseFloat(receivedAmount) === 0) {
+                    $('.alert-danger').show().html("Amount paid should not be empty or zero.");
+                    setTimeout(() => $('.alert-danger').hide(), 3000);
+                    return;
+                }
+
+                const aData = rows.map(function() {
+                    const tableRow = $(this);
+                    return {
+                        productCode: tableRow.find('td[key-id="productCode"]').text(),
+                        productName: tableRow.find('td[key-id="productName"]').text(),
+                        cost: tableRow.find('td[key-id="SalePrice"]').text(),
+                        discount: tableRow.find('td[key-id="discount"]').text(),
+                        tax: tableRow.find('td[key-id="unitTax"]').text(),
+                        netTax: tableRow.find('td[key-id="finalTax"]').text(),
+                        subtotal: tableRow.find('td[key-id="subtotal"]').text(),
+                        qty: tableRow.find('input.product-input').val()
+                    };
+                }).get();
+
+                const selectedModes = ['inlineCheckbox1', 'inlineCheckbox2', 'inlineCheckbox3']
+                    .filter(id => $(`#${id}`).is(':checked'))
+                    .map(id => id === 'inlineCheckbox1' ? 'CASH' : id === 'inlineCheckbox2' ? 'MPESA' : 'VISA');
+
+                const stocks = {
+                    saleStocks: aData,
+                    amountPaid: receivedAmount,
+                    totalAmount: totalAmountFloat,
+                    customerId: customerID,
+                    payMode: selectedModes,
+                    transactionType
+                };
+
+                isSubmitting = true;
+                $('.alert-info').show();
+
+                $.ajax({
+                    url: "/api/stocks/counter-sales",
+                    type: "POST",
+                    contentType: "application/json;charset=UTF-8",
+                    data: JSON.stringify(stocks),
+                    success: (response) => {
+                        isSubmitting = false;
+                        $('.alert-info').hide();
+                        $('.alert-success').show();
+
+                        $("#selectedProducts-pos tbody").empty();
+                        updateSidebar();
+                        updateSerialNumber();
+
+                        setTimeout(() => $('.alert-success').hide(), 125);
+
+                        $('#inlineCheckbox2, #inlineCheckbox3').prop('checked', false);
+
+                        // Reset all float label inputs
+                        $('.form-floating input').each(function() {
+                            resetFloatLabelInput(this.id);
+                        });
+
+                        // Specifically reset receivedAmount
+                        resetFloatLabelInput('receivedAmount');
+
+                        // Clear any other specific fields
+                        $("#totalAmount").text('0.00');
+                        $("#customer-id").text('');
+
+                        $('#search-pos').focus();
+                    },
+                    error: (xhr, status, error) => {
+                        isSubmitting = false;
+                        $('.alert-danger').show();
+                        console.log('Unexpected response from the server', error);
+                    }
+                });
+            };
+
+            // Click event for the save button
+            $("#saleClose").on("click", (e) => {
+                e.preventDefault();
+                saveForm();
             });
         });
     </script>
 
 
 
-    <script>
-        $(() => {
-            const POS = {
-                init() {
-                    this.bindEvents();
-                    $('#search-pos').focus();
-                },
-                bindEvents() {
-                    $('#search-pos').on('input', this.debounce(this.handleManualSearch, 300));
-                    $('#productTableContainer-pos').on('click', 'tbody tr', this.handleProductSelection);
 
-                    // Additional event bindings from the new code
-                    $(document).on('input', '.product-input', function() {
-                        handleQuantityChange($(this));
-                    });
-                    $(document).on('click', '.increase-qty', function() {
-                        handleQuantityAdjust($(this), 1);
-                    });
-                    $(document).on('click', '.decrease-qty', function() {
-                        handleQuantityAdjust($(this), -1);
-                    });
-                    $(document).on('click', '.remove-row', function() {
-                        removeRow($(this).closest('tr'));
-                    });
-                    $('#receivedAmount').on('input', updateSidebar);
-                },
-                debounce(func, wait) {
-                    let timeout;
-                    return function(...args) {
-                        clearTimeout(timeout);
-                        timeout = setTimeout(() => func.apply(this, args), wait);
-                    };
-                },
-                handleManualSearch() {
-                    const inputValue = $('#search-pos').val().trim();
-                    if (inputValue.length > 0) {
-                        POS.searchProducts(inputValue);
-                    } else {
-                        $('#productTableContainer-pos').hide();
-                    }
-                },
-                searchProducts(searchKey, page = 0, size = 5) {
-                    $.ajax({
-                        url: '/products/sales',
-                        type: 'GET',
-                        data: { searchKey, page, size },
-                        success: (response) => {
-                            $('#productTableContainer-pos').html(response).show();
-                        },
-                        error: (e) => {
-                            console.log('Search error:', e);
-                            $('#productTableContainer-pos').html('<p>Error loading products.</p>').show();
-                        }
-                    });
-                },
-                handleProductSelection(event) {
-                    event.preventDefault();
-                    const $selectedRow = $(event.currentTarget);
-                    addProductToSelection($selectedRow);
-                    $('#productTableContainer-pos').hide();
-                    $('#search-pos').val('').focus();
-                }
-            };
 
-            // Utility functions from the new code
-            const formatNumber = (num) => parseFloat(num).toFixed(2);
 
-            const calculateSubtotal = (price, qty, discount, tax) => {
-                return (price * qty) - (discount * qty) + (tax * qty);
-            };
+  <script>
+      $(document).ready(function() {
+          const POS = {
+              init() {
+                  this.cacheDOM();
+                  this.bindEvents();
+                  this.initBarcodeScanner();
+                  this.$searchInput.focus();
+              },
 
-            const updateRowTotals = (row) => {
-                const qty = parseInt(row.find('.product-input').val()) || 0;
-                const price = parseFloat(row.find('[key-id="SalePrice"]').text()) || 0;
-                const discount = parseFloat(row.find('[key-id="discount"]').text()) || 0;
-                const unitTax = parseFloat(row.find('[key-id="unitTax"]').text()) || 0;
+              cacheDOM() {
+                  this.$searchInput = $('#search-pos');
+                  this.$productTableContainer = $('#productTableContainer-pos');
+                  this.$selectedProductsTable = $('#selectedProducts-pos');
+                  this.$receivedAmount = $('#receivedAmount');
+              },
 
-                const finalTax = unitTax * qty;
-                const subtotal = calculateSubtotal(price, qty, discount, unitTax);
+              bindEvents() {
+                  this.$searchInput.on('input', this.debounce(this.handleSearch.bind(this), 300));
+                  this.$productTableContainer.on('click', 'tbody tr', this.handleProductSelection.bind(this));
+                  $(document).on('input', '.product-input', this.handleQuantityChange.bind(this));
+                  $(document).on('click', '.increase-qty', (e) => this.handleQuantityAdjust($(e.currentTarget), 1));
+                  $(document).on('click', '.decrease-qty', (e) => this.handleQuantityAdjust($(e.currentTarget), -1));
+                  $(document).on('click', '.remove-row', (e) => this.removeRow($(e.currentTarget).closest('tr')));
+                  this.$receivedAmount.on('input', this.updateSidebar.bind(this));
+                  this.$selectedProductsTable.on('click', 'tbody tr', this.handleRowSelection.bind(this));
+              },
 
-                row.find('[key-id="finalTax"]').text(formatNumber(finalTax));
-                row.find('[key-id="subtotal"]').text(formatNumber(subtotal));
-            };
+              debounce(func, wait) {
+                  let timeout;
+                  return (...args) => {
+                      clearTimeout(timeout);
+                      timeout = setTimeout(() => func.apply(this, args), wait);
+                  };
+              },
 
-            const updateSidebar = () => {
-                let subtotal = 0;
-                let tax = 0;
-                let discount = 0;
+              initBarcodeScanner() {
+                  let scanBuffer = '';
+                  let lastKeyTime = Date.now();
+                  const scanCompleteDelay = 50; // Increased delay for more reliable scanning
 
-                $('#selectedProducts-pos tbody tr').each(function() {
-                    const qty = parseInt($(this).find('.product-input').val()) || 0;
-                    const finalTax = parseFloat($(this).find('[key-id="finalTax"]').text()) || 0;
-                    const productDiscount = parseFloat($(this).find('[key-id="discount"]').text()) || 0;
-                    const subTotalItem = parseFloat($(this).find('[key-id="subtotal"]').text()) || 0;
+                  $(document).on('keydown', (e) => {
+                      const currentTime = Date.now();
+                      if (e.key === 'Enter' && scanBuffer.length > 0) {
+                          e.preventDefault();
+                          this.handleBarcodeScan(scanBuffer);
+                          scanBuffer = '';
+                          return false;
+                      }
 
-                    subtotal += subTotalItem;
-                    tax += finalTax;
-                    discount += productDiscount * qty;
-                });
+                      if (currentTime - lastKeyTime > scanCompleteDelay) {
+                          scanBuffer = '';
+                      }
 
-                const totalAmount = subtotal + tax;
-                const receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
-                const change = receivedAmount - totalAmount;
+                      if (e.key.length === 1) {
+                          scanBuffer += e.key;
+                      }
 
-                $('#subtotal').text(formatNumber(subtotal));
-                $('#tax').text(formatNumber(tax));
-                $('#discount').text(formatNumber(discount));
-                $('#totalAmount').text(formatNumber(totalAmount));
-                $('#change-balance').text(formatNumber(change));
-            };
+                      lastKeyTime = currentTime;
 
-            const removeRow = (row) => {
-                row.remove();
-                updateSidebar();
-            };
+                      // Allow manual input in the search field
+                      if ($(e.target).is(this.$searchInput)) {
+                          return true;
+                      }
 
-            // Event handlers from the new code
-            const handleQuantityChange = (input) => {
-                const row = input.closest('tr');
-                let qty = parseInt(input.val());
+                      // Prevent keypress from affecting other inputs
+                      if (scanBuffer.length > 1) {
+                          e.preventDefault();
+                          return false;
+                      }
+                  });
+              },
 
-                if (isNaN(qty) || qty < 0) {
-                    qty = 1;
-                }
+              handleSearch() {
+                  const inputValue = this.$searchInput.val().trim();
+                  if (inputValue.length > 0) {
+                      this.searchProducts(inputValue);
+                  } else {
+                      this.$productTableContainer.hide();
+                  }
+              },
 
-                input.val(qty);
+              searchProducts(searchKey, page = 0, size = 5) {
+                  if (!searchKey || searchKey.trim() === '') {
+                      console.log('Empty search key, not performing search');
+                      return;
+                  }
 
-                if (qty === 0) {
-                    removeRow(row);
-                } else {
-                    updateRowTotals(row);
-                    updateSidebar();
-                }
-            };
+                  $.ajax({
+                      url: '/products/sales',
+                      type: 'GET',
+                      data: { searchKey, page, size },
+                      success: (response) => {
+                          if (response && response.trim() !== '') {
+                              this.$productTableContainer.html(response).show();
+                          } else {
+                              this.$productTableContainer.html('<p>No products found.</p>').show();
+                          }
+                      },
+                      error: (e) => {
+                          console.log('Search error:', e);
+                          this.$productTableContainer.html('<p>Error loading products.</p>').show();
+                      }
+                  });
+              },
 
-            const handleQuantityAdjust = (button, increment) => {
-                const input = button.closest('.qty').find('.product-input');
-                let qty = parseInt(input.val()) + increment;
-                qty = Math.max(0, qty);
-                input.val(qty);
-                handleQuantityChange(input);
-            };
+              handleProductSelection(event) {
+                  event.preventDefault();
+                  const $selectedRow = $(event.currentTarget);
+                  this.addProductToSelection($selectedRow);
+                  this.$productTableContainer.hide();
+                  this.$searchInput.val('').focus();
+              },
 
-            // Function to add product to selection
-            function addProductToSelection(productRow) {
-                const productCode = productRow.find('td:nth-child(1)').text();
-                const productName = productRow.find('td:nth-child(2)').text();
-                const productPrice = parseFloat(productRow.find('td:nth-child(4)').text()) || 0;
-                const unitTax = parseFloat(productRow.find('td:nth-child(5)').text()) || 0;
+              handleBarcodeScan(barcode) {
+                  if (/^\d+$/.test(barcode)) {
+                      console.log(`Scanned barcode: ${barcode}`);
+                      this.getProductAndAddRow(barcode);
+                      this.$searchInput.val('').focus();
+                  } else {
+                      console.log('Invalid barcode:', barcode);
+                      alert('Invalid barcode scanned');
+                  }
+              },
 
-                const existingRow = $(`#selectedProducts-pos tbody tr[data-product-code="${productCode}"]`);
+              getProductAndAddRow(productCode) {
+                  if (!productCode || productCode.trim() === '') {
+                      console.log('Empty product code, not fetching product');
+                      return;
+                  }
 
-                if (existingRow.length) {
-                    const qtyInput = existingRow.find('.product-input');
-                    qtyInput.val(parseInt(qtyInput.val()) + 1);
-                    handleQuantityChange(qtyInput);
-                } else {
-                    const newRow = `
-        <tr data-product-code="${productCode}">
-          <td key-id="productCode">${productCode}</td>
-          <td key-id="productName">${productName}</td>
-          <td key-id="productQty">
-            <div class="input-group qty">
-              <div class="input-group-prepend">
-                <button class="btn btn-danger btn-xs decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
-              </div>
-              <input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 50px; margin:auto; border: none" />
-              <div class="input-group-append">
-                <button class="btn btn-success btn-xs increase-qty"><i class="fa fa-plus fa-sm"></i></button>
-              </div>
-              <div class="input-group-append ml-2">
-                <button class="btn btn-danger btn-xs remove-row"><i class="fa fa-trash fa-sm"></i></button>
-              </div>
-            </div>
-          </td>
-          <td key-id="SalePrice">${formatNumber(productPrice)}</td>
-          <td key-id="unitTax">${formatNumber(unitTax)}</td>
-          <td key-id="discount">0.00</td>
-          <td key-id="finalTax">${formatNumber(unitTax)}</td>
-          <td key-id="subtotal">${formatNumber(productPrice + unitTax)}</td>
-        </tr>
-      `;
+                  $.ajax({
+                      url: `/api-bulk/SearchByCode/${productCode}`,
+                      type: 'GET',
+                      success: (data) => {
+                          if (data && data.productCode) {
+                              this.addProductToRow(data.productCode, data.productName, data.productPrice, data.tax);
+                          } else {
+                              console.error('Invalid product data received');
 
-                    $('#selectedProducts-pos tbody').prepend(newRow);
-                    updateRowTotals($(`#selectedProducts-pos tbody tr[data-product-code="${productCode}"]`));
-                }
+                          }
+                      },
+                      error: (error) => {
+                          console.error('Error:', error);
+                          console.log('Product not found or error occurred.');
+                      }
+                  });
+              },
 
-                updateSidebar();
-            }
+              addProductToSelection($productRow) {
+                  const productCode = $productRow.find('td:nth-child(1)').text();
+                  const productName = $productRow.find('td:nth-child(2)').text();
+                  const productPrice = parseFloat($productRow.find('td:nth-child(4)').text()) || 0;
+                  const unitTax = parseFloat($productRow.find('td:nth-child(5)').text()) || 0;
 
-            POS.init();
+                  this.addProductToRow(productCode, productName, productPrice, unitTax);
+              },
 
-            // Error handling and logging
-            window.onerror = function(message, source, lineno, colno, error) {
-                console.error("An error occurred:", message, "at", source, ":", lineno, ":", colno);
-                // You could also send this error to a logging service
-            };
+              addProductToRow(productCode, productName, productPrice, unitTax) {
+                  const $existingRow = this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`);
 
-            // Periodic update to ensure consistency
-            setInterval(updateSidebar, 5000);
-        });
-    </script>
+                  if ($existingRow.length) {
+                      const $qtyInput = $existingRow.find('.product-input');
+                      $qtyInput.val(parseInt($qtyInput.val()) + 1).trigger('input');
+                  } else {
+                      const newRow = `
+                    <tr data-product-code="${productCode}">
+                        <td key-id="productCode">${productCode}</td>
+                        <td key-id="productName">${productName}</td>
+                        <td key-id="productQty">
+                            <div class="input-group qty">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-danger btn-xs decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
+                                </div>
+                                <input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 50px; margin:auto; border: none" />
+                                <div class="input-group-append">
+                                    <button class="btn btn-success btn-xs increase-qty"><i class="fa fa-plus fa-sm"></i></button>
+                                </div>
+                                <div class="input-group-append ml-2">
+                                    <button class="btn btn-danger btn-xs remove-row"><i class="fa fa-trash fa-sm"></i></button>
+                                </div>
+                            </div>
+                        </td>
+                        <td key-id="SalePrice">${this.formatNumber(productPrice)}</td>
+                        <td key-id="unitTax">${this.formatNumber(unitTax)}</td>
+                        <td key-id="discount">0.00</td>
+                        <td key-id="finalTax">${this.formatNumber(unitTax)}</td>
+                        <td key-id="subtotal">${this.formatNumber(productPrice + unitTax)}</td>
+                    </tr>
+                `;
+
+                      this.$selectedProductsTable.find('tbody').prepend(newRow);
+                      this.updateRowTotals(this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`));
+                  }
+
+                  this.updateSidebar();
+              },
+
+              handleQuantityChange(event) {
+                  const $input = $(event.target);
+                  const $row = $input.closest('tr');
+                  let qty = parseInt($input.val());
+
+                  if (isNaN(qty) || qty < 0) {
+                      qty = 1;
+                  }
+
+                  $input.val(qty);
+
+                  if (qty === 0) {
+                      this.removeRow($row);
+                  } else {
+                      this.updateRowTotals($row);
+                      this.updateSidebar();
+                  }
+              },
+
+              handleQuantityAdjust($button, increment) {
+                  const $input = $button.closest('.qty').find('.product-input');
+                  let qty = parseInt($input.val()) + increment;
+                  qty = Math.max(0, qty);
+                  $input.val(qty).trigger('input');
+              },
+
+              updateRowTotals($row) {
+                  const qty = parseInt($row.find('.product-input').val()) || 0;
+                  const price = parseFloat($row.find('[key-id="SalePrice"]').text()) || 0;
+                  const discount = parseFloat($row.find('[key-id="discount"]').text()) || 0;
+                  const unitTax = parseFloat($row.find('[key-id="unitTax"]').text()) || 0;
+
+                  const finalTax = unitTax * qty;
+                  const subtotal = this.calculateSubtotal(price, qty, discount, unitTax);
+
+                  $row.find('[key-id="finalTax"]').text(this.formatNumber(finalTax));
+                  $row.find('[key-id="subtotal"]').text(this.formatNumber(subtotal));
+              },
+
+              updateSidebar() {
+                  let subtotal = 0;
+                  let tax = 0;
+                  let discount = 0;
+
+                  this.$selectedProductsTable.find('tbody tr').each(function() {
+                      const qty = parseInt($(this).find('.product-input').val()) || 0;
+                      const finalTax = parseFloat($(this).find('[key-id="finalTax"]').text()) || 0;
+                      const productDiscount = parseFloat($(this).find('[key-id="discount"]').text()) || 0;
+                      const subTotalItem = parseFloat($(this).find('[key-id="subtotal"]').text()) || 0;
+
+                      subtotal += subTotalItem;
+                      tax += finalTax;
+                      discount += productDiscount * qty;
+                  });
+
+                  const totalAmount = subtotal + tax;
+                  const receivedAmount = parseFloat(this.$receivedAmount.val()) || 0;
+                  const change = receivedAmount - totalAmount;
+
+                  $('#subtotal').text(this.formatNumber(subtotal));
+                  $('#tax').text(this.formatNumber(tax));
+                  $('#discount').text(this.formatNumber(discount));
+                  $('#totalAmount').text(this.formatNumber(totalAmount));
+                  $('#change-balance').text(this.formatNumber(change));
+              },
+
+              removeRow($row) {
+                  $row.remove();
+                  this.updateSidebar();
+              },
+
+              handleRowSelection(event) {
+                  if (!$(event.target).is('button')) {
+                      $('.btn-group').remove();
+                      $('tr').removeClass('selected-row');
+                      $(event.currentTarget).addClass('selected-row');
+
+                      const $buttonGroup = $('<div>')
+                          .addClass('btn-group')
+                          .append(
+                              $('<button>').attr('id', 'remove-button').addClass('btn btn-danger btn-xs').text('Remove')
+                          );
+
+                      const $cell = $(event.currentTarget).find('td:nth-child(2)');
+                      $cell.addClass('cell-with-buttons').append($buttonGroup);
+                  }
+              },
+
+              formatNumber: (num) => parseFloat(num).toFixed(2),
+              calculateSubtotal: (price, qty, discount, tax) => (price * qty) - (discount * qty) + (tax * qty),
+          };
+
+          POS.init();
+
+          // Error handling and logging
+          window.onerror = function(message, source, lineno, colno, error) {
+              console.error("An error occurred:", message, "at", source, ":", lineno, ":", colno);
+              // You could also send this error to a logging service
+          };
+
+          // Periodic update to ensure consistency
+          setInterval(() => POS.updateSidebar(), 5000);
+      });
+  </script>
+
+
+
+
+
 
 
 
