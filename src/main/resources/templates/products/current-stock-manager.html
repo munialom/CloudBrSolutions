@@ -1,0 +1,584 @@
+
+
+
+<div th:fragment="products">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-4">
+                <div id="table_div_content"></div>
+            </div>
+        </div>
+        <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+            </div>
+        </div>
+
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    </div>
+
+
+<script>
+    function showLoading() {
+        $('#loading-overlay').show();
+    }
+
+    function hideLoading() {
+        $('#loading-overlay').hide();
+    }
+</script>
+
+
+<script>
+    ($ => {
+        // Configuration
+        const config = {
+            defaultApiUrl: '/api-bulk/low-stock',
+            recordsPerPage: 10,
+            saveEndpoint: '/api/stocks/opening'
+        };
+
+        // State management
+        const state = {
+            fullData: [],
+            filteredData: [],
+            currentPage: 1,
+            totalRecords: 0,
+            selectedRows: new Set(),
+            stockChanges: {},
+            currentStockOperation: ''
+        };
+
+        // DOM element cache
+        const elements = {
+            target: $('#table_div_content'),
+            tableWrapper: null,
+            searchInput: null,
+            stationId: null,
+            loadingOverlay: $('#loading-overlay')
+        };
+
+        // Initialize the page
+        const initializePage = () => {
+            elements.target.empty();
+            elements.target.append(createControls());
+            elements.searchInput = createSearchInput();
+            elements.target.append(elements.searchInput);
+            elements.tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
+            elements.target.append(elements.tableWrapper);
+            elements.stationId = $('#stationId');
+
+            initializeSelect2();
+            attachEventListeners();
+            fetchAndDisplayData();
+        };
+
+        // Create header controls
+        const createControls = () => {
+            return $(`
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select id="stationId" name="stationId" class="form-select">
+                            <option value="">Select Store</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="filterOptions" id="radio1" value="add">
+                        <label class="form-check-label" for="radio1">Add Stock</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="filterOptions" id="radio2" value="subtract">
+                        <label class="form-check-label" for="radio2">Subtract Stock</label>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-success btn-sm" id="saveOpeningStockBtn">
+                        <i class="fas fa-save me-1"></i>Save Record
+                    </button>
+                </div>
+            </div>
+        `);
+        };
+
+        // Create search input
+        const createSearchInput = () => {
+            return $('<input>')
+                .attr('type', 'text')
+                .attr('placeholder', 'Search...')
+                .attr('id', 'searchInput')
+                .addClass('form-control mb-3');
+        };
+
+        // Initialize Select2
+        const initializeSelect2 = () => {
+            elements.stationId.select2({
+                ajax: {
+                    url: "/api/stores/search",
+                    dataType: 'json',
+                    delay: 250,
+                    data: params => ({ keyword: params.term }),
+                    processResults: data => ({
+                        results: data.map(obj => ({
+                            id: obj.id,
+                            text: obj.storeName + (obj.counterStore ? ' (Counter Store)' : '')
+                        }))
+                    })
+                },
+                minimumInputLength: 1,
+                placeholder: 'Search for a store...',
+                allowClear: true
+            });
+        };
+
+        // Attach event listeners
+        const attachEventListeners = () => {
+            elements.searchInput.on('input', event => filterTable(event.target.value));
+            $('input[name="filterOptions"]').on('change', event => {
+                state.currentStockOperation = event.target.value;
+                refreshTable();
+            });
+            $('#saveOpeningStockBtn').on('click', showConfirmationModal);
+        };
+
+        // Generate dynamic table
+        const generateDynamicTable = (data) => {
+            elements.tableWrapper.empty();
+
+            if (!Array.isArray(data) || data.length === 0) {
+                elements.tableWrapper.append('<p>No data available</p>');
+                return;
+            }
+
+            const headers = ['Select', 'Product ID', 'Product Code', 'Product Name', 'Current Stock', 'Alert Qty'];
+            if (state.currentStockOperation) {
+                headers.push('Stock Change');
+            }
+
+            const $table = $('<table>').addClass('dynamic-table');
+            const $thead = $('<thead>').appendTo($table);
+            const $tbody = $('<tbody>').appendTo($table);
+
+            $thead.append(createTableHeader(headers));
+            data.forEach(row => $tbody.append(createTableRow(row)));
+
+            elements.tableWrapper.append($table);
+            elements.tableWrapper.append(generatePagination());
+
+            attachTableEventListeners();
+        };
+
+        // Create table header
+        const createTableHeader = (headers) => {
+            return $('<tr>').append(headers.map(h => $('<th>').text(h)));
+        };
+
+        // Create table row
+        const createTableRow = (row) => {
+            const $row = $('<tr>');
+            const rowId = row['Product ID'];
+
+            $row.append($('<td>').html(`<input type="checkbox" class="rowCheckbox" data-id="${rowId}">`));
+            $row.append($('<td>').text(row['Product ID']));
+            $row.append($('<td>').text(row['Product Code']));
+            $row.append($('<td>').text(row['Product Name']));
+            $row.append($('<td>').text(row['Stock']));
+            $row.append($('<td>').text(row['Alert Qty']));
+
+            if (state.currentStockOperation) {
+                $row.append($('<td>').append(createStockChangeInput(rowId)));
+            }
+
+            return $row;
+        };
+
+        // Create stock change input
+  /*      const createStockChangeInput = (rowId) => {
+            return $('<input>')
+                .attr('type', 'number')
+                .attr('id', `stock-change-${rowId}`)
+                .addClass('form-control form-control-sm stock-change-input');
+        };*/
+
+        const createStockChangeInput = (rowId) => {
+            return $('<input>')
+                .attr('type', 'number')
+                .attr('id', `stock-change-${rowId}`)
+                .addClass('form-control form-control-sm stock-change-input')
+                .css({
+                    'width': '60px',
+                    'height': '25px',
+                    'text-align': 'right',
+                })
+                .attr('min', '0')
+                .attr('max', '999');
+        };
+        const attachTableEventListeners = () => {
+            $('.rowCheckbox').on('change', function() {
+                const rowId = $(this).data('id');
+                if ($(this).prop('checked')) {
+                    state.selectedRows.add(rowId);
+                } else {
+                    state.selectedRows.delete(rowId);
+                }
+            });
+
+            $('.stock-change-input').on('focus', function() {
+                $(this).closest('tr').find('.rowCheckbox').prop('checked', true).trigger('change');
+            }).on('input', function() {
+                const rowId = $(this).closest('tr').find('.rowCheckbox').data('id');
+                state.stockChanges[rowId] = $(this).val();
+            });
+        };
+
+        // Generate pagination
+        const generatePagination = () => {
+            const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
+            const $pagination = $('<nav>').addClass('mt-3');
+            const $ul = $('<ul>').addClass('pagination justify-content-center');
+
+            // Previous button
+            $ul.append(
+                $('<li>').addClass(`page-item ${state.currentPage === 1 ? 'disabled' : ''}`)
+                    .append($('<a>').addClass('page-link').text('Previous').on('click', () => changePage(state.currentPage - 1)))
+            );
+
+            // Page numbers
+            const maxPages = 5;
+            const startPage = Math.max(1, state.currentPage - Math.floor(maxPages / 2));
+            const endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+            for (let i = startPage; i <= endPage; i++) {
+                $ul.append(
+                    $('<li>').addClass(`page-item ${i === state.currentPage ? 'active' : ''}`)
+                        .append($('<a>').addClass('page-link').text(i).on('click', () => changePage(i)))
+                );
+            }
+
+            // Next button
+            $ul.append(
+                $('<li>').addClass(`page-item ${state.currentPage === totalPages ? 'disabled' : ''}`)
+                    .append($('<a>').addClass('page-link').text('Next').on('click', () => changePage(state.currentPage + 1)))
+            );
+
+            $pagination.append($ul);
+
+            // Add pagination info
+            const start = (state.currentPage - 1) * config.recordsPerPage + 1;
+            const end = Math.min(state.currentPage * config.recordsPerPage, state.filteredData.length);
+            const $info = $('<div>').addClass('text-center mt-2')
+                .text(`Page ${state.currentPage} of ${totalPages} | Showing ${start}-${end} of ${state.filteredData.length} records (${state.totalRecords} total)`);
+            $pagination.append($info);
+
+            return $pagination;
+        };
+
+        // Change page
+        const changePage = (newPage) => {
+            const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
+            if (newPage < 1 || newPage > totalPages) return;
+
+            state.currentPage = newPage;
+            displayPage(state.currentPage);
+        };
+
+        // Display a specific page
+        const displayPage = (page) => {
+            const start = (page - 1) * config.recordsPerPage;
+            const end = start + config.recordsPerPage;
+            const pageData = state.filteredData.slice(start, end);
+            generateDynamicTable(pageData);
+        };
+
+        // Filter table
+        const filterTable = (searchTerm) => {
+            state.filteredData = state.fullData.filter(row =>
+                Object.values(row).some(value =>
+                    String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+            state.currentPage = 1;
+            displayPage(state.currentPage);
+        };
+
+        // Fetch and display data
+        const fetchAndDisplayData = () => {
+            showLoading();
+            $.ajax({
+                url: config.defaultApiUrl,
+                method: 'GET',
+                dataType: 'json',
+                success: data => {
+                    state.fullData = data;
+                    state.totalRecords = data.length;
+                    state.filteredData = [...state.fullData];
+                    displayPage(state.currentPage);
+                    hideLoading();
+                },
+                error: (_, textStatus, errorThrown) => {
+                    console.error('Error fetching data:', textStatus, errorThrown);
+                    elements.tableWrapper.html('<p>Error loading data. Please try again later.</p>');
+                    hideLoading();
+                }
+            });
+        };
+
+        // Refresh table
+        const refreshTable = () => {
+            state.selectedRows.clear();
+            state.stockChanges = {};
+            state.currentPage = 1;
+            displayPage(state.currentPage);
+        };
+
+        // Show confirmation modal
+        const showConfirmationModal = () => {
+            const $modal = createConfirmationModal();
+            $('body').append($modal);
+
+            const changedData = getChangedData();
+            generateConfirmationTable(changedData);
+
+            const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            modal.show();
+
+            $('#confirmSaveBtn').on('click', () => {
+                modal.hide();
+                saveChanges();
+            });
+
+            $('#confirmationModal').on('hidden.bs.modal', function () {
+                $(this).remove();
+            });
+        };
+
+        // Create confirmation modal
+        const createConfirmationModal = () => {
+            return $(`
+            <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Confirm Changes</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="confirmationTableWrapper"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="confirmSaveBtn">Confirm Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+        };
+
+        // Get changed data
+        const getChangedData = () => {
+            return state.fullData.filter(row => {
+                const rowId = row['Product ID'];
+                return state.selectedRows.has(rowId) && state.stockChanges[rowId] !== undefined;
+            }).map(row => {
+                const rowId = row['Product ID'];
+                return {
+                    ...row,
+                    'Stock Change': state.stockChanges[rowId] || 0
+                };
+            });
+        };
+
+        // Generate confirmation table
+        const generateConfirmationTable = (data) => {
+            const $tableWrapper = $('#confirmationTableWrapper');
+            $tableWrapper.empty();
+
+            if (data.length === 0) {
+                $tableWrapper.append('<p>No changes to save.</p>');
+                return;
+            }
+
+            const $table = $('<table>').addClass('table table-sm');
+            const $thead = $('<thead>').appendTo($table);
+            const $tbody = $('<tbody>').appendTo($table);
+
+            const headers = ['Product ID', 'Product Name', 'Current Stock', 'Stock Change', 'New Stock'];
+            $thead.append(createTableHeader(headers));
+
+            data.forEach(row => {
+                const $row = $('<tr>');
+                $row.append($('<td>').text(row['Product ID']));
+                $row.append($('<td>').text(row['Product Name']));
+                $row.append($('<td>').text(row['Stock']));
+                $row.append($('<td>').text(row['Stock Change']));
+                $row.append($('<td>').text(parseInt(row['Stock']) + parseInt(row['Stock Change'])));
+                $tbody.append($row);
+            });
+
+            $tableWrapper.append($table);
+        };
+
+        // Save changes
+
+        const saveChanges = () => {
+            showLoading();
+            const changedData = getChangedData();
+            const branchId = elements.stationId.val();
+
+            if (changedData.length === 0) {
+                hideLoading();
+                showNotification('error', 'No changes to save.');
+                return;
+            }
+
+            if (!branchId) {
+                hideLoading();
+                showNotification('error', 'Please select a branch.');
+                return;
+            }
+
+            const openingStockDTO = {
+                openingStocks: changedData.map(row => ({
+                    productId: row['Product ID'],
+                    productCode: row['Product Code'],
+                    productName: row['Product Name'],
+                    currentStock: row['Stock'],
+                    qty: row['Stock Change'],
+                    newStock: parseInt(row['Stock']) + parseInt(row['Stock Change'])
+                })),
+                opcode: state.currentStockOperation.toUpperCase(),
+                branchId: branchId
+            };
+
+            console.log("data"+JSON.stringify(openingStockDTO))
+            $.ajax({
+                url: config.saveEndpoint,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(openingStockDTO),
+                success: function(response) {
+                    hideLoading();
+                    showNotification('success', 'Changes saved successfully.');
+                    refreshTable();
+                },
+                error: function(xhr, status, error) {
+                    hideLoading();
+                    showNotification('error', 'Error saving changes: ' + xhr.responseText);
+                }
+            });
+        };
+
+        // Show notification
+        const showNotification = (type, message) => {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        };
+
+        // Show loading overlay
+        const showLoading = () => {
+            elements.loadingOverlay.show();
+        };
+
+        // Hide loading overlay
+        const hideLoading = () => {
+            elements.loadingOverlay.hide();
+        };
+
+        // Apply styles
+        const applyStyles = () => {
+            $('head').append(`
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+    .table-responsive {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 11px;
+    }
+    .dynamic-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Roboto', sans-serif;
+        font-size: 11px;
+    }
+    .dynamic-table th, .dynamic-table td {
+        padding: 8px 11px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    .dynamic-table th {
+        background-color: #f8f9fa;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+    }
+    .dynamic-table tr:last-child td { border-bottom: none; }
+    .dynamic-table tr:hover { background-color: #f1f3f5; }
+    .action-buttons {
+        white-space: nowrap;
+    }
+    .action-buttons .btn {
+        padding: 2px 4px;
+        font-size: 10px;
+        margin-right: 2px;
+    }
+    .action-buttons .btn i { margin-right: 0; }
+    .back-button, .btn-group .btn {
+        margin-right: 10px;
+    }
+    .back-button i, .btn-group .btn i {
+        margin-right: 5px;
+    }
+    #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+    #loading-overlay .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+    @media print {
+        .btn-group, .back-button, #searchInput, .pagination {
+            display: none;
+        }
+    }
+</style>
+`);
+        };
+
+        // Initialize
+        $(() => {
+            applyStyles();
+            initializePage();
+        });
+
+    })(jQuery);
+</script>
+
+</div>
+
+
+

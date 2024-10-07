@@ -59,8 +59,8 @@ public class StockService {
             stockTransaction.setProductCode(product.getProductCode());
             stockTransaction.setProductName(product.getProductName());
             stockTransaction.setTransactionDate(LocalDate.now());
-            stockTransaction.setProductCost(product.getProductCost());
-            stockTransaction.setProductSalePrice(product.getProductPrice());
+            /*stockTransaction.setProductCost(product.getProductCost());
+            stockTransaction.setProductSalePrice(product.getProductPrice());*/
             stockTransaction.setSerialNumber(sn);
             stockTransaction.setStatus("Active");
 

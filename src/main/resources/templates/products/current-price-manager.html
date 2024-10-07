@@ -1,0 +1,414 @@
+
+
+
+<div th:fragment="products">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-4">
+                <div id="table_div_content"></div>
+            </div>
+        </div>
+        <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
+            </div>
+        </div>
+
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    </div>
+
+
+<script>
+    function showLoading() {
+        $('#loading-overlay').show();
+    }
+
+    function hideLoading() {
+        $('#loading-overlay').hide();
+    }
+</script>
+
+
+<script>
+    ($ => {
+        // Configuration
+        const config = {
+            defaultApiUrl: '/api-bulk/products-database',
+            recordsPerPage: 10,
+            saveEndpoint: '/api/stocks/prices'
+        };
+
+        // State management
+        const state = {
+            fullData: [],
+            filteredData: [],
+            currentPage: 1,
+            selectedRows: new Set(),
+            priceChanges: {},
+            pricingEditable: false
+        };
+
+        // DOM element cache
+        const elements = {
+            target: $('#table_div_content'),
+            tableWrapper: null,
+            searchInput: null,
+            loadingOverlay: $('#loading-overlay')
+        };
+
+        // Initialize the page
+        const initializePage = () => {
+            elements.target.empty();
+            elements.target.append(createControls());
+            elements.searchInput = createSearchInput();
+            elements.target.append(elements.searchInput);
+            elements.tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
+            elements.target.append(elements.tableWrapper);
+
+            attachEventListeners();
+            fetchAndDisplayData();
+        };
+
+        // Create header controls
+        const createControls = () => {
+            return $(`
+        <div class="row g-2 align-items-center mb-3">
+            <div class="col-md-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="changePrice">
+                    <label class="form-check-label" for="changePrice">Enable Price Editing</label>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <button class="btn btn-success btn-sm" id="savePriceChangesBtn">
+                    <i class="fas fa-save me-1"></i>Save Price Changes
+                </button>
+            </div>
+        </div>
+    `);
+        };
+
+        // Create search input
+        const createSearchInput = () => {
+            return $('<input>')
+                .attr('type', 'text')
+                .attr('placeholder', 'Search...')
+                .attr('id', 'searchInput')
+                .addClass('form-control mb-3');
+        };
+
+        // Attach event listeners
+        const attachEventListeners = () => {
+            elements.searchInput.on('input', event => filterTable(event.target.value));
+            $('#changePrice').on('change', event => {
+                state.pricingEditable = event.target.checked;
+                refreshTable();
+            });
+            $('#savePriceChangesBtn').on('click', savePriceChanges);
+        };
+
+        // Generate dynamic table
+        const generateDynamicTable = (data) => {
+            elements.tableWrapper.empty();
+
+            if (!Array.isArray(data) || data.length === 0) {
+                elements.tableWrapper.append('<p>No data available</p>');
+                return;
+            }
+
+            const table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
+            const thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
+            const tbody = $('<tbody/>');
+
+            // Build table headers
+            Object.keys(data[0]).forEach(key => {
+                thead.find('tr').append('<th>' + key + '</th>');
+            });
+            table.append(thead);
+            table.append(tbody);
+
+            elements.tableWrapper.append(table);
+
+            displayTableData(data);
+            createPagination(data.length);
+        };
+
+        // Display table data
+        const displayTableData = (displayData) => {
+            const tbody = $('#member-table tbody');
+            tbody.empty();
+
+            const startIndex = (state.currentPage - 1) * config.recordsPerPage;
+            const endIndex = startIndex + config.recordsPerPage;
+            const itemsToShow = displayData.slice(startIndex, endIndex);
+
+            itemsToShow.forEach((item, index) => {
+                const tr = $('<tr/>').data('original-index', startIndex + index);
+                const rowIndex = startIndex + index;
+                const isChecked = state.selectedRows.has(item['Product ID'].toString());
+
+                tr.append(`<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ${isChecked ? 'checked' : ''} data-product-id="${item['Product ID']}" /></div></td>`);
+                tr.append(`<td>${rowIndex + 1}</td>`);
+
+                Object.entries(item).forEach(([key, value]) => {
+                    const td = $('<td/>');
+                    if (key === 'Cost Price' || key === 'Selling Price') {
+                        const inputId = `${key.toLowerCase().replace(' ', '-')}-${item['Product ID']}`;
+                        const inputValue = state.priceChanges[inputId] !== undefined ? state.priceChanges[inputId] : value;
+                        if (state.pricingEditable) {
+                            td.html(`<input type="number" id="${inputId}" class="form-control form-control-sm price-input" value="${inputValue}" style="width: 80px;" data-product-id="${item['Product ID']}">`);
+                        } else {
+                            td.text(inputValue);
+                        }
+                    } else {
+                        td.text(value);
+                    }
+                    tr.append(td);
+                });
+
+                tbody.append(tr);
+            });
+
+            updateSelectAllCheckbox();
+            attachTableEventListeners();
+        };
+
+        // Attach table event listeners
+        const attachTableEventListeners = () => {
+            $('#selectAll').off('change').on('change', function() {
+                const isChecked = $(this).prop('checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+                if (isChecked) {
+                    $('.rowCheckbox').each(function() {
+                        state.selectedRows.add($(this).data('product-id').toString());
+                    });
+                } else {
+                    state.selectedRows.clear();
+                }
+            });
+
+            $('.rowCheckbox').off('change').on('change', function() {
+                const productId = $(this).data('product-id').toString();
+                if ($(this).prop('checked')) {
+                    state.selectedRows.add(productId);
+                } else {
+                    state.selectedRows.delete(productId);
+                }
+                updateSelectAllCheckbox();
+            });
+
+            $('.price-input').off('input').on('input', function() {
+                const inputId = $(this).attr('id');
+                const productId = $(this).data('product-id').toString();
+                state.priceChanges[inputId] = $(this).val();
+
+                if (!state.selectedRows.has(productId)) {
+                    state.selectedRows.add(productId);
+                    $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                }
+                updateSelectAllCheckbox();
+            });
+        };
+
+        // Update "Select All" checkbox state
+        const updateSelectAllCheckbox = () => {
+            const totalVisible = $('.rowCheckbox').length;
+            const totalChecked = $('.rowCheckbox:checked').length;
+            $('#selectAll').prop({
+                checked: totalChecked > 0,
+                indeterminate: totalChecked > 0 && totalChecked < totalVisible
+            });
+        };
+
+        // Create pagination
+        const createPagination = (totalItems) => {
+            const totalPages = Math.ceil(totalItems / config.recordsPerPage);
+            const pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
+            const leftControls = $('<div class="d-flex align-items-center"/>');
+            const rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
+
+            leftControls.append(`<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="all">All</option>
+        </select>`);
+            leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
+
+            rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
+            rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
+
+            pagination.append(leftControls);
+            pagination.append(rightControls);
+            elements.tableWrapper.append(pagination);
+
+            updatePaginationControls(totalPages);
+
+            $('#itemsPerPage').val(config.recordsPerPage).off('change').on('change', function() {
+                config.recordsPerPage = $(this).val() === 'all' ? state.filteredData.length : parseInt($(this).val());
+                state.currentPage = 1;
+                displayTableData(state.filteredData);
+                updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
+            });
+
+            $('#prevPage').off('click').on('click', () => changePage(state.currentPage - 1));
+            $('#nextPage').off('click').on('click', () => changePage(state.currentPage + 1));
+        };
+
+        // Update pagination controls
+        const updatePaginationControls = (totalPages) => {
+            const startItem = (state.currentPage - 1) * config.recordsPerPage + 1;
+            const endItem = Math.min(state.currentPage * config.recordsPerPage, state.filteredData.length);
+            $('#paginationInfo').text(`Page ${state.currentPage} of ${totalPages} | Showing ${startItem}-${endItem} of ${state.filteredData.length} records`);
+            $('#prevPage').prop('disabled', state.currentPage === 1);
+            $('#nextPage').prop('disabled', state.currentPage === totalPages || totalPages === 0);
+        };
+
+        // Change page
+        const changePage = (newPage) => {
+            const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
+            if (newPage >= 1 && newPage <= totalPages) {
+                state.currentPage = newPage;
+                displayTableData(state.filteredData);
+                updatePaginationControls(totalPages);
+            }
+        };
+
+        // Filter table
+        const filterTable = (searchTerm) => {
+            state.filteredData = state.fullData.filter(row =>
+                Object.values(row).some(value =>
+                    String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+            state.currentPage = 1;
+            displayTableData(state.filteredData);
+            updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
+        };
+
+        // Fetch and display data
+        const fetchAndDisplayData = () => {
+            showLoading();
+            $.ajax({
+                url: config.defaultApiUrl,
+                method: 'GET',
+                dataType: 'json',
+                success: data => {
+                    state.fullData = data;
+                    state.filteredData = [...state.fullData];
+                    generateDynamicTable(state.filteredData);
+                    hideLoading();
+                },
+                error: (_, textStatus, errorThrown) => {
+                    console.error('Error fetching data:', textStatus, errorThrown);
+                    elements.tableWrapper.html('<p>Error loading data. Please try again later.</p>');
+                    hideLoading();
+                }
+            });
+        };
+
+        // Refresh table
+        const refreshTable = () => {
+            displayTableData(state.filteredData);
+            updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
+        };
+
+        // Save price changes
+        const savePriceChanges = () => {
+            showLoading();
+            const priceUpdates = Array.from(state.selectedRows).map(productId => {
+                const row = state.fullData.find(item => item['Product ID'].toString() === productId);
+                return {
+                    productCode: row['Product Code'],
+                    productName: row['Product Name'],
+                    buyPrice: parseFloat(state.priceChanges[`cost-price-${productId}`] || row['Cost Price']),
+                    salePrice: parseFloat(state.priceChanges[`selling-price-${productId}`] || row['Selling Price'])
+                };
+            });
+
+            if (priceUpdates.length === 0) {
+                hideLoading();
+                showNotification('error', 'Please select at least one product to update prices.');
+                return;
+            }
+
+            $.ajax({
+                url: config.saveEndpoint,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ openingStocks: priceUpdates }),
+                success: response => {
+                    hideLoading();
+                    showNotification('success', 'Prices updated successfully');
+                    state.selectedRows.clear();
+                    state.priceChanges = {};
+                    refreshTable();
+                },
+                error: (xhr, status, error) => {
+                    hideLoading();
+                    showNotification('error', 'Error updating prices: ' + xhr.responseText);
+                }
+            });
+        };
+
+        // Show notification
+        const showNotification = (type, message) => {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        };
+
+        // Show loading overlay
+        const showLoading = () => {
+            elements.loadingOverlay.show();
+        };
+
+        // Hide loading overlay
+        const hideLoading = () => {
+            elements.loadingOverlay.hide();
+        };
+
+        // Apply styles
+        const applyStyles = () => {
+            $('head').append(`
+<style>
+    .table-responsive {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 11px;
+    }
+    .price-input {
+        width: 80px !important;
+    }
+    @media (max-width: 768px) {
+        .price-input {
+            width: 60px !important;
+        }
+    }
+</style>
+`);
+        };
+
+        // Initialize
+        $(() => {
+            applyStyles();
+            initializePage();
+        });
+
+    })(jQuery);
+</script>
+
+</div>
+
+
+

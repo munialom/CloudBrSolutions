@@ -1,63 +1,104 @@
 
-<!-- HTML structure -->
+
+
 <div th:fragment="products">
-    <!-- Row to align the content -->
     <div class="row">
-        <!-- Column to control width and responsiveness -->
         <div class="col-md-12">
-            <!-- Card component with padding -->
             <div class="card p-4">
-                <!-- Content inside the card -->
-                <div id="table_div_product_info">
-                    <!-- Your dynamic content like tables or charts will go here -->
-                </div>
+                <div id="table_div_content"></div>
             </div>
         </div>
     </div>
 
+
+
+
     <script>
         ($ => {
-            let fullData = []; // Store the full dataset
+            // Configuration
+            const config = {
+                defaultApiUrl: '/api-bulk/below-low-stock',
+                recordsPerPage: 10
+            };
+
+            // Store the full dataset and current state
+            let fullData = [];
             let currentPage = 1;
-            let itemsPerPage = 10; // Default to 10 items per page
+            let totalRecords = 0;
+            let filteredData = [];
 
-            const generateDynamicTableProducts = (data, targetElementId) => {
-                const $target = $(`#${targetElementId}`);
-                const $wrapper = $('<div>').addClass('table-responsive');
+            // Function to initialize the page
+            const initializePage = () => {
+                const $target = $('#table_div_content');
+                $target.empty();
 
-                const $buttonGroup = $('<div>').addClass('btn-group mb-3');
-                $buttonGroup.append(
-                    $('<button>').addClass('btn btn-success excel-export')
-                        .html('<i class="fas fa-file-excel mr-2"></i> Excel'),
-                    $('<button>').addClass('btn btn-danger print-table')
-                        .html('<i class="fas fa-print mr-2"></i> Print'),
-                    $('<button>').addClass('btn btn-warning download-pdf')
-                        .html('<i class="fas fa-file-pdf mr-2"></i> Download')
-                );
-                $wrapper.append($buttonGroup);
-
-                // Add search input
+                // Create and append the search input
                 const $searchInput = $('<input>')
                     .attr('type', 'text')
-                    .attr('placeholder', 'Search products...')
-                    .addClass('form-control mb-3 search-input');
-                $wrapper.append($searchInput);
+                    .attr('placeholder', 'Search...')
+                    .attr('id', 'searchInput')
+                    .addClass('form-control mb-3');
+                $target.append($searchInput);
+
+                // Create and append the table wrapper
+                const $tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
+                $target.append($tableWrapper);
+
+                // Attach search event listener
+                $searchInput.on('input', function() {
+                    const searchTerm = $(this).val();
+                    filterTable(searchTerm);
+                });
+
+                // Fetch and display initial data
+                fetchAndDisplayData();
+            };
+
+            // Reusable function to generate dynamic table
+            const generateDynamicTable = (data, options = {}) => {
+                const {
+                    isDetailView = false,
+                    backButtonText = 'Back',
+                    backButtonIcon = 'fas fa-arrow-left',
+                    actionButtons = []
+                } = options;
+
+                const $tableWrapper = $('#tableWrapper');
+                $tableWrapper.empty();
+
+                if (isDetailView) {
+                    $tableWrapper.append(
+                        $('<button>').addClass('btn btn-primary mb-3 back-button')
+                            .html(`<i class="${backButtonIcon} mr-2"></i> ${backButtonText}`)
+                    );
+                } else {
+                    // Add action buttons
+                    const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+                    actionButtons.forEach(button => {
+                        $buttonGroup.append(
+                            $('<button>').addClass(`btn ${button.class}`)
+                                .html(`<i class="${button.icon} mr-2"></i> ${button.text}`)
+                                .on('click', button.action)
+                        );
+                    });
+                    $tableWrapper.append($buttonGroup);
+                }
 
                 if (!Array.isArray(data) || data.length === 0) {
-                    $wrapper.append('<p>No data available</p>');
-                    $target.empty().append($wrapper);
-                    applyStyles();
+                    $tableWrapper.append('<p>No data available</p>');
                     return;
                 }
 
-                const headers = Object.keys(data[0]);
+                const headers = [...new Set(data.flatMap(Object.keys))];
                 const $table = $('<table>').addClass('dynamic-table');
                 const $thead = $('<thead>').appendTo($table);
                 const $tbody = $('<tbody>').appendTo($table);
 
                 const $headerRow = $('<tr>');
                 headers.forEach(h => $headerRow.append($('<th>').text(h)));
-                $headerRow.append($('<th>').text('Actions'));
+                if (!isDetailView) {
+                    $headerRow.append($('<th>').text('Actions'));
+                }
                 $headerRow.appendTo($thead);
 
                 data.forEach(row => {
@@ -66,101 +107,146 @@
                         const val = row[h];
                         $dataRow.append($('<td>').text(val !== null && val !== undefined ? val : 'N/A'));
                     });
-                    $dataRow.append(
-                        $('<td>').addClass('action-buttons').append(
-                            $('<button>').addClass('btn btn-sm btn-outline-info edit-product')
-                                .html('<i class="fas fa-edit"></i>')
-                                .attr('data-product-id', row['Product ID']),
-                            $('<button>').addClass('btn btn-sm btn-outline-danger delete-product')
-                                .html('<i class="fas fa-trash"></i>')
-                                .attr('data-product-id', row['Product ID'])
-                        )
-                    );
+                    if (!isDetailView) {
+                        $dataRow.append(
+                            $('<td>').addClass('action-buttons').append(
+                                actionButtons.map(button =>
+                                    $('<button>').addClass(`btn btn-sm ${button.class}`)
+                                        .html(`<i class="${button.icon}"></i>`)
+                                        .on('click', () => button.action(row[headers[0]]))
+                                )
+                            )
+                        );
+                    }
                     $dataRow.appendTo($tbody);
                 });
 
-                $wrapper.append($table);
+                $tableWrapper.append($table);
 
-                // Add pagination footer
-                const $paginationWrapper = $('<div>').addClass('pagination-wrapper d-flex justify-content-between align-items-center mt-3');
+                // Add pagination
+                const $pagination = generatePagination();
+                $tableWrapper.append($pagination);
+            };
 
-                // Rows per page dropdown
-                const $rowsPerPageWrapper = $('<div>').addClass('rows-per-page-wrapper d-flex align-items-center');
-                $rowsPerPageWrapper.append($('<span>').text('Rows per page:'));
-                const $rowsPerPageSelect = $('<select>').addClass('form-control form-control-sm ml-2').css('width', 'auto');
-                [10, 20, 50, 100].forEach(value => {
-                    $rowsPerPageSelect.append($('<option>').attr('value', value).text(value));
-                });
-                $rowsPerPageWrapper.append($rowsPerPageSelect);
-                $paginationWrapper.append($rowsPerPageWrapper);
+            // Function to generate pagination
+            const generatePagination = () => {
+                const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
+                const $pagination = $('<nav>').addClass('mt-3');
+                const $ul = $('<ul>').addClass('pagination justify-content-center');
 
-                // Pagination info and controls
-                const $paginationControls = $('<div>').addClass('pagination-controls d-flex align-items-center');
-                $paginationControls.append($('<span>').addClass('pagination-info mr-3'));
-                const $paginationButtons = $('<div>').addClass('btn-group');
-                $paginationButtons.append(
-                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&lt;'),
-                    $('<button>').addClass('btn btn-outline-secondary btn-sm').html('&gt;')
+                // Previous button
+                $ul.append(
+                    $('<li>').addClass(`page-item ${currentPage === 1 ? 'disabled' : ''}`)
+                        .append($('<a>').addClass('page-link').text('Previous').on('click', () => changePage(currentPage - 1)))
                 );
-                $paginationControls.append($paginationButtons);
-                $paginationWrapper.append($paginationControls);
 
-                $wrapper.append($paginationWrapper);
-                $target.empty().append($wrapper);
-                updatePagination();
-                applyStyles();
+                // Page numbers
+                const maxPages = 5;
+                const startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+                const endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+                for (let i = startPage; i <= endPage; i++) {
+                    $ul.append(
+                        $('<li>').addClass(`page-item ${i === currentPage ? 'active' : ''}`)
+                            .append($('<a>').addClass('page-link').text(i).on('click', () => changePage(i)))
+                    );
+                }
+
+                // Next button
+                $ul.append(
+                    $('<li>').addClass(`page-item ${currentPage === totalPages ? 'disabled' : ''}`)
+                        .append($('<a>').addClass('page-link').text('Next').on('click', () => changePage(currentPage + 1)))
+                );
+
+                $pagination.append($ul);
+
+                // Add pagination info
+                const start = (currentPage - 1) * config.recordsPerPage + 1;
+                const end = Math.min(currentPage * config.recordsPerPage, filteredData.length);
+                const $info = $('<div>').addClass('text-center mt-2')
+                    .text(`Page ${currentPage} of ${totalPages} | Showing ${start}-${end} of ${filteredData.length} records (${totalRecords} total)`);
+                $pagination.append($info);
+
+                return $pagination;
             };
 
-            const updatePagination = () => {
-                const totalPages = Math.ceil(fullData.length / itemsPerPage);
-                const startItem = (currentPage - 1) * itemsPerPage + 1;
-                const endItem = Math.min(currentPage * itemsPerPage, fullData.length);
+            // Function to change page
+            const changePage = (newPage) => {
+                const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
+                if (newPage < 1 || newPage > totalPages) return;
 
-                $('.pagination-info').text(`${startItem}-${endItem} of ${fullData.length}`);
+                currentPage = newPage;
+                const start = (currentPage - 1) * config.recordsPerPage;
+                const end = start + config.recordsPerPage;
+                const pageData = filteredData.slice(start, end);
 
-                $('.pagination-controls button').first().prop('disabled', currentPage === 1);
-                $('.pagination-controls button').last().prop('disabled', currentPage === totalPages);
+                generateDynamicTable(pageData, getTableOptions());
             };
 
+            // Function to filter table
             const filterTable = (searchTerm) => {
-                const $rows = $('.dynamic-table tbody tr');
-                $rows.each(function() {
-                    const $row = $(this);
-                    const text = $row.text().toLowerCase();
-                    if (text.indexOf(searchTerm) === -1) {
-                        $row.hide();
-                    } else {
-                        $row.show();
-                    }
-                });
+                filteredData = fullData.filter(row =>
+                    Object.values(row).some(value =>
+                        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                );
+                currentPage = 1;
+                changePage(1);
             };
 
-            const fetchAndDisplayProductInfo = (page = 1) => {
-                const tableDiv = 'table_div_product_info';
-                $(`#${tableDiv}`).html('<p>Loading data...</p>');
-
-                const apiUrl = '/api-bulk/low-stock';
+            // Function to fetch and display data
+            const fetchAndDisplayData = (apiUrl = config.defaultApiUrl) => {
+                $('#tableWrapper').html('<p>Loading data...</p>');
 
                 $.ajax({
                     url: apiUrl,
                     method: 'GET',
                     dataType: 'json',
                     success: data => {
-                        fullData = data; // Store the full dataset
-                        const startIndex = (page - 1) * itemsPerPage;
-                        const endIndex = startIndex + itemsPerPage;
-                        const paginatedData = data.slice(startIndex, endIndex);
-                        generateDynamicTableProducts(paginatedData, tableDiv);
+                        fullData = data;
+                        totalRecords = data.length;
+                        filteredData = [...fullData];
+                        changePage(1);
                     },
                     error: (_, textStatus, errorThrown) => {
                         console.error('Error fetching data:', textStatus, errorThrown);
-                        $(`#${tableDiv}`).html('<p>Error loading data. Please try again later.</p>');
+                        $('#tableWrapper').html('<p>Error loading data. Please try again later.</p>');
                     }
                 });
             };
 
+            // Function to get table options
+            const getTableOptions = () => ({
+                actionButtons: [
+                    { text: 'Add', icon: 'fas fa-plus', class: 'btn-success', action: addProduct },
+                    { text: 'Excel', icon: 'fas fa-file-excel', class: 'btn-primary', action: exportToExcel },
+                    { text: 'Print', icon: 'fas fa-print', class: 'btn-secondary', action: printTable },
+                    { text: 'PDF', icon: 'fas fa-file-pdf', class: 'btn-warning', action: downloadPDF }
+                ]
+            });
+
+            // Action functions
+            const addProduct = () => {
+                console.log('Adding product...');
+                alert('Add product functionality to be implemented');
+            };
+
+            const viewProduct = (productId) => {
+                console.log('Viewing product:', productId);
+                alert(`View product functionality to be implemented for ID: ${productId}`);
+            };
+
+            const editProduct = (productId) => {
+                console.log('Editing product:', productId);
+                alert(`Edit product functionality to be implemented for ID: ${productId}`);
+            };
+
+            const deleteProduct = (productId) => {
+                console.log('Deleting product:', productId);
+                alert(`Delete product functionality to be implemented for ID: ${productId}`);
+            };
+
             const exportToExcel = () => {
-                // Implement Excel export functionality here
                 console.log('Exporting to Excel...');
                 alert('Excel export functionality to be implemented');
             };
@@ -170,123 +256,76 @@
             };
 
             const downloadPDF = () => {
-                // Implement PDF download functionality here
                 console.log('Downloading PDF...');
                 alert('PDF download functionality to be implemented');
             };
 
+            // Apply styles function
             const applyStyles = () => {
                 $('head').append(`
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-          @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
 
-          .table-responsive {
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            padding: 15px;
-          }
-          .dynamic-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Roboto', sans-serif;
-            font-size: 11px;
-          }
-          .dynamic-table th, .dynamic-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #e0e0e0;
-            text-align: left;
-          }
-          .dynamic-table th {
-            background-color: #f8f9fa;
-            font-weight: 700;
-            color: #495057;
-            text-transform: uppercase;
-          }
-          .dynamic-table tr:last-child td { border-bottom: none; }
-          .dynamic-table tr:hover { background-color: #f1f3f5; }
-          .action-buttons {
-            white-space: nowrap;
-          }
-          .action-buttons .btn {
-            padding: 2px 4px;
-            font-size: 10px;
-            margin-right: 2px;
-          }
-          .action-buttons .btn i { margin-right: 0; }
-          .btn-group .btn {
-            margin-right: 10px;
-          }
-          .btn-group .btn i {
-            margin-right: 5px;
-          }
-          .pagination-wrapper {
-            font-size: 12px;
-          }
-          .pagination-wrapper select {
-            font-size: 12px;
-          }
-          .pagination-controls .btn {
-            font-size: 12px;
-            padding: 2px 8px;
-          }
-          @media print {
-            .btn-group, .search-input, .pagination-wrapper {
-              display: none;
-            }
-          }
-        </style>
-      `);
+    .table-responsive {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 12px;
+    }
+    .dynamic-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Roboto', sans-serif;
+        font-size: 11px;
+    }
+    .dynamic-table th, .dynamic-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    .dynamic-table th {
+        background-color: #f8f9fa;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+    }
+    .dynamic-table tr:last-child td { border-bottom: none; }
+    .dynamic-table tr:hover { background-color: #f1f3f5; }
+    .action-buttons {
+        white-space: nowrap;
+    }
+    .action-buttons .btn {
+        padding: 2px 4px;
+        font-size: 10px;
+        margin-right: 2px;
+    }
+    .action-buttons .btn i { margin-right: 0; }
+    .back-button, .btn-group .btn {
+        margin-right: 10px;
+    }
+    .back-button i, .btn-group .btn i {
+        margin-right: 5px;
+    }
+    @media print {
+        .btn-group, .back-button, #searchInput, .pagination {
+            display: none;
+        }
+    }
+</style>
+`);
             };
 
+            // Initialize
             $(() => {
-                fetchAndDisplayProductInfo();
-
-                $(document).on('input', '.search-input', function() {
-                    const searchTerm = $(this).val().toLowerCase();
-                    filterTable(searchTerm);
-                });
-
-                $(document).on('click', '.excel-export', exportToExcel);
-                $(document).on('click', '.print-table', printTable);
-                $(document).on('click', '.download-pdf', downloadPDF);
-
-                $(document).on('click', '.edit-product', function() {
-                    const productId = $(this).data('product-id');
-                    console.log('Editing product ID:', productId);
-                    // Implement edit functionality here
-                });
-
-                $(document).on('click', '.delete-product', function() {
-                    const productId = $(this).data('product-id');
-                    console.log('Deleting product ID:', productId);
-                    // Implement delete functionality here
-                });
-
-                $(document).on('change', '.rows-per-page-wrapper select', function() {
-                    itemsPerPage = parseInt($(this).val());
-                    currentPage = 1;
-                    fetchAndDisplayProductInfo(currentPage);
-                });
-
-                $(document).on('click', '.pagination-controls button', function() {
-                    if ($(this).html() === '&lt;') {
-                        if (currentPage > 1) {
-                            currentPage--;
-                            fetchAndDisplayProductInfo(currentPage);
-                        }
-                    } else {
-                        const totalPages = Math.ceil(fullData.length / itemsPerPage);
-                        if (currentPage < totalPages) {
-                            currentPage++;
-                            fetchAndDisplayProductInfo(currentPage);
-                        }
-                    }
-                });
+                applyStyles();
+                initializePage();
+                $(document).on('click', '.back-button', () => fetchAndDisplayData());
             });
         })(jQuery);
     </script>
 </div>
+
+
 

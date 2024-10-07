@@ -31,6 +31,25 @@ public class ProductFlowController {
         return "products/my-products-list-data";
     }
 
+    @GetMapping("current-prices")
+    public String pricesData() {
+
+        return "products/my-prices-data";
+    }
+
+    @GetMapping("current-stock-manager")
+    public String stockManagerModule() {
+
+        return "products/current-stock-manager";
+    }
+
+    @GetMapping("current-new-prices")
+    public String priceManager() {
+
+        return "products/current-price-manager";
+    }
+
+
 
     @GetMapping("stock-levels")
     public String stockLevels() {
@@ -38,12 +57,6 @@ public class ProductFlowController {
         return "products/stock-levels";
     }
 
-
-    @GetMapping("below-stock")
-    public String belowStockLevels() {
-
-        return "products/below-stock-levels";
-    }
 
     @GetMapping("history-data")
     public String allHistoryDataList() {
