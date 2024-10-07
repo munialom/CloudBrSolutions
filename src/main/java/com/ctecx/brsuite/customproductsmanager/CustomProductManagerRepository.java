@@ -62,4 +62,7 @@ public interface CustomProductManagerRepository {
 
     List<Map<String, Object>>GetStockReportStores(LocalDate startDate, LocalDate endDate);
     List<Map<String, Object>>GetProductStockTransactions(int productID);
+
+    void deleteProductAndTransactions(Long productId);
+    void updateProductNameAndCode(Long productId, String newProductName, String newProductCode);
 }

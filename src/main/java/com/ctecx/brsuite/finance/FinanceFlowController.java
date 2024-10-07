@@ -45,17 +45,19 @@ public class FinanceFlowController {
         return "reports/products-summary";
     }
 
+    @GetMapping("products-sales-summary")
+    public String updatedData(Model model) {
+
+        return "reports/products-sales-summary";
+    }
+
     @GetMapping("stock-sheet")
     public String stockSheet(Model model) {
 
         return "reports/new-stock-sheet-data";
     }
 
- /*   @GetMapping("stock-sheet")
-    public String stockSheet(Model model) {
 
-        return "reports/stock-sheet";
-    }*/
 
     @GetMapping("stock-sheet-meals")
     public String stockSheetMeals(Model model) {

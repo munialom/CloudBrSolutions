@@ -161,4 +161,16 @@ public class CustomProductManagerRestController {
   return ResponseEntity.ok(transactions);
  }
 
+ @DeleteMapping("/{id}")
+ public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+ customManagerProductService.deleteProductAndTransactions(id);
+  return ResponseEntity.noContent().build();
+ }
+
+ @PutMapping("/{id}")
+ public ResponseEntity<Void> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateRequest request) {
+  customManagerProductService.updateProductNameAndCode(id, request.getNewName(), request.getNewCode());
+  return ResponseEntity.ok().build();
+ }
+
 }

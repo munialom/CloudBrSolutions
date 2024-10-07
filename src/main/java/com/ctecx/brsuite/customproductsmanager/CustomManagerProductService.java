@@ -5,6 +5,7 @@ import com.ctecx.brsuite.util.SalesDateTimeManager;
 import com.ctecx.brsuite.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -147,4 +148,16 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetProductStockTransactions(productID);
     }
 
+
+
+    @Transactional
+    public void deleteProductAndTransactions(Long productId) {
+        customProductManagerRepository.deleteProductAndTransactions(productId);
+    }
+
+
+    @Transactional
+    public void updateProductNameAndCode(Long productId, String newProductName, String newProductCode) {
+        customProductManagerRepository.updateProductNameAndCode(productId, newProductName, newProductCode);
+    }
 }

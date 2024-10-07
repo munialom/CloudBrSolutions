@@ -1,11 +1,10 @@
-
 <!-- Enhanced Sales Report Form -->
 <div id="enhancedSalesReportSystem">
    <div class="row p-3">
       <div class="col-xl-12">
          <div class="card mt-2">
             <div class="card-header">
-               <h6 class="mb-0">Sales Report By Category</h6>
+               <h6 class="mb-0">Enhanced Sales Report</h6>
             </div>
             <div class="row">
                <div class="col-md-12">
@@ -23,7 +22,7 @@
    ($ => {
       // Configuration
       const config = {
-         revenueSummaryApiUrl: '/api/products-manager/revenue-summary',
+         enhancedSalesReportApiUrl: '/api/products-manager/enhanced-sales-report',
          recordsPerPage: 10
       };
 
@@ -38,14 +37,22 @@
          const $target = $('#table_div_content');
          $target.empty();
 
-         // Create date input
-         const $dateInput = $('<div>').addClass('row mb-3');
-         $dateInput.append(
+         // Create date range inputs
+         const $dateInputs = $('<div>').addClass('row mb-3');
+         $dateInputs.append(
                  $('<div>').addClass('col-md-4').append(
-                         $('<label>').attr('for', 'datePicker').text('Select Date:'),
+                         $('<label>').attr('for', 'startDate').text('Start Date:'),
                          $('<input>').attr({
                             type: 'date',
-                            id: 'datePicker',
+                            id: 'startDate',
+                            class: 'form-control'
+                         })
+                 ),
+                 $('<div>').addClass('col-md-4').append(
+                         $('<label>').attr('for', 'endDate').text('End Date:'),
+                         $('<input>').attr({
+                            type: 'date',
+                            id: 'endDate',
                             class: 'form-control'
                          })
                  ),
@@ -53,7 +60,7 @@
                          $('<button>').attr('id', 'loadReport').text('Load Report').addClass('btn btn-primary')
                  )
          );
-         $target.append($dateInput);
+         $target.append($dateInputs);
 
          // Create and append the search input
          const $searchInput = $('<input>')
@@ -76,16 +83,18 @@
          });
 
          $('#loadReport').on('click', function() {
-            const selectedDate = $('#datePicker').val();
-            loadRevenueSummary(selectedDate);
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+            loadEnhancedSalesReport(startDate, endDate);
          });
 
-         // Set default date to current day
+         // Set default dates to current day
          const today = new Date().toISOString().split('T')[0];
-         $('#datePicker').val(today);
+         $('#startDate').val(today);
+         $('#endDate').val(today);
 
          // Fetch and display initial data for the current date
-         loadRevenueSummary(today);
+         loadEnhancedSalesReport(today, today);
       };
 
       // Reusable function to generate dynamic table
@@ -123,13 +132,16 @@
             return;
          }
 
-         const headers = Object.keys(data[0]);
+         const headers = [...new Set(data.flatMap(Object.keys))];
          const $table = $('<table>').addClass('dynamic-table');
          const $thead = $('<thead>').appendTo($table);
          const $tbody = $('<tbody>').appendTo($table);
 
          const $headerRow = $('<tr>');
          headers.forEach(h => $headerRow.append($('<th>').text(h)));
+         if (!isDetailView) {
+            $headerRow.append($('<th>').text('Actions'));
+         }
          $headerRow.appendTo($thead);
 
          data.forEach(row => {
@@ -137,10 +149,9 @@
             headers.forEach(h => {
                let $cell;
                const val = row[h];
-               if (h === 'Revenue Account') {
-                  $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A')
-                          .addClass(`revenue-${val.toLowerCase().replace(/\s+/g, '-')}`);
-               } else if (['Profit Percentage', 'Profit Amount'].includes(h)) {
+               if (h === 'Product Name') {
+                  $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A').addClass('product-name');
+               } else if (['Profit', 'ROI %', 'Gross Margin Ratio'].includes(h)) {
                   const numVal = parseFloat(val);
                   $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A')
                           .addClass(numVal < 0 ? 'negative' : 'positive');
@@ -149,6 +160,17 @@
                }
                $dataRow.append($cell);
             });
+            if (!isDetailView) {
+               $dataRow.append(
+                       $('<td>').addClass('action-buttons').append(
+                               actionButtons.map(button =>
+                                       $('<button>').addClass(`btn btn-sm ${button.class}`)
+                                               .html(`<i class="${button.icon}"></i>`)
+                                               .on('click', () => button.action(row[headers[0]]))
+                               )
+                       )
+               );
+            }
             $dataRow.appendTo($tbody);
          });
 
@@ -225,12 +247,12 @@
          changePage(1);
       };
 
-      // Function to load revenue summary
-      const loadRevenueSummary = (date) => {
-         $('#tableWrapper').html('<p>Loading revenue summary...</p>');
+      // Function to load enhanced sales report
+      const loadEnhancedSalesReport = (startDate, endDate) => {
+         $('#tableWrapper').html('<p>Loading enhanced sales report...</p>');
 
          $.ajax({
-            url: `${config.revenueSummaryApiUrl}/${date}`,
+            url: `${config.enhancedSalesReportApiUrl}?startDate=${startDate}&endDate=${endDate}`,
             method: 'GET',
             dataType: 'json',
             success: data => {
@@ -240,12 +262,12 @@
                   filteredData = [...fullData];
                   changePage(1);
                } else {
-                  $('#tableWrapper').html('<p>No records found for the selected date.</p>');
+                  $('#tableWrapper').html('<p>No records found for the selected date range.</p>');
                }
             },
             error: (_, textStatus, errorThrown) => {
-               console.error('Error loading revenue summary:', textStatus, errorThrown);
-               $('#tableWrapper').html('<p>Error loading revenue summary. Please try again later.</p>');
+               console.error('Error loading enhanced sales report:', textStatus, errorThrown);
+               $('#tableWrapper').html('<p>Error loading enhanced sales report. Please try again later.</p>');
             }
          });
       };
@@ -253,25 +275,46 @@
       // Function to get table options
       const getTableOptions = () => ({
          actionButtons: [
+            { text: 'Add', icon: 'fas fa-plus', class: 'btn-success', action: addProduct },
             { text: 'Excel', icon: 'fas fa-file-excel', class: 'btn-primary', action: exportToExcel },
-            { text: 'PDF', icon: 'fas fa-file-pdf', class: 'btn-warning', action: downloadPDF },
-            { text: 'Print', icon: 'fas fa-print', class: 'btn-secondary', action: printTable }
+            { text: 'Print', icon: 'fas fa-print', class: 'btn-secondary', action: printTable },
+            { text: 'PDF', icon: 'fas fa-file-pdf', class: 'btn-warning', action: downloadPDF }
          ]
       });
 
       // Action functions
+      const addProduct = () => {
+         console.log('Adding product...');
+         alert('Add product functionality to be implemented');
+      };
+
+      const viewProduct = (productId) => {
+         console.log('Viewing product:', productId);
+         alert(`View product functionality to be implemented for ID: ${productId}`);
+      };
+
+      const editProduct = (productId) => {
+         console.log('Editing product:', productId);
+         alert(`Edit product functionality to be implemented for ID: ${productId}`);
+      };
+
+      const deleteProduct = (productId) => {
+         console.log('Deleting product:', productId);
+         alert(`Delete product functionality to be implemented for ID: ${productId}`);
+      };
+
       const exportToExcel = () => {
          console.log('Exporting to Excel...');
          alert('Excel export functionality to be implemented');
       };
 
+      const printTable = () => {
+         window.print();
+      };
+
       const downloadPDF = () => {
          console.log('Downloading PDF...');
          alert('PDF download functionality to be implemented');
-      };
-
-      const printTable = () => {
-         window.print();
       };
 
       // Apply styles function
@@ -286,17 +329,17 @@
         margin-bottom: 1rem;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         border-radius: 4px;
-        padding: 11px;
+        padding: 12px;
     }
     .dynamic-table {
         width: 100%;
         border-collapse: collapse;
         font-family: 'Roboto', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
     }
     .dynamic-table th, .dynamic-table td {
         padding: 8px 12px;
-        border: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
         text-align: left;
     }
     .dynamic-table th {
@@ -305,19 +348,26 @@
         color: #495057;
         text-transform: uppercase;
     }
+    .dynamic-table tr:last-child td { border-bottom: none; }
     .dynamic-table tr:hover { background-color: #f1f3f5; }
-    .revenue-food { background-color: #e8f5e9; }
-    .revenue-drinks { background-color: #e3f2fd; }
-    .revenue-alcohol { background-color: #fce4ec; }
-    .revenue-rooms { background-color: #fff3e0; }
-    .negative { color: #d32f2f; }
-    .positive { color: #388e3c; }
+    .action-buttons {
+        white-space: nowrap;
+    }
+    .action-buttons .btn {
+        padding: 2px 4px;
+        font-size: 10px;
+        margin-right: 2px;
+    }
+    .action-buttons .btn i { margin-right: 0; }
     .back-button, .btn-group .btn {
         margin-right: 10px;
     }
     .back-button i, .btn-group .btn i {
         margin-right: 5px;
     }
+    .product-name { font-weight: bold; }
+    .negative { color: #d32f2f; }
+    .positive { color: #388e3c; }
     @media print {
         .btn-group, .back-button, #searchInput, .pagination {
             display: none;
@@ -331,6 +381,13 @@
       $(() => {
          applyStyles();
          initializePage();
+         $(document).on('click', '.back-button', () => {
+            const today = new Date().toISOString().split('T')[0];
+            loadEnhancedSalesReport(today, today);
+         });
       });
    })(jQuery);
 </script>
+
+
+

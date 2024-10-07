@@ -205,4 +205,14 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
         return jdbcTemplate.queryForList("CALL GetProductStockTransactions(?)",productID);
     }
 
+    @Override
+    public void deleteProductAndTransactions(Long productId) {
+        jdbcTemplate.update("CALL DeleteProductAndTransactions(?)", productId);
+    }
+
+    @Override
+    public void updateProductNameAndCode(Long productId, String newProductName, String newProductCode) {
+        jdbcTemplate.update("CALL UpdateProductNameAndCode(?, ?, ?)", productId, newProductName, newProductCode);
+    }
+
 }
