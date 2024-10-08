@@ -3,6 +3,7 @@ package com.ctecx.brsuite.stockmode;
 import com.ctecx.brsuite.customers.Customer;
 import com.ctecx.brsuite.customers.CustomerService;
 import com.ctecx.brsuite.customproductsmanager.CustomManagerProductService;
+import com.ctecx.brsuite.customproductsmanager.CustomProductManagerRepository;
 import com.ctecx.brsuite.products.Product;
 import com.ctecx.brsuite.products.ProductRepository;
 import com.ctecx.brsuite.revenue.Revenue;
@@ -41,6 +42,7 @@ public class SalesService {
     private final SalesDateTimeManager salesDateTimeManager;
     private final TransactionTemplate transactionTemplate;
     private final CustomManagerProductService customManagerProductService;
+    private  final CustomProductManagerRepository customProductManagerRepository;
     private final StoreService storeService;
     private final TransactionService transactionService;
 
@@ -71,8 +73,11 @@ public class SalesService {
 
     @Transactional
     public String createCounterSales(SalesStockDTO salesStockDTO) {
-        String sn = generateUniqueSerialNumber();
-        String orderNumber = generateNewOrderNumber();
+       /* String sn = generateUniqueSerialNumber();
+        String orderNumber = generateNewOrderNumber();*/
+
+        String sn = customProductManagerRepository.generateUniqueSerialNumber("");
+        String orderNumber = customProductManagerRepository.generateNewOrderNumber();
 
         BigDecimal totalAmount = salesStockDTO.getTotalAmount();
         BigDecimal receivedAmount = salesStockDTO.getAmountPaid();
@@ -179,7 +184,7 @@ public class SalesService {
 
     @Transactional
     public String splitOrders(SplitOrderDTO splitOrderDTO) {
-        String serialNumber = generateUniqueSerialNumber();
+        String serialNumber = customProductManagerRepository.generateUniqueSerialNumber("");
         int updatedCount = customManagerProductService.updateSerialNumbers(serialNumber, splitOrderDTO.getIds());
         if (updatedCount != splitOrderDTO.getIds().size()) {
             throw new RuntimeException("Not all orders were updated. Expected: " + splitOrderDTO.getIds().size() + ", Actual: " + updatedCount);

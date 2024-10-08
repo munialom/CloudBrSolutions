@@ -70,4 +70,12 @@ public interface CustomProductManagerRepository {
     List<Map<String, Object>>GetPurchaseTransactionsReport(LocalDate startDate, LocalDate endDate);
 
     List<Map<String, Object>> GetAllProducts();
+
+    List<String> findSerialNumbersWithPrefix(String prefix);
+
+    List<String> findOrderNumbersWithPrefix(String prefix);
+    boolean existsBySerialNumber(String sn);
+    String generateUniqueSerialNumber(String type);
+
+    String generateNewOrderNumber();
 }

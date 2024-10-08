@@ -233,4 +233,36 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
         return jdbcTemplate.queryForList("CALL GetAllProducts()");
     }
 
+    @Override
+    public List<String> findSerialNumbersWithPrefix(String prefix) {
+        return jdbcTemplate.queryForList("CALL FindSerialNumbersWithPrefix(?)", String.class, prefix);
+    }
+
+    @Override
+    public List<String> findOrderNumbersWithPrefix(String prefix) {
+        return jdbcTemplate.queryForList("CALL FindOrderNumbersWithPrefix(?)", String.class, prefix);
+    }
+
+    @Override
+    public boolean existsBySerialNumber(String sn) {
+        return jdbcTemplate.queryForObject("CALL ExistsBySerialNumber(?)", Boolean.class, sn);
+    }
+
+    @Override
+    public String generateUniqueSerialNumber(String type) {
+        return jdbcTemplate.queryForObject(
+                "CALL GenerateUniqueSerialNumber(?)",
+                new Object[]{type},
+                (rs, rowNum) -> rs.getString("generated_serial_number")
+        );
+    }
+
+    @Override
+    public String generateNewOrderNumber() {
+        return jdbcTemplate.queryForObject(
+                "CALL GenerateNewOrderNumber()",
+                (rs, rowNum) -> rs.getString("generated_order_number")
+        );
+    }
+
 }
