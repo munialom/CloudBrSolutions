@@ -1,4 +1,5 @@
 
+
 <!--<div th:fragment="dashboard">
     <div class="row">
         <div class="col-md-12">
@@ -14,7 +15,8 @@
                         transition: all 0.3s;
                         border-radius: 10px;
                         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                        padding: 1rem;
+                        padding: 1.5rem;
+                        background-color: #ffffff;
                     }
                     .stat-card:hover {
                         transform: translateY(-5px);
@@ -27,21 +29,36 @@
                     .trend-up { color: #28a745; }
                     .trend-down { color: #dc3545; }
                     .trend-neutral { color: #6c757d; }
-                    .table th, .table td { vertical-align: middle; padding: 0.5rem; font-size: 0.9em; }
+                    .table th, .table td { vertical-align: middle; padding: 0.75rem; font-size: 0.95em; }
                     .table-hover tbody tr:hover { background-color: rgba(0,0,0,.075); }
                     .data-row {
                         display: flex;
                         flex-wrap: wrap;
                         align-items: center;
-                        margin-bottom: 2px;
+                        margin-bottom: 4px;
                     }
                     .value-span {
                         font-weight: bold;
-                        margin-right: 5px;
+                        margin-right: 8px;
+                        font-size: 1.1em;
                     }
                     small.text-muted {
                         display: block;
-                        font-size: 0.75em;
+                        font-size: 0.85em;
+                    }
+                    .change-indicator {
+                        margin-left: 5px;
+                        font-size: 0.9em;
+                    }
+                    .stat-title {
+                        font-size: 1.1em;
+                        font-weight: 500;
+                        margin-bottom: 0.5rem;
+                    }
+                    .stat-value {
+                        font-size: 1.8em;
+                        font-weight: 700;
+                        margin-bottom: 0.5rem;
                     }
                 </style>
 
@@ -57,7 +74,7 @@
                     <div class="row" id="statCards">
                         &lt;!&ndash; Stat cards will be dynamically inserted here &ndash;&gt;
                     </div>
-                    <div class="row mt-4">
+                    <div class="row mt-1">
                         <div class="col-12">
                             <h6>Detailed Revenue Analysis</h6>
                             <div class="table-responsive">
@@ -87,7 +104,8 @@
                     const formatChange = (value) => {
                         const numValue = parseFloat(value);
                         const icon = numValue > 0 ? 'fa-arrow-up' : (numValue < 0 ? 'fa-arrow-down' : 'fa-minus');
-                        return `<i class="fas ${icon}"></i> ${Math.abs(value)}%`;
+                        const colorClass = numValue > 0 ? 'trend-up' : (numValue < 0 ? 'trend-down' : 'trend-neutral');
+                        return `<span class="change-indicator ${colorClass}"><i class="fas ${icon}"></i> ${Math.abs(value)}%</span>`;
                     };
 
                     const getTrendClass = (value) => {
@@ -97,19 +115,19 @@
 
                     // Template functions
                     const statCardTemplate = (title, value, icon, change, changeClass, iconColor, id) => `
-                <div class="col-md-3 mb-4">
-                    <div class="card stat-card" id="${id}">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-subtitle text-muted">${title}</h6>
-                            <i class="${icon} ${iconColor} fa-2x"></i>
+                        <div class="col-md-3 mb-4">
+                            <div class="card stat-card" id="${id}">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="stat-title">${title}</h6>
+                                    <i class="${icon} ${iconColor} fa-2x"></i>
+                                </div>
+                                <h2 class="stat-value">${value}</h2>
+                                <p class="card-text">
+                                    <span class="${changeClass}">${change}</span>
+                                </p>
+                            </div>
                         </div>
-                        <h2 class="card-title mb-2">${value}</h2>
-                        <p class="card-text">
-                            <span class="${changeClass}">${change}</span>
-                        </p>
-                    </div>
-                </div>
-            `;
+                    `;
 
                     const createTableRow = (data, selectedDate) => {
                         const previousDate = new Date(selectedDate);
@@ -117,46 +135,51 @@
                         const formattedPreviousDate = previousDate.toISOString().split('T')[0];
 
                         return `
-                    <tr>
-                        <td>${data['Revenue Category']}</td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Paid Amount']}</span>
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Paid Amount']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Pending Amount']}</span>
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Pending Amount']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Total Amount']}</span>
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Total Amount']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Profit']}</span>
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Profit Margin %']}%</span>
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit Margin %']}%</small>
-                        </td>
-                    </tr>
-                `;
+                            <tr>
+                                <td>${data['Revenue Category']}</td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Paid Amount']}</span>
+                                        ${formatChange(data['Paid Amount Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Paid Amount']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Pending Amount']}</span>
+                                        ${formatChange(data['Pending Amount Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Pending Amount']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Total Amount']}</span>
+                                        ${formatChange(data['Total Amount Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Total Amount']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Profit']}</span>
+                                        ${formatChange(data['Profit Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Profit Margin %']}%</span>
+                                        ${formatChange((parseFloat(data['Current Profit Margin %']) - parseFloat(data['Previous Profit Margin %'])).toFixed(2))}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit Margin %']}%</small>
+                                </td>
+                            </tr>
+                        `;
                     };
 
                     // Update functions
                     const updateStatCard = (cardId, value, change) => {
                         const cardElement = $(`#${cardId}`);
-                        const valueElement = cardElement.find('.card-title');
+                        const valueElement = cardElement.find('.stat-value');
                         const changeElement = cardElement.find('.card-text span');
 
                         valueElement.text(value);
@@ -181,9 +204,9 @@
                             const totalData = response.find(item => item['Revenue Category'] === 'TOTAL');
 
                             if (totalData) {
+                                updateStatCard('totalAmount', totalData['Current Total Amount'], totalData['Total Amount Change %']);
                                 updateStatCard('paidAmount', totalData['Current Paid Amount'], totalData['Paid Amount Change %']);
                                 updateStatCard('pendingAmount', totalData['Current Pending Amount'], totalData['Pending Amount Change %']);
-                                updateStatCard('totalAmount', totalData['Current Total Amount'], totalData['Total Amount Change %']);
                                 updateStatCard('profit', totalData['Current Profit'], totalData['Profit Change %']);
                             }
 
@@ -207,9 +230,9 @@
                         dateInput.val(formattedToday);
 
                         const statCards = [
+                            { title: 'Total Sales', icon: 'fas fa-wallet', id: 'totalAmount', iconColor: 'icon-green' },
                             { title: 'Paid Amount', icon: 'fas fa-money-bill-wave', id: 'paidAmount', iconColor: 'icon-blue' },
                             { title: 'Pending Amount', icon: 'fas fa-clock', id: 'pendingAmount', iconColor: 'icon-orange' },
-                            { title: 'Total Sales', icon: 'fas fa-wallet', id: 'totalAmount', iconColor: 'icon-green' },
                             { title: 'Profit', icon: 'fas fa-chart-line', id: 'profit', iconColor: 'icon-purple' }
                         ];
 
@@ -238,48 +261,80 @@
         <div class="col-md-12">
             <div class="card p-3">
                 <style>
-                    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-                    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+                   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-                    body {
-                        font-family: 'Roboto', sans-serif;
-                    }
                     .stat-card {
                         transition: all 0.3s;
                         border-radius: 10px;
                         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
                         padding: 1rem;
+                        background-color: #ffffff;
+                        margin-bottom: 1rem;
                     }
                     .stat-card:hover {
                         transform: translateY(-5px);
                         box-shadow: 0 6px 12px rgba(0,0,0,0.15);
                     }
-                    .icon-blue { color: #007bff; }
-                    .icon-green { color: #28a745; }
-                    .icon-orange { color: #fd7e14; }
-                    .icon-purple { color: #6f42c1; }
+                    .icon-box {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 8px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-right: 1rem;
+                    }
+                    .icon-box i {
+                        font-size: 1.2rem;
+                        color: #ffffff;
+                    }
+                    .stat-content {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
+                    .stat-info {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    .stat-title {
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                        color: #6c757d;
+                        margin-bottom: 0.25rem;
+                    }
+                    .stat-value {
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                        margin-bottom: 0.25rem;
+                    }
+                    .stat-change {
+                        font-size: 0.8rem;
+                        color: #6c757d;
+                    }
                     .trend-up { color: #28a745; }
                     .trend-down { color: #dc3545; }
                     .trend-neutral { color: #6c757d; }
-                    .table th, .table td { vertical-align: middle; padding: 0.5rem; font-size: 0.9em; }
+                    .table th, .table td { vertical-align: middle; padding: 0.75rem; font-size: 0.95em; }
                     .table-hover tbody tr:hover { background-color: rgba(0,0,0,.075); }
                     .data-row {
                         display: flex;
                         flex-wrap: wrap;
                         align-items: center;
-                        margin-bottom: 2px;
+                        margin-bottom: 4px;
                     }
                     .value-span {
                         font-weight: bold;
-                        margin-right: 5px;
+                        margin-right: 8px;
+                        font-size: 1.1em;
                     }
                     small.text-muted {
                         display: block;
-                        font-size: 0.75em;
+                        font-size: 0.85em;
                     }
                     .change-indicator {
                         margin-left: 5px;
-                        font-size: 0.8em;
+                        font-size: 0.9em;
                     }
                 </style>
 
@@ -295,7 +350,7 @@
                     <div class="row" id="statCards">
                         <!-- Stat cards will be dynamically inserted here -->
                     </div>
-                    <div class="row mt-4">
+                    <div class="row mt-1">
                         <div class="col-12">
                             <h6>Detailed Revenue Analysis</h6>
                             <div class="table-responsive">
@@ -319,7 +374,7 @@
                     </div>
                 </div>
 
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
                 <script>
                     // Utility functions
                     const formatChange = (value) => {
@@ -336,19 +391,23 @@
 
                     // Template functions
                     const statCardTemplate = (title, value, icon, change, changeClass, iconColor, id) => `
-                <div class="col-md-3 mb-4">
-                    <div class="card stat-card" id="${id}">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="card-subtitle text-muted">${title}</h6>
-                            <i class="${icon} ${iconColor} fa-2x"></i>
+                        <div class="col-md-3 mb-4">
+                            <div class="card stat-card" id="${id}">
+                                <div class="stat-content">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box" style="background-color: ${iconColor};">
+                                            <i class="${icon}"></i>
+                                        </div>
+                                        <div class="stat-info">
+                                            <div class="stat-title">${title}</div>
+                                            <div class="stat-value">${value}</div>
+                                        </div>
+                                    </div>
+                                    <div class="stat-change ${changeClass}">${change}</div>
+                                </div>
+                            </div>
                         </div>
-                        <h2 class="card-title mb-2">${value}</h2>
-                        <p class="card-text">
-                            <span class="${changeClass}">${change}</span>
-                        </p>
-                    </div>
-                </div>
-            `;
+                    `;
 
                     const createTableRow = (data, selectedDate) => {
                         const previousDate = new Date(selectedDate);
@@ -356,52 +415,52 @@
                         const formattedPreviousDate = previousDate.toISOString().split('T')[0];
 
                         return `
-                    <tr>
-                        <td>${data['Revenue Category']}</td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Paid Amount']}</span>
-                                ${formatChange(data['Paid Amount Change %'])}
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Paid Amount']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Pending Amount']}</span>
-                                ${formatChange(data['Pending Amount Change %'])}
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Pending Amount']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Total Amount']}</span>
-                                ${formatChange(data['Total Amount Change %'])}
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Total Amount']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Profit']}</span>
-                                ${formatChange(data['Profit Change %'])}
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit']}</small>
-                        </td>
-                        <td>
-                            <div class="data-row">
-                                <span class="value-span">${data['Current Profit Margin %']}%</span>
-                                ${formatChange((parseFloat(data['Current Profit Margin %']) - parseFloat(data['Previous Profit Margin %'])).toFixed(2))}
-                            </div>
-                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit Margin %']}%</small>
-                        </td>
-                    </tr>
-                `;
+                            <tr>
+                                <td>${data['Revenue Category']}</td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Paid Amount']}</span>
+                                        ${formatChange(data['Paid Amount Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Paid Amount']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Pending Amount']}</span>
+                                        ${formatChange(data['Pending Amount Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Pending Amount']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Total Amount']}</span>
+                                        ${formatChange(data['Total Amount Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Total Amount']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Profit']}</span>
+                                        ${formatChange(data['Profit Change %'])}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit']}</small>
+                                </td>
+                                <td>
+                                    <div class="data-row">
+                                        <span class="value-span">${data['Current Profit Margin %']}%</span>
+                                        ${formatChange((parseFloat(data['Current Profit Margin %']) - parseFloat(data['Previous Profit Margin %'])).toFixed(2))}
+                                    </div>
+                                    <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit Margin %']}%</small>
+                                </td>
+                            </tr>
+                        `;
                     };
 
                     // Update functions
                     const updateStatCard = (cardId, value, change) => {
                         const cardElement = $(`#${cardId}`);
-                        const valueElement = cardElement.find('.card-title');
-                        const changeElement = cardElement.find('.card-text span');
+                        const valueElement = cardElement.find('.stat-value');
+                        const changeElement = cardElement.find('.stat-change');
 
                         valueElement.text(value);
 
@@ -425,10 +484,10 @@
                             const totalData = response.find(item => item['Revenue Category'] === 'TOTAL');
 
                             if (totalData) {
+                                updateStatCard('totalAmount', totalData['Current Total Amount'], totalData['Total Amount Change %']);
                                 updateStatCard('paidAmount', totalData['Current Paid Amount'], totalData['Paid Amount Change %']);
                                 updateStatCard('pendingAmount', totalData['Current Pending Amount'], totalData['Pending Amount Change %']);
-                                updateStatCard('totalAmount', totalData['Current Total Amount'], totalData['Total Amount Change %']);
-                                updateStatCard('profit', totalData['Current Profit'], totalData['Profit Change %']);
+                                updateStatCard('cancelledAmount', 'KES 0.00', '0.00%');  // Assuming cancelled amount is not provided in the API
                             }
 
                             const tableBody = $('#revenueTable tbody');
@@ -451,16 +510,16 @@
                         dateInput.val(formattedToday);
 
                         const statCards = [
-                            { title: 'Paid Amount', icon: 'fas fa-money-bill-wave', id: 'paidAmount', iconColor: 'icon-blue' },
-                            { title: 'Pending Amount', icon: 'fas fa-clock', id: 'pendingAmount', iconColor: 'icon-orange' },
-                            { title: 'Total Sales', icon: 'fas fa-wallet', id: 'totalAmount', iconColor: 'icon-green' },
-                            { title: 'Profit', icon: 'fas fa-chart-line', id: 'profit', iconColor: 'icon-purple' }
+                            { title: 'Total Amount', icon: 'fas fa-credit-card', id: 'totalAmount', iconColor: '#FF4081' },
+                            { title: 'Paid Amount', icon: 'fas fa-check-circle', id: 'paidAmount', iconColor: '#00BCD4' },
+                            { title: 'Pending Amount', icon: 'fas fa-clock', id: 'pendingAmount', iconColor: '#2196F3' },
+                            { title: 'Cancelled Amount', icon: 'fas fa-times-circle', id: 'cancelledAmount', iconColor: '#ff0015' }
                         ];
 
                         const statCardsContainer = $('#statCards');
                         statCardsContainer.empty();
                         statCards.forEach(card => {
-                            statCardsContainer.append(statCardTemplate(card.title, 'KES 0.00', card.icon, '0.00%', 'text-muted', card.iconColor, card.id));
+                            statCardsContainer.append(statCardTemplate(card.title, 'KES 0.00', card.icon, '0%', 'trend-neutral', card.iconColor, card.id));
                         });
 
                         fetchData(today);
