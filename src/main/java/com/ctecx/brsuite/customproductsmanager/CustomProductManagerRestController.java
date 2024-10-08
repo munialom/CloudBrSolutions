@@ -173,4 +173,18 @@ public class CustomProductManagerRestController {
   return ResponseEntity.ok().build();
  }
 
+ @GetMapping("/supplier-cumulative-value")
+ public ResponseEntity<List<Map<String, Object>>> getSupplierCumulativeValue() {
+  List<Map<String, Object>> supplierCumulativeValue = customManagerProductService.GetSupplierCumulativeValue();
+  return ResponseEntity.ok(supplierCumulativeValue);
+ }
+
+
+ @GetMapping("/purchase-transactions-report")
+ public ResponseEntity<List<Map<String, Object>>> getPurchaseTransactionsReport(
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+  List<Map<String, Object>> report = customManagerProductService.GetPurchaseTransactionsReport(startDate, endDate);
+  return ResponseEntity.ok(report);
+ }
 }

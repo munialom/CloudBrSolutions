@@ -205,18 +205,6 @@ public class StockService {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     public void uploadProductsFromExcel(MultipartFile file) {
         try {
             // Create a new workbook and sheet for the Excel file

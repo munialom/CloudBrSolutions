@@ -160,4 +160,20 @@ public class CustomManagerProductService {
     public void updateProductNameAndCode(Long productId, String newProductName, String newProductCode) {
         customProductManagerRepository.updateProductNameAndCode(productId, newProductName, newProductCode);
     }
+
+    public List<Map<String, Object>> GetSupplierCumulativeValue() {
+
+        return   customProductManagerRepository.GetSupplierCumulativeValue();
+    }
+
+    public List<Map<String, Object>> GetPurchaseTransactionsReport(LocalDate startDate, LocalDate endDate) {
+
+        return customProductManagerRepository.GetPurchaseTransactionsReport(startDate, endDate);
+    }
+
+    public List<Map<String, Object>> GetAllProducts() {
+
+        return   customProductManagerRepository.GetAllProducts();
+    }
+
 }

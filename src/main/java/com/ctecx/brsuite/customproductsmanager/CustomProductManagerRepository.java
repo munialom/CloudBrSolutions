@@ -65,4 +65,9 @@ public interface CustomProductManagerRepository {
 
     void deleteProductAndTransactions(Long productId);
     void updateProductNameAndCode(Long productId, String newProductName, String newProductCode);
+
+    List<Map<String, Object>> GetSupplierCumulativeValue();
+    List<Map<String, Object>>GetPurchaseTransactionsReport(LocalDate startDate, LocalDate endDate);
+
+    List<Map<String, Object>> GetAllProducts();
 }

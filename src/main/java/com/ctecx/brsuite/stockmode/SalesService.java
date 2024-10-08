@@ -5,12 +5,15 @@ import com.ctecx.brsuite.customers.CustomerService;
 import com.ctecx.brsuite.customproductsmanager.CustomManagerProductService;
 import com.ctecx.brsuite.products.Product;
 import com.ctecx.brsuite.products.ProductRepository;
+import com.ctecx.brsuite.revenue.Revenue;
 import com.ctecx.brsuite.transactions.OrderState;
 import com.ctecx.brsuite.transactions.PaymentState;
 import com.ctecx.brsuite.transactions.SaleTransactionDTO;
 import com.ctecx.brsuite.transactions.TransactionService;
+import com.ctecx.brsuite.util.ResourceNotFoundException;
 import com.ctecx.brsuite.util.SalesDateTimeManager;
 import com.ctecx.brsuite.warehouse.StoreService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -23,7 +26,10 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -38,7 +44,55 @@ public class SalesService {
     private final StoreService storeService;
     private final TransactionService transactionService;
 
+    private final ConcurrentHashMap<String, Product> productCache = new ConcurrentHashMap<>();
+
+
+
+    @PostConstruct
+    public void initializeCache() {
+        refreshCache();
+    }
+
+    public void refreshCache() {
+        List<Map<String, Object>> allProducts = customManagerProductService.GetAllProducts();
+        productCache.clear();
+        productCache.putAll(allProducts.stream()
+                .map(this::mapProductDataToProduct)
+                .collect(Collectors.toMap(Product::getProductCode, product -> product)));
+    }
+
+    private Product getProductByCode(String productCode) {
+        Product product = productCache.get(productCode);
+        if (product == null) {
+            throw new ResourceNotFoundException("Product not found with code: " + productCode);
+        }
+        return product;
+    }
+
     @Transactional
+    public String createCounterSales(SalesStockDTO salesStockDTO) {
+        String sn = generateUniqueSerialNumber();
+        String orderNumber = generateNewOrderNumber();
+
+        BigDecimal totalAmount = salesStockDTO.getTotalAmount();
+        BigDecimal receivedAmount = salesStockDTO.getAmountPaid();
+        BigDecimal changeOut = calculateChangeOut(totalAmount, receivedAmount);
+
+        List<StockTransaction> stockTransactions = new ArrayList<>();
+        for (SaleStock saleStock : salesStockDTO.getSaleStocks()) {
+            Product product = getProductByCode(saleStock.getProductCode());
+            StockTransaction stockTransaction = createStockTransaction(saleStock, product, sn, orderNumber, salesStockDTO, changeOut);
+            stockTransactions.add(stockTransaction);
+        }
+        stockTransactionRepository.saveAll(stockTransactions);
+
+        // Create and process financial transactions
+        SaleTransactionDTO saleTransactionDTO = createSaleTransactionDTO(salesStockDTO, sn, changeOut);
+        transactionService.processSaleTransaction(saleTransactionDTO);
+
+        return orderNumber;
+    }
+/*    @Transactional
     public String createCounterSales(SalesStockDTO salesStockDTO) {
         String sn = generateUniqueSerialNumber();
         String orderNumber = generateNewOrderNumber();
@@ -60,7 +114,7 @@ public class SalesService {
         transactionService.processSaleTransaction(saleTransactionDTO);
 
         return orderNumber;
-    }
+    }*/
 
     private BigDecimal calculateChangeOut(BigDecimal totalAmount, BigDecimal receivedAmount) {
         return receivedAmount.subtract(totalAmount).max(BigDecimal.ZERO);
@@ -133,57 +187,30 @@ public class SalesService {
         return serialNumber;
     }
 
-/*    private StockTransaction createStockTransaction(SaleStock saleStock, Product product, String sn,String oderNumber, SalesStockDTO salesStockDTO) {
-        StockTransaction stockTransaction = new StockTransaction();
-        ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
-        LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
-        System.out.println("Zone Time"+transactionDateTime);
-        System.out.println("Date"+salesDate);
-        log.info("Processing sale at {} for sales date {}", transactionDateTime, salesDate);
+    private Product mapProductDataToProduct(Map<String, Object> productData) {
+        Product product = new Product();
+        product.setId(((Number) productData.get("id")).longValue());
+        product.setProductCode((String) productData.get("product_code"));
+        product.setProductName((String) productData.get("product_name"));
+        product.setProductType((String) productData.get("product_type"));
+        product.setProductCost(((Number) productData.get("product_cost")).doubleValue());
+        product.setProductPrice(((Number) productData.get("product_price")).doubleValue());
+        product.setAlertQuantity((Integer) productData.get("alert_qty"));
+        product.setTaxMode((String) productData.get("tax_mode"));
 
-
-
-        stockTransaction.setProductCode(product.getProductCode());
-        stockTransaction.setProductName(product.getProductName());
-        stockTransaction.setTransactionDate(salesDate);
-        stockTransaction.setProduct(product);
-        stockTransaction.setModule("SALES");
-        stockTransaction.setSubModule("CASH SALE");
-        stockTransaction.setStockIn(0);
-        stockTransaction.setRevenue(product.getRevenue());
-        stockTransaction.setRevenue_code(product.getRevenue().getRevenueName());
-
-        Optional<Customer> optionalCustomer = Optional.ofNullable(customerService.getCustomerById(salesStockDTO.getCustomerId()));
-        optionalCustomer.ifPresent(stockTransaction::setCustomer);
-
-        stockTransaction.setStockOut(saleStock.getQty());
-        stockTransaction.setDescription("Stock Sale for " + product.getProductName());
-        stockTransaction.setStatus("Active");
-        System.out.println("Current Mode"+salesStockDTO.isAddItems());
-        System.out.println("ExistingSerialNumber"+salesStockDTO.getExistingSerialNumber());
-
-        // Check if addItems is true and use existingSerialNumber if available
-        if (salesStockDTO.isAddItems()){
-            stockTransaction.setSerialNumber(salesStockDTO.getExistingSerialNumber());
-        } else {
-            stockTransaction.setSerialNumber(sn);
+        // Handle Revenue
+        Long revenueId = productData.get("revenue_id") != null ? ((Number) productData.get("revenue_id")).longValue() : null;
+        String revenueName = (String) productData.get("revenue_name");
+        if (revenueId != null && revenueName != null) {
+            Revenue revenue = new Revenue();
+            revenue.setId(revenueId);
+            revenue.setRevenueName(revenueName);
+            product.setRevenue(revenue);
         }
 
-        stockTransaction.setProductCost(product.getProductCost());
-        stockTransaction.setProductSalePrice(product.getProductPrice());
-        stockTransaction.setDiscount(saleStock.getDiscount());
-        stockTransaction.setTax(saleStock.getTax());
-        stockTransaction.setNetTax(saleStock.getNetTax());
-        stockTransaction.setSubtotal(saleStock.getSubtotal());
-        stockTransaction.setChangeOut(changeOut);
-        stockTransaction.setPaymentState(PaymentState.PENDING);
-        stockTransaction.setOrderState(OrderState.OPEN);
-        stockTransaction.setTransactionDate(salesDate);
-        stockTransaction.setStore(storeService.getDefaultCounterStore());
-        stockTransaction.setOrderNumber(oderNumber);
 
-        return stockTransaction;
-    }*/
+        return product;
+    }
 
 
 

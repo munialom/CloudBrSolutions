@@ -18,7 +18,13 @@ public class SupplierFlowController {
 
     @GetMapping("list")
     public String supplierList(Model model) {
-        return "suppliers/suppliers-list";
+        return "suppliers/my-suppliers-list-data";
+    }
+
+
+    @GetMapping("purchase-transactions")
+    public String allPurchases(Model model) {
+        return "suppliers/purchase_transaction";
     }
 
 
@@ -64,17 +70,8 @@ public class SupplierFlowController {
         return "suppliers/purchase-orders";
     }
 
-    // New endpoint for stock issuance
-    @GetMapping("supplier-managers")
-    public String pendingOrders(Model model) {
-        // Add any necessary attributes to the model
-        return "suppliers/my-suppliers-manager";
-    }
 
 
-    @GetMapping("historical-data")
-    public String historicalData(Model model) {
-        // Add any necessary attributes to the model
-        return "suppliers/historical-data";
-    }
+
+
 }

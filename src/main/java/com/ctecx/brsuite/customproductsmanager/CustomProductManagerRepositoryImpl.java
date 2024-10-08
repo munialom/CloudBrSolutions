@@ -215,4 +215,22 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
         jdbcTemplate.update("CALL UpdateProductNameAndCode(?, ?, ?)", productId, newProductName, newProductCode);
     }
 
+    @Override
+    public List<Map<String, Object>> GetSupplierCumulativeValue() {
+
+        return jdbcTemplate.queryForList("CALL GetSupplierCumulativeValue()");
+    }
+
+    @Override
+    public List<Map<String, Object>> GetPurchaseTransactionsReport(LocalDate startDate, LocalDate endDate) {
+
+        return jdbcTemplate.queryForList("CALL GetPurchaseTransactionsReport(?,?)",startDate, endDate);
+    }
+
+    @Override
+    public List<Map<String, Object>> GetAllProducts() {
+
+        return jdbcTemplate.queryForList("CALL GetAllProducts()");
+    }
+
 }
