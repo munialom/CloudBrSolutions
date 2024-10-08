@@ -176,4 +176,10 @@ public class CustomManagerProductService {
         return   customProductManagerRepository.GetAllProducts();
     }
 
+
+    public List<Map<String, Object>> GetRevenueMovement(LocalDate localDate) {
+
+        return   customProductManagerRepository.GetRevenueMovement(localDate);
+    }
+
 }

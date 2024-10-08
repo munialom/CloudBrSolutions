@@ -265,4 +265,10 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
         );
     }
 
+    @Override
+    public List<Map<String, Object>> GetRevenueMovement(LocalDate localDate) {
+
+        return jdbcTemplate.queryForList("CALL  GetRevenueMovement(?)",localDate);
+    }
+
 }

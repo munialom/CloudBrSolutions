@@ -39,6 +39,15 @@ public class DashboardController {
 	}
 
 
+	@GetMapping("stats")
+	public String currentstats(Model model) {
+
+		return "dashboard/stats";
+
+	}
+
+
+
 
 
 

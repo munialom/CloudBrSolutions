@@ -78,4 +78,6 @@ public interface CustomProductManagerRepository {
     String generateUniqueSerialNumber(String type);
 
     String generateNewOrderNumber();
+
+    List<Map<String, Object>> GetRevenueMovement(LocalDate localDate);
 }

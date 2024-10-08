@@ -1,0 +1,478 @@
+
+<!--<div th:fragment="dashboard">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-3">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+                    body {
+                        font-family: 'Roboto', sans-serif;
+                    }
+                    .stat-card {
+                        transition: all 0.3s;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        padding: 1rem;
+                    }
+                    .stat-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+                    }
+                    .icon-blue { color: #007bff; }
+                    .icon-green { color: #28a745; }
+                    .icon-orange { color: #fd7e14; }
+                    .icon-purple { color: #6f42c1; }
+                    .trend-up { color: #28a745; }
+                    .trend-down { color: #dc3545; }
+                    .trend-neutral { color: #6c757d; }
+                    .table th, .table td { vertical-align: middle; padding: 0.5rem; font-size: 0.9em; }
+                    .table-hover tbody tr:hover { background-color: rgba(0,0,0,.075); }
+                    .data-row {
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        margin-bottom: 2px;
+                    }
+                    .value-span {
+                        font-weight: bold;
+                        margin-right: 5px;
+                    }
+                    small.text-muted {
+                        display: block;
+                        font-size: 0.75em;
+                    }
+                </style>
+
+                <div class="row bg-white p-3">
+                    <div class="row mb-4 align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0">Revenue Dashboard</h5>
+                        </div>
+                        <div class="col-auto">
+                            <input type="date" id="dateFilter" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row" id="statCards">
+                        &lt;!&ndash; Stat cards will be dynamically inserted here &ndash;&gt;
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Detailed Revenue Analysis</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm" id="revenueTable">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Paid Amount</th>
+                                        <th>Pending Amount</th>
+                                        <th>Total Amount</th>
+                                        <th>Profit</th>
+                                        <th>Profit Margin</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    &lt;!&ndash; Table rows will be dynamically inserted here &ndash;&gt;
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+                <script>
+                    // Utility functions
+                    const formatChange = (value) => {
+                        const numValue = parseFloat(value);
+                        const icon = numValue > 0 ? 'fa-arrow-up' : (numValue < 0 ? 'fa-arrow-down' : 'fa-minus');
+                        return `<i class="fas ${icon}"></i> ${Math.abs(value)}%`;
+                    };
+
+                    const getTrendClass = (value) => {
+                        const numValue = parseFloat(value);
+                        return numValue > 0 ? 'trend-up' : (numValue < 0 ? 'trend-down' : 'trend-neutral');
+                    };
+
+                    // Template functions
+                    const statCardTemplate = (title, value, icon, change, changeClass, iconColor, id) => `
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card" id="${id}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="card-subtitle text-muted">${title}</h6>
+                            <i class="${icon} ${iconColor} fa-2x"></i>
+                        </div>
+                        <h2 class="card-title mb-2">${value}</h2>
+                        <p class="card-text">
+                            <span class="${changeClass}">${change}</span>
+                        </p>
+                    </div>
+                </div>
+            `;
+
+                    const createTableRow = (data, selectedDate) => {
+                        const previousDate = new Date(selectedDate);
+                        previousDate.setDate(previousDate.getDate() - 1);
+                        const formattedPreviousDate = previousDate.toISOString().split('T')[0];
+
+                        return `
+                    <tr>
+                        <td>${data['Revenue Category']}</td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Paid Amount']}</span>
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Paid Amount']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Pending Amount']}</span>
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Pending Amount']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Total Amount']}</span>
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Total Amount']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Profit']}</span>
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Profit Margin %']}%</span>
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit Margin %']}%</small>
+                        </td>
+                    </tr>
+                `;
+                    };
+
+                    // Update functions
+                    const updateStatCard = (cardId, value, change) => {
+                        const cardElement = $(`#${cardId}`);
+                        const valueElement = cardElement.find('.card-title');
+                        const changeElement = cardElement.find('.card-text span');
+
+                        valueElement.text(value);
+
+                        const changeValue = parseFloat(change);
+                        const changeClass = getTrendClass(changeValue);
+                        const changeIcon = changeValue > 0 ? 'fa-arrow-up' : (changeValue < 0 ? 'fa-arrow-down' : 'fa-minus');
+
+                        changeElement.removeClass('trend-up trend-down trend-neutral').addClass(changeClass)
+                            .html(`<i class="fas ${changeIcon}"></i> ${Math.abs(change)}%`);
+                    };
+
+                    // Data fetching and rendering
+                    const fetchData = async (date) => {
+                        try {
+                            const formattedDate = date.toISOString().split('T')[0];
+                            const response = await $.ajax({
+                                url: `/api/products-manager/revenue-movement/${formattedDate}`,
+                                method: 'GET'
+                            });
+
+                            const totalData = response.find(item => item['Revenue Category'] === 'TOTAL');
+
+                            if (totalData) {
+                                updateStatCard('paidAmount', totalData['Current Paid Amount'], totalData['Paid Amount Change %']);
+                                updateStatCard('pendingAmount', totalData['Current Pending Amount'], totalData['Pending Amount Change %']);
+                                updateStatCard('totalAmount', totalData['Current Total Amount'], totalData['Total Amount Change %']);
+                                updateStatCard('profit', totalData['Current Profit'], totalData['Profit Change %']);
+                            }
+
+                            const tableBody = $('#revenueTable tbody');
+                            tableBody.empty();
+                            response.forEach(item => {
+                                tableBody.append(createTableRow(item, date));
+                            });
+                        } catch (error) {
+                            console.error('Error fetching data:', error);
+                            alert('Failed to fetch data. Please try again later.');
+                        }
+                    };
+
+                    // Initialization
+                    $(document).ready(() => {
+                        const dateInput = $('#dateFilter');
+                        const today = new Date();
+                        today.setHours(today.getHours() + 3); // Adjust for UTC+3
+                        const formattedToday = today.toISOString().split('T')[0];
+                        dateInput.val(formattedToday);
+
+                        const statCards = [
+                            { title: 'Paid Amount', icon: 'fas fa-money-bill-wave', id: 'paidAmount', iconColor: 'icon-blue' },
+                            { title: 'Pending Amount', icon: 'fas fa-clock', id: 'pendingAmount', iconColor: 'icon-orange' },
+                            { title: 'Total Sales', icon: 'fas fa-wallet', id: 'totalAmount', iconColor: 'icon-green' },
+                            { title: 'Profit', icon: 'fas fa-chart-line', id: 'profit', iconColor: 'icon-purple' }
+                        ];
+
+                        const statCardsContainer = $('#statCards');
+                        statCardsContainer.empty();
+                        statCards.forEach(card => {
+                            statCardsContainer.append(statCardTemplate(card.title, 'KES 0.00', card.icon, '0.00%', 'text-muted', card.iconColor, card.id));
+                        });
+
+                        fetchData(today);
+
+                        dateInput.on('change', (e) => {
+                            const selectedDate = new Date(e.target.value);
+                            selectedDate.setHours(selectedDate.getHours() + 3); // Adjust for UTC+3
+                            fetchData(selectedDate);
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<div th:fragment="dashboard">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-3">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+                    body {
+                        font-family: 'Roboto', sans-serif;
+                    }
+                    .stat-card {
+                        transition: all 0.3s;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        padding: 1rem;
+                    }
+                    .stat-card:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+                    }
+                    .icon-blue { color: #007bff; }
+                    .icon-green { color: #28a745; }
+                    .icon-orange { color: #fd7e14; }
+                    .icon-purple { color: #6f42c1; }
+                    .trend-up { color: #28a745; }
+                    .trend-down { color: #dc3545; }
+                    .trend-neutral { color: #6c757d; }
+                    .table th, .table td { vertical-align: middle; padding: 0.5rem; font-size: 0.9em; }
+                    .table-hover tbody tr:hover { background-color: rgba(0,0,0,.075); }
+                    .data-row {
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        margin-bottom: 2px;
+                    }
+                    .value-span {
+                        font-weight: bold;
+                        margin-right: 5px;
+                    }
+                    small.text-muted {
+                        display: block;
+                        font-size: 0.75em;
+                    }
+                    .change-indicator {
+                        margin-left: 5px;
+                        font-size: 0.8em;
+                    }
+                </style>
+
+                <div class="row bg-white p-3">
+                    <div class="row mb-4 align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0">Revenue Dashboard</h5>
+                        </div>
+                        <div class="col-auto">
+                            <input type="date" id="dateFilter" class="form-control form-control-sm">
+                        </div>
+                    </div>
+                    <div class="row" id="statCards">
+                        <!-- Stat cards will be dynamically inserted here -->
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Detailed Revenue Analysis</h6>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm" id="revenueTable">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Paid Amount</th>
+                                        <th>Pending Amount</th>
+                                        <th>Total Amount</th>
+                                        <th>Profit</th>
+                                        <th>Profit Margin</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Table rows will be dynamically inserted here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+                <script>
+                    // Utility functions
+                    const formatChange = (value) => {
+                        const numValue = parseFloat(value);
+                        const icon = numValue > 0 ? 'fa-arrow-up' : (numValue < 0 ? 'fa-arrow-down' : 'fa-minus');
+                        const colorClass = numValue > 0 ? 'trend-up' : (numValue < 0 ? 'trend-down' : 'trend-neutral');
+                        return `<span class="change-indicator ${colorClass}"><i class="fas ${icon}"></i> ${Math.abs(value)}%</span>`;
+                    };
+
+                    const getTrendClass = (value) => {
+                        const numValue = parseFloat(value);
+                        return numValue > 0 ? 'trend-up' : (numValue < 0 ? 'trend-down' : 'trend-neutral');
+                    };
+
+                    // Template functions
+                    const statCardTemplate = (title, value, icon, change, changeClass, iconColor, id) => `
+                <div class="col-md-3 mb-4">
+                    <div class="card stat-card" id="${id}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="card-subtitle text-muted">${title}</h6>
+                            <i class="${icon} ${iconColor} fa-2x"></i>
+                        </div>
+                        <h2 class="card-title mb-2">${value}</h2>
+                        <p class="card-text">
+                            <span class="${changeClass}">${change}</span>
+                        </p>
+                    </div>
+                </div>
+            `;
+
+                    const createTableRow = (data, selectedDate) => {
+                        const previousDate = new Date(selectedDate);
+                        previousDate.setDate(previousDate.getDate() - 1);
+                        const formattedPreviousDate = previousDate.toISOString().split('T')[0];
+
+                        return `
+                    <tr>
+                        <td>${data['Revenue Category']}</td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Paid Amount']}</span>
+                                ${formatChange(data['Paid Amount Change %'])}
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Paid Amount']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Pending Amount']}</span>
+                                ${formatChange(data['Pending Amount Change %'])}
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Pending Amount']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Total Amount']}</span>
+                                ${formatChange(data['Total Amount Change %'])}
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Total Amount']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Profit']}</span>
+                                ${formatChange(data['Profit Change %'])}
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit']}</small>
+                        </td>
+                        <td>
+                            <div class="data-row">
+                                <span class="value-span">${data['Current Profit Margin %']}%</span>
+                                ${formatChange((parseFloat(data['Current Profit Margin %']) - parseFloat(data['Previous Profit Margin %'])).toFixed(2))}
+                            </div>
+                            <small class="text-muted">Prev (${formattedPreviousDate}): ${data['Previous Profit Margin %']}%</small>
+                        </td>
+                    </tr>
+                `;
+                    };
+
+                    // Update functions
+                    const updateStatCard = (cardId, value, change) => {
+                        const cardElement = $(`#${cardId}`);
+                        const valueElement = cardElement.find('.card-title');
+                        const changeElement = cardElement.find('.card-text span');
+
+                        valueElement.text(value);
+
+                        const changeValue = parseFloat(change);
+                        const changeClass = getTrendClass(changeValue);
+                        const changeIcon = changeValue > 0 ? 'fa-arrow-up' : (changeValue < 0 ? 'fa-arrow-down' : 'fa-minus');
+
+                        changeElement.removeClass('trend-up trend-down trend-neutral').addClass(changeClass)
+                            .html(`<i class="fas ${changeIcon}"></i> ${Math.abs(change)}%`);
+                    };
+
+                    // Data fetching and rendering
+                    const fetchData = async (date) => {
+                        try {
+                            const formattedDate = date.toISOString().split('T')[0];
+                            const response = await $.ajax({
+                                url: `/api/products-manager/revenue-movement/${formattedDate}`,
+                                method: 'GET'
+                            });
+
+                            const totalData = response.find(item => item['Revenue Category'] === 'TOTAL');
+
+                            if (totalData) {
+                                updateStatCard('paidAmount', totalData['Current Paid Amount'], totalData['Paid Amount Change %']);
+                                updateStatCard('pendingAmount', totalData['Current Pending Amount'], totalData['Pending Amount Change %']);
+                                updateStatCard('totalAmount', totalData['Current Total Amount'], totalData['Total Amount Change %']);
+                                updateStatCard('profit', totalData['Current Profit'], totalData['Profit Change %']);
+                            }
+
+                            const tableBody = $('#revenueTable tbody');
+                            tableBody.empty();
+                            response.forEach(item => {
+                                tableBody.append(createTableRow(item, date));
+                            });
+                        } catch (error) {
+                            console.error('Error fetching data:', error);
+                            alert('Failed to fetch data. Please try again later.');
+                        }
+                    };
+
+                    // Initialization
+                    $(document).ready(() => {
+                        const dateInput = $('#dateFilter');
+                        const today = new Date();
+                        today.setHours(today.getHours() + 3); // Adjust for UTC+3
+                        const formattedToday = today.toISOString().split('T')[0];
+                        dateInput.val(formattedToday);
+
+                        const statCards = [
+                            { title: 'Paid Amount', icon: 'fas fa-money-bill-wave', id: 'paidAmount', iconColor: 'icon-blue' },
+                            { title: 'Pending Amount', icon: 'fas fa-clock', id: 'pendingAmount', iconColor: 'icon-orange' },
+                            { title: 'Total Sales', icon: 'fas fa-wallet', id: 'totalAmount', iconColor: 'icon-green' },
+                            { title: 'Profit', icon: 'fas fa-chart-line', id: 'profit', iconColor: 'icon-purple' }
+                        ];
+
+                        const statCardsContainer = $('#statCards');
+                        statCardsContainer.empty();
+                        statCards.forEach(card => {
+                            statCardsContainer.append(statCardTemplate(card.title, 'KES 0.00', card.icon, '0.00%', 'text-muted', card.iconColor, card.id));
+                        });
+
+                        fetchData(today);
+
+                        dateInput.on('change', (e) => {
+                            const selectedDate = new Date(e.target.value);
+                            selectedDate.setHours(selectedDate.getHours() + 3); // Adjust for UTC+3
+                            fetchData(selectedDate);
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

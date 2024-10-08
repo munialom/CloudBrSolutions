@@ -187,4 +187,12 @@ public class CustomProductManagerRestController {
   List<Map<String, Object>> report = customManagerProductService.GetPurchaseTransactionsReport(startDate, endDate);
   return ResponseEntity.ok(report);
  }
+
+
+ @GetMapping("/revenue-movement/{date}")
+ public ResponseEntity<List<Map<String, Object>>> getRevenueMovement(
+         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+  List<Map<String, Object>> revenueMovement = customManagerProductService.GetRevenueMovement(date);
+  return ResponseEntity.ok(revenueMovement);
+ }
 }
