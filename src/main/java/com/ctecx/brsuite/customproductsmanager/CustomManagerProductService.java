@@ -182,4 +182,21 @@ public class CustomManagerProductService {
         return   customProductManagerRepository.GetRevenueMovement(localDate);
     }
 
+
+    public List<Map<String, Object>> GetMonthlySalesReport(int currentYear, int currentMonth) {
+
+        return customProductManagerRepository.GetMonthlySalesReport(currentYear, currentMonth);
+    }
+
+    public List<Map<String, Object>> GetMonthlySalesReportByRevenue(int currentYear, int currentMonth, String revenueName) {
+
+        return customProductManagerRepository.GetMonthlySalesReportByRevenue(currentYear, currentMonth,revenueName);
+    }
+
+
+    public List<Map<String, Object>> GetYearlySalesByRevenueCode(int currentYear, String revenueName) {
+
+        return customProductManagerRepository.GetYearlySalesByRevenueCode(currentYear, revenueName);
+    }
+
 }

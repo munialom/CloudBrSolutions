@@ -303,18 +303,18 @@
          alert(`Delete product functionality to be implemented for ID: ${productId}`);
       };
 
-      const exportToExcel = () => {
-         console.log('Exporting to Excel...');
-         alert('Excel export functionality to be implemented');
-      };
 
-      const printTable = () => {
-         window.print();
+      // Export functionality
+      const exportToExcel = () => {
+         generateExcel(fullData, 'Sales By Product Report');
       };
 
       const downloadPDF = () => {
-         console.log('Downloading PDF...');
-         alert('PDF download functionality to be implemented');
+         printGeneratePdf(fullData, 'Sales By Product Report');
+      };
+
+      const printTable = () => {
+         printGeneratePdf(fullData, 'Sales By Product Report');
       };
 
       // Apply styles function

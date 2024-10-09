@@ -80,4 +80,10 @@ public interface CustomProductManagerRepository {
     String generateNewOrderNumber();
 
     List<Map<String, Object>> GetRevenueMovement(LocalDate localDate);
+
+
+    List<Map<String, Object>>GetMonthlySalesReport(int currentYear, int currentMonth);
+
+    List<Map<String, Object>>GetMonthlySalesReportByRevenue(int currentYear, int currentMonth,String revenueName);
+    List<Map<String, Object>>GetYearlySalesByRevenueCode(int currentYear,String revenueName);
 }

@@ -247,17 +247,15 @@
             };
 
             const exportToExcel = () => {
-                console.log('Exporting to Excel...');
-                alert('Excel export functionality to be implemented');
-            };
-
-            const printTable = () => {
-                window.print();
+                generateExcel(fullData, 'Price Lists Report');
             };
 
             const downloadPDF = () => {
-                console.log('Downloading PDF...');
-                alert('PDF download functionality to be implemented');
+                printGeneratePdf(fullData, 'Price Lists Report');
+            };
+
+            const printTable = () => {
+                printGeneratePdf(fullData, 'Price Lists Report');
             };
 
             // Apply styles function

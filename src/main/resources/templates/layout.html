@@ -554,6 +554,35 @@
 
 
 
+<script>
+    function generateExcel(jsonData, filename) {
+        $.ajax({
+            url: '/generate-excel',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                jsonData: JSON.stringify(jsonData),
+                filename: filename
+            }),
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data, status, xhr) {
+                var blob = new Blob([data], {type: xhr.getResponseHeader('Content-Type')});
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename + '.xlsx';
+                link.click();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error generating Excel:", error);
+            }
+        });
+    }
+</script>
+
+
+
 
 
     <script>

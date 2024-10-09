@@ -260,18 +260,17 @@
       });
 
       // Action functions
+      // Export functionality
       const exportToExcel = () => {
-         console.log('Exporting to Excel...');
-         alert('Excel export functionality to be implemented');
+         generateExcel(fullData, 'Sales By Account Report');
       };
 
       const downloadPDF = () => {
-         console.log('Downloading PDF...');
-         alert('PDF download functionality to be implemented');
+         printGeneratePdf(fullData, 'Sales By Account Report');
       };
 
       const printTable = () => {
-         window.print();
+         printGeneratePdf(fullData, 'Sales By Account Report');
       };
 
       // Apply styles function

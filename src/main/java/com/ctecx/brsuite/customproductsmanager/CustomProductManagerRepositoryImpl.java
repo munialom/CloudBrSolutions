@@ -271,4 +271,22 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
         return jdbcTemplate.queryForList("CALL  GetRevenueMovement(?)",localDate);
     }
 
+
+    @Override
+    public List<Map<String, Object>> GetMonthlySalesReport(int currentYear, int currentMonth) {
+
+        return jdbcTemplate.queryForList("CALL GetMonthlySalesReport(?,?)",currentYear, currentMonth);
+    }
+
+    @Override
+    public List<Map<String, Object>> GetMonthlySalesReportByRevenue(int currentYear, int currentMonth, String revenueName) {
+
+        return jdbcTemplate.queryForList("CALL GetMonthlySalesReportByRevenue(?,?,?)",currentYear, currentMonth, revenueName);
+    }
+
+    @Override
+    public List<Map<String, Object>> GetYearlySalesByRevenueCode(int currentYear, String revenueName) {
+
+        return jdbcTemplate.queryForList("CALL GetYearlySalesByRevenueCode(?,?)",currentYear,  revenueName);
+    }
 }

@@ -6,7 +6,7 @@
         <div class="col-xl-12">
             <div class="card mt-2">
                 <div class="card-header">
-                    <h6 class="mb-0">Stock Movement:</h6>
+                    <h6 class="mb-0">Aggregates By Revenue Group:</h6>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -20,13 +20,12 @@
     </div>
 </div>
 
-
-
 <script>
     ($ => {
         // Configuration
         const config = {
-            stockValuationApiUrl: '/api/products-manager/stock-valuation-report',
+            monthlySalesReportApiUrl: '/api/products-manager/monthly-sales-report-by-revenue',
+            revenueCodesApiUrl: '/api/revenue-codes',
             recordsPerPage: 10
         };
 
@@ -41,30 +40,49 @@
             const $target = $('#table_div_content');
             $target.empty();
 
-            // Create date range inputs
-            const $dateInputs = $('<div>').addClass('row mb-3');
-            $dateInputs.append(
+            // Create year, month, and revenue code selectors
+            const $inputsRow = $('<div>').addClass('row mb-3');
+            $inputsRow.append(
                 $('<div>').addClass('col-md-4').append(
-                    $('<label>').attr('for', 'stockValuationStartDate').text('Start Date:'),
-                    $('<input>').attr({
-                        type: 'date',
-                        id: 'stockValuationStartDate',
+                    $('<label>').attr('for', 'yearSelect').text('Year:'),
+                    $('<select>').attr({
+                        id: 'yearSelect',
                         class: 'form-control'
                     })
                 ),
                 $('<div>').addClass('col-md-4').append(
-                    $('<label>').attr('for', 'stockValuationEndDate').text('End Date:'),
-                    $('<input>').attr({
-                        type: 'date',
-                        id: 'stockValuationEndDate',
+                    $('<label>').attr('for', 'monthSelect').text('Month:'),
+                    $('<select>').attr({
+                        id: 'monthSelect',
                         class: 'form-control'
                     })
                 ),
-                $('<div>').addClass('col-md-4 d-flex align-items-end').append(
-                    $('<button>').attr('id', 'loadReport').text('Load Report').addClass('btn btn-primary')
+                $('<div>').addClass('col-md-4').append(
+                    $('<label>').attr('for', 'revenueCodeSelect').text('Revenue Code:'),
+                    $('<select>').attr({
+                        id: 'revenueCodeSelect',
+                        class: 'form-control'
+                    })
                 )
             );
-            $target.append($dateInputs);
+            $target.append($inputsRow);
+
+            // Populate year and month options
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1;
+            for (let year = currentYear; year >= currentYear - 5; year--) {
+                $('#yearSelect').append($('<option>').val(year).text(year));
+            }
+            for (let month = 1; month <= 12; month++) {
+                $('#monthSelect').append($('<option>').val(month).text(month));
+            }
+
+            // Set default values
+            $('#yearSelect').val(currentYear);
+            $('#monthSelect').val(currentMonth);
+
+            // Load revenue codes
+            loadRevenueCodes();
 
             // Create and append the search input
             const $searchInput = $('<input>')
@@ -86,19 +104,67 @@
                 filterTable(searchTerm);
             });
 
-            $('#loadReport').on('click', function() {
-                const startDate = $('#stockValuationStartDate').val();
-                const endDate = $('#stockValuationEndDate').val();
-                loadStockValuationReport(startDate, endDate);
+            $('#yearSelect, #monthSelect, #revenueCodeSelect').on('change', function() {
+                loadMonthlySalesReport();
             });
 
-            // Set default dates to current day
-            const today = new Date().toISOString().split('T')[0];
-            $('#stockValuationStartDate').val(today);
-            $('#stockValuationEndDate').val(today);
+            // Fetch and display initial data for the current year and month
+            loadMonthlySalesReport();
+        };
 
-            // Fetch and display initial data for the current date
-            loadStockValuationReport(today, today);
+        // Function to load revenue codes
+        const loadRevenueCodes = () => {
+            $.ajax({
+                url: config.revenueCodesApiUrl,
+                method: 'GET',
+                dataType: 'json',
+                success: data => {
+                    const $revenueCodeSelect = $('#revenueCodeSelect');
+                    $revenueCodeSelect.empty();
+                    $revenueCodeSelect.append($('<option>').val('').text('Select Revenue Code'));
+                    data.forEach(revenueCode => {
+                        $revenueCodeSelect.append($('<option>').val(revenueCode.revenueName).text(revenueCode.revenueName));
+                    });
+                },
+                error: (_, textStatus, errorThrown) => {
+                    console.error('Error loading revenue codes:', textStatus, errorThrown);
+                    showNotification('error', 'Error loading revenue codes. Please try again later.');
+                }
+            });
+        };
+
+        // Function to load monthly sales report
+        const loadMonthlySalesReport = () => {
+            $('#tableWrapper').html('<p>Loading monthly sales report...</p>');
+
+            const year = $('#yearSelect').val();
+            const month = $('#monthSelect').val();
+            const revenueName = $('#revenueCodeSelect').val();
+
+            if (!revenueName) {
+                $('#tableWrapper').html('<p>Please select a revenue code.</p>');
+                return;
+            }
+
+            $.ajax({
+                url: `${config.monthlySalesReportApiUrl}?year=${year}&month=${month}&revenueName=${encodeURIComponent(revenueName)}`,
+                method: 'GET',
+                dataType: 'json',
+                success: data => {
+                    if (data && data.length > 0) {
+                        fullData = data;
+                        totalRecords = data.length;
+                        filteredData = [...fullData];
+                        changePage(1);
+                    } else {
+                        $('#tableWrapper').html('<p>No records found for the selected month, year, and revenue code.</p>');
+                    }
+                },
+                error: (_, textStatus, errorThrown) => {
+                    console.error('Error loading monthly sales report:', textStatus, errorThrown);
+                    $('#tableWrapper').html('<p>Error loading monthly sales report. Please try again later.</p>');
+                }
+            });
         };
 
         // Reusable function to generate dynamic table
@@ -140,10 +206,10 @@
                 headers.forEach(h => {
                     let $cell;
                     const val = row[h];
-                    if (h === 'Product Name') {
-                        $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A').addClass('product-name');
-                    } else if (['Current Value', 'Average Cost', 'Total Value'].includes(h)) {
-                        const numVal = parseFloat(val);
+                    if (h === 'Revenue Category') {
+                        $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A').addClass('revenue-category');
+                    } else if (['Paid Amount', 'Pending Amount', 'Cancelled Amount', 'Total Amount', 'Profit', 'Loss'].includes(h)) {
+                        const numVal = parseFloat(val.replace(/,/g, ''));
                         $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A')
                             .addClass(numVal < 0 ? 'negative' : 'positive');
                     } else {
@@ -227,31 +293,6 @@
             changePage(1);
         };
 
-        // Function to load stock valuation report
-        const loadStockValuationReport = (startDate, endDate) => {
-            $('#tableWrapper').html('<p>Loading stock valuation report...</p>');
-
-            $.ajax({
-                url: `${config.stockValuationApiUrl}?startDate=${startDate}&endDate=${endDate}`,
-                method: 'GET',
-                dataType: 'json',
-                success: data => {
-                    if (data && data.length > 0) {
-                        fullData = data;
-                        totalRecords = data.length;
-                        filteredData = [...fullData];
-                        changePage(1);
-                    } else {
-                        $('#tableWrapper').html('<p>No records found for the selected date range.</p>');
-                    }
-                },
-                error: (_, textStatus, errorThrown) => {
-                    console.error('Error loading stock valuation report:', textStatus, errorThrown);
-                    $('#tableWrapper').html('<p>Error loading stock valuation report. Please try again later.</p>');
-                }
-            });
-        };
-
         // Function to get table options
         const getTableOptions = () => ({
             actionButtons: [
@@ -261,17 +302,18 @@
             ]
         });
 
+
         // Export functionality
         const exportToExcel = () => {
-            generateExcel(fullData, 'Stock Valuation Report');
+            generateExcel(fullData, 'Monthly Sales Report By Account Group');
         };
 
         const downloadPDF = () => {
-            printGeneratePdf(fullData, 'Stock Valuation Report');
+            printGeneratePdf(fullData, 'Monthly Sales Report By Account Group');
         };
 
         const printTable = () => {
-            printGeneratePdf(fullData, 'Stock Valuation Report');
+            printGeneratePdf(fullData, 'Monthly Sales Report By Account Group');
         };
 
         // Apply styles function
@@ -307,7 +349,7 @@
     }
     .dynamic-table tr:last-child td { border-bottom: none; }
     .dynamic-table tr:hover { background-color: #f1f3f5; }
-    .dynamic-table .product-name { font-weight: bold; }
+    .dynamic-table .revenue-category { font-weight: bold; }
     .dynamic-table .negative { color: #d32f2f; }
     .dynamic-table .positive { color: #388e3c; }
     .btn-group .btn {

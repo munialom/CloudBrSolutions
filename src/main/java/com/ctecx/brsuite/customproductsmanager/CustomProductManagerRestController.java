@@ -195,4 +195,33 @@ public class CustomProductManagerRestController {
   List<Map<String, Object>> revenueMovement = customManagerProductService.GetRevenueMovement(date);
   return ResponseEntity.ok(revenueMovement);
  }
+
+
+
+
+ @GetMapping("/monthly-sales-report")
+ public ResponseEntity<List<Map<String, Object>>> getMonthlySalesReport(
+         @RequestParam int year,
+         @RequestParam int month) {
+  List<Map<String, Object>> report = customManagerProductService.GetMonthlySalesReport(year, month);
+  return ResponseEntity.ok(report);
+ }
+
+ @GetMapping("/monthly-sales-report-by-revenue")
+ public ResponseEntity<List<Map<String, Object>>> getMonthlySalesReportByRevenue(
+         @RequestParam int year,
+         @RequestParam int month,
+         @RequestParam String revenueName) {
+  List<Map<String, Object>> report = customManagerProductService.GetMonthlySalesReportByRevenue(year, month, revenueName);
+  return ResponseEntity.ok(report);
+ }
+
+
+ @GetMapping("/yearly-sales-by-revenue")
+ public ResponseEntity<List<Map<String, Object>>> getYearlySalesByRevenueCode(
+         @RequestParam int year,
+         @RequestParam String revenueCode) {
+  List<Map<String, Object>> report = customManagerProductService.GetYearlySalesByRevenueCode(year, revenueCode);
+  return ResponseEntity.ok(report);
+ }
 }
