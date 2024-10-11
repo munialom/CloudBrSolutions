@@ -73,8 +73,7 @@ public class SalesService {
 
     @Transactional
     public String createCounterSales(SalesStockDTO salesStockDTO) {
-       /* String sn = generateUniqueSerialNumber();
-        String orderNumber = generateNewOrderNumber();*/
+
 
         String sn = customProductManagerRepository.generateUniqueSerialNumber("");
         String orderNumber = customProductManagerRepository.generateNewOrderNumber();

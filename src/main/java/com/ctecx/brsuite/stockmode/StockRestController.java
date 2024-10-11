@@ -1,14 +1,10 @@
 package com.ctecx.brsuite.stockmode;
 
-import com.ctecx.brsuite.autoprint.OrdersPrinter;
-import com.ctecx.brsuite.autoprint.PrinterConfig;
-import com.ctecx.brsuite.autoprint.ReceiptPrinter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.PrinterException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,34 +84,6 @@ public class StockRestController {
     }
 
 
-
-
-
-
-    private void printReceiptAsync(String serialNumber) {
-        try {
-            StockTransactionDTO transaction = stockTransactionService.getStockTransaction(serialNumber);
-            //ReceiptPrinter.printReceipt(transaction, "XP-80C");
-            ReceiptPrinter.printReceipt(transaction, PrinterConfig.getWaitersPrinter());
-
-        } catch (PrinterException e) {
-            e.printStackTrace();
-
-        }
-    }
-
-
-    private void printCaptainOrderAsync(String serialNumber) {
-        try {
-            StockTransactionDTO transaction = stockTransactionService.getStockTransactionByOrderNumber(serialNumber);
-            //ReceiptPrinter.printReceipt(transaction, "XP-80C");
-            OrdersPrinter.printReceipt(transaction, PrinterConfig.getKotPrinter());
-
-        } catch (PrinterException e) {
-            e.printStackTrace();
-
-        }
-    }
 
 
 
