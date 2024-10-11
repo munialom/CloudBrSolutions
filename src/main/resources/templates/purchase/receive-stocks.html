@@ -154,14 +154,20 @@
     </div>
 
 
-    <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-            <div style="display: inline-block; background-color: #ffffff; padding: 10px 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
-                <i class="fas fa-spinner fa-pulse" style="margin-right: 10px;"></i>
+
+        <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
+                <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
                 <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
             </div>
         </div>
-    </div>
+
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
 
     <script>
         $(document).ready(function() {
@@ -195,42 +201,34 @@
             });
         </script>
 
-    <script>
-        $(document).ready(function() {
-            // Function to fetch data
-            function fetchStaffList() {
-                // Show the loading overlay
+   <script>
+       // Function to fetch staff list
+       function fetchStaffList() {
+           // Construct the URL with query parameters
+           var url = '/api-bulk/products-database';
 
+           // Make the AJAX request to the server
+           $.ajax({
+               url: url,
+               method: 'GET',
+               success: function(response) {
+                   productStockManager(response);
+               },
+               error: function() {
+                   alert('An error occurred while fetching data.');
+               }
+           });
+       }
 
-                // Construct the URL with query parameters
-                var url = '/api-bulk/products-database';
-
-                // Make the AJAX request to the server
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-
-                      /*  $('#stockControlPanelBulkUpdates').html(response);*/
-                        productStockManager(response);
-
-
-                    },
-                    error: function() {
-                        alert('An error occurred while fetching data.');
-                        // Hide the loading overlay
-
-                    }
-                });
-            }
-
-            fetchStaffList();
-        });
-    </script>
+       // Main document ready function
+       $(document).ready(function() {
+           fetchStaffList();
+       });
+   </script>
 
 
 
-<script>
+<!--<script>
     function savePurchaseStock() {
         $('#loading-overlay').show();
 
@@ -331,7 +329,179 @@
         currentPage = 1;
         fetchStaffList();  // Make sure this function is defined to refresh your table
     }
-</script>
+</script>-->
+
+    <script>
+
+
+        const savePurchaseStock = () => {
+            const purchaseStockDTO = {
+                supplierId: $('#supplierId').val(),
+                branchId: $('#stationId').val(),
+                purchaseDate: $('#purchaseDate').val() ? moment($('#purchaseDate').val(), 'DD/MM/YYYY').format('YYYY-MM-DD') : null,
+                invoiceNumber: $('#invoiceNumber').val(),
+                purchaseStocks: []
+            };
+
+            $('.rowCheckbox:checked').each((_, element) => {
+                const $row = $(element).closest('tr');
+                const qty = parseInt($row.find('input[id^="quantity-"]').val() || '0');
+
+                if (qty > 0) {
+                    const unitCost = parseFloat($row.find('input[id^="cost-price-"]').val() || '0');
+                    const discount = parseFloat($row.find('input[id^="discount-"]').val() || '0');
+                    const tax = parseFloat($row.find('input[id^="tax-"]').val() || '0');
+
+                    purchaseStockDTO.purchaseStocks.push({
+                        productId: $row.find('td:eq(2)').text(),
+                        productCode: $row.find('td:eq(3)').text(),
+                        productName: $row.find('td:eq(4)').text(),
+                        unitcost: unitCost,
+                        discount: discount,
+                        tax: tax,
+                        subtotal: unitCost * qty * (1 - discount/100) * (1 + tax/100),
+                        qty: qty
+                    });
+                }
+            });
+
+            if (validatePurchaseStock(purchaseStockDTO)) {
+                showConfirmationModal(purchaseStockDTO);
+            }
+        };
+
+        const validatePurchaseStock = (purchaseStockDTO) => {
+            if (purchaseStockDTO.purchaseStocks.length === 0) {
+                showNotification('error', 'Please select at least one product with a quantity greater than zero.');
+                return false;
+            }
+
+            if (!purchaseStockDTO.supplierId || !purchaseStockDTO.branchId || !purchaseStockDTO.purchaseDate || !purchaseStockDTO.invoiceNumber) {
+                showNotification('error', 'Please fill all required fields.');
+                return false;
+            }
+
+            return true;
+        };
+
+        const showConfirmationModal = (purchaseStockDTO) => {
+            const modalContent = `
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmationModalLabel">Confirm Purchase Stock</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-bordered">
+              <tr>
+                <th>Supplier ID</th>
+                <td>${purchaseStockDTO.supplierId}</td>
+                <th>Branch ID</th>
+                <td>${purchaseStockDTO.branchId}</td>
+              </tr>
+              <tr>
+                <th>Purchase Date</th>
+                <td>${purchaseStockDTO.purchaseDate}</td>
+                <th>Invoice Number</th>
+                <td>${purchaseStockDTO.invoiceNumber}</td>
+              </tr>
+            </table>
+            <h6>Products:</h6>
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                  <th>Unit Cost</th>
+                  <th>Discount (%)</th>
+                  <th>Tax (%)</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${purchaseStockDTO.purchaseStocks.map(stock => `
+                  <tr>
+                    <td>${stock.productName}</td>
+                    <td>${stock.qty}</td>
+                    <td>${stock.unitcost.toFixed(2)}</td>
+                    <td>${stock.discount.toFixed(2)}</td>
+                    <td>${stock.tax.toFixed(2)}</td>
+                    <td>${stock.subtotal.toFixed(2)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="5">Total</th>
+                  <th>${purchaseStockDTO.purchaseStocks.reduce((sum, stock) => sum + stock.subtotal, 0).toFixed(2)}</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmPurchase">Confirm Purchase</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+            $('body').append(modalContent);
+            $('#confirmationModal').modal('show');
+
+            $('#confirmPurchase').on('click', () => {
+                $('#confirmationModal').modal('hide');
+                $('#loading-overlay').show(); // Show loading overlay when confirming
+                submitPurchaseStock(purchaseStockDTO);
+            });
+
+            $('#confirmationModal').on('hidden.bs.modal', function () {
+                $(this).remove();
+            });
+        };
+
+        const submitPurchaseStock = (purchaseStockDTO) => {
+            $.ajax({
+                url: '/api/stocks/purchase',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(purchaseStockDTO),
+                success: (response) => {
+                    showNotification('success', 'Purchase stock created successfully');
+                    refreshTable();
+                },
+                error: (xhr, status, error) => {
+                    showNotification('error', `Error creating purchase stock: ${xhr.responseText}`);
+                },
+                complete: () => {
+                    $('#loading-overlay').hide(); // Hide loading overlay after request completes
+                }
+            });
+        };
+
+        const showNotification = (type, message) => {
+            $.wnoty({
+                type: type,
+                message: message,
+                position: 'top-right'
+            });
+        };
+
+        const refreshTable = () => {
+            $('.rowCheckbox').prop('checked', false);
+            $('#selectAll').prop('checked', false);
+
+            fetchStaffList(); // Make sure this function is defined to refresh your table
+        };
+
+        // Attach the savePurchaseStock function to a button click event
+        $('#savePurchaseStockBtn').on('click', savePurchaseStock);
+    </script>
 
 
 
@@ -610,37 +780,7 @@
 
 
 
-  <!--  <script>
-        $(document).ready(function() {
-            // Initialize Select2
-            $("#stationId").select2({
-                ajax: {
-                    url: "/api/branches/branches-list",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            keyword: params.term
-                        };
-                    },
-                    processResults: function(data) {
-                        console.log(data);
-                        return {
-                            results: $.map(data, function(obj) {
-                                return {
-                                    id: obj.id,
-                                    value: obj.id,
-                                    text: obj.id + ' - ' + obj.branchName,
-                                    branchId: obj.id // add the branchId to the option
-                                };
-                            })
-                        };
-                    }
-                },
-                minimumInputLength: 1
-            });
-        });
-    </script>-->
+
 
 
         <script>
@@ -707,131 +847,6 @@
             });
         });
     </script>
-
-
-
-
-    <script>
-        function saveOpeningStock() {
-            // Show loading overlay
-            $('#loading-overlay').show();
-
-            // Step 1: Determine the stock operation
-            var stockOperation = $('input[name="filterOptions"]:checked').val();
-            var opcode = stockOperation === 'option1' ? 'ADD' : 'SUBTRACT';
-
-            // Step 2: Get the selected branch
-            var branchId = $('#stationId').val();
-            var branchName = $('#stationId option:selected').text();
-
-            // Step 3: Initialize the opening stock data
-            var openingStocks = [];
-
-            // Step 4: Iterate through selected rows
-            $('.rowCheckbox:checked').each(function() {
-                var row = $(this).closest('tr');
-                var productCode = row.find('td:eq(3)').text().replace(/(Adding qty|Subtracting qty)/g, '').trim();
-                var productName = row.find('td:eq(4)').text();
-                var buyPrice = parseFloat(row.find('td:eq(9)').text());
-                var salePrice = parseFloat(row.find('td:eq(10)').text());
-                var qtyChange = parseInt(row.find('input[id^="stock-change-"]').val() || '0');
-
-                // Only include rows with non-zero quantity changes
-                if (qtyChange !== 0) {
-                    openingStocks.push({
-                        productCode: productCode,
-                        productName: productName,
-                        buyPrice: buyPrice,
-                        salePrice: salePrice,
-                        qty: qtyChange
-                    });
-                }
-            });
-
-            // Step 5: Prepare the data to be sent
-            var openingStockDTO = {
-                openingStocks: openingStocks,
-                opcode: opcode,
-                branchId: branchId  // Include the branchId in the DTO
-            };
-
-            // Console log the DTO
-            console.log('Opening Stock DTO:', openingStockDTO);
-
-            // Step 6: Validate the data
-            if (openingStocks.length === 0) {
-                $('#loading-overlay').hide();
-                $.wnoty({
-                    type: 'error',
-                    message: 'Please select at least one product with a quantity change.',
-                    position: 'top-right'
-                });
-                return;
-            }
-
-            if (!branchId) {
-                $('#loading-overlay').hide();
-                $.wnoty({
-                    type: 'error',
-                    message: 'Please select a branch.',
-                    position: 'top-right'
-                });
-                return;
-            }
-
-            // Step 7: Send the data to the server
-            $.ajax({
-                url: '/api/stocks/opening',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(openingStockDTO),
-                success: function(response) {
-                    $('#loading-overlay').hide();
-                    $.wnoty({
-                        type: 'success',
-                        message: 'Opening stock created successfully for ' + branchName,
-                        position: 'top-right'
-                    });
-                    refreshTable();
-                },
-                error: function(xhr, status, error) {
-                    $('#loading-overlay').hide();
-                    $.wnoty({
-                        type: 'error',
-                        message: 'Error creating opening stock: ' + xhr.responseText,
-                        position: 'top-right'
-                    });
-                }
-            });
-        }
-
-        function refreshTable() {
-            // Reset selections and refresh the table
-            $('.rowCheckbox').prop('checked', false);
-            $('#selectAll').prop('checked', false);
-            selectedRows = [];
-            stockChanges = {};
-            currentPage = 1;
-            fetchStaffList();  // Make sure this function is defined to refresh your table
-        }
-
-        // Attach the saveOpeningStock function to a button click event
-        $('#saveOpeningStockBtn').on('click', saveOpeningStock);
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

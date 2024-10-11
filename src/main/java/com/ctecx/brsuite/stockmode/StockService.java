@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -121,33 +120,9 @@ public class StockService {
 
             stockTransactionRepository.save(stockTransaction);
 
-
-
-            // Perform cost adjustment
-            OpeningStockDTO openingStockDTO = new OpeningStockDTO();
-            openingStockDTO.setOpcode("cost");
-
-
-            OpeningStock openingStock = new OpeningStock();
-            openingStock.setProductCode(purchaseStock.getProductCode());
-            openingStock.setBuyPrice(purchaseStock.getUnitcost());
-            openingStockDTO.setOpeningStocks(Collections.singletonList(openingStock));
-
-            updatePrices(openingStockDTO);
-
-
-
         });
 
-
-
-
-
     }
-
-
-
-
 
 
     public void updatePrices(OpeningStockDTO openingStockDTO) {
@@ -188,9 +163,6 @@ public class StockService {
                 stockTransaction.setStockIn(0);
                 stockTransaction.setStockOut(0);
                 stockTransaction.setDescription(description.toString().trim());
-
-
-
 
 
                 // Update product prices
