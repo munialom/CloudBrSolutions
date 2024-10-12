@@ -86,4 +86,6 @@ public interface CustomProductManagerRepository {
 
     List<Map<String, Object>>GetMonthlySalesReportByRevenue(int currentYear, int currentMonth,String revenueName);
     List<Map<String, Object>>GetYearlySalesByRevenueCode(int currentYear,String revenueName);
+
+    List<Map<String, Object>>GetMonthlyStockValuationReport(int currentYear, int currentMonth);
 }

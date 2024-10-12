@@ -199,4 +199,9 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetYearlySalesByRevenueCode(currentYear, revenueName);
     }
 
+    public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth) {
+
+        return customProductManagerRepository.GetMonthlyStockValuationReport(currentYear, currentMonth);
+    }
+
 }

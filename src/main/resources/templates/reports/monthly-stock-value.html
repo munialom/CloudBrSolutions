@@ -1,0 +1,339 @@
+
+
+<!-- Enhanced Sales Report Form -->
+<div id="enhancedSalesReportSystem">
+    <div class="row p-3">
+        <div class="col-xl-12">
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h6 class="mb-0">Monthly Stock Value:</h6>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card p-4">
+                            <div id="table_div_content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    ($ => {
+        // Configuration
+        const config = {
+            monthlySalesReportApiUrl: '/api/products-manager/monthly-stock-valuation-report',
+            recordsPerPage: 10
+        };
+
+        // Store the full dataset and current state
+        let fullData = [];
+        let currentPage = 1;
+        let totalRecords = 0;
+        let filteredData = [];
+
+        // Function to initialize the page
+        const initializePage = () => {
+            const $target = $('#table_div_content');
+            $target.empty();
+
+            // Create year and month selectors
+            const $dateInputs = $('<div>').addClass('row mb-3');
+            $dateInputs.append(
+                $('<div>').addClass('col-md-6').append(
+                    $('<label>').attr('for', 'yearSelect').text('Year:'),
+                    $('<select>').attr({
+                        id: 'yearSelect',
+                        class: 'form-control'
+                    })
+                ),
+                $('<div>').addClass('col-md-6').append(
+                    $('<label>').attr('for', 'monthSelect').text('Month:'),
+                    $('<select>').attr({
+                        id: 'monthSelect',
+                        class: 'form-control'
+                    })
+                )
+            );
+            $target.append($dateInputs);
+
+            // Populate year and month options
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1;
+            for (let year = currentYear; year >= currentYear - 5; year--) {
+                $('#yearSelect').append($('<option>').val(year).text(year));
+            }
+            for (let month = 1; month <= 12; month++) {
+                $('#monthSelect').append($('<option>').val(month).text(month));
+            }
+
+            // Set default values
+            $('#yearSelect').val(currentYear);
+            $('#monthSelect').val(currentMonth);
+
+            // Create and append the search input
+            const $searchInput = $('<input>')
+                .attr({
+                    type: 'text',
+                    placeholder: 'Search...',
+                    id: 'searchInput'
+                })
+                .addClass('form-control mb-3');
+            $target.append($searchInput);
+
+            // Create and append the table wrapper
+            const $tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
+            $target.append($tableWrapper);
+
+            // Attach event listeners
+            $searchInput.on('input', function() {
+                const searchTerm = $(this).val();
+                filterTable(searchTerm);
+            });
+
+            $('#yearSelect, #monthSelect').on('change', function() {
+                loadMonthlySalesReport();
+            });
+
+            // Fetch and display initial data for the current year and month
+            loadMonthlySalesReport();
+        };
+
+        // Reusable function to generate dynamic table
+        const generateDynamicTable = (data, options = {}) => {
+            const {
+                actionButtons = []
+            } = options;
+
+            const $tableWrapper = $('#tableWrapper');
+            $tableWrapper.empty();
+
+            // Add action buttons
+            const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+            actionButtons.forEach(button => {
+                $buttonGroup.append(
+                    $('<button>').addClass(`btn ${button.class}`)
+                        .html(`<i class="${button.icon} mr-2"></i> ${button.text}`)
+                        .on('click', button.action)
+                );
+            });
+            $tableWrapper.append($buttonGroup);
+
+            if (!Array.isArray(data) || data.length === 0) {
+                $tableWrapper.append('<p>No data available</p>');
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const $table = $('<table>').addClass('dynamic-table');
+            const $thead = $('<thead>').appendTo($table);
+            const $tbody = $('<tbody>').appendTo($table);
+
+            const $headerRow = $('<tr>');
+            headers.forEach(h => $headerRow.append($('<th>').text(h)));
+            $headerRow.appendTo($thead);
+
+            data.forEach(row => {
+                const $dataRow = $('<tr>');
+                headers.forEach(h => {
+                    let $cell;
+                    const val = row[h];
+                    if (h === 'Revenue Category') {
+                        $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A').addClass('revenue-category');
+                    } else if (['Paid Amount', 'Pending Amount', 'Cancelled Amount', 'Total Amount', 'Profit', 'Loss'].includes(h)) {
+                        const numVal = parseFloat(val.replace(/,/g, ''));
+                        $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A')
+                            .addClass(numVal < 0 ? 'negative' : 'positive');
+                    } else {
+                        $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A');
+                    }
+                    $dataRow.append($cell);
+                });
+                $dataRow.appendTo($tbody);
+            });
+
+            $tableWrapper.append($table);
+
+            // Add pagination
+            const $pagination = generatePagination();
+            $tableWrapper.append($pagination);
+        };
+
+        // Function to generate pagination
+        const generatePagination = () => {
+            const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
+            const $pagination = $('<nav>').addClass('mt-3');
+            const $ul = $('<ul>').addClass('pagination justify-content-center');
+
+            // Previous button
+            $ul.append(
+                $('<li>').addClass(`page-item ${currentPage === 1 ? 'disabled' : ''}`)
+                    .append($('<a>').addClass('page-link').text('Previous').on('click', () => changePage(currentPage - 1)))
+            );
+
+            // Page numbers
+            const maxPages = 5;
+            const startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+            const endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+            for (let i = startPage; i <= endPage; i++) {
+                $ul.append(
+                    $('<li>').addClass(`page-item ${i === currentPage ? 'active' : ''}`)
+                        .append($('<a>').addClass('page-link').text(i).on('click', () => changePage(i)))
+                );
+            }
+
+            // Next button
+            $ul.append(
+                $('<li>').addClass(`page-item ${currentPage === totalPages ? 'disabled' : ''}`)
+                    .append($('<a>').addClass('page-link').text('Next').on('click', () => changePage(currentPage + 1)))
+            );
+
+            $pagination.append($ul);
+
+            // Add pagination info
+            const start = (currentPage - 1) * config.recordsPerPage + 1;
+            const end = Math.min(currentPage * config.recordsPerPage, filteredData.length);
+            const $info = $('<div>').addClass('text-center mt-2')
+                .text(`Page ${currentPage} of ${totalPages} | Showing ${start}-${end} of ${filteredData.length} records (${totalRecords} total)`);
+            $pagination.append($info);
+
+            return $pagination;
+        };
+
+        // Function to change page
+        const changePage = (newPage) => {
+            const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
+            if (newPage < 1 || newPage > totalPages) return;
+
+            currentPage = newPage;
+            const start = (currentPage - 1) * config.recordsPerPage;
+            const end = start + config.recordsPerPage;
+            const pageData = filteredData.slice(start, end);
+
+            generateDynamicTable(pageData, getTableOptions());
+        };
+
+        // Function to filter table
+        const filterTable = (searchTerm) => {
+            filteredData = fullData.filter(row =>
+                Object.values(row).some(value =>
+                    String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+            currentPage = 1;
+            changePage(1);
+        };
+
+        // Function to load monthly sales report
+        const loadMonthlySalesReport = () => {
+            $('#tableWrapper').html('<p>Loading monthly sales report...</p>');
+
+            const year = $('#yearSelect').val();
+            const month = $('#monthSelect').val();
+
+            $.ajax({
+                url: `${config.monthlySalesReportApiUrl}?year=${year}&month=${month}`,
+                method: 'GET',
+                dataType: 'json',
+                success: data => {
+                    if (data && data.length > 0) {
+                        fullData = data;
+                        totalRecords = data.length;
+                        filteredData = [...fullData];
+                        changePage(1);
+                    } else {
+                        $('#tableWrapper').html('<p>No records found for the selected month and year.</p>');
+                    }
+                },
+                error: (_, textStatus, errorThrown) => {
+                    console.error('Error loading monthly sales report:', textStatus, errorThrown);
+                    $('#tableWrapper').html('<p>Error loading monthly sales report. Please try again later.</p>');
+                }
+            });
+        };
+
+        // Function to get table options
+        const getTableOptions = () => ({
+            actionButtons: [
+                { text: 'Excel', icon: 'fas fa-file-excel', class: 'btn-success', action: exportToExcel },
+                { text: 'PDF', icon: 'fas fa-file-pdf', class: 'btn-warning', action: downloadPDF },
+                { text: 'Print', icon: 'fas fa-print', class: 'btn-secondary', action: printTable }
+            ]
+        });
+
+        // Export functionality
+
+        // Export functionality
+        const exportToExcel = () => {
+            generateExcel(fullData, 'Aggregate Monthly Sales Group Report');
+        };
+
+        const downloadPDF = () => {
+            printGeneratePdf(fullData, 'Aggregate Monthly Sales Group Report');
+        };
+
+        const printTable = () => {
+            printGeneratePdf(fullData, 'Aggregate Monthly Sales Group Report');
+        };
+
+        // Apply styles function
+        const applyStyles = () => {
+            $('head').append(`
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+    .table-responsive {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 15px;
+    }
+    .dynamic-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Roboto', sans-serif;
+        font-size: 11px;
+    }
+    .dynamic-table th, .dynamic-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    .dynamic-table th {
+        background-color: #f8f9fa;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+    }
+    .dynamic-table tr:last-child td { border-bottom: none; }
+    .dynamic-table tr:hover { background-color: #f1f3f5; }
+    .dynamic-table .revenue-category { font-weight: bold; }
+    .dynamic-table .negative { color: #d32f2f; }
+    .dynamic-table .positive { color: #388e3c; }
+    .btn-group .btn {
+        margin-right: 10px;
+    }
+    .btn-group .btn i {
+        margin-right: 5px;
+    }
+    @media print {
+        .btn-group, #searchInput, .pagination {
+            display: none;
+        }
+    }
+</style>
+`);
+        };
+
+        // Initialize
+        $(() => {
+            applyStyles();
+            initializePage();
+        });
+    })(jQuery);
+</script>

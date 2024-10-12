@@ -224,4 +224,12 @@ public class CustomProductManagerRestController {
   List<Map<String, Object>> report = customManagerProductService.GetYearlySalesByRevenueCode(year, revenueCode);
   return ResponseEntity.ok(report);
  }
+
+ @GetMapping("/monthly-stock-valuation-report")
+ public ResponseEntity<List<Map<String, Object>>> getMonthlyStockValuationReport(
+         @RequestParam int year,
+         @RequestParam int month) {
+  List<Map<String, Object>> report = customManagerProductService.GetMonthlyStockValuationReport(year, month);
+  return ResponseEntity.ok(report);
+ }
 }

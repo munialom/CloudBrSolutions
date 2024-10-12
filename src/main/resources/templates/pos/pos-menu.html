@@ -560,27 +560,7 @@
         $(() => {
             let isSubmitting = false;
 
-           /* const updateSerialNumber = () => {
-                const type = $("#transactionType").val();
-                $.ajax({
-                    url: '/api/stocks/generate/serial-number',
-                    type: 'GET',
-                    data: { type },
-                    success: (serialNumber) => {
-                        $("#invoiceNumber").val(serialNumber);
-                    },
-                    error: (xhr, status, error) => {
-                        console.error("Error generating serial number:", error);
-                        $("#invoiceNumber").val("Error");
-                    }
-                });
-            };*/
 
-            // Initial serial number generation
-           // updateSerialNumber();
-
-            // Update serial number when transaction type changes
-           // $("#transactionType").change(updateSerialNumber);
 
             // Function to reset float label inputs
             const resetFloatLabelInput = (inputId) => {
