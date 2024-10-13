@@ -1,7 +1,7 @@
 package com.ctecx.brsuite.stockmode;
 
 import com.ctecx.brsuite.customers.Customer;
-import com.ctecx.brsuite.customers.CustomerService;
+import com.ctecx.brsuite.customers.MyCustomerService;
 import com.ctecx.brsuite.customproductsmanager.CustomManagerProductService;
 import com.ctecx.brsuite.customproductsmanager.CustomProductManagerRepository;
 import com.ctecx.brsuite.products.Product;
@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @Service
@@ -34,13 +33,14 @@ import java.util.Optional;
 public class SalesService {
 
     private final StockTransactionRepository stockTransactionRepository;
-    private final CustomerService customerService;
+
     private final SalesDateTimeManager salesDateTimeManager;
     private final TransactionTemplate transactionTemplate;
     private final CustomManagerProductService customManagerProductService;
     private  final CustomProductManagerRepository customProductManagerRepository;
     private final StoreService storeService;
     private final TransactionService transactionService;
+    private final MyCustomerService myCustomerService;
 
 
 
@@ -110,9 +110,8 @@ public class SalesService {
         stockTransaction.setStockIn(0);
         stockTransaction.setRevenue(product.getRevenue());
         stockTransaction.setRevenue_code(product.getRevenue().getRevenueName());
-
-        Optional<Customer> optionalCustomer = Optional.ofNullable(customerService.getCustomerById(salesStockDTO.getCustomerId()));
-        optionalCustomer.ifPresent(stockTransaction::setCustomer);
+        Customer customer = myCustomerService.getDefaultCustomer();
+        stockTransaction.setCustomer(customer);
 
         stockTransaction.setStockOut(saleStock.getQty());
         stockTransaction.setDescription("Stock Sale for " + product.getProductName());
