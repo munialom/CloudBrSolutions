@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -294,5 +298,25 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth) {
 
         return jdbcTemplate.queryForList("CALL GetMonthlyStockValuationReport(?,?)",currentYear, currentMonth);
+    }
+
+    @Override
+    public Optional<Map<String, Object>> getSingleProductByCode(String productCode) {
+        String sql = "CALL GetSingleProductByCode(?)";
+        return jdbcTemplate.query(sql,
+                (PreparedStatement ps) -> ps.setString(1, productCode),
+                (ResultSet rs) -> {
+                    if (rs.next()) {
+                        Map<String, Object> result = new HashMap<>();
+                        ResultSetMetaData metaData = rs.getMetaData();
+                        int columnCount = metaData.getColumnCount();
+                        for (int i = 1; i <= columnCount; i++) {
+                            result.put(metaData.getColumnName(i), rs.getObject(i));
+                        }
+                        return Optional.of(result);
+                    }
+                    return Optional.empty();
+                }
+        );
     }
 }

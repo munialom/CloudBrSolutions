@@ -5,7 +5,6 @@ import com.ctecx.brsuite.customers.CustomerService;
 import com.ctecx.brsuite.customproductsmanager.CustomManagerProductService;
 import com.ctecx.brsuite.customproductsmanager.CustomProductManagerRepository;
 import com.ctecx.brsuite.products.Product;
-import com.ctecx.brsuite.products.ProductRepository;
 import com.ctecx.brsuite.revenue.Revenue;
 import com.ctecx.brsuite.transactions.OrderState;
 import com.ctecx.brsuite.transactions.PaymentState;
@@ -14,7 +13,6 @@ import com.ctecx.brsuite.transactions.TransactionService;
 import com.ctecx.brsuite.util.ResourceNotFoundException;
 import com.ctecx.brsuite.util.SalesDateTimeManager;
 import com.ctecx.brsuite.warehouse.StoreService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -29,14 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class SalesService {
-    private final ProductRepository productRepository;
+
     private final StockTransactionRepository stockTransactionRepository;
     private final CustomerService customerService;
     private final SalesDateTimeManager salesDateTimeManager;
@@ -46,48 +42,27 @@ public class SalesService {
     private final StoreService storeService;
     private final TransactionService transactionService;
 
-    private final ConcurrentHashMap<String, Product> productCache = new ConcurrentHashMap<>();
 
-
-
-    @PostConstruct
-    public void initializeCache() {
-        refreshCache();
-    }
-
-    public void refreshCache() {
-        List<Map<String, Object>> allProducts = customManagerProductService.GetAllProducts();
-        productCache.clear();
-        productCache.putAll(allProducts.stream()
-                .map(this::mapProductDataToProduct)
-                .collect(Collectors.toMap(Product::getProductCode, product -> product)));
-    }
-
-    private Product getProductByCode(String productCode) {
-        Product product = productCache.get(productCode);
-        if (product == null) {
-            throw new ResourceNotFoundException("Product not found with code: " + productCode);
-        }
-        return product;
-    }
 
     @Transactional
     public String createCounterSales(SalesStockDTO salesStockDTO) {
-
-
         String sn = customProductManagerRepository.generateUniqueSerialNumber("");
         String orderNumber = customProductManagerRepository.generateNewOrderNumber();
-
         BigDecimal totalAmount = salesStockDTO.getTotalAmount();
         BigDecimal receivedAmount = salesStockDTO.getAmountPaid();
         BigDecimal changeOut = calculateChangeOut(totalAmount, receivedAmount);
 
         List<StockTransaction> stockTransactions = new ArrayList<>();
+
         for (SaleStock saleStock : salesStockDTO.getSaleStocks()) {
             Product product = getProductByCode(saleStock.getProductCode());
+            if (product == null) {
+                throw new ResourceNotFoundException("Product not found with code: " + saleStock.getProductCode());
+            }
             StockTransaction stockTransaction = createStockTransaction(saleStock, product, sn, orderNumber, salesStockDTO, changeOut);
             stockTransactions.add(stockTransaction);
         }
+
         stockTransactionRepository.saveAll(stockTransactions);
 
         // Create and process financial transactions
@@ -96,29 +71,15 @@ public class SalesService {
 
         return orderNumber;
     }
-/*    @Transactional
-    public String createCounterSales(SalesStockDTO salesStockDTO) {
-        String sn = generateUniqueSerialNumber();
-        String orderNumber = generateNewOrderNumber();
 
-        BigDecimal totalAmount = salesStockDTO.getTotalAmount();
-        BigDecimal receivedAmount = salesStockDTO.getAmountPaid();
-        BigDecimal changeOut = calculateChangeOut(totalAmount, receivedAmount);
 
-        List<StockTransaction> stockTransactions = new ArrayList<>();
-        for (SaleStock saleStock : salesStockDTO.getSaleStocks()) {
-            Product product = productRepository.findByProductCode(saleStock.getProductCode());
-            StockTransaction stockTransaction = createStockTransaction(saleStock, product, sn, orderNumber, salesStockDTO, changeOut);
-            stockTransactions.add(stockTransaction);
-        }
-        stockTransactionRepository.saveAll(stockTransactions);
+    private Product getProductByCode(String productCode) {
+        return customManagerProductService.getSingleProductByCode(productCode)
+                .map(this::mapProductDataToProduct)
+                .orElse(null);
+    }
 
-        // Create and process financial transactions
-        SaleTransactionDTO saleTransactionDTO = createSaleTransactionDTO(salesStockDTO, sn, changeOut);
-        transactionService.processSaleTransaction(saleTransactionDTO);
 
-        return orderNumber;
-    }*/
 
     private BigDecimal calculateChangeOut(BigDecimal totalAmount, BigDecimal receivedAmount) {
         return receivedAmount.subtract(totalAmount).max(BigDecimal.ZERO);

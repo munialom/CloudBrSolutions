@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -100,10 +101,7 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetEnhancedSalesReport(startDate,endDate);
     }
 
-  /*  public List<Map<String, Object>> GetStockValuationReport(LocalDate startDate, LocalDate endDate) {
 
-        return customProductManagerRepository.GetStockValuationReport(startDate,endDate);
-    }*/
 
     public List<Map<String, Object>> GetStockValuationSummaryOverTime() {
         return customProductManagerRepository.GetStockValuationSummary();
@@ -202,6 +200,10 @@ public class CustomManagerProductService {
     public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth) {
 
         return customProductManagerRepository.GetMonthlyStockValuationReport(currentYear, currentMonth);
+    }
+
+    public Optional<Map<String, Object>> getSingleProductByCode(String productCode) {
+        return customProductManagerRepository.getSingleProductByCode(productCode);
     }
 
 }

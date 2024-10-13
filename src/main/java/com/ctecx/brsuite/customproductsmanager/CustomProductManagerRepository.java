@@ -4,6 +4,7 @@ package com.ctecx.brsuite.customproductsmanager;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface CustomProductManagerRepository {
 
@@ -88,4 +89,6 @@ public interface CustomProductManagerRepository {
     List<Map<String, Object>>GetYearlySalesByRevenueCode(int currentYear,String revenueName);
 
     List<Map<String, Object>>GetMonthlyStockValuationReport(int currentYear, int currentMonth);
+
+    Optional<Map<String, Object>> getSingleProductByCode(String productCode);
 }
