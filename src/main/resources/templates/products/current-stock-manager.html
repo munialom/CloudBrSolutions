@@ -200,13 +200,6 @@
             return $row;
         };
 
-        // Create stock change input
-  /*      const createStockChangeInput = (rowId) => {
-            return $('<input>')
-                .attr('type', 'number')
-                .attr('id', `stock-change-${rowId}`)
-                .addClass('form-control form-control-sm stock-change-input');
-        };*/
 
         const createStockChangeInput = (rowId) => {
             return $('<input>')
@@ -219,8 +212,38 @@
                     'text-align': 'right',
                 })
                 .attr('min', '0')
-                .attr('max', '999');
+                .on('input', function() {
+                    let value = $(this).val();
+                    if (value < 0 || value.startsWith('-')) {
+                        $(this).val(0);
+                    }
+                    // Remove leading zeros
+                    $(this).val(function(_, v) {
+                        return v.replace(/^0+/, '');
+                    });
+                })
+                .on('keypress', function(e) {
+                    // Prevent typing negative sign
+                    if (e.key === '-') {
+                        e.preventDefault();
+                    }
+                });
         };
+
+
+/*        const createStockChangeInput = (rowId) => {
+            return $('<input>')
+                .attr('type', 'number')
+                .attr('id', `stock-change-${rowId}`)
+                .addClass('form-control form-control-sm stock-change-input')
+                .css({
+                    'width': '60px',
+                    'height': '25px',
+                    'text-align': 'right',
+                })
+                .attr('min', '0')
+                .attr('max', '999');
+        };*/
         const attachTableEventListeners = () => {
             $('.rowCheckbox').on('change', function() {
                 const rowId = $(this).data('id');

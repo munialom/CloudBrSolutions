@@ -10,6 +10,7 @@ import com.ctecx.brsuite.suppliers.SupplierService;
 import com.ctecx.brsuite.warehouse.Store;
 import com.ctecx.brsuite.warehouse.StoreRepository;
 import com.ctecx.brsuite.warehouse.StoreService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Row;
@@ -40,11 +41,79 @@ public class StockService {
     private final StoreService storeService;
 
 
-
-
-
-
     public void createOpeningStock(OpeningStockDTO openingStockDTO) {
+        if (openingStockDTO == null || openingStockDTO.getOpeningStocks() == null) {
+            throw new IllegalArgumentException("OpeningStockDTO or its stocks cannot be null");
+        }
+
+        String sn = generateSerialNumber();
+
+        for (OpeningStock openingStock : openingStockDTO.getOpeningStocks()) {
+            Product product = getProductForOpeningStock(openingStock);
+            StockTransaction stockTransaction = createStockTransaction(product, sn, openingStockDTO);
+
+            int quantity = (openingStock == null) ? 0 : Math.max(openingStock.getQty(), 0);
+
+            if ("ADD".equals(openingStockDTO.getOpcode())) {
+                handleAddOperation(stockTransaction, quantity);
+            } else if ("SUBTRACT".equals(openingStockDTO.getOpcode())) {
+                handleSubtractOperation(stockTransaction, quantity);
+            } else {
+                throw new IllegalArgumentException("Invalid opcode: " + openingStockDTO.getOpcode());
+            }
+
+            stockTransactionRepository.save(stockTransaction);
+        }
+    }
+
+    private Product getProductForOpeningStock(OpeningStock openingStock) {
+        String productCode = (openingStock == null) ? null : openingStock.getProductCode();
+        if (productCode == null || productCode.isEmpty()) {
+            throw new IllegalArgumentException("Product code cannot be null or empty");
+        }
+
+        Product product = productRepository.findByProductCode(productCode);
+        if (product == null) {
+            throw new EntityNotFoundException("Product not found with code: " + productCode);
+        }
+        return product;
+    }
+
+    private StockTransaction createStockTransaction(Product product, String sn, OpeningStockDTO openingStockDTO) {
+        StockTransaction stockTransaction = new StockTransaction();
+        stockTransaction.setProduct(product);
+        stockTransaction.setProductCode(product.getProductCode());
+        stockTransaction.setProductName(product.getProductName());
+        stockTransaction.setTransactionDate(LocalDate.now());
+        stockTransaction.setSerialNumber(sn);
+        stockTransaction.setStatus("Active");
+
+        if (openingStockDTO.getBranchId() != null) {
+            Store branch = storeRepository.findById(openingStockDTO.getBranchId())
+                    .orElseThrow(() -> new EntityNotFoundException("Branch not found with id: " + openingStockDTO.getBranchId()));
+            stockTransaction.setStore(branch);
+        }
+
+        return stockTransaction;
+    }
+
+    private void handleAddOperation(StockTransaction stockTransaction, int quantity) {
+        stockTransaction.setModule("Adding Stocks");
+        stockTransaction.setStockIn(quantity);
+        stockTransaction.setStockOut(0);
+        stockTransaction.setDescription("Adding stock for " + stockTransaction.getProductName());
+    }
+
+    private void handleSubtractOperation(StockTransaction stockTransaction, int quantity) {
+        stockTransaction.setModule("Subtracting Stocks");
+        stockTransaction.setStockIn(0);
+        stockTransaction.setStockOut(quantity);
+        stockTransaction.setDescription("Subtracting stock for " + stockTransaction.getProductName());
+    }
+
+
+
+ /*   public void createOpeningStock(OpeningStockDTO openingStockDTO) {
         String sn = generateSerialNumber();
 
         openingStockDTO.getOpeningStocks().forEach(openingStock -> {
@@ -58,8 +127,8 @@ public class StockService {
             stockTransaction.setProductCode(product.getProductCode());
             stockTransaction.setProductName(product.getProductName());
             stockTransaction.setTransactionDate(LocalDate.now());
-            /*stockTransaction.setProductCost(product.getProductCost());
-            stockTransaction.setProductSalePrice(product.getProductPrice());*/
+            *//*stockTransaction.setProductCost(product.getProductCost());
+            stockTransaction.setProductSalePrice(product.getProductPrice());*//*
             stockTransaction.setSerialNumber(sn);
             stockTransaction.setStatus("Active");
 
@@ -89,7 +158,7 @@ public class StockService {
             // Save the stock transaction
             stockTransactionRepository.save(stockTransaction);
         });
-    }
+    }*/
 
 
 
