@@ -49,6 +49,9 @@ public interface CustomProductManagerRepository {
     List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate);
     List<Map<String, Object>>GetStockValuationReport(LocalDate startDate, LocalDate endDate);
 
+
+    List<Map<String, Object>>GasValuation(LocalDate startDate, LocalDate endDate);
+
     List<Map<String, Object>> GetStockValuationSummary();
 
     List<Map<String, Object>> GetUserInformation();

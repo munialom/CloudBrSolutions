@@ -66,4 +66,10 @@ public class SalesFlowController {
         return "reports/monthly-stock-value"; // This corresponds to the Thymeleaf HTML template
     }
 
+    @GetMapping("/gas-stocks")
+    public String gasStocks() {
+
+        return "reports/gas-stock-levels"; // This corresponds to the Thymeleaf HTML template
+    }
+
 }

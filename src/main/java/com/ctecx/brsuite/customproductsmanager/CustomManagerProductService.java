@@ -141,6 +141,11 @@ public class CustomManagerProductService {
     }
 
 
+    public List<Map<String, Object>> GasValuation(LocalDate startDate, LocalDate endDate) {
+        return customProductManagerRepository.GasValuation(startDate,endDate);
+    }
+
+
     public List<Map<String, Object>> GetProductStockTransactions(int productID) {
 
         return customProductManagerRepository.GetProductStockTransactions(productID);

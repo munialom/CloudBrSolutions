@@ -29,6 +29,12 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     }
 
     @Override
+    public List<Map<String, Object>> GetCookingGasStockLevels() {
+        String sql = "CALL GetCookingGasStockLevels()";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    @Override
     public List<Map<String, Object>> GetBelowLowStockLevels() {
         String sql = "CALL GetBelowLowStockLevels()";
         return jdbcTemplate.queryForList(sql);

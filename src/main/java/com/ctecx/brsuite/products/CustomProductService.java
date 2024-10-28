@@ -27,6 +27,11 @@ public class CustomProductService {
     }
 
 
+    public List<Map<String, Object>> GetCookingGasStockLevels() {
+        return productRepository.GetCookingGasStockLevels();
+    }
+
+
     public List<Map<String, Object>> GetLowStockLevels() {
         return productRepository.GetLowStockLevels();
     }

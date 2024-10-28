@@ -167,6 +167,11 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     }
 
     @Override
+    public List<Map<String, Object>> GasValuation(LocalDate startDate, LocalDate endDate) {
+        return jdbcTemplate.queryForList("CALL GasValuation(?,?)",startDate, endDate);
+    }
+
+    @Override
     public List<Map<String, Object>> GetStockValuationSummary() {
         return jdbcTemplate.queryForList("CALL GetStockValuationSummary()");
     }

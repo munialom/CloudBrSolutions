@@ -77,6 +77,13 @@ public class ProductRestController {
         return ResponseEntity.ok(belowLowStockProducts);
     }
 
+
+    @GetMapping("/cooking-gas-stock")
+    public ResponseEntity<List<Map<String, Object>>> CookingGasStockLevels() {
+        List<Map<String, Object>> belowLowStockProducts = customProductService.GetCookingGasStockLevels();
+        return ResponseEntity.ok(belowLowStockProducts);
+    }
+
     @GetMapping("/low-stock")
     public ResponseEntity<List<Map<String, Object>>> getLowStockLevels() {
         List<Map<String, Object>> lowStockProducts = customProductService.GetLowStockLevels();

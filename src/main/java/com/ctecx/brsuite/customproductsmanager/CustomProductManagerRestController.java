@@ -102,6 +102,16 @@ public class CustomProductManagerRestController {
   return ResponseEntity.ok(report);
  }
 
+
+ @GetMapping("/gas-valuation-report")
+ public ResponseEntity<List<Map<String, Object>>> gasValuationReport(
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+  List<Map<String, Object>> report = customManagerProductService.GasValuation(startDate, endDate);
+  return ResponseEntity.ok(report);
+ }
+
+
  @GetMapping("/stock-valuation-summary")
  public ResponseEntity<List<Map<String, Object>>> getStockValuationSummary() {
   List<Map<String, Object>> summary = customManagerProductService.GetStockValuationSummaryOverTime();
