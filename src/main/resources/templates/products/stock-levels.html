@@ -11,9 +11,506 @@
     </div>
 
 
-
-
     <script>
+        ($ => {
+            // Configuration
+            const config = {
+                productsApiUrl: '/api-bulk/below-low-stock',
+                dataApiUrl: '/api/products-manager',
+                recordsPerPage: 10,
+                exportFileName: 'products_data'
+            };
+
+            // State management
+            const state = {
+                fullData: [],
+                currentPage: 1,
+                totalPages: 0,
+                totalRecords: 0,
+                filteredData: [],
+                processedData: [],
+                visiblePages: 5
+            };
+
+            // Data processing utilities
+            const dataProcessor = {
+                addAutoIncrement: (data) => {
+                    return data.map((item, index) => ({
+                        no: (state.currentPage - 1) * config.recordsPerPage + index + 1,
+                        ...item
+                    }));
+                },
+                prepareForExport: (data) => {
+                    return data.map(item => {
+                        const { no, actions, ...rest } = item;
+                        return rest;
+                    });
+                }
+            };
+
+            // Export utilities
+            const exportUtils = {
+                toExcel: (data) => {
+                    const ws = XLSX.utils.json_to_sheet(dataProcessor.prepareForExport(data));
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Products");
+                    XLSX.writeFile(wb, `${config.exportFileName}.xlsx`);
+                },
+                toPDF: (data) => {
+                    const doc = new jsPDF('l', 'pt');
+                    doc.autoTable({
+                        head: [Object.keys(data[0]).filter(key => key !== 'actions')],
+                        body: data.map(row => Object.values(dataProcessor.prepareForExport([row])[0])),
+                        styles: { fontSize: 8, cellPadding: 2 },
+                        headStyles: { fillColor: [51, 122, 183] }
+                    });
+                    doc.save(`${config.exportFileName}.pdf`);
+                },
+                print: () => {
+                    window.print();
+                }
+            };
+
+            // Action handlers
+            const actionHandlers = {
+                view: (productId, productData) => {
+                    const { no, actions, ...displayData } = productData;
+                    swal({
+                        title: "Product Details",
+                        content: {
+                            element: "div",
+                            attributes: {
+                                innerHTML: Object.entries(displayData)
+                                    .map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`)
+                                    .join('')
+                            }
+                        },
+                        buttons: ["Close"]
+                    });
+                },
+                edit: (productId, productData) => {
+                    const { no, actions, ...editableData } = productData;
+                    swal({
+                        title: "Edit Product",
+                        content: {
+                            element: "div",
+                            attributes: {
+                                innerHTML: Object.entries(editableData)
+                                    .map(([key, value]) =>
+                                        `<input id="edit-${key}" class="swal-content__input"
+                                 placeholder="${key.charAt(0).toUpperCase() + key.slice(1)}" value="${value || ''}">`
+                                    ).join('')
+                            }
+                        },
+                        buttons: {
+                            cancel: true,
+                            confirm: {
+                                text: "Update",
+                                value: true,
+                                className: "btn-primary",
+                                closeModal: false
+                            }
+                        }
+                    }).then(willUpdate => {
+                        if (willUpdate) {
+                            const updatedData = {};
+                            Object.keys(editableData).forEach(key => {
+                                updatedData[key] = $(`#edit-${key}`).val();
+                            });
+
+                            $.ajax({
+                                url: `${config.dataApiUrl}/${productId}`,
+                                method: 'PUT',
+                                data: JSON.stringify(updatedData),
+                                contentType: 'application/json',
+                                success: () => {
+                                    swal.close();
+                                    $.wnoty({
+                                        type: 'success',
+                                        message: 'Product updated successfully!',
+                                        position: 'top-right'
+                                    });
+                                    fetchData();
+                                },
+                                error: () => {
+                                    swal.close();
+                                    $.wnoty({
+                                        type: 'error',
+                                        message: 'Failed to update product.',
+                                        position: 'top-right'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                },
+                delete: (productId) => {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you cannot recover this product!",
+                        icon: "warning",
+                        buttons: ["Cancel", "Delete"],
+                        dangerMode: true,
+                    }).then(willDelete => {
+                        if (willDelete) {
+                            $.ajax({
+                                url: `${config.dataApiUrl}/${productId}`,
+                                method: 'DELETE',
+                                success: () => {
+                                    $.wnoty({
+                                        type: 'success',
+                                        message: 'Product deleted successfully!',
+                                        position: 'top-right'
+                                    });
+                                    fetchData();
+                                },
+                                error: () => {
+                                    $.wnoty({
+                                        type: 'error',
+                                        message: 'Failed to delete product.',
+                                        position: 'top-right'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+
+            // Table generation
+            const tableGenerator = {
+                createTable: (data) => {
+                    const $table = $('<table>').addClass('dynamic-table table-sm');
+                    const $thead = $('<thead>').appendTo($table);
+                    const $tbody = $('<tbody>').appendTo($table);
+
+                    const headers = Object.keys(data[0]).filter(h => h !== 'actions');
+                    $('<tr>').append([
+                        ...headers.map(h =>
+                            $('<th>').text(h.charAt(0).toUpperCase() + h.slice(1).replace(/_/g, ' '))
+                        ),
+                        $('<th>').text('Actions').addClass('text-center')
+                    ]).appendTo($thead);
+
+                    data.forEach(row => {
+                        const $tr = $('<tr>').append([
+                            ...headers.map(h => $('<td>').text(row[h] ?? 'N/A')),
+                            $('<td>').addClass('action-buttons text-center').append([
+                                createActionButton('View', 'fas fa-eye', 'btn-info', () =>
+                                    actionHandlers.view(row.id || row._id, row)),
+                                createActionButton('Edit', 'fas fa-edit', 'btn-warning', () =>
+                                    actionHandlers.edit(row.id || row._id, row)),
+                                createActionButton('Delete', 'fas fa-trash', 'btn-danger', () =>
+                                    actionHandlers.delete(row.id || row._id))
+                            ])
+                        ]);
+                        $tbody.append($tr);
+                    });
+
+                    return $table;
+                },
+                createExportButtons: () => {
+                    return $('<div>').addClass('btn-group mb-3').append([
+                        createButton('Excel', 'fas fa-file-excel', 'btn-success', () =>
+                            exportUtils.toExcel(state.processedData)),
+                        createButton('PDF', 'fas fa-file-pdf', 'btn-danger', () =>
+                            exportUtils.toPDF(state.processedData)),
+                        createButton('Print', 'fas fa-print', 'btn-info', exportUtils.print)
+                    ]);
+                }
+            };
+
+            // Pagination component
+            const createPagination = () => {
+                const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
+                state.totalPages = totalPages;
+                const start = (state.currentPage - 1) * config.recordsPerPage + 1;
+                const end = Math.min(state.currentPage * config.recordsPerPage, state.filteredData.length);
+
+                const $pagination = $('<div>').addClass('pagination-wrapper mt-3');
+                const $ul = $('<ul>').addClass('pagination pagination-sm justify-content-center mb-2');
+
+                // Previous button
+                $ul.append(createPaginationItem('Previous', state.currentPage > 1,
+                    () => changePage(state.currentPage - 1)));
+
+                // Calculate visible page range
+                let startPage = Math.max(1, state.currentPage - Math.floor(state.visiblePages / 2));
+                let endPage = startPage + state.visiblePages - 1;
+
+                if (endPage > totalPages) {
+                    endPage = totalPages;
+                    startPage = Math.max(1, endPage - state.visiblePages + 1);
+                }
+
+                // Page numbers
+                for (let i = startPage; i <= endPage; i++) {
+                    $ul.append(createPaginationItem(i, true, () => changePage(i),
+                        i === state.currentPage));
+                }
+
+                // Next button
+                $ul.append(createPaginationItem('Next', state.currentPage < totalPages,
+                    () => changePage(state.currentPage + 1)));
+
+                // Pagination info
+                const $info = $('<div>').addClass('text-center text-muted small')
+                    .html(`Page ${state.currentPage} of ${totalPages} | Showing ${start}-${end} of ${state.filteredData.length} records`);
+
+                return $pagination.append([$ul, $info]);
+            };
+
+            // Helper functions
+            const createButton = (text, icon, className, action) => {
+                return $('<button>').addClass(`btn ${className} btn-sm`)
+                    .html(`<i class="${icon} mr-1"></i>${text}`)
+                    .on('click', action);
+            };
+
+            const createActionButton = (title, icon, className, action) => {
+                return $('<button>').addClass(`btn ${className} btn-xs`)
+                    .attr('title', title)
+                    .html(`<i class="${icon}"></i>`)
+                    .on('click', action);
+            };
+
+            const createPaginationItem = (text, enabled, action, active = false) => {
+                return $('<li>').addClass(`page-item ${!enabled ? 'disabled' : ''} ${active ? 'active' : ''}`)
+                    .append(
+                        $('<a>').addClass('page-link')
+                            .attr('href', 'javascript:void(0)')
+                            .text(text)
+                            .on('click', (e) => {
+                                e.preventDefault();
+                                if (enabled) action();
+                            })
+                    );
+            };
+
+            // Event handlers
+            const changePage = (newPage) => {
+                state.currentPage = newPage;
+                const start = (newPage - 1) * config.recordsPerPage;
+                const pageData = state.filteredData.slice(start, start + config.recordsPerPage);
+                state.processedData = dataProcessor.addAutoIncrement(pageData);
+                renderTable();
+            };
+
+            const filterTable = (searchTerm) => {
+                state.filteredData = state.fullData.filter(row =>
+                    Object.values(row).some(value =>
+                        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                );
+                state.currentPage = 1;
+                changePage(1);
+            };
+
+            // Data fetching
+            const fetchData = () => {
+                $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+
+                return $.ajax({
+                    url: config.productsApiUrl,
+                    method: 'GET',
+                    dataType: 'json'
+                }).then(data => {
+                    state.fullData = data;
+                    state.totalRecords = data.length;
+                    state.filteredData = [...data];
+                    changePage(1);
+                }).catch(error => {
+                    console.error('Error fetching data:', error);
+                    $('#tableWrapper').html(
+                        '<div class="alert alert-danger">Error loading data. Please try again later.</div>'
+                    );
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Failed to load data. Please try again.',
+                        position: 'top-right'
+                    });
+                });
+            };
+
+            // Render functions
+            const renderTable = () => {
+                const $wrapper = $('#tableWrapper');
+                $wrapper.empty();
+
+                $wrapper.append(tableGenerator.createExportButtons());
+                $wrapper.append(tableGenerator.createTable(state.processedData));
+                $wrapper.append(createPagination());
+            };
+
+            // Styles
+            const applyStyles = () => {
+                $('head').append(`
+            <style>
+                .dynamic-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 11px;
+                }
+                .dynamic-table th {
+                    background-color: #f8f9fa;
+                    font-weight: 600;
+                    color: #495057;
+                    text-transform: uppercase;
+                    padding: 6px 8px !important;
+                    vertical-align: middle !important;
+                    border-bottom: 2px solid #dee2e6 !important;
+                }
+                .dynamic-table td {
+                    padding: 4px 8px !important;
+                    vertical-align: middle !important;
+                    height: 24px !important;
+                    white-space: nowrap;
+                    border-bottom: 1px solid #dee2e6;
+                    font-weight: normal;
+                }
+                .dynamic-table tr:hover {
+                    background-color: rgba(0,0,0,.075);
+                }
+                .action-buttons {
+                    white-space: nowrap;
+                    text-align: center;
+                }
+                .action-buttons .btn {
+                    margin: 0 1px;
+                }
+                .btn-xs {
+                    padding: 1px 5px;
+                    font-size: 10px;
+                    line-height: 1.5;
+                    border-radius: 3px;
+                }
+                .pagination-wrapper {
+                    background: #f8f9fa;
+                    padding: 8px;
+                    border-radius: 4px;
+                }
+                .pagination {
+                    margin-bottom: 0;
+                    gap: 2px;
+                }
+                .pagination .page-link {
+                    padding: 4px 8px;
+                    font-size: 11px;
+                    border-radius: 3px;
+                    color: #333;
+                    background-color: #fff;
+                    border: 1px solid #dee2e6;
+                    min-width: 28px;
+                    text-align: center;
+                }
+                .pagination .page-item.active .page-link {
+                    background-color: #007bff;
+                    border-color: #007bff;
+                    color: #fff;
+                    font-weight: 500;
+                }
+                .pagination .page-item.disabled .page-link {
+                    background-color: #e9ecef;
+                    border-color: #dee2e6;
+                    color: #6c757d;
+                }
+                .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+                    background-color: #e9ecef;
+                    border-color: #dee2e6;
+                    color: #0056b3;
+                }
+                #searchInput {
+                  width: 100% !important;
+                }
+                @media print {
+                    .btn-group, #searchInput, .pagination-wrapper, .action-buttons {
+                        display: none;
+                    }
+                    .dynamic-table {
+                        font-size: 10px;
+                    }
+                    .dynamic-table th {
+                        background-color: #f8f9fa !important;
+                        color: #000 !important;
+                    }
+                }
+                .swal-content__input {
+                    margin-bottom: 10px;
+                    padding: 6px;
+                    width: 100%;
+                    border: 1px solid #d9d9d9;
+                    border-radius: 4px;
+                    font-size: 12px;
+                }
+                .btn-group {
+                    margin-right: 10px;
+                }
+                .table-responsive {
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                .text-muted {
+                    font-size: 11px;
+                }
+                #loading-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(255, 255, 255, 0.8);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                }
+            </style>
+        `);
+            };
+
+            // Initialize
+            const initialize = () => {
+                const $target = $('#table_div_content');
+                $target.empty();
+
+                // Create search input with container for better alignment
+                const $searchContainer = $('<div>').addClass('d-flex justify-content-between align-items-center mb-3 w-');
+                const $searchInput = $('<input>')
+                    .attr({
+                        type: 'text',
+                        placeholder: 'Search...',
+                        id: 'searchInput'
+                    })
+                    .addClass('form-control form-control-sm')
+                    .on('input', e => filterTable(e.target.value));
+
+                $searchContainer.append($searchInput);
+                $target.append($searchContainer);
+
+                // Create table wrapper
+                const $tableResponsive = $('<div>').addClass('table-responsive');
+                const $tableWrapper = $('<div>').attr('id', 'tableWrapper');
+                $tableResponsive.append($tableWrapper);
+                $target.append($tableResponsive);
+
+                // Create loading overlay
+                const $loadingOverlay = $('<div>')
+                    .attr('id', 'loading-overlay')
+                    .html('<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>')
+                    .hide();
+                $('body').append($loadingOverlay);
+
+                applyStyles();
+                fetchData();
+            };
+
+            // Start the application
+            $(() => initialize());
+        })(jQuery);
+    </script>
+
+  <!--  <script>
         ($ => {
             // Configuration
             const config = {
@@ -324,7 +821,7 @@
                 $(document).on('click', '.back-button', () => fetchAndDisplayData());
             });
         })(jQuery);
-    </script>
+    </script>-->
 </div>
 
 
