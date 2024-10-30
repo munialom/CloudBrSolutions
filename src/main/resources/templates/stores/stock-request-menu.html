@@ -1,0 +1,769 @@
+<div th:fragment="pos-main">
+
+    <style type="text/css">
+
+
+        /* Set flexbox for the pos-container */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+        /* Set flex for pos-content */
+        .pos-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Style pos-content-container */
+        .pos-content-container {
+            flex: 1;
+            padding: 10px;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+
+        }
+    </style>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-1">
+                <div class="pos-container">
+
+                    <!-- pos-content -->
+                    <div class="pos-content">
+                        <div class="col-md-12">
+
+                                <!-- Request Details Card -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light py-1">
+                                        <h6 class="card-title mb-0">Request Details</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- First Row - 4 Equal Columns -->
+                                        <div class="row mb-3">
+
+                                            <!-- Date Required -->
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="requestDate" class="form-label">Date Required:</label>
+                                                    <div class="input-group date">
+                                                        <input type="date" id="requestDate" class="form-control form-control-sm"/>
+                                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <!-- Action Buttons -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm me-2" id="btnSubmit">
+                                                        <i class="fa fa-paper-plane"></i> Submit
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-sm" id="btnCancel">
+                                                        <i class="fa fa-times"></i> Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            <!-- pos-content-container -->
+                            <div class="pos-content-container">
+                                <div class="pos-table-row">
+                                    <!-- Add your table rows here -->
+                                    <!-- BEGIN input-group -->
+                                    <div class="input-group p-2">
+                                        <button class="btn btn-dark dropdown-toggle py-0" type="button" data-bs-toggle="dropdown" style="height: 38px;">
+                                            <span class="d-none d-md-inline">Search Products</span>
+                                            <span class="d-inline d-md-none"><i class="fa fa-search"></i></span>
+                                            <i class="fa fa-barcode ms-1"></i>
+                                        </button>
+                                        <div class="flex-grow-1 position-relative">
+                                            <div class="input-group">
+                                              <span class="input-group-text bg-light border-0 py-0 px-2" style="height: 38px;">
+                                                <i class="fa fa-barcode"></i>
+                                              </span>
+                                                <input type="text" class="form-control bg-light border-start-0" placeholder="Search products..." id="search-pos" style="height: 38px;">
+                                            </div>
+                                            <div id="productTableContainer-pos" class="position-absolute w-100 bg-white border mt-1" style="display: none; z-index: 1000;"></div>
+                                        </div>
+                                    </div>
+                                    <!-- END input-group -->
+                                    <input type="hidden" id="barcode-input">
+
+                                    <!-- BEGIN panel -->
+                                    <div class="panel rounded border" data-sortable-id="ui-widget-16">
+                                        <div class="panel-heading bg-default-700 text-white">
+
+                                            <div class="panel-heading-btn">
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="panel-body">
+                                            <!-- BEGIN table -->
+                                            <div class="table-responsive mb-3">
+                                                <table class="table table-hover table-bordered table-sm text-nowrap mb-0 rounded border bg-gradient" id="selectedProducts-pos">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Product Name</th>
+                                                        <th>Quantity</th>
+                                                        <th>UnitCost</th>
+                                                        <th>UnitTax</th>
+                                                        <th>Discount</th>
+                                                        <th>NetTax</th>
+                                                        <th>SubTotal</th>
+                                                        <th>Batch Number</th>
+                                                        <th>Expiry Date</th>
+                                                        <th>Action</th>
+
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                                <fieldset class="border p-2">
+                                                    <div class="mailbox-content-footer">
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <!-- END table -->
+                                        </div>
+
+                                    </div>
+                                    <!-- END panel -->
+                                </div>
+
+                            </div>
+                            <!-- END pos-content-container -->
+                        </div>
+
+
+                    </div>
+                    <!-- END pos-content -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            const POS = {
+                init() {
+                    this.cacheDOM();
+                    this.bindEvents();
+                    this.initBarcodeScanner();
+                    this.$searchInput.focus();
+                },
+
+                cacheDOM() {
+                    this.$searchInput = $('#search-pos');
+                    this.$productTableContainer = $('#productTableContainer-pos');
+                    this.$selectedProductsTable = $('#selectedProducts-pos');
+                    this.$receivedAmount = $('#receivedAmount');
+                },
+
+                bindEvents() {
+                    this.$searchInput.on('input', this.debounce(this.handleSearch.bind(this), 300));
+                    this.$productTableContainer.on('click', 'tbody tr', this.handleProductSelection.bind(this));
+                    $(document).on('input', '.product-input, .price-input, .discount-input', this.handleInputChange.bind(this));
+                    $(document).on('click', '.increase-qty', this.handleQuantityIncrease.bind(this));
+                    $(document).on('click', '.decrease-qty', this.handleQuantityDecrease.bind(this));
+                    $(document).on('click', '.remove-row', (e) => this.removeRow($(e.currentTarget).closest('tr')));
+                    $(document).on('change', '.expiry-date', this.handleExpiryDateChange.bind(this));
+                    $(document).on('input', '.batch-input', this.handleBatchChange.bind(this));
+                    this.$receivedAmount.on('input', this.updateSidebar.bind(this));
+                    this.$selectedProductsTable.on('click', 'tbody tr', this.handleRowSelection.bind(this));
+                },
+
+                debounce(func, wait) {
+                    let timeout;
+                    return (...args) => {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(this, args), wait);
+                    };
+                },
+
+                initBarcodeScanner() {
+                    let scanBuffer = '';
+                    let lastKeyTime = Date.now();
+                    let lastScanTime = 0;
+                    const scanCompleteDelay = 50;
+                    const minTimeBetweenScans = 1000;
+
+                    $(document).on('keydown', (e) => {
+                        const currentTime = Date.now();
+
+                        if (e.key === 'Enter' && scanBuffer.length > 0 && currentTime - lastScanTime > minTimeBetweenScans) {
+                            e.preventDefault();
+                            this.handleBarcodeScan(scanBuffer);
+                            scanBuffer = '';
+                            lastScanTime = currentTime;
+                            return false;
+                        }
+
+                        if (currentTime - lastKeyTime > scanCompleteDelay) {
+                            scanBuffer = '';
+                        }
+
+                        if (e.key.length === 1) {
+                            scanBuffer += e.key;
+                        }
+
+                        lastKeyTime = currentTime;
+
+                        if ($(e.target).is(this.$searchInput)) {
+                            return true;
+                        }
+
+                        if (scanBuffer.length > 1) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                },
+
+                handleSearch() {
+                    const inputValue = this.$searchInput.val().trim();
+                    if (inputValue.length > 0) {
+                        this.searchProducts(inputValue);
+                    } else {
+                        this.$productTableContainer.hide();
+                    }
+                },
+
+                searchProducts(searchKey, page = 0, size = 5) {
+                    if (!searchKey || searchKey.trim() === '') {
+                        console.log('Empty search key, not performing search');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/products/products-data',
+                        type: 'GET',
+                        data: { searchKey, page, size },
+                        success: (response) => {
+                            if (response && response.trim() !== '') {
+                                this.$productTableContainer.html(response).show();
+                            } else {
+                                this.$productTableContainer.html('<p>No products found.</p>').show();
+                            }
+                        },
+                        error: (e) => {
+                            console.log('Search error:', e);
+                            this.$productTableContainer.html('<p>Error loading products.</p>').show();
+                        }
+                    });
+                },
+
+                handleProductSelection(event) {
+                    event.preventDefault();
+                    const $selectedRow = $(event.currentTarget);
+                    this.addProductToSelection($selectedRow);
+                    this.$productTableContainer.hide();
+                    this.$searchInput.val('').focus();
+                },
+
+                handleBarcodeScan(barcode) {
+                    if (/^\d+$/.test(barcode)) {
+                        console.log(`Scanned barcode: ${barcode}`);
+                        this.getProductAndAddRow(barcode);
+                        this.$searchInput.val('').focus();
+                    } else {
+                        console.log('Invalid barcode:', barcode);
+                        alert('Invalid barcode scanned');
+                    }
+                },
+
+                getProductAndAddRow(productCode) {
+                    if (!productCode || productCode.trim() === '') {
+                        console.log('Empty product code, not fetching product');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: `/api-bulk/SearchByCode_All/${productCode}`,
+                        type: 'GET',
+                        success: (data) => {
+                            if (data && data.productCode) {
+                                this.addProductToRow(data.productCode, data.productName, data.productPrice, data.tax);
+                            } else {
+                                console.error('Invalid product data received');
+                            }
+                        },
+                        error: (error) => {
+                            console.error('Error:', error);
+                            console.log('Product not found or error occurred.');
+                        }
+                    });
+                },
+
+                addProductToSelection($productRow) {
+                    const productCode = $productRow.find('td:nth-child(1)').text();
+                    const productName = $productRow.find('td:nth-child(2)').text();
+                    const productPrice = parseFloat($productRow.find('td:nth-child(4)').text()) || 0;
+                    const unitTax = parseFloat($productRow.find('td:nth-child(5)').text()) || 0;
+
+                    this.addProductToRow(productCode, productName, productPrice, unitTax);
+                },
+
+                addProductToRow(productCode, productName, productPrice, unitTax) {
+                    const $existingRow = this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`);
+
+                    if ($existingRow.length) {
+                        const $qtyInput = $existingRow.find('.product-input');
+                        $qtyInput.val(parseInt($qtyInput.val()) + 1).trigger('input');
+                    } else {
+                        const currentDate = new Date().toISOString().split('T')[0];
+                        const newRow = `
+                    <tr data-product-code="${productCode}">
+                        <td key-id="productCode">${productCode}</td>
+                        <td key-id="productName">${productName}</td>
+                        <td key-id="productQty" style="white-space: nowrap;">
+                            <div class="input-group qty">
+                                <button class="btn btn-danger btn-sm decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
+                                <input type="text" class="form-control form-control-sm text-center product-input"
+                                    value="1" style="width: 50px; margin: 0 5px;" />
+                                <button class="btn btn-success btn-sm increase-qty"><i class="fa fa-plus fa-sm"></i></button>
+                            </div>
+                        </td>
+                        <td key-id="SalePrice">
+                            <input type="number" class="form-control form-control-sm price-input"
+                                value="${productPrice}" step="0.01" />
+                        </td>
+                        <td key-id="unitTax">${this.formatNumber(unitTax)}</td>
+                        <td key-id="discount">
+                            <input type="number" class="form-control form-control-sm discount-input"
+                                value="0.00" step="0.01" />
+                        </td>
+                        <td key-id="finalTax">${this.formatNumber(unitTax)}</td>
+                        <td key-id="subtotal">${this.formatNumber(productPrice + unitTax)}</td>
+                        <td key-id="batchNumber">
+                            <input type="text" class="form-control form-control-sm batch-input" />
+                        </td>
+                        <td key-id="expiryDate">
+                            <input type="date" class="form-control form-control-sm expiry-date"
+                                value="${currentDate}" min="${currentDate}" />
+                        </td>
+                        <td key-id="action">
+                            <button class="btn btn-danger btn-sm remove-row">
+                                <i class="fa fa-trash fa-sm"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                        this.$selectedProductsTable.find('tbody').prepend(newRow);
+                        this.updateRowTotals(this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`));
+                    }
+
+                    this.updateSidebar();
+                },
+
+                handleInputChange(event) {
+                    const $input = $(event.target);
+                    const $row = $input.closest('tr');
+
+                    if ($input.hasClass('product-input')) {
+                        let qty = parseInt($input.val());
+                        if (isNaN(qty) || qty < 0) {
+                            qty = 1;
+                        }
+                        $input.val(qty);
+
+                        if (qty === 0) {
+                            this.removeRow($row);
+                            return;
+                        }
+                    } else if ($input.hasClass('price-input')) {
+                        let price = parseFloat($input.val());
+                        if (isNaN(price) || price < 0) {
+                            price = 0;
+                        }
+                        $input.val(this.formatNumber(price));
+                    } else if ($input.hasClass('discount-input')) {
+                        let discount = parseFloat($input.val());
+                        if (isNaN(discount) || discount < 0) {
+                            discount = 0;
+                        }
+                        $input.val(this.formatNumber(discount));
+                    }
+
+                    this.updateRowTotals($row);
+                    this.updateSidebar();
+                },
+
+                handleQuantityIncrease(event) {
+                    event.preventDefault();
+                    const $input = $(event.currentTarget).closest('.qty').find('.product-input');
+                    let qty = parseInt($input.val()) + 1;
+                    $input.val(qty).trigger('input');
+                },
+
+                handleQuantityDecrease(event) {
+                    event.preventDefault();
+                    const $input = $(event.currentTarget).closest('.qty').find('.product-input');
+                    let qty = Math.max(0, parseInt($input.val()) - 1);
+                    $input.val(qty).trigger('input');
+                },
+
+                handleExpiryDateChange(event) {
+                    const $input = $(event.target);
+                    const selectedDate = new Date($input.val());
+                    const currentDate = new Date();
+
+                    if (selectedDate < currentDate) {
+                        alert('Expiry date cannot be in the past');
+                        $input.val(currentDate.toISOString().split('T')[0]);
+                    }
+                },
+
+                handleBatchChange(event) {
+                    const $input = $(event.target);
+                    const batchNumber = $input.val().trim();
+
+                    // Add any specific batch number validation if needed
+                    if (batchNumber === '') {
+                        console.log('Empty batch number entered');
+                    }
+                },
+
+                updateRowTotals($row) {
+                    const qty = parseInt($row.find('.product-input').val()) || 0;
+                    const price = parseFloat($row.find('.price-input').val()) || 0;
+                    const discount = parseFloat($row.find('.discount-input').val()) || 0;
+                    const unitTax = parseFloat($row.find('[key-id="unitTax"]').text()) || 0;
+
+                    const finalTax = unitTax * qty;
+                    const subtotal = this.calculateSubtotal(price, qty, discount, unitTax);
+
+                    $row.find('[key-id="finalTax"]').text(this.formatNumber(finalTax));
+                    $row.find('[key-id="subtotal"]').text(this.formatNumber(subtotal));
+                },
+
+                updateSidebar() {
+                    let subtotal = 0;
+                    let tax = 0;
+                    let discount = 0;
+
+                    this.$selectedProductsTable.find('tbody tr').each(function() {
+                        const qty = parseInt($(this).find('.product-input').val()) || 0;
+                        const finalTax = parseFloat($(this).find('[key-id="finalTax"]').text()) || 0;
+                        const productDiscount = parseFloat($(this).find('.discount-input').val()) || 0;
+                        const subTotalItem = parseFloat($(this).find('[key-id="subtotal"]').text()) || 0;
+
+                        subtotal += subTotalItem;
+                        tax += finalTax;
+                        discount += productDiscount * qty;
+                    });
+
+                    const totalAmount = subtotal + tax;
+                    const receivedAmount = parseFloat(this.$receivedAmount.val()) || 0;
+                    const change = receivedAmount - totalAmount;
+
+                    $('#subtotal').text(this.formatNumber(subtotal));
+                    $('#tax').text(this.formatNumber(tax));
+                    $('#discount').text(this.formatNumber(discount));
+                    $('#totalAmount').text(this.formatNumber(totalAmount));
+                    $('#change-balance').text(this.formatNumber(change));
+                },
+
+                removeRow($row) {
+                    $row.remove();
+                    this.updateSidebar();
+                },
+
+                handleRowSelection(event) {
+                    if (!$(event.target).is('button, input')) {
+                        $('tr').removeClass('selected-row');
+                        $(event.currentTarget).addClass('selected-row');
+                    }
+                },
+
+                formatNumber: (num) => parseFloat(num).toFixed(2),
+                calculateSubtotal: (price, qty, discount, tax) => (price * qty) - (discount * qty) + (tax * qty),
+            };
+
+            POS.init();
+
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.error("An error occurred:", message, "at", source, ":", lineno, ":", colno);
+            };
+        });
+    </script>
+
+
+
+
+
+
+<script>
+    (function($) {
+        'use strict';
+
+        // Create a separate namespace for stock requests
+        window.StockRequest = window.StockRequest || {};
+
+        const API_CONFIG = {
+            baseUrl: '/api/v1/requisitions',
+            endpoints: {
+                CREATE: ''
+            }
+        };
+
+        const DOM = {
+            selectors: {
+                productsTable: '#selectedProducts-pos tbody',
+                searchInput: '#search-pos',
+                requestDate: '#requestDate',
+                comments: '#comments'
+            }
+        };
+
+        const showNotification = (type, message) => {
+            $.wnoty({ type, message, position: 'top-right' });
+        };
+
+        StockRequest.RequisitionTransaction = {
+            collectFormData: function() {
+                const requestDate = $(DOM.selectors.requestDate).val();
+                if (!requestDate) throw new Error('Please select a request date');
+
+                const requestedProducts = this.collectProductsData();
+                if (!requestedProducts.length) throw new Error('Please add at least one product');
+
+                return {
+                    requisitionNumber: null, // Will be generated by server
+                    requestedProducts,
+                    comments: $(DOM.selectors.comments).val() || ''
+                };
+            },
+
+            collectProductsData: function() {
+                const products = [];
+
+                $(DOM.selectors.productsTable).find('tr').each((_, row) => {
+                    const $row = $(row);
+                    const quantity = parseInt($row.find('.product-input').val()) || 0;
+
+                    if (quantity <= 0) return;
+
+                    products.push({
+                        productId: parseInt($row.data('product-id')),
+                        productCode: $row.find('[key-id="productCode"]').text().trim(),
+                        quantityRequested: quantity
+                    });
+                });
+
+                return products;
+            },
+
+            validateFormData: function(data) {
+                const errors = [
+                    !data.requestedProducts?.length && 'Please add at least one product',
+                    ...this.validateProducts(data.requestedProducts)
+                ].filter(Boolean);
+
+                if (errors.length) throw new Error(errors[0]);
+                return true;
+            },
+
+            validateProducts: function(products = []) {
+                return products.reduce((errors, product) => {
+                    if (!product.productCode) errors.push('Invalid product information detected');
+                    if (!product.quantityRequested || product.quantityRequested <= 0)
+                        errors.push('All products must have a valid quantity');
+                    return errors;
+                }, []);
+            },
+
+            saveRequisition: async function(data) {
+                try {
+                    const response = await fetch(API_CONFIG.baseUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.message || `Server error: ${response.status}`);
+                    }
+
+                    return response.json();
+                } catch (error) {
+                    console.error('Save error:', error);
+                    throw error;
+                }
+            },
+
+            toggleLoadingState: function(button, isLoading) {
+                const $button = $(button);
+                const $icon = $button.find('i');
+
+                $icon
+                    .toggleClass('fa-paper-plane', !isLoading)
+                    .toggleClass('fa-spinner fa-spin', isLoading);
+
+                $button.prop('disabled', isLoading);
+            },
+
+            clearForm: function() {
+                try {
+                    // Reset date to today
+                    const today = moment().format('YYYY-MM-DD');
+                    $(DOM.selectors.requestDate).val(today);
+
+                    // Clear products and search
+                    $(DOM.selectors.productsTable).empty();
+                    $(DOM.selectors.searchInput).val('');
+                    $(DOM.selectors.comments).val('');
+
+                    // Trigger form cleared event
+                    $(document).trigger('stockRequestFormCleared');
+                } catch (error) {
+                    console.error('Error clearing form:', error);
+                    showNotification('error', 'Error clearing form');
+                }
+            },
+
+            handleSubmit: async function(event) {
+                event.preventDefault();
+                const button = event.currentTarget;
+
+                try {
+                    this.toggleLoadingState(button, true);
+
+                    const formData = this.collectFormData();
+                    console.log('Stock Request Form Data:', formData); // Debug log
+                    this.validateFormData(formData);
+
+                    const response = await this.saveRequisition(formData);
+
+                    showNotification('success', 'Stock request saved successfully!');
+                    this.clearForm();
+
+                    // Trigger events with new namespace
+                    $(document).trigger('stockRequestSaved', [response]);
+                    $(document).trigger('stockRequestTableCleared');
+
+                } catch (error) {
+                    showNotification('error', error.message);
+                    console.error('Stock Request Error:', error);
+                } finally {
+                    this.toggleLoadingState(button, false);
+                }
+            },
+
+            handleCancel: function(event) {
+                event.preventDefault();
+                const hasChanges = $(DOM.selectors.productsTable).find('tr').length > 0;
+                if (!hasChanges || confirm('Are you sure? Unsaved changes will be lost.')) {
+                    this.clearForm();
+                }
+            },
+
+            init: function() {
+                try {
+                    const self = this;
+
+                    // Remove any existing event handlers to avoid duplicates
+                    $('#btnSubmit').off('click');
+                    $('#btnCancel').off('click');
+
+                    // Bind new event handlers
+                    $('#btnSubmit').on('click', function(e) {
+                        self.handleSubmit.call(self, e);
+                    });
+
+                    $('#btnCancel').on('click', function(e) {
+                        self.handleCancel.call(self, e);
+                    });
+
+                    console.log('Stock Request module initialized successfully');
+                } catch (error) {
+                    console.error('Error initializing Stock Request module:', error);
+                    showNotification('error', 'Error initializing form');
+                }
+            },
+
+            destroy: function() {
+                try {
+                    // Remove all event handlers
+                    $('#btnSubmit').off('click');
+                    $('#btnCancel').off('click');
+                    $(DOM.selectors.productsTable).off('change');
+
+                    console.log('Stock Request module destroyed successfully');
+                } catch (error) {
+                    console.error('Error destroying Stock Request module:', error);
+                }
+            }
+        };
+
+        // Initialize when document is ready
+        $(document).ready(function() {
+            // Clean up any existing instances first
+            if (StockRequest.RequisitionTransaction.destroy) {
+                StockRequest.RequisitionTransaction.destroy();
+            }
+
+            // Initialize new instance
+            StockRequest.RequisitionTransaction.init();
+        });
+
+    })(jQuery);
+</script>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+

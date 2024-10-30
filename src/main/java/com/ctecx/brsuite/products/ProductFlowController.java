@@ -95,4 +95,47 @@ public class ProductFlowController {
         return "system/stores-add";
     }
 
+
+    @GetMapping("products-menu")
+    public String productMenu() {
+
+        return "stores/products-menu";
+    }
+
+
+
+    @GetMapping("purchaseOrders")
+    public String purchaseOrders() {
+
+        return "stores/purchase-orders-menu";
+    }
+    @GetMapping("stockIssuance-menu")
+    public String stockIssuanceData() {
+
+        return "stores/stock-issuance-menu";
+    }
+    @GetMapping("stockRequestsData")
+    public String stockRequestsData() {
+
+        return "stores/stock-request-menu";
+    }
+
+
+    @GetMapping("stock-transfers")
+    public String stockTransfers() {
+
+        return "stores/stock-transfer-menu";
+    }
+
+
+    @GetMapping("purchase-menu")
+    public String purchaseMenu() {
+
+        return "stores/purchase-menu";
+    }
+
+
+
+
+
 }

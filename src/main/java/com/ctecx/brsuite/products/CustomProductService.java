@@ -77,6 +77,35 @@ public class CustomProductService {
         }
     }
 
+    public Optional<ProductSaleDTO> searchProductByCode_all(String productCode) {
+        try {
+            Map<String, Object> result = productRepository.search_product_by_code_all(productCode);
+            return Optional.of(mapToProductSaleDTOByCode(result));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+
+    public Page<ProductSaleDTO> salesByProductNameAndCode_all(String searchKey, int pageNumber, int pageSize) {
+        List<Map<String, Object>> results = productRepository.searchProductsWithPositiveStock_all(
+                searchKey,
+                pageSize,
+                pageNumber * pageSize
+        );
+
+        List<ProductSaleDTO> dtoList = results.stream()
+                .map(this::mapToProductSaleDTO)
+                .collect(Collectors.toList());
+
+        long totalCount = 0;
+        if (!results.isEmpty()) {
+            totalCount = ((Number) results.get(0).get("total_count")).longValue();
+        }
+
+        return new PageImpl<>(dtoList, PageRequest.of(pageNumber, pageSize), totalCount);
+    }
+
     private ProductSaleDTO mapToProductSaleDTOByCode(Map<String, Object> row) {
         return new ProductSaleDTO(
                 (String) row.get("productName"),

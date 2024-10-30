@@ -47,7 +47,7 @@
                                         <input type="email" class="form-control" id="email" name="email" required>
                                     </div>
                                     <div class="col-md-4">
-                                        <label for="supplierType" class="form-label">Supplier Type</label>
+                                        <label for="supplierType" class="form-label">Vendor Type</label>
                                         <select class="form-select" id="supplierType" name="supplierType" required>
                                             <option value="">Choose...</option>
                                             <option value="COMPANY">Company</option>
@@ -64,7 +64,7 @@
                                 <div class="row mt-4">
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="button" class="btn btn-success btn-sm me-2" id="saveSupplierBtn">
-                                            <i class="fas fa-save me-1"></i>Save Supplier
+                                            <i class="fas fa-save me-1"></i>Save Vendor
                                         </button>
                                         <button type="button" class="btn btn-secondary btn-sm" id="resetFormBtn">
                                             <i class="fas fa-undo me-1"></i>Reset
@@ -451,7 +451,7 @@
                     supplierType: $('#supplierType').val()
                 };
 
-                console.log('Supplier data being sent:', JSON.stringify(formData, null, 2));
+                console.log('Vendor data being sent:', JSON.stringify(formData, null, 2));
 
                 showLoading();
 
@@ -465,7 +465,7 @@
                         console.log('Response received:', response);
                         $.wnoty({
                             type: 'success',
-                            message: 'Supplier saved successfully',
+                            message: 'Vendor saved successfully',
                             position: 'top-right'
                         });
                         resetForm();

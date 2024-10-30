@@ -15,22 +15,22 @@ public class SupplierController {
 
 
     @GetMapping(path = "/search", produces = "application/json")
-    public List<Supplier> searchSuppliers(@RequestParam String keyword) {
+    public List<Vendor> searchSuppliers(@RequestParam String keyword) {
         return supplierService.searchSuppliers(keyword);
     }
 
     @GetMapping
-    public ResponseEntity<List<Supplier>> getAllSuppliers() {
+    public ResponseEntity<List<Vendor>> getAllSuppliers() {
         return ResponseEntity.ok(supplierService.getAllSuppliers());
     }
 
     @PostMapping
-    public ResponseEntity<Supplier> createSupplier(@RequestBody Supplier supplier) {
-        return ResponseEntity.ok(supplierService.saveSupplier(supplier));
+    public ResponseEntity<Vendor> createSupplier(@RequestBody Vendor vendor) {
+        return ResponseEntity.ok(supplierService.saveSupplier(vendor));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Supplier> getSupplierById(@PathVariable Long id) {
+    public ResponseEntity<Vendor> getSupplierById(@PathVariable Long id) {
         return supplierService.getSupplierById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

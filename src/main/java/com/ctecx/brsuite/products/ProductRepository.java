@@ -28,4 +28,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>,CustomPr
     Product findProductById(Long productId);
 
 
+
+
 }

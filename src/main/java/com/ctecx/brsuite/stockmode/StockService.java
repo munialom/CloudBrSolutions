@@ -5,8 +5,8 @@ import com.ctecx.brsuite.branch.BranchService;
 import com.ctecx.brsuite.products.Product;
 import com.ctecx.brsuite.products.ProductRepository;
 import com.ctecx.brsuite.products.ProductService;
-import com.ctecx.brsuite.suppliers.Supplier;
 import com.ctecx.brsuite.suppliers.SupplierService;
+import com.ctecx.brsuite.suppliers.Vendor;
 import com.ctecx.brsuite.warehouse.Store;
 import com.ctecx.brsuite.warehouse.StoreRepository;
 import com.ctecx.brsuite.warehouse.StoreService;
@@ -182,8 +182,8 @@ public class StockService {
             stockTransaction.setProductCost(purchaseStock.getUnitcost());
             stockTransaction.setDiscount(purchaseStock.getDiscount());
             stockTransaction.setTax(purchaseStock.getTax());
-            Optional<Supplier> optionalSupplier = supplierService.getSupplierById(purchaseStockDTO.getSupplierId());
-            optionalSupplier.ifPresent(stockTransaction::setSupplier);
+            Optional<Vendor> optionalSupplier = supplierService.getSupplierById(purchaseStockDTO.getSupplierId());
+            optionalSupplier.ifPresent(stockTransaction::setVendor);
             Optional<Store> optionalBranch = Optional.ofNullable(storeService.getStoreById(purchaseStockDTO.getBranchId()));
             optionalBranch.ifPresent(stockTransaction::setStore);
 

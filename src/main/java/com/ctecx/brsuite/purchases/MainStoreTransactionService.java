@@ -6,8 +6,8 @@ import com.ctecx.brsuite.products.ProductService;
 import com.ctecx.brsuite.stockmode.OpeningStock;
 import com.ctecx.brsuite.stockmode.OpeningStockDTO;
 import com.ctecx.brsuite.stockmode.StockService;
-import com.ctecx.brsuite.suppliers.Supplier;
 import com.ctecx.brsuite.suppliers.SupplierService;
+import com.ctecx.brsuite.suppliers.Vendor;
 import com.ctecx.brsuite.warehouse.Store;
 import com.ctecx.brsuite.warehouse.StoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,7 @@ public class MainStoreTransactionService {
     public void createPurchase(PurchaseStockDTO purchaseStockDTO) {
         String sn = generateSerialNumber();
         Store store = getStoreFromDTO(purchaseStockDTO.getBranchId());
-        Supplier supplier = getSupplierFromDTO(purchaseStockDTO.getSupplierId());
+        Vendor vendor = getSupplierFromDTO(purchaseStockDTO.getSupplierId());
 
         for (PurchaseStock purchaseStock : purchaseStockDTO.getPurchaseStocks()) {
             Product product = getProductByCode(purchaseStock.getProductCode());
@@ -70,7 +70,7 @@ public class MainStoreTransactionService {
             transaction.setProductCost(purchaseStock.getUnitcost());
             transaction.setDiscount(purchaseStock.getDiscount());
             transaction.setTax(purchaseStock.getTax());
-            transaction.setSupplier(supplier);
+            transaction.setVendor(vendor);
             transaction.setTransactionDate(purchaseStockDTO.getPurchaseDate());
 
             mainStoreTransactionRepository.save(transaction);
@@ -169,9 +169,9 @@ public class MainStoreTransactionService {
                 .orElseThrow(() -> new RuntimeException("Store not found with id: " + storeId));
     }
 
-    private Supplier getSupplierFromDTO(Long supplierId) {
+    private Vendor getSupplierFromDTO(Long supplierId) {
         return supplierService.getSupplierById(supplierId)
-                .orElseThrow(() -> new RuntimeException("Supplier not found with id: " + supplierId));
+                .orElseThrow(() -> new RuntimeException("Vendor not found with id: " + supplierId));
     }
 
     public String generateSerialNumber() {

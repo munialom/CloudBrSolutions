@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "suppliers")
-public class Supplier  extends AuditableBase {
+public class Vendor extends AuditableBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

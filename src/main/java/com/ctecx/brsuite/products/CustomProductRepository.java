@@ -17,6 +17,11 @@ public interface CustomProductRepository {
     Map<String, Object> search_product_by_code(String productCode);
     List<Map<String, Object>> searchProductsWithPositiveStock(String searchKey, int pageSize, int offset);
 
+
+
+    Map<String, Object> search_product_by_code_all(String productCode);
+    List<Map<String, Object>> searchProductsWithPositiveStock_all(String searchKey, int pageSize, int offset);
+
     List<Map<String, Object>> GetCookingGasStockLevels();
 
 

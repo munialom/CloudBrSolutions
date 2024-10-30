@@ -3,7 +3,7 @@ package com.ctecx.brsuite.stockmode;
 import com.ctecx.brsuite.customers.Customer;
 import com.ctecx.brsuite.products.Product;
 import com.ctecx.brsuite.revenue.Revenue;
-import com.ctecx.brsuite.suppliers.Supplier;
+import com.ctecx.brsuite.suppliers.Vendor;
 import com.ctecx.brsuite.transactions.OrderState;
 import com.ctecx.brsuite.transactions.PaymentState;
 import com.ctecx.brsuite.util.AuditableBase;
@@ -33,7 +33,7 @@ public class StockTransaction extends AuditableBase {
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    private Vendor vendor;
 
     @ManyToOne
     @JoinColumn(name = "store_id")

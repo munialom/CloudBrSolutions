@@ -30,7 +30,7 @@ public class PaymentEntry implements AccountingEntry {
         }
 
         return TransactionHelper.createBalancedTransaction(
-                transactionDate, description, "Payment", "Supplier Payment", entries);
+                transactionDate, description, "Payment", "Vendor Payment", entries);
     }
 
     @Override

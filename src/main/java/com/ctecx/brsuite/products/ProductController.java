@@ -143,4 +143,24 @@ public class ProductController {
 
 
 
+
+    @GetMapping("/products-data")
+    public String searchProductsForSales_All(
+            @RequestParam(value = "searchKey", required = false) String searchKey,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            Model model) {
+
+        if (searchKey != null && !searchKey.isEmpty()) {
+            Page<ProductSaleDTO> productPage = customProductService.salesByProductNameAndCode_all(searchKey, page, size);
+            model.addAttribute("products", productPage);
+        }
+
+        return "stores/search-products";
+    }
+
+
+
+
+
 }

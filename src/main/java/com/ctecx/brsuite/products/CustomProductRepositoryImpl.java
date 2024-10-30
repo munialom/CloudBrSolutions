@@ -52,4 +52,18 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         return jdbcTemplate.queryForMap(sql, productCode);
     }
 
+    @Override
+    public Map<String, Object> search_product_by_code_all(String productCode) {
+        String sql = "CALL search_products_by_code_all(?)";
+        return jdbcTemplate.queryForMap(sql, productCode);
+    }
+
+
+    @Override
+    public List<Map<String, Object>> searchProductsWithPositiveStock_all(String searchKey, int pageSize, int offset) {
+        String sql = "CALL search_products_with_positive_stock_all(?, ?, ?)";
+        return jdbcTemplate.queryForList(sql, searchKey, pageSize, offset);
+    }
+
+
 }

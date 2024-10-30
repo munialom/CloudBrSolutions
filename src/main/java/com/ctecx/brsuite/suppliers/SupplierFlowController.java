@@ -30,7 +30,7 @@ public class SupplierFlowController {
 
     @GetMapping("form")
     public String transactions(Model model) {
-        model.addAttribute("supplier", new Supplier());
+        model.addAttribute("supplier", new Vendor());
         return "suppliers/suppliers-add";
     }
 

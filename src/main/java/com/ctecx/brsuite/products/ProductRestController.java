@@ -28,6 +28,13 @@ public class ProductRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/SearchByCode_All/{productCode}")
+    public ResponseEntity<ProductSaleDTO> getProductByCodeAll(@PathVariable String productCode) {
+        return customProductService.searchProductByCode_all(productCode)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/api/products")
     public ResponseEntity<Product> createProduct(@RequestBody ProductDTO productDTO) {
         Product savedProduct = productService.saveProduct(productDTO);

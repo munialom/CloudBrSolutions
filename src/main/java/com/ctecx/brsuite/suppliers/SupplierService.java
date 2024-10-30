@@ -14,10 +14,10 @@ public class SupplierService {
     private SupplierRepository supplierRepository;
 
 
-    public List<Supplier> searchSuppliers(String keyword) {
-        List<Supplier> suppliers = supplierRepository.findByCreditorNameContainingIgnoreCase(keyword);
-        return suppliers.stream()
-                .map(supplier -> new Supplier(
+    public List<Vendor> searchSuppliers(String keyword) {
+        List<Vendor> vendors = supplierRepository.findByCreditorNameContainingIgnoreCase(keyword);
+        return vendors.stream()
+                .map(supplier -> new Vendor(
                         supplier.getId(),
                         supplier.getCreditorName(),
                         supplier.getCreditorAddress(),
@@ -31,15 +31,15 @@ public class SupplierService {
                 .collect(Collectors.toList());
     }
 
-    public List<Supplier> getAllSuppliers() {
+    public List<Vendor> getAllSuppliers() {
         return supplierRepository.findAll();
     }
 
-    public Supplier saveSupplier(Supplier supplier) {
-        return supplierRepository.save(supplier);
+    public Vendor saveSupplier(Vendor vendor) {
+        return supplierRepository.save(vendor);
     }
 
-    public Optional<Supplier> getSupplierById(Long id) {
+    public Optional<Vendor> getSupplierById(Long id) {
         return supplierRepository.findById(id);
     }
 

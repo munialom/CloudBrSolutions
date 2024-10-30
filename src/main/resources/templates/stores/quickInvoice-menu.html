@@ -1,0 +1,942 @@
+<div th:fragment="pos-main">
+
+    <style type="text/css">
+
+
+        /* Set flexbox for the pos-container */
+        .pos-container {
+            display: flex;
+            flex-direction: column;
+            height: auto;
+        }
+
+        /* Set flex for pos-content */
+        .pos-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Style pos-content-container */
+        .pos-content-container {
+            flex: 1;
+            padding: 10px;
+        }
+
+        /* Style pos-sidebar */
+        .pos-sidebar {
+
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+
+        }
+    </style>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card p-1">
+                <div class="pos-container">
+
+                    <!-- pos-content -->
+                    <div class="pos-content">
+                        <div class="col-md-12">
+                            <div class="panel-toolbar border rounded bg-white p-2">
+                                <div class="row">
+                                    <!-- Left Column -->
+                                    <div class="col-md-6">
+                                        <!-- Customer Selection -->
+                                        <div class="form-group mb-3">
+                                            <label for="customerQuickSearch" class="form-label">Customer:</label>
+                                            <div class="input-group">
+                                                <select id="customerQuickSearch" name="customerQuickSearch" class="form-select form-select-sm">
+                                                    <option value="">Select Customer</option>
+                                                </select>
+                                                <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#customerModal">
+                                                    <i class="fa fa-plus-circle"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Quick Customer Info -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customerPhone" class="form-label">Phone:</label>
+                                                    <input type="text" class="form-control form-control-sm" id="customerPhone" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="customerEmail" class="form-label">Email:</label>
+                                                    <input type="email" class="form-control form-control-sm" id="customerEmail" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Method -->
+                                        <div class="form-group mb-3">
+                                            <label for="paymentMethod" class="form-label">Payment Method:</label>
+                                            <div class="input-group">
+                                                <select class="form-select form-select-sm" id="paymentMethod">
+                                                    <option value="CASH">Cash</option>
+                                                    <option value="CARD">Credit Card</option>
+                                                    <option value="BANK">Bank Transfer</option>
+                                                    <option value="MOBILE">Mobile Payment</option>
+                                                </select>
+                                                <input type="text" class="form-control form-control-sm" id="referenceNumber" placeholder="Reference #">
+                                            </div>
+                                        </div>
+
+                                        <!-- Quick Notes -->
+                                        <div class="form-group mb-3">
+                                            <label for="quickNotes" class="form-label">Notes:</label>
+                                            <textarea class="form-control form-control-sm" id="quickNotes" rows="2"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Column -->
+                                    <div class="col-md-6">
+                                        <!-- First Row -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="quickInvoiceNumber" class="form-label">Invoice No:</label>
+                                                    <input type="text" class="form-control form-control-sm" id="quickInvoiceNumber" value="INV-10001" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="quickSalesType" class="form-label">Sales Type:</label>
+                                                    <select class="form-control form-control-sm" id="quickSalesType">
+                                                        <option value="RETAIL">Retail</option>
+                                                        <option value="WHOLESALE">Wholesale</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Second Row -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="quickInvoiceDate" class="form-label">Date:</label>
+                                                    <div class="input-group date">
+                                                        <input type="text" id="quickInvoiceDate" class="form-control form-control-sm bg-light-200" readonly/>
+                                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="salesPerson" class="form-label">Sales Person:</label>
+                                                    <select class="form-control form-control-sm" id="salesPerson">
+                                                        <option value="">Select Sales Person</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Third Row -->
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="quickDiscount" class="form-label">Discount:</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control form-control-sm" id="quickDiscount" value="0" min="0">
+                                                        <select class="form-select form-select-sm" id="discountType">
+                                                            <option value="PERCENT">%</option>
+                                                            <option value="AMOUNT">$</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="quickStatus" class="form-label">Status:</label>
+                                                    <input type="text" class="form-control form-control-sm bg-success text-white" id="quickStatus" value="PAID" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="divider mt-0">
+                            <!-- pos-content-container -->
+                            <div class="pos-content-container">
+                                <div class="pos-table-row">
+                                    <!-- Add your table rows here -->
+                                    <!-- BEGIN input-group -->
+                                    <div class="input-group">
+                                        <button class="btn btn-dark dropdown-toggle py-0" type="button" data-bs-toggle="dropdown" style="height: 38px;">
+                                            <span class="d-none d-md-inline">Search Products</span>
+                                            <span class="d-inline d-md-none"><i class="fa fa-search"></i></span>
+                                            <i class="fa fa-barcode ms-1"></i>
+                                        </button>
+                                        <div class="flex-grow-1 position-relative">
+                                            <div class="input-group">
+                                              <span class="input-group-text bg-light border-0 py-0 px-2" style="height: 38px;">
+                                                <i class="fa fa-barcode"></i>
+                                              </span>
+                                                <input type="text" class="form-control bg-light border-start-0" placeholder="Search products..." id="search-pos" style="height: 38px;">
+                                            </div>
+                                            <div id="productTableContainer-pos" class="position-absolute w-100 bg-white border mt-1" style="display: none; z-index: 1000;"></div>
+                                        </div>
+                                    </div>
+                                    <!-- END input-group -->
+                                    <input type="hidden" id="barcode-input">
+
+                                    <!-- BEGIN panel -->
+                                    <div class="panel rounded border" data-sortable-id="ui-widget-16">
+                                        <div class="panel-heading bg-default-700 text-white">
+
+                                            <div class="panel-heading-btn">
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                                                <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="panel-body">
+                                            <!-- BEGIN table -->
+                                            <div class="table-responsive mb-3">
+                                                <table class="table table-hover table-bordered table-sm  text-nowrap  mb-0 rounded border bg-gradient " id="selectedProducts-pos" >
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Product Name</th>
+                                                        <th>Quantity</th>
+                                                        <th>UnitCost</th>
+                                                        <th>UnitTax</th>
+                                                        <th>Discount</th>
+                                                        <th>NetTax</th>
+                                                        <th>SubTotal</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+
+                                                </table>
+
+                                                <fieldset class="border p-2">
+
+                                                    <div class="mailbox-content-footer">
+
+
+
+
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <!-- END table -->
+                                        </div>
+
+                                    </div>
+                                    <!-- END panel -->
+                                </div>
+
+                            </div>
+                            <!-- END pos-content-container -->
+                        </div>
+                        <!-- pos-sidebar -->
+               <!--         <div class="col-md-3">
+
+                            <div class="pos-sidebar bg-gradient">
+
+                                <div class="pos-sidebar-body" >
+
+                                    <div class="card rounded border">
+                                        <div class="card-header h6 mb-0 bg-none p-3">
+                                            OSCU Status: <a href="#" class="ms-auto text-decoration-none text-black-500">
+                                            <i class="fa fa-fw fa-lg fs-12px me-2 connectivity-icon"></i>
+                                            <span class="status-text"></span>
+                                            <span class="status-value" id="customer-id" style="display: none;"></span>
+                                        </a>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center bg-light rounded p-2 mb-2">
+                                                <div class="me-3">
+                                                    <i class="fab fa-cc-amazon-pay fa-3x text-dark"></i>
+                                                </div>
+                                                <div class="flex-grow-1 text-end">
+                                                    <span id="totalAmount" class="fs-1 fw-bold">0.00</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-floating mb-15px">
+                                                <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder=" " id="receivedAmount" />
+                                                <label for="receivedAmount" class="d-flex align-items-center fs-13px text-gray-600">AmountPaid[0.00]</label>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-md-12 pt-2">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="CASH" checked>
+                                                        <label class="form-check-label" for="inlineCheckbox1">CASH</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="MPESA">
+                                                        <label class="form-check-label" for="inlineCheckbox2">MPESA</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="VISA">
+                                                        <label class="form-check-label" for="inlineCheckbox3">VISA</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="pos-sidebar-footer" style="padding: 5px; border-top: 1px solid #e5e5e5;">
+
+                                    <div class="card rounded border">
+                                        <div class="card-header bg-none p-3 h6 m-0 d-flex align-items-center">
+                                            <i class="fa fa-credit-card fa-lg me-2 text-black-500"></i>
+                                            Payment Records
+                                            <a href="#" class="ms-auto text-decoration-none text-black-500"><i class="fab fa-paypal me-1 fa-lg"></i> View paypal records</a>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-borderless table-sm fw-bold m-0">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="w-150px">Subtotal</td>
+                                                    <td>3 items</td>
+                                                    <td class="text-end" id="subtotal"><b>0.00</b></td>
+                                                </tr>
+                                                &lt;!&ndash;          <tr>
+                                                              <td>Tax</td>
+                                                              <td>VAT 16%</td>
+                                                              <td class="text-end" id="tax"><b>0.00</b></td>
+                                                          </tr>
+                                                          <tr>
+                                                              <td>Discount</td>
+                                                              <td>FLT 5%</td>
+                                                              <td class="text-end" id="discount"><b>0.00</b></td>
+                                                          </tr>&ndash;&gt;
+
+                                                <tr>
+                                                    <td class="pb-2" colspan="2"><b>Change</b></td>
+                                                    <td class="text-end pb-2 text-decoration-underline" id="change-balance"><b>0.00</b></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <div class="alert alert-info" role="alert" style="display: none;">
+                                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                        Saving Sales Transaction...
+                                                    </div>
+
+                                                    <div class="alert alert-success" role="alert" style="display: none;">
+                                                        <span class="me-2" role="status" aria-hidden="true"></span>
+                                                        <span class="students-count"></span>Sale Transaction Saved successfully.
+                                                    </div>
+                                                    <div class="alert alert-danger" role="alert" style="display: none;">
+                                                        <span class="me-2" role="status" aria-hidden="true"></span>
+                                                        <span class="students-count"></span>Sale Transaction Saving Failed.
+                                                    </div>
+
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="card-footer bg-none d-flex p-3">
+
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a href="#" class="btn btn-danger ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                        <i class="fab fa-paypal d-block fs-18px my-1"></i>
+                                                        CANCEL
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="#" id="saleClose" class="btn btn-success ms-auto rounded-3 text-center me-50px" style="width: 100%;">
+                                                        <i class="fab fa-cc-visa d-block fs-18px my-1"></i>
+                                                        MARK PAID
+                                                    </a>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>-->
+
+
+                        <!-- END pos-sidebar -->
+
+                    </div>
+                    <!-- END pos-content -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalLabel">Add/Edit Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="customerForm">
+                        <input type="hidden" id="custId">
+                        <div class="form-group">
+                            <label for="customerName">Customer Name</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Customer Address</label>
+                            <input type="text" class="form-control" id="customerAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerContact">Customer Contact</label>
+                            <input type="text" class="form-control" id="customerContact" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditTerm">Credit Term</label>
+                            <input type="number" class="form-control" id="creditTerm" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taxPin">Tax PIN</label>
+                            <input type="text" class="form-control" id="taxPin" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditLimit">Credit Limit</label>
+                            <input type="number" class="form-control" id="creditLimit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerType">Customer Type</label>
+                            <select class="form-control" id="customerType" required>
+                                <option value="COMPANY">Company</option>
+                                <option value="INDIVIDUAL">Individual</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCustomer">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        $(document).ready(function() {
+            // Initialize date pickers
+            $('.trxDate').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true
+            })
+
+            // Set the current date on page load
+            var currentDate = new Date();
+            var formattedDate = moment(currentDate).format('DD/MM/YYYY');
+            $('#invoiceDate').val(formattedDate);
+
+            // Disable manual input for the regDate field
+            $('#invoiceDate').prop('readonly', true);
+
+        });
+    </script>
+
+
+
+
+
+
+    <script>
+        $(() => {
+            let isSubmitting = false;
+
+
+
+            // Function to reset float label inputs
+            const resetFloatLabelInput = (inputId) => {
+                const $input = $(`#${inputId}`);
+                const $label = $(`label[for="${inputId}"]`);
+
+                // Clear the input
+                $input.val('');
+
+                // Trigger input and change events
+                $input.trigger('input').trigger('change');
+
+                // Update label state
+                $label.removeClass('active');
+            };
+
+            // Function to initialize float labels
+            const initFloatLabels = () => {
+                $('.form-floating input').on('input', function() {
+                    const $label = $(this).siblings('label');
+                    if ($(this).val()) {
+                        $label.addClass('active');
+                    } else {
+                        $label.removeClass('active');
+                    }
+                });
+            };
+
+            // Initialize float labels
+            initFloatLabels();
+
+            const saveForm = () => {
+                if (isSubmitting) {
+                    console.log('Form is already being submitted. Please wait.');
+                    return;
+                }
+
+                const rows = $("#selectedProducts-pos tbody tr");
+                const totalAmountValue = $("#totalAmount").text();
+                const totalAmountFloat = parseFloat(totalAmountValue);
+                const receivedAmount = $("#receivedAmount").val().trim();
+                const customerID = $("#customer-id").text();
+                const transactionType = $("#transactionType").val();
+
+                if (rows.length === 0) {
+                    swal({
+                        title: "No Records to Save",
+                        text: "You cannot save empty records.",
+                        icon: "error",
+                        dangerMode: true,
+                    });
+
+                    setTimeout(() => swal.close(), 1000);
+                    return;
+                }
+
+                if (!receivedAmount || receivedAmount === "0" || receivedAmount === "0.00" || parseFloat(receivedAmount) === 0) {
+                    $('.alert-danger').show().html("Amount paid should not be empty or zero.");
+                    setTimeout(() => $('.alert-danger').hide(), 3000);
+                    return;
+                }
+
+                const aData = rows.map(function() {
+                    const tableRow = $(this);
+                    return {
+                        productCode: tableRow.find('td[key-id="productCode"]').text(),
+                        productName: tableRow.find('td[key-id="productName"]').text(),
+                        cost: tableRow.find('td[key-id="SalePrice"]').text(),
+                        discount: tableRow.find('td[key-id="discount"]').text(),
+                        tax: tableRow.find('td[key-id="unitTax"]').text(),
+                        netTax: tableRow.find('td[key-id="finalTax"]').text(),
+                        subtotal: tableRow.find('td[key-id="subtotal"]').text(),
+                        qty: tableRow.find('input.product-input').val()
+                    };
+                }).get();
+
+                const selectedModes = ['inlineCheckbox1', 'inlineCheckbox2', 'inlineCheckbox3']
+                    .filter(id => $(`#${id}`).is(':checked'))
+                    .map(id => id === 'inlineCheckbox1' ? 'CASH' : id === 'inlineCheckbox2' ? 'MPESA' : 'VISA');
+
+                const stocks = {
+                    saleStocks: aData,
+                    amountPaid: receivedAmount,
+                    totalAmount: totalAmountFloat,
+                    customerId: customerID,
+                    payMode: selectedModes,
+                    transactionType
+                };
+
+                isSubmitting = true;
+                $('.alert-info').show();
+
+                $.ajax({
+                    url: "/api/stocks/counter-sales",
+                    type: "POST",
+                    contentType: "application/json;charset=UTF-8",
+                    data: JSON.stringify(stocks),
+                    success: (response) => {
+                        isSubmitting = false;
+                        $('.alert-info').hide();
+                        $('.alert-success').show();
+
+                        $("#selectedProducts-pos tbody").empty();
+                        updateSidebar();
+                        //updateSerialNumber();
+
+                        setTimeout(() => $('.alert-success').hide(), 125);
+
+                        $('#inlineCheckbox2, #inlineCheckbox3').prop('checked', false);
+
+                        // Reset all float label inputs
+                        $('.form-floating input').each(function() {
+                            resetFloatLabelInput(this.id);
+                        });
+
+                        // Specifically reset receivedAmount
+                        resetFloatLabelInput('receivedAmount');
+
+                        // Clear any other specific fields
+                        $("#totalAmount").text('0.00');
+                        $("#customer-id").text('');
+
+                        $('#search-pos').focus();
+                    },
+                    error: (xhr, status, error) => {
+                        isSubmitting = false;
+                        $('.alert-danger').show();
+                        console.log('Unexpected response from the server', error);
+                    }
+                });
+            };
+
+            // Click event for the save button
+            $("#saleClose").on("click", (e) => {
+                e.preventDefault();
+                saveForm();
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            const POS = {
+                init() {
+                    this.cacheDOM();
+                    this.bindEvents();
+                    this.initBarcodeScanner();
+                    this.$searchInput.focus();
+                },
+
+                cacheDOM() {
+                    this.$searchInput = $('#search-pos');
+                    this.$productTableContainer = $('#productTableContainer-pos');
+                    this.$selectedProductsTable = $('#selectedProducts-pos');
+                    this.$receivedAmount = $('#receivedAmount');
+                },
+
+                bindEvents() {
+                    this.$searchInput.on('input', this.debounce(this.handleSearch.bind(this), 300));
+                    this.$productTableContainer.on('click', 'tbody tr', this.handleProductSelection.bind(this));
+                    $(document).on('input', '.product-input', this.handleQuantityChange.bind(this));
+                    $(document).on('click', '.increase-qty', this.handleQuantityIncrease.bind(this));
+                    $(document).on('click', '.decrease-qty', this.handleQuantityDecrease.bind(this));
+                    $(document).on('click', '.remove-row', (e) => this.removeRow($(e.currentTarget).closest('tr')));
+                    this.$receivedAmount.on('input', this.updateSidebar.bind(this));
+                    this.$selectedProductsTable.on('click', 'tbody tr', this.handleRowSelection.bind(this));
+                },
+
+                debounce(func, wait) {
+                    let timeout;
+                    return (...args) => {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(this, args), wait);
+                    };
+                },
+
+                initBarcodeScanner() {
+                    let scanBuffer = '';
+                    let lastKeyTime = Date.now();
+                    let lastScanTime = 0;
+                    const scanCompleteDelay = 50;
+                    const minTimeBetweenScans = 1000; // Minimum time between scans in milliseconds
+
+                    $(document).on('keydown', (e) => {
+                        const currentTime = Date.now();
+
+                        // Check if enough time has passed since the last scan
+                        if (e.key === 'Enter' && scanBuffer.length > 0 && currentTime - lastScanTime > minTimeBetweenScans) {
+                            e.preventDefault();
+                            this.handleBarcodeScan(scanBuffer);
+                            scanBuffer = '';
+                            lastScanTime = currentTime;
+                            return false;
+                        }
+
+                        if (currentTime - lastKeyTime > scanCompleteDelay) {
+                            scanBuffer = '';
+                        }
+
+                        if (e.key.length === 1) {
+                            scanBuffer += e.key;
+                        }
+
+                        lastKeyTime = currentTime;
+
+                        if ($(e.target).is(this.$searchInput)) {
+                            return true;
+                        }
+
+                        if (scanBuffer.length > 1) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                },
+
+                handleSearch() {
+                    const inputValue = this.$searchInput.val().trim();
+                    if (inputValue.length > 0) {
+                        this.searchProducts(inputValue);
+                    } else {
+                        this.$productTableContainer.hide();
+                    }
+                },
+
+                searchProducts(searchKey, page = 0, size = 5) {
+                    if (!searchKey || searchKey.trim() === '') {
+                        console.log('Empty search key, not performing search');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/products/products-data',
+                        type: 'GET',
+                        data: { searchKey, page, size },
+                        success: (response) => {
+                            if (response && response.trim() !== '') {
+                                this.$productTableContainer.html(response).show();
+                            } else {
+                                this.$productTableContainer.html('<p>No products found.</p>').show();
+                            }
+                        },
+                        error: (e) => {
+                            console.log('Search error:', e);
+                            this.$productTableContainer.html('<p>Error loading products.</p>').show();
+                        }
+                    });
+                },
+
+                handleProductSelection(event) {
+                    event.preventDefault();
+                    const $selectedRow = $(event.currentTarget);
+                    this.addProductToSelection($selectedRow);
+                    this.$productTableContainer.hide();
+                    this.$searchInput.val('').focus();
+                },
+
+                handleBarcodeScan(barcode) {
+                    if (/^\d+$/.test(barcode)) {
+                        console.log(`Scanned barcode: ${barcode}`);
+                        this.getProductAndAddRow(barcode);
+                        this.$searchInput.val('').focus();
+                    } else {
+                        console.log('Invalid barcode:', barcode);
+                        alert('Invalid barcode scanned');
+                    }
+                },
+
+                getProductAndAddRow(productCode) {
+                    if (!productCode || productCode.trim() === '') {
+                        console.log('Empty product code, not fetching product');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: `/api-bulk/SearchByCode/${productCode}`,
+                        type: 'GET',
+                        success: (data) => {
+                            if (data && data.productCode) {
+                                this.addProductToRow(data.productCode, data.productName, data.productPrice, data.tax);
+                            } else {
+                                console.error('Invalid product data received');
+                            }
+                        },
+                        error: (error) => {
+                            console.error('Error:', error);
+                            console.log('Product not found or error occurred.');
+                        }
+                    });
+                },
+
+                addProductToSelection($productRow) {
+                    const productCode = $productRow.find('td:nth-child(1)').text();
+                    const productName = $productRow.find('td:nth-child(2)').text();
+                    const productPrice = parseFloat($productRow.find('td:nth-child(4)').text()) || 0;
+                    const unitTax = parseFloat($productRow.find('td:nth-child(5)').text()) || 0;
+
+                    this.addProductToRow(productCode, productName, productPrice, unitTax);
+                },
+
+                addProductToRow(productCode, productName, productPrice, unitTax) {
+                    const $existingRow = this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`);
+
+                    if ($existingRow.length) {
+                        const $qtyInput = $existingRow.find('.product-input');
+                        $qtyInput.val(parseInt($qtyInput.val()) + 1).trigger('input');
+                    } else {
+                        const newRow = `
+                <tr data-product-code="${productCode}">
+                    <td key-id="productCode">${productCode}</td>
+                    <td key-id="productName">${productName}</td>
+                    <td key-id="productQty">
+                        <div class="input-group qty">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-danger btn-xs decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
+                            </div>
+                            <input type="text" class="form-control form-control-xs text-center product-input" value="1" style="width: 50px; margin:auto; border: none" />
+                            <div class="input-group-append">
+                                <button class="btn btn-success btn-xs increase-qty"><i class="fa fa-plus fa-sm"></i></button>
+                            </div>
+                            <div class="input-group-append ml-2">
+                                <button class="btn btn-danger btn-xs remove-row"><i class="fa fa-trash fa-sm"></i></button>
+                            </div>
+                        </div>
+                    </td>
+                    <td key-id="SalePrice">${this.formatNumber(productPrice)}</td>
+                    <td key-id="unitTax">${this.formatNumber(unitTax)}</td>
+                    <td key-id="discount">0.00</td>
+                    <td key-id="finalTax">${this.formatNumber(unitTax)}</td>
+                    <td key-id="subtotal">${this.formatNumber(productPrice + unitTax)}</td>
+                </tr>
+            `;
+
+                        this.$selectedProductsTable.find('tbody').prepend(newRow);
+                        this.updateRowTotals(this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`));
+                    }
+
+                    this.updateSidebar();
+                },
+
+                handleQuantityChange(event) {
+                    const $input = $(event.target);
+                    const $row = $input.closest('tr');
+                    let qty = parseInt($input.val());
+
+                    if (isNaN(qty) || qty < 0) {
+                        qty = 1;
+                    }
+
+                    $input.val(qty);
+
+                    if (qty === 0) {
+                        this.removeRow($row);
+                    } else {
+                        this.updateRowTotals($row);
+                        this.updateSidebar();
+                    }
+                },
+
+                handleQuantityIncrease(event) {
+                    event.preventDefault();
+                    const $input = $(event.currentTarget).closest('.qty').find('.product-input');
+                    let qty = parseInt($input.val()) + 1;
+                    $input.val(qty).trigger('input');
+                },
+
+                handleQuantityDecrease(event) {
+                    event.preventDefault();
+                    const $input = $(event.currentTarget).closest('.qty').find('.product-input');
+                    let qty = Math.max(0, parseInt($input.val()) - 1);
+                    $input.val(qty).trigger('input');
+                },
+
+                updateRowTotals($row) {
+                    const qty = parseInt($row.find('.product-input').val()) || 0;
+                    const price = parseFloat($row.find('[key-id="SalePrice"]').text()) || 0;
+                    const discount = parseFloat($row.find('[key-id="discount"]').text()) || 0;
+                    const unitTax = parseFloat($row.find('[key-id="unitTax"]').text()) || 0;
+
+                    const finalTax = unitTax * qty;
+                    const subtotal = this.calculateSubtotal(price, qty, discount, unitTax);
+
+                    $row.find('[key-id="finalTax"]').text(this.formatNumber(finalTax));
+                    $row.find('[key-id="subtotal"]').text(this.formatNumber(subtotal));
+                },
+
+                updateSidebar() {
+                    let subtotal = 0;
+                    let tax = 0;
+                    let discount = 0;
+
+                    this.$selectedProductsTable.find('tbody tr').each(function() {
+                        const qty = parseInt($(this).find('.product-input').val()) || 0;
+                        const finalTax = parseFloat($(this).find('[key-id="finalTax"]').text()) || 0;
+                        const productDiscount = parseFloat($(this).find('[key-id="discount"]').text()) || 0;
+                        const subTotalItem = parseFloat($(this).find('[key-id="subtotal"]').text()) || 0;
+
+                        subtotal += subTotalItem;
+                        tax += finalTax;
+                        discount += productDiscount * qty;
+                    });
+
+                    const totalAmount = subtotal + tax;
+                    const receivedAmount = parseFloat(this.$receivedAmount.val()) || 0;
+                    const change = receivedAmount - totalAmount;
+
+                    $('#subtotal').text(this.formatNumber(subtotal));
+                    $('#tax').text(this.formatNumber(tax));
+                    $('#discount').text(this.formatNumber(discount));
+                    $('#totalAmount').text(this.formatNumber(totalAmount));
+                    $('#change-balance').text(this.formatNumber(change));
+                },
+
+                removeRow($row) {
+                    $row.remove();
+                    this.updateSidebar();
+                },
+
+                handleRowSelection(event) {
+                    if (!$(event.target).is('button, input')) {
+                        $('tr').removeClass('selected-row');
+                        $(event.currentTarget).addClass('selected-row');
+                    }
+                },
+
+                formatNumber: (num) => parseFloat(num).toFixed(2),
+                calculateSubtotal: (price, qty, discount, tax) => (price * qty) - (discount * qty) + (tax * qty),
+            };
+
+            POS.init();
+
+            window.onerror = function(message, source, lineno, colno, error) {
+                console.error("An error occurred:", message, "at", source, ":", lineno, ":", colno);
+            };
+
+
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+

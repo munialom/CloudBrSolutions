@@ -3,7 +3,7 @@ package com.ctecx.brsuite.purchases;
 
 import com.ctecx.brsuite.customers.Customer;
 import com.ctecx.brsuite.products.Product;
-import com.ctecx.brsuite.suppliers.Supplier;
+import com.ctecx.brsuite.suppliers.Vendor;
 import com.ctecx.brsuite.util.AuditableBase;
 import com.ctecx.brsuite.warehouse.Store;
 import jakarta.persistence.*;
@@ -31,7 +31,7 @@ public class MainStoreTransaction extends AuditableBase {
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    private Vendor vendor;
 
     @ManyToOne
     @JoinColumn(name = "store_id")
