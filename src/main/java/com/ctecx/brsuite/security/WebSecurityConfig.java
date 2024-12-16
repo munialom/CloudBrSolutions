@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/login", "/waiter/login").permitAll()
                         .requestMatchers("/waiter/dashboard", "/waiter/dashboard-view").hasAuthority("Waiter")
                         .requestMatchers("/users/**", "/settings/**", "/roles/**","/").hasAuthority("Admin")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin -> formLogin
