@@ -48,6 +48,25 @@ public class DashboardController {
 
 
 
+	@GetMapping("monthly-summary-data")
+	public String monthlySummary(Model model) {
+
+		return "dashboard/monthly-summary";
+
+	}
+	@GetMapping("valuation-summary")
+	public String stockValuations(Model model) {
+
+		return "dashboard/stock-valuations-summary";
+
+	}
+
+	@GetMapping("month-sales-summary")
+	public String monthlySales(Model model) {
+
+		return "dashboard/monthly-sales-data";
+
+	}
 
 
 

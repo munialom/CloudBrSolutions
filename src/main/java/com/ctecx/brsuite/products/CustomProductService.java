@@ -22,8 +22,8 @@ public class CustomProductService {
     }
 
 
-    public List<Map<String, Object>> GetBelowLowStockLevels() {
-        return productRepository.GetBelowLowStockLevels();
+    public List<Map<String, Object>> GetBelowLowStockLevels(int branchId) {
+        return productRepository.GetBelowLowStockLevels(branchId);
     }
 
 

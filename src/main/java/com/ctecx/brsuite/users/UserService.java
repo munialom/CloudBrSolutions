@@ -1,6 +1,5 @@
 package com.ctecx.brsuite.users;
 
-
 import com.ctecx.brsuite.userroles.Role;
 import com.ctecx.brsuite.userroles.RoleRepository;
 import jakarta.transaction.Transactional;
@@ -20,6 +19,46 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+
+
+    public boolean resetPassword(String email) {
+        User user = userRepository.getUserByEmail(email);
+        if (user == null) {
+            return false;
+        }
+
+        // Generate new random password
+        String newPassword = generateRandomPassword(8);
+
+        // Encode and update the password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setFirstLogin(false); // Optional: Force user to change password on next login
+
+        userRepository.save(user);
+
+        return true;
+    }
+
+    // This method returns the new password so it can be sent via email
+    public String generateAndUpdatePassword(String email) {
+        User user = userRepository.getUserByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("User not found with email: " + email);
+        }
+
+        // Generate new random password
+        String newPassword = generateRandomPassword(8);
+
+        // Encode and update the password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setFirstLogin(false);
+
+        userRepository.save(user);
+
+        return newPassword;
+    }
+
     @Transactional
     public void updateUserStatus(UserStatusDTO userStatusDTO) {
         User user = userRepository.findById(userStatusDTO.getId())
@@ -35,8 +74,8 @@ public class UserService {
     }
     public String createUser(User user) {
         String password = generateRandomPassword(6);
-      String newPass=passwordEncoder.encode(password);
-       user.setPassword(newPass);
+        String newPass=passwordEncoder.encode(password);
+        user.setPassword(newPass);
 
         userRepository.save(user);
 
@@ -91,7 +130,7 @@ public class UserService {
 
         return null; // or throw an exception
     }
-    public User updateAccount(UserDTO userDTO) {
+    public User updateAccount(UserData userDTO) {
         User userInDB = userRepository.findById(userDTO.getId()).get();
 
         if (!userDTO.getPassword().isEmpty()) {
@@ -111,9 +150,9 @@ public class UserService {
     }
 
     public boolean isEmailUnique(String email) {
-      User  userBymail=  userRepository.getUserByEmail(email);
+        User  userBymail=  userRepository.getUserByEmail(email);
 
-      return userBymail==null;
+        return userBymail==null;
     }
 
     public static String generateRandomPassword(int len) {
@@ -132,5 +171,30 @@ public class UserService {
         }
         // return the password as a string
         return sb.toString();
+    }
+
+
+
+
+
+    // Move UserDto to be a static nested class in UserService
+    public static class UserDto {
+        private Integer id;
+        private String firstName;
+        private String lastName;
+        private String roleName;
+
+        public UserDto(Integer id, String firstName, String lastName, String roleName) {
+            this.id = id;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.roleName = roleName;
+        }
+
+        // Getters
+        public Integer getId() { return id; }
+        public String getFirstName() { return firstName; }
+        public String getLastName() { return lastName; }
+        public String getRoleName() { return roleName; }
     }
 }

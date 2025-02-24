@@ -1,6 +1,7 @@
 package com.ctecx.brsuite.products;
 
 
+import com.ctecx.brsuite.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,13 +20,16 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
     @Override
     public List<Map<String, Object>> getAllProducts() {
-        return jdbcTemplate.queryForList("CALL GetProductDetails()");
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL GetProductDetails(?)";
+        return jdbcTemplate.queryForList(sql,branchId);
     }
 
     @Override
     public List<Map<String, Object>> searchProductsWithPositiveStock(String searchKey, int pageSize, int offset) {
-        String sql = "CALL search_products_with_positive_stock(?, ?, ?)";
-        return jdbcTemplate.queryForList(sql, searchKey, pageSize, offset);
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL search_products_with_positive_stock(?, ?, ?,?)";
+        return jdbcTemplate.queryForList(sql, searchKey, pageSize, offset,branchId);
     }
 
     @Override
@@ -35,9 +39,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     }
 
     @Override
-    public List<Map<String, Object>> GetBelowLowStockLevels() {
-        String sql = "CALL GetBelowLowStockLevels()";
-        return jdbcTemplate.queryForList(sql);
+    public List<Map<String, Object>> GetBelowLowStockLevels(int branchId) {
+        String sql = "CALL GetBelowLowStockLevels(?)";
+        return jdbcTemplate.queryForList(sql,branchId);
     }
 
     @Override
@@ -48,11 +52,12 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
     @Override
     public Map<String, Object> search_product_by_code(String productCode) {
-        String sql = "CALL search_products_by_code(?)";
-        return jdbcTemplate.queryForMap(sql, productCode);
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL search_products_by_code(?,?)";
+        return jdbcTemplate.queryForMap(sql, productCode,branchId);
     }
 
-    @Override
+/*    @Override
     public Map<String, Object> search_product_by_code_all(String productCode) {
         String sql = "CALL search_products_by_code_all(?)";
         return jdbcTemplate.queryForMap(sql, productCode);
@@ -63,7 +68,21 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     public List<Map<String, Object>> searchProductsWithPositiveStock_all(String searchKey, int pageSize, int offset) {
         String sql = "CALL search_products_with_positive_stock_all(?, ?, ?)";
         return jdbcTemplate.queryForList(sql, searchKey, pageSize, offset);
+    }*/
+
+    @Override
+    public Map<String, Object> search_product_by_code_all(String productCode) {
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL search_products_by_code_all(?, ?)";
+        return jdbcTemplate.queryForMap(sql, productCode, branchId);
     }
 
+
+    @Override
+    public List<Map<String, Object>> searchProductsWithPositiveStock_all(String searchKey, int pageSize, int offset) {
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL search_products_with_positive_stock_all(?, ?, ?, ?)";
+        return jdbcTemplate.queryForList(sql, searchKey, pageSize, offset, branchId);
+    }
 
 }

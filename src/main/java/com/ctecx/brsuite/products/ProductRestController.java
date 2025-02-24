@@ -77,13 +77,11 @@ public class ProductRestController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body("Products uploaded successfully!");
     }
-
     @GetMapping("/below-low-stock")
-    public ResponseEntity<List<Map<String, Object>>> getBelowLowStockLevels() {
-        List<Map<String, Object>> belowLowStockProducts = customProductService.GetBelowLowStockLevels();
+    public ResponseEntity<List<Map<String, Object>>> getBelowLowStockLevels(@RequestParam int branchId) {
+        List<Map<String, Object>> belowLowStockProducts = customProductService.GetBelowLowStockLevels(branchId);
         return ResponseEntity.ok(belowLowStockProducts);
     }
-
 
     @GetMapping("/cooking-gas-stock")
     public ResponseEntity<List<Map<String, Object>>> CookingGasStockLevels() {

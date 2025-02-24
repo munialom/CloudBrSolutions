@@ -12,6 +12,7 @@ import com.ctecx.brsuite.transactions.SaleTransactionDTO;
 import com.ctecx.brsuite.transactions.TransactionService;
 import com.ctecx.brsuite.util.ResourceNotFoundException;
 import com.ctecx.brsuite.util.SalesDateTimeManager;
+import com.ctecx.brsuite.util.SecurityUtils;
 import com.ctecx.brsuite.warehouse.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -73,6 +75,34 @@ public class SalesService {
     }
 
 
+    @Transactional
+    public String createSalesWaiters(SalesStockDTO salesStockDTO) {
+        String sn = customProductManagerRepository.generateUniqueSerialNumber("");
+        String orderNumber = customProductManagerRepository.generateNewOrderNumber();
+
+        List<StockTransaction> stockTransactions = salesStockDTO.saleStocks.stream()
+                .map(saleStock -> {
+                    Product product = getProductById(saleStock.getProductId());
+                    if (product == null) {
+                        throw new ResourceNotFoundException("Product not found with code: " + saleStock.getProductCode());
+                    }
+                    return createStockTransactionWaiters(saleStock, product, sn, orderNumber, salesStockDTO);
+                })
+                .collect(Collectors.toList());
+
+        stockTransactionRepository.saveAll(stockTransactions);
+
+        return orderNumber;
+    }
+
+
+    private Product getProductById(Long productId) {
+        return customManagerProductService.getSingleProductById(productId)
+                .map(this::mapProductDataToProduct)
+                .orElse(null);
+    }
+
+
     private Product getProductByCode(String productCode) {
         return customManagerProductService.getSingleProductByCode(productCode)
                 .map(this::mapProductDataToProduct)
@@ -112,6 +142,8 @@ public class SalesService {
         stockTransaction.setRevenue_code(product.getRevenue().getRevenueName());
         Customer customer = myCustomerService.getDefaultCustomer();
         stockTransaction.setCustomer(customer);
+        stockTransaction.setBranchId(Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId()));
+        stockTransaction.setBranch(SecurityUtils.getCurrentUserBranch().getBranchName());
 
         stockTransaction.setStockOut(saleStock.getQty());
         stockTransaction.setDescription("Stock Sale for " + product.getProductName());
@@ -139,6 +171,58 @@ public class SalesService {
         return stockTransaction;
     }
 
+    private StockTransaction createStockTransactionWaiters(SaleStock saleStock, Product product, String sn,String oderNumber, SalesStockDTO salesStockDTO) {
+        StockTransaction stockTransaction = new StockTransaction();
+        ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
+        LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
+        System.out.println("Zone Time"+transactionDateTime);
+        System.out.println("Date"+salesDate);
+        log.info("Processing sale at {} for sales date {}", transactionDateTime, salesDate);
+
+        BigDecimal changeOut = salesStockDTO.calculateChangeOut();
+
+        stockTransaction.setProductCode(product.getProductCode());
+        stockTransaction.setProductName(product.getProductName());
+        stockTransaction.setTransactionDate(salesDate);
+        stockTransaction.setProduct(product);
+        stockTransaction.setModule("SALES");
+        stockTransaction.setSubModule("CASH SALE");
+        stockTransaction.setStockIn(0);
+        stockTransaction.setRevenue(product.getRevenue());
+        stockTransaction.setRevenue_code(product.getRevenue().getRevenueName());
+
+        Customer customer = myCustomerService.getDefaultCustomer();
+        stockTransaction.setCustomer(customer);
+
+        stockTransaction.setStockOut(saleStock.getQty());
+        stockTransaction.setDescription("Stock Sale for " + product.getProductName());
+        stockTransaction.setStatus("Active");
+        //System.out.println("Current Mode"+salesStockDTO.isAddItems());
+        System.out.println("ExistingSerialNumber"+salesStockDTO.getExistingSerialNumber());
+
+        // Check if addItems is true and use existingSerialNumber if available
+        if (salesStockDTO.isAddItems()){
+            stockTransaction.setSerialNumber(salesStockDTO.getExistingSerialNumber());
+        } else {
+            stockTransaction.setSerialNumber(sn);
+        }
+        stockTransaction.setProductCost(product.getProductCost());
+        stockTransaction.setProductSalePrice(product.getProductPrice());
+        stockTransaction.setDiscount(saleStock.getDiscount());
+        stockTransaction.setTax(saleStock.getTax());
+        stockTransaction.setNetTax(saleStock.getNetTax());
+        stockTransaction.setSubtotal(saleStock.getSubtotal());
+        stockTransaction.setChangeOut(changeOut);
+        stockTransaction.setPaymentState(PaymentState.PENDING);
+        stockTransaction.setOrderState(OrderState.OPEN);
+        stockTransaction.setTransactionDate(salesDate);
+        stockTransaction.setStore(storeService.getDefaultCounterStore());
+        stockTransaction.setOrderNumber(oderNumber);
+        stockTransaction.setBranchId(Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId()));
+        stockTransaction.setBranch(SecurityUtils.getCurrentUserBranch().getBranchName());
+
+        return stockTransaction;
+    }
 
 
     @Transactional

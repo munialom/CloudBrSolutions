@@ -21,6 +21,5 @@ public class Branch  extends AuditableBase {
     private String branchCode;
     private boolean isHeadQuarter;
 
-
 }
 

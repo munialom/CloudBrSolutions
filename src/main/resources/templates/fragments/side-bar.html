@@ -59,9 +59,7 @@
 					<div class="menu-item">
 						<a href="#" onclick="loadFragment('/pos/returns')" class="menu-link"><div class="menu-text">Returns & Exchanges</div></a>
 					</div>
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/pos/gift-cards')" class="menu-link"><div class="menu-text">Gift Cards</div></a>
-					</div>
+
 				</div>
 			</div>
 
@@ -88,76 +86,62 @@
 					<div class="menu-item">
 						<a href="#" onclick="loadFragment('/finance/payment-methods')" class="menu-link"><div class="menu-text">Payment Methods Summaries</div></a>
 					</div>
+
+				</div>
+			</div>
+
+			<!-- Products Section -->
+			<div class="menu-item has-sub">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-box"></i></div>
+					<div class="menu-text">Products</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/sales/discounts')" class="menu-link"><div class="menu-text">Discounts & Promotions</div></a>
+						<a href="#" onclick="loadFragment('/productsWorkFlow/controlPanel')" class="menu-link">
+							<div class="menu-text">Add New Products</div>
+						</a>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/productsWorkFlow/current-list')" class="menu-link">
+							<div class="menu-text">Inventory Items</div>
+						</a>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/productsWorkFlow/current-new-prices')" class="menu-link">
+							<div class="menu-text">Prices Updates</div>
+						</a>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/productsWorkFlow/current-prices')" class="menu-link">
+							<div class="menu-text">Price Lists</div>
+						</a>
 					</div>
 				</div>
 			</div>
 
-			<!-- Inventory Management Section -->
+			<!-- Stocks Section -->
 			<div class="menu-item has-sub">
 				<a href="javascript:;" class="menu-link">
-					<div class="menu-icon"><i class="fa fa-boxes"></i></div>
-					<div class="menu-text">Inventory</div>
+					<div class="menu-icon"><i class="fa fa-warehouse"></i></div>
+					<div class="menu-text">Stocks</div>
 					<div class="menu-caret"></div>
 				</a>
 				<div class="menu-submenu">
-
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/productsWorkFlow/controlPanel')" class="menu-link"><div class="menu-text">Add New Products</div></a>
-					</div>
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/productsWorkFlow/current-list')" class="menu-link"><div class="menu-text">Inventory Items</div></a>
-					</div>
-
-					<!-- Stock Management -->
-					<div class="menu-item has-sub">
-						<a href="javascript:;" class="menu-link">
-							<div class="menu-text">Stock Management</div>
-							<div class="menu-caret"></div>
+						<a href="#" onclick="loadFragment('/productsWorkFlow/products-menu')" class="menu-link">
+							<div class="menu-text">Opening Stocks</div>
 						</a>
-						<div class="menu-submenu">
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/productsWorkFlow/products-menu')" class="menu-link">
-									<div class="menu-text">Opening Stocks</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/productsWorkFlow/stock-transfers')" class="menu-link">
-									<div class="menu-text">Stock Transfers</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#"onclick="loadFragment('/productsWorkFlow/stockIssuance-menu')" class="menu-link">
-									<div class="menu-text">Stock Issuance</div>
-								</a>
-							</div>
-						</div>
 					</div>
 
 
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/productsWorkFlow/stock-levels')" class="menu-link"><div class="menu-text">Stock Levels</div></a>
+						<a href="#" onclick="loadFragment('/productsWorkFlow/stock-levels')" class="menu-link">
+							<div class="menu-text">Inventory By Location</div>
+						</a>
 					</div>
 
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/productsWorkFlow/current-new-prices')" class="menu-link"><div class="menu-text">Prices Updates</div></a>
-					</div>
-
-
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/productsWorkFlow/current-prices')" class="menu-link"><div class="menu-text">Price Lists</div></a>
-					</div>
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/inventory/barcodes')" class="menu-link"><div class="menu-text">Barcode Generation</div></a>
-					</div>
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/finance/stock-sheet')" class="menu-link"><div class="menu-text">Stock Movement</div></a>
-					</div>
-
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/finance/stock-sheet')" class="menu-link"><div class="menu-text">Inventory By Location</div></a>
-					</div>
 
 				</div>
 			</div>
@@ -172,119 +156,34 @@
 				</a>
 				<div class="menu-submenu">
 					<!-- Requisitions -->
-
-
-					<!-- Purchase Orders -->
-					<div class="menu-item has-sub">
-						<a href="javascript:;" class="menu-link">
-							<div class="menu-text">Purchases</div>
-							<div class="menu-caret"></div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/productsWorkFlow/purchase-menu')" class="menu-link">
+							<div class="menu-text">Receive Purchases</div>
 						</a>
-						<div class="menu-submenu">
-
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/productsWorkFlow/purchase-menu')" class="menu-link">
-									<div class="menu-text">Receive Purchases</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/productsWorkFlow/purchaseOrders')" class="menu-link">
-									<div class="menu-text">Create PO</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/productsWorkFlow/list')" class="menu-link">
-									<div class="menu-text">PO List</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/po/amendments')" class="menu-link">
-									<div class="menu-text">Amendments</div>
-								</a>
-							</div>
-						</div>
 					</div>
-
-					<!-- Goods Receipt -->
-					<div class="menu-item has-sub">
-						<a href="javascript:;" class="menu-link">
-							<div class="menu-text">Goods Receipt</div>
-							<div class="menu-caret"></div>
-						</a>
-						<div class="menu-submenu">
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/grn/create')" class="menu-link">
-									<div class="menu-text">Create GRN</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/grn/inspection')" class="menu-link">
-									<div class="menu-text">Quality Inspection</div>
-								</a>
-							</div>
-						</div>
-					</div>
-
-
 
 					<!-- Suppliers -->
-					<div class="menu-item has-sub">
-						<a href="javascript:;" class="menu-link">
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/suppliers')" class="menu-link">
 							<div class="menu-text">Suppliers</div>
-							<div class="menu-caret"></div>
 						</a>
-						<div class="menu-submenu">
-							<div class="menu-item">
-								<div class="menu-item">
-									<a href="#" onclick="loadFragment('/suppliers')" class="menu-link"><div class="menu-text">Suppliers</div></a>
-								</div>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/suppliers/list')" class="menu-link">
-									<div class="menu-text">Supplier List</div>
-								</a>
-							</div>
-						</div>
 					</div>
-
-					<!-- Dispatch -->
-					<div class="menu-item has-sub">
-						<a href="javascript:;" class="menu-link">
-							<div class="menu-text">Dispatch</div>
-							<div class="menu-caret"></div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/suppliers/list')" class="menu-link">
+							<div class="menu-text">Supplier List</div>
 						</a>
-						<div class="menu-submenu">
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/dispatch/create')" class="menu-link">
-									<div class="menu-text">Create Dispatch</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/dispatch/tracking')" class="menu-link">
-									<div class="menu-text">Tracking</div>
-								</a>
-							</div>
-						</div>
 					</div>
 
 					<!-- Reports -->
-					<div class="menu-item has-sub">
-						<a href="javascript:;" class="menu-link">
-							<div class="menu-text">Reports</div>
-							<div class="menu-caret"></div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/reports/purchase')" class="menu-link">
+							<div class="menu-text">Purchase Reports</div>
 						</a>
-						<div class="menu-submenu">
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/reports/purchase')" class="menu-link">
-									<div class="menu-text">Purchase Reports</div>
-								</a>
-							</div>
-							<div class="menu-item">
-								<a href="#" onclick="loadFragment('/reports/supplier')" class="menu-link">
-									<div class="menu-text">Supplier Reports</div>
-								</a>
-							</div>
-						</div>
+					</div>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/reports/supplier')" class="menu-link">
+							<div class="menu-text">Supplier Reports</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -292,7 +191,7 @@
 
 
 			<!-- Customer Management Section -->
-			<div class="menu-item has-sub">
+		<!--	<div class="menu-item has-sub">
 				<a href="javascript:;" class="menu-link">
 					<div class="menu-icon"><i class="fa fa-users"></i></div>
 					<div class="menu-text">Customers</div>
@@ -309,7 +208,7 @@
 						<a href="#" onclick="loadFragment('/customers/feedback')" class="menu-link"><div class="menu-text">Customer Feedback</div></a>
 					</div>
 				</div>
-			</div>
+			</div>-->
 
 
 
@@ -322,33 +221,23 @@
 				</a>
 				<div class="menu-submenu">
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/sales/stock-sheet')" class="menu-link"><div class="menu-text">Stock Valuations</div></a>
+						<a href="#" onclick="loadFragment('/sales/stock-sheet')" class="menu-link"><div class="menu-text">Stock Sheets</div></a>
 					</div>
 
 					<div class="menu-item">
 						<a href="#" onclick="loadFragment('/sales/daily-aggregates')" class="menu-link"><div class="menu-text">Monthly Aggregates</div></a>
 					</div>
 
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/sales/acc-aggregates')" class="menu-link"><div class="menu-text">Monthly By Account</div></a>
-					</div>
 
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/sales/yr-aggregates')" class="menu-link"><div class="menu-text">Yearly Aggregates</div></a>
-					</div>
 
 					<div class="menu-item">
 						<a href="#" onclick="loadFragment('/sales/monthly-stock-value')" class="menu-link"><div class="menu-text">Management</div></a>
 					</div>
 
-			<!--		<div class="menu-item">
-						<a href="#" onclick="loadFragment('/sales/gas-stocks')" class="menu-link"><div class="menu-text">Gas Stock</div></a>
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/sales/stocks-sheet-by-category')" class="menu-link"><div class="menu-text">Stocks by Categories</div></a>
 					</div>
 
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/finance/gas-stock-sheet')" class="menu-link"><div class="menu-text">Gas Movement</div></a>
-					</div>
--->
 				</div>
 			</div>
 
@@ -372,8 +261,8 @@
 					</div>
 
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/configs/integrations')" class="menu-link">
-							<div class="menu-text">Integrations</div>
+						<a href="#" onclick="loadFragment('/configs/branch-master')" class="menu-link">
+							<div class="menu-text">Branch Master</div>
 						</a>
 					</div>
 				</div>

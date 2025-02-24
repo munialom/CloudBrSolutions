@@ -1,6 +1,7 @@
 
 
 
+<!--
 <div id="enhancedSalesReportSystem">
    <div class="row p-3">
       <div class="col-xl-12">
@@ -343,4 +344,405 @@
       });
    })(jQuery);
 </script>
+-->
 
+<div id="enhancedSalesReportSystem">
+   <div class="row p-3">
+      <div class="col-xl-12">
+         <div class="card mt-2">
+            <div class="card-header">
+               <h6 class="mb-0">Sales Report By Sales Rep</h6>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="card p-4">
+                     <div id="branch_selector_container"></div> <!-- Branch Selector Container -->
+                     <div id="table_div_content"></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<script>
+   ($ => {
+      // Configuration
+      const config = {
+         waitersSummaryApiUrl: '/api/products-manager/waiters-summary',
+         branchesApiUrl: '/api/branches/branches-list', // API to fetch branches
+         recordsPerPage: 10
+      };
+
+      // Store the full dataset and current state
+      let fullData = [];
+      let currentPage = 1;
+      let totalRecords = 0;
+      let filteredData = [];
+      let selectedBranch = null; // Track selected branch
+
+      // Function to initialize the page
+      const initializePage = () => {
+         const $target = $('#table_div_content');
+         $target.empty();
+
+         // Create branch selector
+         createBranchSelector();
+
+         // Create date input
+         const $dateInput = $('<div>').addClass('row mb-3');
+         $dateInput.append(
+                 $('<div>').addClass('col-md-4').append(
+                         $('<label>').attr('for', 'waitersSummaryDatePicker').text('Select Date:'),
+                         $('<input>').attr({
+                            type: 'date',
+                            id: 'waitersSummaryDatePicker',
+                            class: 'form-control'
+                         })
+                 ),
+                 $('<div>').addClass('col-md-4 d-flex align-items-end').append(
+                         $('<button>').attr('id', 'loadReport').text('Load Report').addClass('btn btn-primary')
+                 )
+         );
+         $target.append($dateInput);
+
+         // Create and append the search input
+         const $searchInput = $('<input>')
+                 .attr({
+                    type: 'text',
+                    placeholder: 'Search...',
+                    id: 'searchInput'
+                 })
+                 .addClass('form-control mb-3');
+         $target.append($searchInput);
+
+         // Create and append the table wrapper
+         const $tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
+         $target.append($tableWrapper);
+
+         // Attach event listeners
+         $searchInput.on('input', function() {
+            const searchTerm = $(this).val();
+            filterTable(searchTerm);
+         });
+
+         $('#loadReport').on('click', function() {
+            const selectedDate = $('#waitersSummaryDatePicker').val();
+            loadWaitersSummary(selectedDate);
+         });
+
+         // Set default date to current day
+         const today = new Date().toISOString().split('T')[0];
+         $('#waitersSummaryDatePicker').val(today);
+
+         // Fetch and display initial data for the current date
+         loadWaitersSummary(today);
+      };
+
+      // Function to create branch selector
+      const createBranchSelector = () => {
+         const $container = $('#branch_selector_container');
+         $container.empty();
+
+         const $select = $('<select>')
+                 .attr('id', 'branchSelect')
+                 .addClass('form-control select2-branch')
+                 .attr('style', 'width: 100%');
+
+         $container.append(
+                 $('<div>').addClass('form-group row').append(
+                         $('<label>').attr('for', 'branchSelect').text('Select Branch:').addClass('col-sm-2 col-form-label'),
+                         $('<div>').addClass('col-sm-10').append($select)
+                 )
+         );
+
+         // Initialize Select2 for branch dropdown
+         $('.select2-branch').select2({
+            placeholder: 'Select a branch',
+            allowClear: true,
+            width: '100%',
+            ajax: {
+               url: config.branchesApiUrl,
+               dataType: 'json',
+               delay: 250,
+               data: function(params) {
+                  return {
+                     keyword: params.term || ''
+                  };
+               },
+               processResults: function(data) {
+                  return {
+                     results: data.map(branch => ({
+                        id: branch.id,
+                        text: `${branch.branchName} (${branch.branchCode})`
+                     }))
+                  };
+               },
+               cache: true
+            },
+            minimumInputLength: 0
+         }).on('change', function() {
+            selectedBranch = $(this).val(); // Update selected branch
+            const selectedDate = $('#waitersSummaryDatePicker').val();
+            loadWaitersSummary(selectedDate); // Reload data when branch changes
+         });
+      };
+
+      // Function to load waiters summary
+      const loadWaitersSummary = (date) => {
+         if (!selectedBranch) {
+            alert('Please select a branch.');
+            return;
+         }
+
+         $('#tableWrapper').html('<p>Loading waiters summary...</p>');
+
+         $.ajax({
+            url: `${config.waitersSummaryApiUrl}/${date}?branchId=${selectedBranch}`,
+            method: 'GET',
+            dataType: 'json',
+            success: data => {
+               if (data && data.length > 0) {
+                  fullData = data;
+                  totalRecords = data.length;
+                  filteredData = [...fullData];
+                  changePage(1);
+               } else {
+                  $('#tableWrapper').html('<p>No records found for the selected date.</p>');
+               }
+            },
+            error: (_, textStatus, errorThrown) => {
+               console.error('Error loading waiters summary:', textStatus, errorThrown);
+               $('#tableWrapper').html('<p>Error loading waiters summary. Please try again later.</p>');
+            }
+         });
+      };
+
+      // Reusable function to generate dynamic table
+      const generateDynamicTable = (data, options = {}) => {
+         const {
+            actionButtons = []
+         } = options;
+
+         const $tableWrapper = $('#tableWrapper');
+         $tableWrapper.empty();
+
+         // Add action buttons
+         const $buttonGroup = $('<div>').addClass('btn-group mb-3');
+         actionButtons.forEach(button => {
+            $buttonGroup.append(
+                    $('<button>').addClass(`btn ${button.class}`)
+                            .html(`<i class="${button.icon} mr-2"></i> ${button.text}`)
+                            .on('click', button.action)
+            );
+         });
+         $tableWrapper.append($buttonGroup);
+
+         if (!Array.isArray(data) || data.length === 0) {
+            $tableWrapper.append('<p>No data available</p>');
+            return;
+         }
+
+         const headers = Object.keys(data[0]);
+         const $table = $('<table>').addClass('dynamic-table');
+         const $thead = $('<thead>').appendTo($table);
+         const $tbody = $('<tbody>').appendTo($table);
+
+         const $headerRow = $('<tr>');
+         headers.forEach(h => $headerRow.append($('<th>').text(h)));
+         $headerRow.appendTo($thead);
+
+         data.forEach(row => {
+            const $dataRow = $('<tr>');
+            headers.forEach(h => {
+               let $cell;
+               const val = row[h];
+               if (h === 'Cashier Name') {
+                  $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A').addClass('waiter-name');
+               } else if (['Total Sales', 'Commission Amount'].includes(h)) {
+                  const numVal = parseFloat(val);
+                  $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A')
+                          .addClass(numVal < 0 ? 'negative' : 'positive');
+               } else {
+                  $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A');
+               }
+               $dataRow.append($cell);
+            });
+            $dataRow.appendTo($tbody);
+         });
+
+         $tableWrapper.append($table);
+
+         // Add pagination
+         const $pagination = generatePagination();
+         $tableWrapper.append($pagination);
+      };
+
+      // Function to generate pagination
+      const generatePagination = () => {
+         const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
+         const $pagination = $('<nav>').addClass('mt-3');
+         const $ul = $('<ul>').addClass('pagination justify-content-center');
+
+         // Previous button
+         $ul.append(
+                 $('<li>').addClass(`page-item ${currentPage === 1 ? 'disabled' : ''}`)
+                         .append($('<a>').addClass('page-link').text('Previous').on('click', () => changePage(currentPage - 1)))
+         );
+
+         // Page numbers
+         const maxPages = 5;
+         const startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+         const endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+         for (let i = startPage; i <= endPage; i++) {
+            $ul.append(
+                    $('<li>').addClass(`page-item ${i === currentPage ? 'active' : ''}`)
+                            .append($('<a>').addClass('page-link').text(i).on('click', () => changePage(i)))
+            );
+         }
+
+         // Next button
+         $ul.append(
+                 $('<li>').addClass(`page-item ${currentPage === totalPages ? 'disabled' : ''}`)
+                         .append($('<a>').addClass('page-link').text('Next').on('click', () => changePage(currentPage + 1)))
+         );
+
+         $pagination.append($ul);
+
+         // Add pagination info
+         const start = (currentPage - 1) * config.recordsPerPage + 1;
+         const end = Math.min(currentPage * config.recordsPerPage, filteredData.length);
+         const $info = $('<div>').addClass('text-center mt-2')
+                 .text(`Page ${currentPage} of ${totalPages} | Showing ${start}-${end} of ${filteredData.length} records (${totalRecords} total)`);
+         $pagination.append($info);
+
+         return $pagination;
+      };
+
+      // Function to change page
+      const changePage = (newPage) => {
+         const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
+         if (newPage < 1 || newPage > totalPages) return;
+
+         currentPage = newPage;
+         const start = (currentPage - 1) * config.recordsPerPage;
+         const end = start + config.recordsPerPage;
+         const pageData = filteredData.slice(start, end);
+
+         generateDynamicTable(pageData, getTableOptions());
+      };
+
+      // Function to filter table
+      const filterTable = (searchTerm) => {
+         filteredData = fullData.filter(row =>
+                 Object.values(row).some(value =>
+                         String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                 )
+         );
+         currentPage = 1;
+         changePage(1);
+      };
+
+      // Function to get table options
+      const getTableOptions = () => ({
+         actionButtons: [
+            { text: 'Excel', icon: 'fas fa-file-excel', class: 'btn-primary', action: () => exportTable('Excel') },
+            { text: 'PDF', icon: 'fas fa-file-pdf', class: 'btn-warning', action: () => exportTable('PDF') },
+            { text: 'Print', icon: 'fas fa-print', class: 'btn-secondary', action: () => exportTable('Print') }
+         ]
+      });
+
+      // Export functionality
+      const exportTable = (format) => {
+         if (!fullData || fullData.length === 0) {
+            showNotification('error', 'No data available for export. Please load the report first.');
+            return;
+         }
+
+         switch (format) {
+            case 'Excel':
+               exportToExcel(fullData);
+               break;
+            case 'PDF':
+               downloadPDF(fullData);
+               break;
+            case 'Print':
+               downloadPDF(fullData);
+               break;
+         }
+      };
+
+      // Placeholder functions for export (to be implemented)
+      const exportToExcel = () => {
+         generateExcel(fullData, 'Sales By Cashier Report');
+      };
+
+      const downloadPDF = () => {
+         printGeneratePdf(fullData, 'Sales By Cashier Report');
+      };
+
+      // Notification function (to be implemented)
+      const showNotification = (type, message) => {
+         console.log(`${type}: ${message}`);
+         // Implement your notification logic here
+      };
+
+      // Apply styles function
+      const applyStyles = () => {
+         $('head').append(`
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+    .table-responsive {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 4px;
+        padding: 12px;
+    }
+    .dynamic-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Roboto', sans-serif;
+        font-size: 12px;
+    }
+    .dynamic-table th, .dynamic-table td {
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        text-align: left;
+    }
+    .dynamic-table th {
+        background-color: #f8f9fa;
+        font-weight: 700;
+        color: #495057;
+        text-transform: uppercase;
+    }
+    .dynamic-table tr:hover { background-color: #f1f3f5; }
+    .waiter-name { font-weight: bold; }
+    .negative { color: #d32f2f; }
+    .positive { color: #388e3c; }
+    .btn-group .btn {
+        margin-right: 10px;
+    }
+    .btn-group .btn i {
+        margin-right: 5px;
+    }
+    @media print {
+        .btn-group, #searchInput, .pagination {
+            display: none;
+        }
+    }
+</style>
+`);
+      };
+
+      // Initialize
+      $(() => {
+         applyStyles();
+         initializePage();
+      });
+   })(jQuery);
+</script>

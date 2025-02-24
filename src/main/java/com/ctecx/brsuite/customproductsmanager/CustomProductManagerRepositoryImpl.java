@@ -1,6 +1,7 @@
 package com.ctecx.brsuite.customproductsmanager;
 
 
+import com.ctecx.brsuite.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,6 +30,25 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     public List<Map<String, Object>> GetOpenOrderNumbers() {
         return jdbcTemplate.queryForList("CALL  GetOpenOrderNumbers()");
     }
+    @Override
+    public Optional<Map<String, Object>> getSingleProductById(Long productId) {
+        String sql = "CALL GetSingleProductById(?)";
+        return jdbcTemplate.query(sql,
+                (PreparedStatement ps) -> ps.setLong(1, productId),
+                (ResultSet rs) -> {
+                    if (rs.next()) {
+                        Map<String, Object> result = new HashMap<>();
+                        ResultSetMetaData metaData = rs.getMetaData();
+                        int columnCount = metaData.getColumnCount();
+                        for (int i = 1; i <= columnCount; i++) {
+                            result.put(metaData.getColumnName(i), rs.getObject(i));
+                        }
+                        return Optional.of(result);
+                    }
+                    return Optional.empty();
+                }
+        );
+    }
 
     @Override
     public List<Map<String, Object>> GetClosedOrderSerialNumbers() {
@@ -50,7 +70,11 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
 
     @Override
     public List<Map<String, Object>> getAllProducts() {
-        return jdbcTemplate.queryForList("CALL GetProductDetails()");
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL GetProductDetails(?)";
+        return jdbcTemplate.queryForList(sql,branchId);
+
+        /*return jdbcTemplate.queryForList("CALL GetProductDetails(?)");*/
     }
 
     @Override
@@ -139,9 +163,9 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     }
 
     @Override
-    public List<Map<String, Object>> GetRevenueSummaryByDate(LocalDate localDate) {
+    public List<Map<String, Object>> GetRevenueSummaryByDate(LocalDate localDate,int branchId) {
 
-        return jdbcTemplate.queryForList("CALL GetRevenueSummaryByDate(?)",localDate);
+        return jdbcTemplate.queryForList("CALL GetRevenueSummaryByDate(?,?)",localDate,branchId);
     }
 
     @Override
@@ -150,20 +174,20 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     }
 
     @Override
-    public List<Map<String, Object>> GetWaitersSummaryByDate(LocalDate localDate) {
+    public List<Map<String, Object>> GetWaitersSummaryByDate(LocalDate localDate,int branchId) {
 
-        return jdbcTemplate.queryForList("CALL GetWaitersSummaryByDate(?)",localDate);
+        return jdbcTemplate.queryForList("CALL GetWaitersSummaryByDate(?,?)",localDate,branchId);
     }
 
     @Override
-    public List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate) {
-        return jdbcTemplate.queryForList("CALL GetEnhancedSalesReport(?,?)",startDate, endDate);
+    public List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate,int  branchId) {
+        return jdbcTemplate.queryForList("CALL GetEnhancedSalesReport(?,?,?)",startDate, endDate,branchId);
     }
 
     @Override
-    public List<Map<String, Object>> GetStockValuationReport(LocalDate startDate, LocalDate endDate) {
+    public List<Map<String, Object>> GetStockValuationReport(LocalDate startDate, LocalDate endDate,int  branchId) {
 
-        return jdbcTemplate.queryForList("CALL GetStockValuationReport(?,?)",startDate, endDate);
+        return jdbcTemplate.queryForList("CALL GetStockValuationReport(?,?,?)",startDate, endDate,branchId);
     }
 
     @Override
@@ -275,16 +299,16 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     }
 
     @Override
-    public List<Map<String, Object>> GetRevenueMovement(LocalDate localDate) {
+    public List<Map<String, Object>> GetRevenueMovement(LocalDate localDate,int branchId) {
 
-        return jdbcTemplate.queryForList("CALL  GetRevenueMovement(?)",localDate);
+        return jdbcTemplate.queryForList("CALL  GetRevenueMovement(?,?)",localDate,branchId);
     }
 
 
     @Override
-    public List<Map<String, Object>> GetMonthlySalesReport(int currentYear, int currentMonth) {
+    public List<Map<String, Object>> GetMonthlySalesReport(int currentYear, int currentMonth, int branchId) {
 
-        return jdbcTemplate.queryForList("CALL GetMonthlySalesReport(?,?)",currentYear, currentMonth);
+        return jdbcTemplate.queryForList("CALL GetMonthlySalesReport(?,?,?)",currentYear, currentMonth,branchId);
     }
 
     @Override
@@ -300,9 +324,15 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     }
 
     @Override
-    public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth) {
+    public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth,int branchId) {
 
-        return jdbcTemplate.queryForList("CALL GetMonthlyStockValuationReport(?,?)",currentYear, currentMonth);
+        return jdbcTemplate.queryForList("CALL GetMonthlyStockValuationReport(?,?,?)",currentYear, currentMonth,branchId);
+    }
+
+    @Override
+    public List<Map<String, Object>> GetStockValuationReportByCategory(LocalDate startDate, LocalDate endDate, int branchId, int categoryId) {
+        return jdbcTemplate.queryForList("CALL GetStockValuationReportByCategory(?,?,?,?)",
+                startDate, endDate, branchId, categoryId);
     }
 
     @Override

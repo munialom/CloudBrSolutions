@@ -20,5 +20,15 @@ public class SalesStockDTO {
     private String transactionType;
     private boolean addItems;
     private String existingSerialNumber;
+    public BigDecimal calculateChangeOut() {
+        if (amountPaid == null || totalAmount == null) {
+            return BigDecimal.ZERO;
+        }
+        if (amountPaid.compareTo(totalAmount) > 0) {
+            return amountPaid.subtract(totalAmount);
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
 
 }

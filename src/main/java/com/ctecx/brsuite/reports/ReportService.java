@@ -17,12 +17,12 @@ public class ReportService {
     private final CustomProductManagerRepository repository;
     private final DynamicReportGenerator reportGenerator;
 
-    public Path generateRevenueSummaryReport(LocalDate localDate) {
+ /*   public Path generateRevenueSummaryReport(LocalDate localDate) {
         List<Map<String, Object>> reportData = repository.GetRevenueSummaryByDate(localDate);
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("Date", localDate.toString());
         return generateReport(reportData, "Revenue Summary Report", "revenue_summary_" + localDate + ".pdf", additionalInfo);
-    }
+    }*/
 
     public Path generateSummaryTransactionReport(LocalDate startDate, LocalDate endDate) {
         List<Map<String, Object>> reportData = repository.GetSummaryTransactionReport(startDate, endDate);
@@ -31,26 +31,26 @@ public class ReportService {
         return generateReport(reportData, "Summary Transaction Report", "summary_transaction_" + startDate + "_to_" + endDate + ".pdf", additionalInfo);
     }
 
-    public Path generateWaitersSummaryReport(LocalDate localDate) {
+/*    public Path generateWaitersSummaryReport(LocalDate localDate) {
         List<Map<String, Object>> reportData = repository.GetWaitersSummaryByDate(localDate);
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("Date", localDate.toString());
         return generateReport(reportData, "Waiters Summary Report", "waiters_summary_" + localDate + ".pdf", additionalInfo);
-    }
+    }*/
 
-    public Path generateEnhancedSalesReport(LocalDate startDate, LocalDate endDate) {
+ /*   public Path generateEnhancedSalesReport(LocalDate startDate, LocalDate endDate) {
         List<Map<String, Object>> reportData = repository.GetEnhancedSalesReport(startDate, endDate);
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("Period", startDate + " to " + endDate);
         return generateReport(reportData, "Enhanced Sales Report", "enhanced_sales_" + startDate + "_to_" + endDate + ".pdf", additionalInfo);
-    }
+    }*/
 
-    public Path generateStockValuationReport(LocalDate startDate, LocalDate endDate) {
+  /*  public Path generateStockValuationReport(LocalDate startDate, LocalDate endDate) {
         List<Map<String, Object>> reportData = repository.GetStockValuationReport(startDate, endDate);
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("Period", startDate + " to " + endDate);
         return generateReport(reportData, "Stock Valuation Report", "stock_valuation_" + startDate + "_to_" + endDate + ".pdf", additionalInfo);
-    }
+    }*/
 
     public Path generateEnhancedSalesReportWaiter(LocalDate startDate, LocalDate endDate, String waiterName) {
         List<Map<String, Object>> reportData = repository.GetEnhancedSalesReportWaiter(startDate, endDate, waiterName);

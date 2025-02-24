@@ -76,4 +76,7 @@ public class StockTransaction extends AuditableBase {
     private boolean orderClosed;
     private boolean reprint;
     private boolean mainPrinted;
+    @Column(nullable = true)
+    private int branchId;
+    private String branch;
 }

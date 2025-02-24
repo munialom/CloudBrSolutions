@@ -7,6 +7,7 @@ import com.ctecx.brsuite.products.ProductRepository;
 import com.ctecx.brsuite.products.ProductService;
 import com.ctecx.brsuite.suppliers.SupplierService;
 import com.ctecx.brsuite.suppliers.Vendor;
+import com.ctecx.brsuite.util.SecurityUtils;
 import com.ctecx.brsuite.warehouse.Store;
 import com.ctecx.brsuite.warehouse.StoreRepository;
 import com.ctecx.brsuite.warehouse.StoreService;
@@ -87,6 +88,8 @@ public class StockService {
         stockTransaction.setTransactionDate(LocalDate.now());
         stockTransaction.setSerialNumber(sn);
         stockTransaction.setStatus("Active");
+        stockTransaction.setBranchId(Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId()));
+        stockTransaction.setBranch(SecurityUtils.getCurrentUserBranch().getBranchName());
 
         if (openingStockDTO.getBranchId() != null) {
             Store branch = storeRepository.findById(openingStockDTO.getBranchId())
@@ -186,6 +189,8 @@ public class StockService {
             optionalSupplier.ifPresent(stockTransaction::setVendor);
             Optional<Store> optionalBranch = Optional.ofNullable(storeService.getStoreById(purchaseStockDTO.getBranchId()));
             optionalBranch.ifPresent(stockTransaction::setStore);
+            stockTransaction.setBranchId(Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId()));
+            stockTransaction.setBranch(SecurityUtils.getCurrentUserBranch().getBranchName());
 
             stockTransactionRepository.save(stockTransaction);
 

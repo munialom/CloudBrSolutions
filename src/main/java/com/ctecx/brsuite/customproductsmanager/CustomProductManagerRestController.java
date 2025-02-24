@@ -66,8 +66,9 @@ public class CustomProductManagerRestController {
 
  @GetMapping("/revenue-summary/{date}")
  public ResponseEntity<List<Map<String, Object>>> getRevenueSummaryByDate(
-         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-  List<Map<String, Object>> revenueSummary = customManagerProductService.GetRevenueSummaryByDate(date);
+         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+         @RequestParam(required = false) Integer branchId) { // Add branchId as an optional request parameter
+  List<Map<String, Object>> revenueSummary = customManagerProductService.GetRevenueSummaryByDate(date, branchId);
   return ResponseEntity.ok(revenueSummary);
  }
 
@@ -81,19 +82,30 @@ public class CustomProductManagerRestController {
 
  @GetMapping("/waiters-summary/{date}")
  public ResponseEntity<List<Map<String, Object>>> getWaitersSummaryByDate(
-         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-  List<Map<String, Object>> waitersSummary = customManagerProductService.GetWaitersSummaryByDate(date);
+         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+         @RequestParam(required = false) Integer branchId) { // Add branchId as an optional request parameter
+  List<Map<String, Object>> waitersSummary = customManagerProductService.GetWaitersSummaryByDate(date, branchId);
   return ResponseEntity.ok(waitersSummary);
  }
 
  @GetMapping("/enhanced-sales-report")
  public ResponseEntity<List<Map<String, Object>>> getEnhancedSalesReport(
          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-  List<Map<String, Object>> report = customManagerProductService.GetEnhancedSalesReport(startDate, endDate);
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+         @RequestParam int branchId) { // Add branchId as a request parameter
+  List<Map<String, Object>> report = customManagerProductService.GetEnhancedSalesReport(startDate, endDate, branchId);
+  return ResponseEntity.ok(report);
+ }
+ @GetMapping("/stock-valuation-report")
+ public ResponseEntity<List<Map<String, Object>>> getStockValuationReport(
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+         @RequestParam int branchId) {  // Add branchId as a request parameter
+  List<Map<String, Object>> report = customManagerProductService.GetStockValuationReport(startDate, endDate, branchId);
   return ResponseEntity.ok(report);
  }
 
+/*
  @GetMapping("/stock-valuation-report")
  public ResponseEntity<List<Map<String, Object>>> getStockValuationReport(
          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -101,6 +113,7 @@ public class CustomProductManagerRestController {
   List<Map<String, Object>> report = customManagerProductService.GetStockValuationReport(startDate, endDate);
   return ResponseEntity.ok(report);
  }
+*/
 
 
  @GetMapping("/gas-valuation-report")
@@ -199,23 +212,25 @@ public class CustomProductManagerRestController {
  }
 
 
- @GetMapping("/revenue-movement/{date}")
+ @GetMapping("/revenue-movement/{date}/{branchId}")
  public ResponseEntity<List<Map<String, Object>>> getRevenueMovement(
-         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-  List<Map<String, Object>> revenueMovement = customManagerProductService.GetRevenueMovement(date);
+         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+         @PathVariable int branchId) {
+  List<Map<String, Object>> revenueMovement = customManagerProductService.GetRevenueMovement(date, branchId);
   return ResponseEntity.ok(revenueMovement);
  }
-
-
-
 
  @GetMapping("/monthly-sales-report")
  public ResponseEntity<List<Map<String, Object>>> getMonthlySalesReport(
          @RequestParam int year,
-         @RequestParam int month) {
-  List<Map<String, Object>> report = customManagerProductService.GetMonthlySalesReport(year, month);
+         @RequestParam int month,
+         @RequestParam int branchId) { // Add branchId as a request parameter
+  List<Map<String, Object>> report = customManagerProductService.GetMonthlySalesReport(year, month, branchId);
   return ResponseEntity.ok(report);
  }
+
+
+
 
  @GetMapping("/monthly-sales-report-by-revenue")
  public ResponseEntity<List<Map<String, Object>>> getMonthlySalesReportByRevenue(
@@ -235,11 +250,24 @@ public class CustomProductManagerRestController {
   return ResponseEntity.ok(report);
  }
 
+
  @GetMapping("/monthly-stock-valuation-report")
  public ResponseEntity<List<Map<String, Object>>> getMonthlyStockValuationReport(
          @RequestParam int year,
-         @RequestParam int month) {
-  List<Map<String, Object>> report = customManagerProductService.GetMonthlyStockValuationReport(year, month);
+         @RequestParam int month,
+         @RequestParam int branchId) {
+  List<Map<String, Object>> report = customManagerProductService.GetMonthlyStockValuationReport(year, month, branchId);
   return ResponseEntity.ok(report);
  }
+
+ @GetMapping("/monthly-stock-valuation-report-by-category")
+ public ResponseEntity<List<Map<String, Object>>> getMonthlyStockValuationReportByCategory(
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+         @RequestParam int branchId,
+         @RequestParam int categoryId) {
+  List<Map<String, Object>> report = customManagerProductService.GetStockValuationReportByCategory(startDate, endDate, branchId, categoryId);
+  return ResponseEntity.ok(report);
+ }
+
 }

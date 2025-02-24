@@ -31,7 +31,9 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetOpenOrderNumbers();
     }
 
-
+    public Optional<Map<String, Object>> getSingleProductById(Long productId) {
+        return customProductManagerRepository.getSingleProductById(productId);
+    }
     public List<Map<String, Object>> GetClosedOrderSerialNumbers() {
 
         return customProductManagerRepository.GetClosedOrderSerialNumbers();
@@ -83,22 +85,22 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetOrderTransactionDetails(serialNumber);
     }
 
-    public List<Map<String, Object>> GetRevenueSummaryByDate(LocalDate localDate) {
+    public List<Map<String, Object>> GetRevenueSummaryByDate(LocalDate localDate,int branchId) {
 
-        return customProductManagerRepository.GetRevenueSummaryByDate(localDate);
+        return customProductManagerRepository.GetRevenueSummaryByDate(localDate,branchId);
     }
 
     public List<Map<String, Object>> GetSummaryTransactionReport(LocalDate startDate, LocalDate endDate) {
         return customProductManagerRepository.GetSummaryTransactionReport(startDate, endDate);
     }
 
-    public List<Map<String, Object>> GetWaitersSummaryByDate(LocalDate localDate) {
+    public List<Map<String, Object>> GetWaitersSummaryByDate(LocalDate localDate,int branchId) {
 
-        return customProductManagerRepository.GetWaitersSummaryByDate(localDate);
+        return customProductManagerRepository.GetWaitersSummaryByDate(localDate,branchId);
     }
 
-    public List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate) {
-        return customProductManagerRepository.GetEnhancedSalesReport(startDate,endDate);
+    public List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate,int branchId) {
+        return customProductManagerRepository.GetEnhancedSalesReport(startDate,endDate,branchId);
     }
 
 
@@ -135,9 +137,9 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetStockReportStores(startDate, endDate);
     }
 
-    public List<Map<String, Object>> GetStockValuationReport(LocalDate startDate, LocalDate endDate) {
+    public List<Map<String, Object>> GetStockValuationReport(LocalDate startDate, LocalDate endDate,int branchId) {
 
-        return customProductManagerRepository.GetStockValuationReport(startDate,endDate);
+        return customProductManagerRepository.GetStockValuationReport(startDate,endDate,branchId);
     }
 
 
@@ -180,15 +182,15 @@ public class CustomManagerProductService {
     }
 
 
-    public List<Map<String, Object>> GetRevenueMovement(LocalDate localDate) {
+    public List<Map<String, Object>> GetRevenueMovement(LocalDate localDate,int branchId) {
 
-        return   customProductManagerRepository.GetRevenueMovement(localDate);
+        return   customProductManagerRepository.GetRevenueMovement(localDate,branchId);
     }
 
 
-    public List<Map<String, Object>> GetMonthlySalesReport(int currentYear, int currentMonth) {
+    public List<Map<String, Object>> GetMonthlySalesReport(int currentYear, int currentMonth, int branchId) {
 
-        return customProductManagerRepository.GetMonthlySalesReport(currentYear, currentMonth);
+        return customProductManagerRepository.GetMonthlySalesReport(currentYear, currentMonth,branchId);
     }
 
     public List<Map<String, Object>> GetMonthlySalesReportByRevenue(int currentYear, int currentMonth, String revenueName) {
@@ -202,10 +204,16 @@ public class CustomManagerProductService {
         return customProductManagerRepository.GetYearlySalesByRevenueCode(currentYear, revenueName);
     }
 
-    public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth) {
+    public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth,int branchId) {
 
-        return customProductManagerRepository.GetMonthlyStockValuationReport(currentYear, currentMonth);
+        return customProductManagerRepository.GetMonthlyStockValuationReport(currentYear, currentMonth,branchId);
     }
+
+    public List<Map<String, Object>> GetStockValuationReportByCategory(LocalDate startDate, LocalDate endDate, int branchId, int categoryId) {
+
+        return customProductManagerRepository.GetStockValuationReportByCategory(startDate, endDate,branchId,categoryId);
+    }
+
 
     public Optional<Map<String, Object>> getSingleProductByCode(String productCode) {
         return customProductManagerRepository.getSingleProductByCode(productCode);

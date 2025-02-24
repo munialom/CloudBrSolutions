@@ -1,0 +1,407 @@
+<div th:fragment="payee_form">
+
+
+   <div class="col-lg-12">
+      <div class="card border">
+         <div class="card-header bg-none p-3 h6 m-0">
+            <div class="d-flex align-items-center justify-content-between">
+               <!-- Left side with icon and title -->
+               <div class="d-flex align-items-center">
+                  <i class="fa fa-credit-card fa-lg me-2 text-gray text-opacity-50"></i>
+                  <span class="fw-bold">Revenue Summary</span>
+               </div>
+
+               <!-- Center controls with branch and date inputs -->
+               <div class="d-flex align-items-center gap-3">
+                  <!-- Branch Selector -->
+                  <div id="branch_selector_container" style="min-width: 250px;"></div>
+
+                  <!-- Date Range Inputs -->
+                  <div class="d-flex align-items-center gap-2">
+                     <label for="startDate" class="form-label mb-0">Start Date:</label>
+                     <input type="date" id="startDate" class="form-control form-control-sm" style="width: 140px;" />
+                     <label for="endDate" class="form-label mb-0">End Date:</label>
+                     <input type="date" id="endDate" class="form-control form-control-sm" style="width: 140px;" />
+                     <button type="button" class="btn btn-primary btn-sm" id="loadReportButton">Load</button>
+                  </div>
+
+                  <!-- Print Button -->
+                  <button type="button" class="btn btn-default px-2" title="Print" id="printButton">
+                     <i class="fas fa-print"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+
+         <div class="card-body">
+            <div id="tableWrapper">
+               <!-- Table content will be loaded here -->
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <script>
+      ($ => {
+         // Configuration
+         const config = {
+            revenueSummaryApiUrl: '/api/products-manager/stock-valuation-report', // Replace with your API endpoint
+            branchesApiUrl: '/api/branches/branches-list',
+            recordsPerPage: 10, // Consider using this if you paginate the table
+            exportFileName: 'revenue_summary_report' // Modify as needed
+         };
+
+         // State management
+         const state = {
+            fullData: [],
+            currentPage: 1,
+            totalPages: 0,
+            totalRecords: 0,
+            filteredData: [],
+            processedData: [],
+            visiblePages: 5,
+            dateRange: {
+               startDate: null,
+               endDate: null
+            },
+            selectedBranch: null
+         };
+
+         // Data processing utilities (Keep these if you need them)
+         const dataProcessor = {
+            addAutoIncrement: (data) => {
+               return data.map((item, index) => ({
+                  no: (state.currentPage - 1) * config.recordsPerPage + index + 1,
+                  ...item
+               }));
+            },
+            prepareForExport: (data) => {
+               return data.map(item => {
+                  const { no, ...rest } = item;
+                  return rest;
+               });
+            },
+            formatNumber: (value) => {
+               return typeof value === 'number'
+                       ? new Intl.NumberFormat('en-US').format(value)
+                       : 'N/A';
+            }
+         };
+
+         // Export utilities
+         const exportUtils = {
+            print: () => {
+               window.print();
+            }
+         };
+
+         // Table generation (Adapt this to your data structure)
+         const tableGenerator = {
+            createTable: (data) => {
+               if (!data || data.length === 0) {
+                  return $('<div class="alert alert-info">No data to display.</div>');
+               }
+               const $table = $('<table>').addClass('dynamic-table table table-bordered table-striped table-sm');
+               const $thead = $('<thead>').appendTo($table);
+               const $tbody = $('<tbody>').appendTo($table);
+
+               // Assuming data is an array of objects
+               const headers = Object.keys(data[0]); // Dynamically get headers from the first data item
+               const headerDisplayNames = headers.map(header => header.replace(/_/g, ' ').toUpperCase());
+
+               $('<tr>').append(
+                       headerDisplayNames.map(header => $('<th>').text(header))
+               ).appendTo($thead);
+
+               data.forEach(row => {
+                  const $tr = $('<tr>');
+                  headers.forEach(header => {
+                     let cellValue = row[header];
+                     if (typeof cellValue === 'number') {
+                        cellValue = dataProcessor.formatNumber(cellValue); // Use the formatting utility
+                     }
+                     $('<td>').html(cellValue != null ? cellValue : '').appendTo($tr);
+                  });
+                  $tbody.append($tr);
+               });
+
+               return $table;
+            },
+
+            createExportButtons: () => { // Removed unnecessary buttons
+               return $('<div>').addClass('btn-group mb-3').append([
+                  createButton('Print', 'fas fa-print', 'btn-info', exportUtils.print)
+               ]);
+            }
+         };
+
+         // Branch selector (Reusing and adapting your existing branch selector)
+         const createBranchSelector = () => {
+            const $container = $('#branch_selector_container');
+            $container.empty(); // Ensure container is empty
+
+            const $select = $('<select>')
+                    .attr('id', 'branchSelect')
+                    .addClass('form-control select2-branch')
+                    .attr('style', 'width: 100%');
+
+            $container.append($select); // Append select to container
+
+            $('.select2-branch').select2({
+               placeholder: 'Select a branch',
+               allowClear: true,
+               width: '100%',
+               ajax: {
+                  url: config.branchesApiUrl,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function(params) {
+                     return {
+                        keyword: params.term || ''
+                     };
+                  },
+                  processResults: function(data) {
+                     return {
+                        results: data.map(branch => ({
+                           id: branch.id,
+                           text: `${branch.branchName} (${branch.branchCode})`,
+                           branch: branch
+                        }))
+                     };
+                  },
+                  cache: true
+               },
+               minimumInputLength: 0
+            }).on('change', function() {
+               const selectedBranchId = $(this).val();
+               state.selectedBranch = selectedBranchId;
+            });
+         };
+
+
+         // Pagination component (Adapt if you need pagination based on the API response)
+         const createPagination = () => {
+            // Modify this if you need to paginate based on the data
+            return $('<div>'); // Return an empty div if no pagination is needed
+         };
+
+         // Helper functions (Reusing)
+         const createButton = (text, icon, className, action) => {
+            return $('<button>').addClass(`btn ${className} btn-sm`)
+                    .html(`<i class="${icon} mr-1"></i>${text}`)
+                    .on('click', action);
+         };
+
+         const createPaginationItem = (text, enabled, action, active = false) => {
+            return $('<li>').addClass(`page-item ${!enabled ? 'disabled' : ''} ${active ? 'active' : ''}`)
+                    .append(
+                            $('<a>').addClass('page-link')
+                                    .attr('href', 'javascript:void(0)')
+                                    .text(text)
+                                    .on('click', (e) => {
+                                       e.preventDefault();
+                                       if (enabled) action();
+                                    })
+                    );
+         };
+
+         // Format date for export (if needed)
+         const formatDateForExport = () => {
+            const now = new Date();
+            return now.toISOString().split('T')[0];
+         };
+
+         // Event handlers
+         const changePage = (newPage) => {
+            // Implement this if you need to handle pagination
+         };
+
+         const filterTable = (searchTerm) => {
+            // Implement filtering logic here (if applicable)
+         };
+
+         // Data fetching function
+         const fetchRevenueSummaryData = () => {
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+
+            if (!startDate || !endDate) {
+               $.wnoty({
+                  type: 'warning',
+                  message: 'Please select both start and end dates.',
+                  position: 'top-right'
+               });
+               return;
+            }
+
+            if (!state.selectedBranch) {
+               $.wnoty({
+                  type: 'warning',
+                  message: 'Please select a branch.',
+                  position: 'top-right'
+               });
+               return;
+            }
+
+            $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+
+            const apiUrl = `${config.revenueSummaryApiUrl}?startDate=${startDate}&endDate=${endDate}&branchId=${state.selectedBranch}`;
+
+            return $.ajax({
+               url: apiUrl,
+               method: 'GET',
+               dataType: 'json'
+            }).then(data => {
+               if (data && data.length > 0) {
+                  state.fullData = data; // Store raw data
+                  state.filteredData = data; // For basic display, no filtering yet
+                  state.processedData = data; // Data prepared for the table (no pagination yet)
+                  renderTable();
+               } else {
+                  $('#tableWrapper').html('<div class="alert alert-info">No records found for the selected criteria.</div>');
+               }
+            }).catch(error => {
+               console.error('Error fetching data:', error);
+               $('#tableWrapper').html(
+                       '<div class="alert alert-danger">Error loading data. Please try again later.</div>'
+               );
+               $.wnoty({
+                  type: 'error',
+                  message: 'Failed to load data. Please try again.',
+                  position: 'top-right'
+               });
+            });
+         };
+
+
+         // Render functions (Modified)
+         const renderTable = () => {
+            const $wrapper = $('#tableWrapper');
+            $wrapper.empty();
+
+            $wrapper.append(tableGenerator.createExportButtons());
+            $wrapper.append(tableGenerator.createTable(state.processedData)); // Pass the data
+            $wrapper.append(createPagination()); // Implement pagination if needed
+         };
+
+         // Initialize (Adapted)
+         const initialize = () => {
+            const $target = $('#table_div_content'); // Assuming this is the container
+            $target.empty();
+
+            // Create table wrapper
+            const $tableWrapper = $('#tableWrapper');
+
+            // Initialize date pickers - set default values
+            const today = new Date().toISOString().split('T')[0];
+            $('#startDate').val(today);
+            $('#endDate').val(today);
+            state.dateRange.startDate = today;
+            state.dateRange.endDate = today;
+
+            // Initialize branch selector
+            createBranchSelector();
+
+            // Event listeners
+            $('#loadReportButton').on('click', fetchRevenueSummaryData);
+            $('#printButton').on('click', exportUtils.print);
+         };
+
+         // Apply styles (Reusing your existing styles)
+         const applyStyles = () => {
+            $('head').append(`
+            <style>
+                .dynamic-table {
+                    width: 100%;
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 11px;
+                }
+                .dynamic-table th {
+                    font-weight: 600;
+                    color: #495057;
+                    text-transform: uppercase;
+                    padding: 6px 8px !important;
+                    vertical-align: middle !important;
+                }
+                .dynamic-table td {
+                    padding: 4px 8px !important;
+                    vertical-align: middle !important;
+                    height: 24px !important;
+                    white-space: nowrap;
+                    font-weight: normal;
+                }
+                .pagination-wrapper {
+                    background: #f8f9fa;
+                    padding: 8px;
+                    border-radius: 4px;
+                }
+                .pagination {
+                    margin-bottom: 0;
+                    gap: 2px;
+                }
+                .pagination .page-link {
+                    padding: 4px 8px;
+                    font-size: 11px;
+                    border-radius: 3px;
+                    color: #333;
+                    background-color: #fff;
+                    border: 1px solid #dee2e6;
+                    min-width: 28px;
+                    text-align: center;
+                }
+                .pagination .page-item.active .page-link {
+                    background-color: #007bff;
+                    border-color: #007bff;
+                    color: #fff;
+                    font-weight: 500;
+                }
+                .pagination .page-item.disabled .page-link {
+                    background-color: #e9ecef;
+                    border-color: #dee2e6;
+                    color: #6c757d;
+                }
+                .btn-group {
+                    gap: 5px;
+                }
+                .form-label {
+                    font-size: 12px;
+                    margin-bottom: 0.25rem;
+                }
+                @media print {
+                    .btn-group, #searchInput, .pagination-wrapper {
+                        display: none !important;
+                    }
+                    .dynamic-table {
+                        font-size: 10px;
+                    }
+                }
+            </style>
+        `);
+         };
+
+
+         // Start the application
+         $(() => {
+            applyStyles();
+            initialize();
+         });
+      })(jQuery);
+   </script>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+

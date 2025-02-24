@@ -202,19 +202,7 @@ public class ConfigController {
     }
 
 
-    @GetMapping("statutory")
-    public String statutory(Model model) {
 
-
-        List<AppSetup> appSetups = appSetupService.appSetupList();
-
-        for (AppSetup appSetup : appSetups) {
-
-            model.addAttribute(appSetup.getKey(), appSetup.getValue());
-        }
-
-        return "statutory/statutory-data";
-    }
 
 
 
@@ -251,29 +239,16 @@ public class ConfigController {
     }
 
 
-    @GetMapping("banks-form")
-    public String banksForm(Model model) {
-
-        return "system/banks";
-    }
-
-    @GetMapping("banks-data")
-    public String banksData(Model model) {
-
-        return "system/banks-form";
-    }
 
 
-    @GetMapping("prof-form")
-    public String professionalForm(Model model) {
 
-        return "system/professions";
-    }
 
-    @GetMapping("prof-data")
+
+
+    @GetMapping("branch-master")
     public String professionalData(Model model) {
 
-        return "system/professional-form";
+        return "settings/branches";
     }
 
 

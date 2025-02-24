@@ -27,21 +27,21 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/stock-valuation")
+/*    @GetMapping("/stock-valuation")
     public ResponseEntity<Resource> generateStockValuationReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(defaultValue = "open") String action) throws IOException {
         return servePdf(() -> reportService.generateStockValuationReport(startDate, endDate), action);
-    }
+    }*/
 
-    @GetMapping("/revenue-summary")
+ /*   @GetMapping("/revenue-summary")
     public ResponseEntity<Resource> generateRevenueSummaryReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate localDate,
             @RequestParam(defaultValue = "open") String action) throws IOException {
         return servePdf(() -> reportService.generateRevenueSummaryReport(localDate), action);
     }
-
+*/
     @GetMapping("/summary-transaction")
     public ResponseEntity<Resource> generateSummaryTransactionReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -50,20 +50,20 @@ public class ReportController {
         return servePdf(() -> reportService.generateSummaryTransactionReport(startDate, endDate), action);
     }
 
-    @GetMapping("/waiters-summary")
+/*    @GetMapping("/waiters-summary")
     public ResponseEntity<Resource> generateWaitersSummaryReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate localDate,
             @RequestParam(defaultValue = "open") String action) throws IOException {
         return servePdf(() -> reportService.generateWaitersSummaryReport(localDate), action);
-    }
+    }*/
 
-    @GetMapping("/enhanced-sales")
+/*    @GetMapping("/enhanced-sales")
     public ResponseEntity<Resource> generateEnhancedSalesReport(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(defaultValue = "open") String action) throws IOException {
         return servePdf(() -> reportService.generateEnhancedSalesReport(startDate, endDate), action);
-    }
+    }*/
 
     @GetMapping("/enhanced-sales-waiter")
     public ResponseEntity<Resource> generateEnhancedSalesReportWaiter(

@@ -13,6 +13,7 @@ import com.ctecx.brsuite.taxes.TaxClassService;
 import com.ctecx.brsuite.uom.Uom;
 import com.ctecx.brsuite.uom.UomRepository;
 import com.ctecx.brsuite.uom.UomService;
+import com.ctecx.brsuite.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -60,6 +61,7 @@ public class ProductService {
         product.setProductPrice(productDTO.getProductPrice());
         product.setAlertQuantity(productDTO.getAlertQuantity());
         product.setTaxMode(productDTO.getTaxMode());
+        product.setBranchId(Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId()));
 
         // Check if the generated code is unique
         while (productRepository.existsByProductCode(product.getProductCode())) {

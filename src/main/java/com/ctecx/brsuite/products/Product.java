@@ -73,6 +73,8 @@ public class Product extends AuditableBase {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private ProductDetails productDetails;
 
+    @Column(nullable = true)
+    private Integer branchId;
 
     public String getFullProductInfo() {
         return productDetails != null ? productDetails.getProductSummary() : "Product details not available";

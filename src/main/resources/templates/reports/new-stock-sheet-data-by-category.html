@@ -1,8 +1,3 @@
-
-
-
-
-
 <div id="enhancedSalesReportSystem">
     <div class="row p-3">
         <div class="col-xl-12">
@@ -14,6 +9,7 @@
                     <div class="col-md-12">
                         <div class="card p-4">
                             <div id="branch_selector_container" class="mb-3"></div>
+                            <div id="category_selector_container" class="mb-3"></div>
                             <div id="table_div_content"></div>
                         </div>
                     </div>
@@ -28,7 +24,9 @@
         // Configuration
         const config = {
             stockValuationApiUrl: '/api/products-manager/stock-valuation-report',
+            monthlyStockValuationApiUrl: '/api/products-manager/monthly-stock-valuation-report-by-category',
             branchesApiUrl: '/api/branches/branches-list',
+            categoriesApiUrl: '/api/categories',
             recordsPerPage: 10,
             exportFileName: 'stock_valuation_report'
         };
@@ -46,7 +44,8 @@
                 startDate: null,
                 endDate: null
             },
-            selectedBranch: null
+            selectedBranch: null,
+            selectedCategory: null
         };
 
         // Data processing utilities
@@ -206,6 +205,64 @@
             });
         };
 
+        // Category selector
+        const createCategorySelector = () => {
+            const $container = $('#category_selector_container');
+            $container.empty();
+
+            const $formGroup = $('<div>').addClass('form-group row');
+            const $label = $('<label>').attr('for', 'categorySelect').text('Select Category:').addClass('col-sm-2 col-form-label');
+
+            const $select = $('<select>')
+                .attr('id', 'categorySelect')
+                .addClass('form-control select2-category col-sm-3')
+                .attr('style', 'width: 100%');
+
+            $formGroup.append([$label, $select]);
+            $container.append($formGroup);
+
+            // Initialize Select2
+            $('.select2-category').select2({
+                placeholder: 'Select a category',
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: config.categoriesApiUrl,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            keyword: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.map(category => ({
+                                id: category.id,
+                                text: `${category.name}${category.onWaiterMenu ? ' (On Waiter Menu)' : ''}`,
+                                category: category
+                            }))
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0
+            }).on('change', function() {
+                const selectedCategoryId = $(this).val();
+                state.selectedCategory = selectedCategoryId;
+
+                if (selectedCategoryId) {
+                    fetchStockValuationData();
+                } else {
+                    // Clear the table when no category is selected
+                    state.fullData = [];
+                    state.filteredData = [];
+                    state.processedData = [];
+                    renderTable();
+                }
+            });
+        };
+
         // Pagination component
         const createPagination = () => {
             const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
@@ -311,10 +368,19 @@
                 return;
             }
 
+            if (!state.selectedCategory) {
+                $.wnoty({
+                    type: 'warning',
+                    message: 'Please select a category.',
+                    position: 'top-right'
+                });
+                return;
+            }
+
             $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
 
             return $.ajax({
-                url: `${config.stockValuationApiUrl}?startDate=${startDate}&endDate=${endDate}&branchId=${state.selectedBranch}`,
+                url: `${config.monthlyStockValuationApiUrl}?startDate=${startDate}&endDate=${endDate}&branchId=${state.selectedBranch}&categoryId=${state.selectedCategory}`,
                 method: 'GET',
                 dataType: 'json'
             }).then(data => {
@@ -367,6 +433,9 @@
 
             // Initialize branch selector
             createBranchSelector();
+
+            // Initialize category selector
+            createCategorySelector();
 
             // Initial data load
             fetchStockValuationData();

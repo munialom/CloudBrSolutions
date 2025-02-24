@@ -1,6 +1,5 @@
 package com.ctecx.brsuite.users;
 
-
 import com.ctecx.brsuite.security.PmsUserDetails;
 import com.ctecx.brsuite.systemsetup.AppSetupService;
 import com.ctecx.brsuite.systemsetup.EmailSetting;
@@ -21,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Controller
@@ -29,6 +30,68 @@ import java.net.URI;
 public class UserController {
     private  final UserService userService;
     private  final AppSetupService appSetupService;
+
+
+
+
+    @PostMapping("/forgot-password")
+    @ResponseBody
+    public Map<String, Object> handleForgotPassword(
+            @RequestParam("email") String email,
+            HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String newPassword = userService.generateAndUpdatePassword(email);
+            sendPasswordResetEmail(request, email, newPassword);
+
+            response.put("success", true);
+            response.put("message", "Password has been reset. Please check your email.");
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to reset password. Please try again.");
+        }
+
+        return response;
+    }
+
+    @Async
+    private void sendPasswordResetEmail(HttpServletRequest request, String email, String newPassword)
+            throws MessagingException, UnsupportedEncodingException {
+        // Get email settings
+        EmailSetting emailSettings = appSetupService.getEmailSettings();
+        JavaMailSenderImpl mailSender = Utility.prepareMailSender(emailSettings);
+
+        // Get user details
+        User user = userService.getByEmail(email);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(emailSettings.getSenderEmail(), emailSettings.getSenderName());
+        helper.setTo(email);
+        helper.setSubject("Your Password Has Been Reset");
+
+        String loginURL = Utility.getSiteUrl(request) + "/login";
+
+        // Create email content
+        String content = """
+            <p>Dear [[name]],</p>
+            <p>Your password has been reset as requested.</p>
+            <p>Your new password is: <strong>[[password]]</strong></p>
+            <p>Please login using this password and change it immediately.</p>
+            <p>Click here to login: <a href="[[URL]]">Login</a></p>
+            <p>Thank you,<br>Your Application Team</p>
+            """;
+
+        content = content.replace("[[name]]", user.getFirstName());
+        content = content.replace("[[password]]", newPassword);
+        content = content.replace("[[URL]]", loginURL);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
+    }
 
     @GetMapping
     public String registerUser(Model model){
@@ -40,6 +103,15 @@ public class UserController {
 
 
         return "configs/addUser";
+    }
+
+
+    @GetMapping("reset-password")
+    public String reSetPassWord(Model model){
+
+
+
+        return "users/passresetdata";
     }
 
 
@@ -75,22 +147,34 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/members/data-view")).build();
         }
     }
+
+ /*   @PostMapping
+    public String saveUser(User user,	HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+      String createdUserPass =userService.createUser(user);
+
+        sendVerificationEmail(request, user,createdUserPass);
+
+        return "redirect:/";
+    }*/
+
+    @PostMapping
+    @ResponseBody
+    public Map<String, Object> saveUser(User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        String createdUserPass = userService.createUser(user);
+        sendVerificationEmail(request, user, createdUserPass);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "User created successfully");
+        return response;
+    }
+
     @GetMapping("/verify")
     public String verifyAccount(String code, Model model) {
         boolean verified = userService.verify(code);
 
         return "users/"+(verified ? "verify_sucess": "verify_fail");
     }
-
-    @PostMapping
-    public String saveUser(User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
-
-            String createdUserPass = userService.createUser(user);
-            sendVerificationEmail(request, user, createdUserPass);
-
-        return "redirect:/";
-    }
-
 
 
 

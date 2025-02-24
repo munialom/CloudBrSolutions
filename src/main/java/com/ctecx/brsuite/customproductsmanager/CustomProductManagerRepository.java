@@ -10,7 +10,7 @@ public interface CustomProductManagerRepository {
 
     List<Map<String, Object>> GetOpenOrderNumbers();
     List<Map<String, Object>>GetClosedOrderSerialNumbers();
-
+    Optional<Map<String, Object>> getSingleProductById(Long productId);
     List<Map<String, Object>> getAllCategories();
 
 
@@ -40,14 +40,14 @@ public interface CustomProductManagerRepository {
 
     List<Map<String, Object>> GetOrderTransactionDetails(String serialNumber);
 
-    List<Map<String, Object>> GetRevenueSummaryByDate(LocalDate localDate);
+    List<Map<String, Object>> GetRevenueSummaryByDate(LocalDate localDate,int branchId);
 
     List<Map<String, Object>> GetSummaryTransactionReport(LocalDate startDate, LocalDate endDate);
 
-    List<Map<String, Object>> GetWaitersSummaryByDate(LocalDate localDate);
+    List<Map<String, Object>> GetWaitersSummaryByDate(LocalDate localDate,int branchId);
 
-    List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate);
-    List<Map<String, Object>>GetStockValuationReport(LocalDate startDate, LocalDate endDate);
+    List<Map<String, Object>> GetEnhancedSalesReport(LocalDate startDate, LocalDate endDate, int branchId);
+    List<Map<String, Object>>GetStockValuationReport(LocalDate startDate, LocalDate endDate,int branchId);
 
 
     List<Map<String, Object>>GasValuation(LocalDate startDate, LocalDate endDate);
@@ -83,15 +83,16 @@ public interface CustomProductManagerRepository {
 
     String generateNewOrderNumber();
 
-    List<Map<String, Object>> GetRevenueMovement(LocalDate localDate);
+    List<Map<String, Object>> GetRevenueMovement(LocalDate localDate,int branchId);
 
 
-    List<Map<String, Object>>GetMonthlySalesReport(int currentYear, int currentMonth);
+    List<Map<String, Object>>GetMonthlySalesReport(int currentYear, int currentMonth,int branchId);
 
     List<Map<String, Object>>GetMonthlySalesReportByRevenue(int currentYear, int currentMonth,String revenueName);
     List<Map<String, Object>>GetYearlySalesByRevenueCode(int currentYear,String revenueName);
 
-    List<Map<String, Object>>GetMonthlyStockValuationReport(int currentYear, int currentMonth);
+    List<Map<String, Object>>GetMonthlyStockValuationReport(int currentYear, int currentMonth,int branchId);
+    List<Map<String, Object>> GetStockValuationReportByCategory(LocalDate startDate, LocalDate endDate, int branchId, int categoryId);
 
     Optional<Map<String, Object>> getSingleProductByCode(String productCode);
 }

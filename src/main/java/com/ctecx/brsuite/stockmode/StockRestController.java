@@ -1,5 +1,6 @@
 package com.ctecx.brsuite.stockmode;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +85,24 @@ public class StockRestController {
     }
 
 
+    @PostMapping("/sales")
+    public ResponseEntity<Map<String, String>> createSales(
+            @RequestBody SalesStockDTO salesStockDTO,
+            HttpServletRequest request) {
+
+        // Get the client's IP address
+
+
+
+        // Use the client's IP address in the service call
+        String transactionId = salesService.createSalesWaiters(salesStockDTO);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Sales Transaction Saved successfully");
+        response.put("transactionId", transactionId);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
 
 

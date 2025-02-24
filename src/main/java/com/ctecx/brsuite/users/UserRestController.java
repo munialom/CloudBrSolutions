@@ -32,7 +32,7 @@ public class UserRestController {
         }
     }
     @PostMapping("/updateUser")
-    public ResponseEntity<?> updateUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateUser(@RequestBody UserData userDTO) {
         User updatedUser = userService.updateAccount(userDTO);
 
         if(updatedUser != null) {

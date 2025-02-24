@@ -6,15 +6,14 @@
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
 	<meta content="" name="description" />
 	<meta content="" name="author" />
-	
+
 	<!-- ================== BEGIN core-css ================== -->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
 	<link th:href="@{/assets/css/vendor.min.css}" rel="stylesheet" />
 	<link th:href="@{/assets/css/default/app.min.css}" rel="stylesheet" />
-
 	<!-- ================== END core-css ================== -->
-	<style>
 
+	<style>
 		.login-container {
 			display: flex;
 			justify-content: center;
@@ -81,139 +80,260 @@
 			background-color: #00a3bf;
 			color: #ffffff;
 		}
+		#passwordResetForm {
+			display: none;
+			margin-top: 15px;
+			padding-top: 15px;
+			border-top: 1px solid #e9ecef;
+		}
+		.reset-btn {
+			background-color: #00a3bf;
+			color: white;
+			width: 100%;
+			padding: 10px;
+			height: 45px;
+			transition: all 0.3s ease;
+		}
+		.reset-btn:hover {
+			background-color: #008ca3;
+			color: white;
+		}
+		.forgot-password-link {
+			color: #00a3bf;
+			text-decoration: none;
+			font-size: 14px;
+			transition: color 0.3s ease;
+		}
+		.forgot-password-link:hover {
+			color: #008ca3;
+			text-decoration: underline;
+		}
+		.error-message {
+			color: #dc3545;
+			margin-bottom: 15px;
+			padding: 10px;
+			background-color: #f8d7da;
+			border-radius: 4px;
+		}
 	</style>
-
-
-
-
 </head>
+
 <body class='pace-top'>
-	<!-- BEGIN #loader -->
-	<div id="loader" class="app-loader">
-		<span class="spinner"></span>
-	</div>
-	<!-- END #loader -->
+<!-- BEGIN #loader -->
+<div id="loader" class="app-loader">
+	<span class="spinner"></span>
+</div>
+<!-- END #loader -->
 
-	<!-- BEGIN #app -->
-	<div id="app" class="app">
-		<!-- BEGIN login -->
-		<div class="login login-with-news-feed">
-			<!-- BEGIN news-feed -->
-			<div class="news-feed">
-				<div class="news-image" style="background-image: url(../assets/img/login-bg/login-bg-11.jpg); background-size: cover;"></div>
-			</div>
-
-			<!-- END news-feed -->
-
-
-
-
-
-
-
-			<!-- BEGIN login-container -->
-			<div class="login-container">
-				<!-- BEGIN login-header -->
-				<div class="login-header">
-					<div class="brand">
-						<div class="d-flex align-items-center">
-							<span class="logo"></span>
-
-							<b>BRS</b> By Ctecx
-						</div>
-						<small>Creative | Innovation | Connected</small>
-					</div>
-					<div class="icon">
-						<i class="fa fa-boxes"></i>
-					</div>
-				</div>
-				<!-- END login-header -->
-
-				<div class="login-content">
-
-					<div id="regularLoginForm">
-						<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
-						<form th:action="@{/login}" method="POST" class="fs-13px">
-							<div class="mb-3">
-								<label for="emailAddress" class="form-label">Email Address</label>
-								<input type="email" name="email" class="form-control" placeholder="admin@system.com" id="emailAddress" />
-							</div>
-							<div class="mb-3">
-								<label for="password" class="form-label">Password</label>
-								<input type="password" name="password" class="form-control" placeholder="••••" id="password" />
-							</div>
-							<div class="mb-3 form-check">
-								<input class="form-check-input" type="checkbox" value="1" id="rememberMe" />
-								<label class="form-check-label" for="rememberMe">Remember Me</label>
-							</div>
-							<div class="mb-3">
-								<button type="submit" class="btn btn-primary w-100">Sign me in</button>
-							</div>
-							<div class="mb-3">
-								<button type="button" id="switchToWaiterLogin" class="btn btn-secondary w-100">Switch to Touch Screen</button>
-							</div>
-						</form>
-					</div>
-
-					<div id="waiterLoginForm" style="display: none;">
-						<h2 class="text-center mb-4">Waiter Login</h2>
-						<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
-						<form th:action="@{/waiter/login}" method="post" id="waiterLoginFormSubmit">
-							<div id="pinpad">
-								<input type="password" id="pin" name="pin" class="form-control mb-3" readonly>
-								<div class="pin-buttons">
-									<button type="button" class="btn btn-light pinButton calc">1</button>
-									<button type="button" class="btn btn-light pinButton calc">2</button>
-									<button type="button" class="btn btn-light pinButton calc">3</button>
-									<button type="button" class="btn btn-light pinButton calc">4</button>
-									<button type="button" class="btn btn-light pinButton calc">5</button>
-									<button type="button" class="btn btn-light pinButton calc">6</button>
-									<button type="button" class="btn btn-light pinButton calc">7</button>
-									<button type="button" class="btn btn-light pinButton calc">8</button>
-									<button type="button" class="btn btn-light pinButton calc">9</button>
-									<button type="button" class="btn btn-danger pinButton clear">Clear</button>
-									<button type="button" class="btn btn-light pinButton calc">0</button>
-									<button type="button" class="btn btn-success pinButton enter" id="waiterLoginSubmit">Enter</button>
-								</div>
-							</div>
-						</form>
-						<div class="mt-3">
-							<button id="switchToRegularLogin" class="btn btn-secondary w-100">Switch to Regular Login</button>
-						</div>
-					</div>
-
-					<div class="text-center mt-3">
-						<small class="text-muted">&copy; Ctecx Technologies All Rights Reserved <span id="currentYear"></span></small>
-					</div>
-				</div>
-
-
-			</div>
-			<!-- END login-container -->
-
-
+<!-- BEGIN #app -->
+<div id="app" class="app">
+	<!-- BEGIN login -->
+	<div class="login login-with-news-feed">
+		<!-- BEGIN news-feed -->
+		<div class="news-feed">
+			<div class="news-image" style="background-image: url(../assets/img/login-bg/login-bg-11.jpg); background-size: cover;"></div>
 		</div>
-		<!-- END login -->
+		<!-- END news-feed -->
 
-		<!-- BEGIN scroll-top-btn -->
-		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top" data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
-		<!-- END scroll-top-btn -->
+		<!-- BEGIN login-container -->
+		<div class="login-container">
+			<!-- BEGIN login-header -->
+			<div class="login-header">
+				<div class="brand">
+					<div class="d-flex align-items-center">
+						<span class="logo"></span>
+						<b>BRS</b> By Ctecx
+					</div>
+					<small>Creative | Innovation | Connected</small>
+				</div>
+				<div class="icon">
+					<i class="fa fa-boxes"></i>
+				</div>
+			</div>
+			<!-- END login-header -->
+
+			<div class="login-content">
+				<!-- Regular Login Form -->
+				<div id="regularLoginForm">
+					<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
+					<form th:action="@{/login}" method="POST" class="fs-13px">
+						<div class="mb-3">
+							<label for="emailAddress" class="form-label">Email Address</label>
+							<input type="email" name="email" class="form-control" placeholder="admin@system.com" id="emailAddress" />
+						</div>
+						<div class="mb-3">
+							<label for="password" class="form-label">Password</label>
+							<input type="password" name="password" class="form-control" placeholder="••••" id="password" />
+						</div>
+						<div class="mb-3">
+							<div class="d-flex justify-content-between align-items-center">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="1" id="rememberMe" />
+									<label class="form-check-label" for="rememberMe">Remember Me</label>
+								</div>
+								<a href="#" id="forgotPasswordLink" class="forgot-password-link">Forgot Password?</a>
+							</div>
+						</div>
+						<div class="mb-3">
+							<button type="submit" class="btn btn-primary w-100">Sign me in</button>
+						</div>
+						<div class="mb-3">
+							<button type="button" id="switchToWaiterLogin" class="btn btn-secondary w-100">Switch to Touch Screen</button>
+						</div>
+					</form>
+
+					<!-- Password Reset Form -->
+					<form id="passwordResetForm">
+						<div class="mb-3">
+							<label for="email" class="form-label">Email Address</label>
+							<input type="email" class="form-control" id="email" name="email"
+								   placeholder="Enter your email address" required>
+						</div>
+						<div class="mb-3">
+							<button type="submit" class="btn reset-btn" id="resetBtn">
+								<i class="fa fa-paper-plane"></i> Reset Password
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Waiter Login Form -->
+				<div id="waiterLoginForm" style="display: none;">
+					<h2 class="text-center mb-4">Waiter Login</h2>
+					<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
+					<form th:action="@{/waiter/login}" method="post" id="waiterLoginFormSubmit">
+						<div id="pinpad">
+							<input type="password" id="pin" name="pin" class="form-control mb-3" readonly>
+							<div class="pin-buttons">
+								<button type="button" class="btn btn-light pinButton calc">1</button>
+								<button type="button" class="btn btn-light pinButton calc">2</button>
+								<button type="button" class="btn btn-light pinButton calc">3</button>
+								<button type="button" class="btn btn-light pinButton calc">4</button>
+								<button type="button" class="btn btn-light pinButton calc">5</button>
+								<button type="button" class="btn btn-light pinButton calc">6</button>
+								<button type="button" class="btn btn-light pinButton calc">7</button>
+								<button type="button" class="btn btn-light pinButton calc">8</button>
+								<button type="button" class="btn btn-light pinButton calc">9</button>
+								<button type="button" class="btn btn-danger pinButton clear">Clear</button>
+								<button type="button" class="btn btn-light pinButton calc">0</button>
+								<button type="button" class="btn btn-success pinButton enter" id="waiterLoginSubmit">Enter</button>
+							</div>
+						</div>
+					</form>
+					<div class="mt-3">
+						<button id="switchToRegularLogin" class="btn btn-secondary w-100">Switch to Regular Login</button>
+					</div>
+				</div>
+
+				<div class="text-center mt-3">
+					<small class="text-muted">&copy; Ctecx Technologies All Rights Reserved <span id="currentYear"></span></small>
+				</div>
+			</div>
+		</div>
+		<!-- END login-container -->
 	</div>
-	<!-- END #app -->
+	<!-- END login -->
 
-	<!-- ================== BEGIN core-js ================== -->
-	<script th:src="@{/assets/js/vendor.min.js}"></script>
-	<script th:src="@{/assets/js/app.min.js}"></script>
-	<script th:src="@{/assets/keypad/js/app.js}"></script>
-	<!-- ================== END core-js ================== -->
-	<script>
-		$(document).ready(function() {
-			$('#currentYear').text(new Date().getFullYear());
-		});
-	</script>
+	<!-- BEGIN scroll-top-btn -->
+	<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top" data-toggle="scroll-to-top">
+		<i class="fa fa-angle-up"></i>
+	</a>
+	<!-- END scroll-top-btn -->
+</div>
+<!-- END #app -->
+
+<!-- ================== BEGIN core-js ================== -->
+<script th:src="@{/assets/js/vendor.min.js}"></script>
+<script th:src="@{/assets/js/app.min.js}"></script>
+<script th:src="@{/assets/keypad/js/app.js}"></script>
+<!-- ================== END core-js ================== -->
 
 <script>
+	class PasswordResetHandler {
+		constructor() {
+			this.form = $('#passwordResetForm');
+			this.resetBtn = $('#resetBtn');
+			this.forgotPasswordLink = $('#forgotPasswordLink');
+			this.initialize();
+		}
+
+		initialize() {
+			this.form.on('submit', (e) => this.handleSubmit(e));
+			this.forgotPasswordLink.on('click', (e) => {
+				e.preventDefault();
+				this.form.slideToggle(300);
+			});
+		}
+
+		toggleLoadingState(button, isLoading) {
+			const $button = $(button);
+			const $icon = $button.find('i');
+			$icon
+					.toggleClass('fa-paper-plane', !isLoading)
+					.toggleClass('fa-spinner fa-spin', isLoading);
+			$button.prop('disabled', isLoading);
+		}
+
+		showNotification(type, message) {
+			$.wnoty({
+				type,
+				message,
+				position: 'top-right'
+			});
+		}
+
+		validateEmail(email) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			return emailRegex.test(email);
+		}
+
+		async handleSubmit(e) {
+			e.preventDefault();
+			const email = $('#email').val().trim();
+
+			if (!this.validateEmail(email)) {
+				this.showNotification('error', 'Please enter a valid email address');
+				return;
+			}
+
+			this.toggleLoadingState(this.resetBtn, true);
+
+			try {
+				const response = await fetch('/users/forgot-password', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+					body: `email=${encodeURIComponent(email)}`
+				});
+
+				const data = await response.json();
+
+				if (data.success) {
+					this.showNotification('success', data.message);
+					this.form[0].reset();
+					this.form.slideUp(300);
+				} else {
+					this.showNotification('error', data.message || 'Failed to reset password');
+				}
+			} catch (error) {
+				console.error('Error:', error);
+				this.showNotification('error', 'An error occurred. Please try again.');
+			} finally {
+				this.toggleLoadingState(this.resetBtn, false);
+			}
+		}
+	}
+
+	// Initialize handlers when document is ready
 	$(document).ready(function() {
+		// Initialize Password Reset Handler
+		new PasswordResetHandler();
+
+		// Set current year
+		$('#currentYear').text(new Date().getFullYear());
+
+		// Waiter Login Form Handling
 		$('#switchToWaiterLogin').click(function() {
 			$('#regularLoginForm').hide();
 			$('#waiterLoginForm').show();
@@ -238,22 +358,17 @@
 			e.preventDefault();
 			let pinInput = $('#pin');
 			if (pinInput.val().length > 0) {
-				console.log('Submitting waiter login form');
 				$('#waiterLoginFormSubmit').submit();
 			} else {
 				alert('Please enter a PIN');
 			}
 		});
+	});
 
-		// Set current year
-		$('#currentYear').text(new Date().getFullYear());
+	// Hide loader when page is fully loaded
+	$(window).on('load', function() {
+		$('#loader').fadeOut('slow');
 	});
 </script>
-
-
-
-
-
-
 </body>
 </html>
