@@ -1,22 +1,23 @@
 <div th:fragment="payee_form">
 
 
+<!--
    <div class="col-lg-12">
       <div class="card border">
          <div class="card-header bg-none p-3 h6 m-0">
             <div class="d-flex align-items-center justify-content-between">
-               <!-- Left side with icon and title -->
+               &lt;!&ndash; Left side with icon and title &ndash;&gt;
                <div class="d-flex align-items-center">
                   <i class="fa fa-credit-card fa-lg me-2 text-gray text-opacity-50"></i>
                   <span class="fw-bold">Revenue Summary</span>
                </div>
 
-               <!-- Center controls with branch and date inputs -->
+               &lt;!&ndash; Center controls with branch and date inputs &ndash;&gt;
                <div class="d-flex align-items-center gap-3">
-                  <!-- Branch Selector -->
+                  &lt;!&ndash; Branch Selector &ndash;&gt;
                   <div id="branch_selector_container" style="min-width: 250px;"></div>
 
-                  <!-- Date Range Inputs -->
+                  &lt;!&ndash; Date Range Inputs &ndash;&gt;
                   <div class="d-flex align-items-center gap-2">
                      <label for="startDate" class="form-label mb-0">Start Date:</label>
                      <input type="date" id="startDate" class="form-control form-control-sm" style="width: 140px;" />
@@ -25,7 +26,7 @@
                      <button type="button" class="btn btn-primary btn-sm" id="loadReportButton">Load</button>
                   </div>
 
-                  <!-- Print Button -->
+                  &lt;!&ndash; Print Button &ndash;&gt;
                   <button type="button" class="btn btn-default px-2" title="Print" id="printButton">
                      <i class="fas fa-print"></i>
                   </button>
@@ -35,7 +36,7 @@
 
          <div class="card-body">
             <div id="tableWrapper">
-               <!-- Table content will be loaded here -->
+               &lt;!&ndash; Table content will be loaded here &ndash;&gt;
             </div>
          </div>
       </div>
@@ -387,9 +388,467 @@
          });
       })(jQuery);
    </script>
+-->
 
 
+   <div class="col-lg-12">
+      <div class="card border">
+         <div class="card-header bg-none p-3 h6 m-0">
+            <div class="d-flex align-items-center justify-content-between">
+               <!-- Left side with icon and title -->
+               <div class="d-flex align-items-center">
+                  <i class="fa fa-credit-card fa-lg me-2 text-gray text-opacity-50"></i>
+                  <span class="fw-bold">Revenue Summary</span>
+               </div>
 
+               <!-- Center controls with branch and date inputs -->
+               <div class="d-flex align-items-center gap-3">
+                  <!-- Branch Selector -->
+                  <div id="branch_selector_container" style="min-width: 250px;"></div>
+
+                  <!-- Date Range Inputs -->
+                  <div class="d-flex align-items-center gap-2">
+                     <label for="startDate" class="form-label mb-0">Start Date:</label>
+                     <input type="date" id="startDate" class="form-control form-control-sm" style="width: 140px;" />
+                     <label for="endDate" class="form-label mb-0">End Date:</label>
+                     <input type="date" id="endDate" class="form-control form-control-sm" style="width: 140px;" />
+                     <button type="button" class="btn btn-primary btn-sm" id="loadReportButton">Load</button>
+                  </div>
+
+                  <!-- Print Button -->
+                  <button type="button" class="btn btn-default px-2" title="Print" id="printButton">
+                     <i class="fas fa-print"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+
+         <div class="card-body p-0">
+            <div class="table-container">
+               <div id="tableWrapper">
+                  <!-- Table content will be loaded here -->
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <script>
+      ($ => {
+         // Configuration
+         const config = {
+            revenueSummaryApiUrl: '/api/products-manager/stock-valuation-report',
+            branchesApiUrl: '/api/branches/branches-list',
+            recordsPerPage: 10,
+            exportFileName: 'revenue_summary_report'
+         };
+
+         // State management
+         const state = {
+            fullData: [],
+            currentPage: 1,
+            totalPages: 0,
+            totalRecords: 0,
+            filteredData: [],
+            processedData: [],
+            visiblePages: 5,
+            dateRange: {
+               startDate: null,
+               endDate: null
+            },
+            selectedBranch: null
+         };
+
+         // Data processing utilities
+         const dataProcessor = {
+            addAutoIncrement: (data) => {
+               return data.map((item, index) => ({
+                  no: (state.currentPage - 1) * config.recordsPerPage + index + 1,
+                  ...item
+               }));
+            },
+            prepareForExport: (data) => {
+               return data.map(item => {
+                  const { no, ...rest } = item;
+                  return rest;
+               });
+            },
+            formatNumber: (value) => {
+               return typeof value === 'number'
+                       ? new Intl.NumberFormat('en-US').format(value)
+                       : 'N/A';
+            }
+         };
+
+         // Export utilities
+         const exportUtils = {
+            print: () => {
+               window.print();
+            }
+         };
+
+         // Table generation
+         const tableGenerator = {
+            createTable: (data) => {
+               if (!data || data.length === 0) {
+                  return $('<div class="alert alert-info">No data to display.</div>');
+               }
+
+               const $tableContainer = $('<div>').addClass('table-inner-container');
+               const $table = $('<table>').addClass('dynamic-table table table-bordered table-striped table-sm');
+               const $thead = $('<thead>').addClass('sticky-header');
+               const $tbody = $('<tbody>');
+               const $tfoot = $('<tfoot>').addClass('sticky-footer');
+
+               // Headers
+               const headers = Object.keys(data[0]);
+               const headerDisplayNames = headers.map(header => header.replace(/_/g, ' ').toUpperCase());
+
+               const $headerRow = $('<tr>').append(
+                       headerDisplayNames.map(header => $('<th>').text(header))
+               );
+               $thead.append($headerRow);
+
+               // Body
+               data.forEach(row => {
+                  const $tr = $('<tr>');
+                  headers.forEach(header => {
+                     let cellValue = row[header];
+                     if (typeof cellValue === 'number') {
+                        cellValue = dataProcessor.formatNumber(cellValue);
+                     }
+                     $('<td>').html(cellValue != null ? cellValue : '').appendTo($tr);
+                  });
+                  $tbody.append($tr);
+               });
+
+               // Footer
+               const $footerRow = $headerRow.clone();
+               $tfoot.append($footerRow);
+
+               $table.append($thead, $tbody, $tfoot);
+               $tableContainer.append($table);
+               return $tableContainer;
+            },
+
+            createExportButtons: () => {
+               return $('<div>').addClass('btn-group mb-3').append([
+                  createButton('Print', 'fas fa-print', 'btn-info', exportUtils.print)
+               ]);
+            }
+         };
+
+         // Branch selector
+         const createBranchSelector = () => {
+            const $container = $('#branch_selector_container');
+            $container.empty();
+
+            const $select = $('<select>')
+                    .attr('id', 'branchSelect')
+                    .addClass('form-control select2-branch')
+                    .attr('style', 'width: 100%');
+
+            $container.append($select);
+
+            $('.select2-branch').select2({
+               placeholder: 'Select a branch',
+               allowClear: true,
+               width: '100%',
+               ajax: {
+                  url: config.branchesApiUrl,
+                  dataType: 'json',
+                  delay: 250,
+                  data: function(params) {
+                     return {
+                        keyword: params.term || ''
+                     };
+                  },
+                  processResults: function(data) {
+                     return {
+                        results: data.map(branch => ({
+                           id: branch.id,
+                           text: `${branch.branchName} (${branch.branchCode})`,
+                           branch: branch
+                        }))
+                     };
+                  },
+                  cache: true
+               },
+               minimumInputLength: 0
+            }).on('change', function() {
+               const selectedBranchId = $(this).val();
+               state.selectedBranch = selectedBranchId;
+            });
+         };
+
+         // Pagination component
+         const createPagination = () => {
+            return $('<div>');
+         };
+
+         // Helper functions
+         const createButton = (text, icon, className, action) => {
+            return $('<button>').addClass(`btn ${className} btn-sm`)
+                    .html(`<i class="${icon} mr-1"></i>${text}`)
+                    .on('click', action);
+         };
+
+         const createPaginationItem = (text, enabled, action, active = false) => {
+            return $('<li>').addClass(`page-item ${!enabled ? 'disabled' : ''} ${active ? 'active' : ''}`)
+                    .append(
+                            $('<a>').addClass('page-link')
+                                    .attr('href', 'javascript:void(0)')
+                                    .text(text)
+                                    .on('click', (e) => {
+                                       e.preventDefault();
+                                       if (enabled) action();
+                                    })
+                    );
+         };
+
+         const formatDateForExport = () => {
+            const now = new Date();
+            return now.toISOString().split('T')[0];
+         };
+
+         // Event handlers
+         const changePage = (newPage) => {};
+
+         const filterTable = (searchTerm) => {};
+
+         // Data fetching function
+         const fetchRevenueSummaryData = () => {
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+
+            if (!startDate || !endDate) {
+               $.wnoty({
+                  type: 'warning',
+                  message: 'Please select both start and end dates.',
+                  position: 'top-right'
+               });
+               return;
+            }
+
+            if (!state.selectedBranch) {
+               $.wnoty({
+                  type: 'warning',
+                  message: 'Please select a branch.',
+                  position: 'top-right'
+               });
+               return;
+            }
+
+            $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+
+            const apiUrl = `${config.revenueSummaryApiUrl}?startDate=${startDate}&endDate=${endDate}&branchId=${state.selectedBranch}`;
+
+            return $.ajax({
+               url: apiUrl,
+               method: 'GET',
+               dataType: 'json'
+            }).then(data => {
+               if (data && data.length > 0) {
+                  state.fullData = data;
+                  state.filteredData = data;
+                  state.processedData = data;
+                  renderTable();
+               } else {
+                  $('#tableWrapper').html('<div class="alert alert-info">No records found for the selected criteria.</div>');
+               }
+            }).catch(error => {
+               console.error('Error fetching data:', error);
+               $('#tableWrapper').html(
+                       '<div class="alert alert-danger">Error loading data. Please try again later.</div>'
+               );
+               $.wnoty({
+                  type: 'error',
+                  message: 'Failed to load data. Please try again.',
+                  position: 'top-right'
+               });
+            });
+         };
+
+         // Render functions
+         const renderTable = () => {
+            const $wrapper = $('#tableWrapper');
+            $wrapper.empty();
+
+            $wrapper.append(tableGenerator.createExportButtons());
+            $wrapper.append(tableGenerator.createTable(state.processedData));
+            $wrapper.append(createPagination());
+         };
+
+         // Initialize
+         const initialize = () => {
+            const $target = $('#table_div_content');
+            $target.empty();
+
+            const $tableWrapper = $('#tableWrapper');
+
+            const today = new Date().toISOString().split('T')[0];
+            $('#startDate').val(today);
+            $('#endDate').val(today);
+            state.dateRange.startDate = today;
+            state.dateRange.endDate = today;
+
+            createBranchSelector();
+
+            $('#loadReportButton').on('click', fetchRevenueSummaryData);
+            $('#printButton').on('click', exportUtils.print);
+         };
+
+         // Apply styles
+         const applyStyles = () => {
+            $('head').append(`
+                <style>
+                    .table-container {
+                        position: relative;
+                        max-height: 500px;
+                        overflow-y: auto;
+                        overflow-x: auto;
+                        width: 100%;
+                    }
+
+                    .table-inner-container {
+                        position: relative;
+                        width: 100%;
+                    }
+
+                    .dynamic-table {
+                        width: 100%;
+                        font-family: 'Roboto', sans-serif;
+                        font-size: 11px;
+                        border-collapse: collapse;
+                        table-layout: auto;
+                    }
+
+                    .sticky-header {
+                        position: sticky;
+                        top: 0;
+                        background: #fff;
+                        z-index: 10;
+                        box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
+                    }
+
+                    .sticky-footer {
+                        position: sticky;
+                        bottom: 0;
+                        background: #fff;
+                        z-index: 10;
+                        box-shadow: 0 -2px 2px -1px rgba(0,0,0,0.1);
+                    }
+
+                    .dynamic-table th {
+                        font-weight: 600;
+                        color: #495057;
+                        text-transform: uppercase;
+                        padding: 6px 8px !important;
+                        vertical-align: middle !important;
+                        white-space: nowrap;
+                        background: #f8f9fa;
+                    }
+
+                    .dynamic-table td {
+                        padding: 4px 8px !important;
+                        vertical-align: middle !important;
+                        height: 24px !important;
+                        white-space: nowrap;
+                    }
+
+                    .dynamic-table tfoot td {
+                        font-weight: 600;
+                        background: #f8f9fa;
+                    }
+
+                    .table-container::-webkit-scrollbar {
+                        width: 8px;
+                        height: 8px;
+                    }
+
+                    .table-container::-webkit-scrollbar-track {
+                        background: #f1f1f1;
+                    }
+
+                    .table-container::-webkit-scrollbar-thumb {
+                        background: #888;
+                        border-radius: 4px;
+                    }
+
+                    .table-container::-webkit-scrollbar-thumb:hover {
+                        background: #555;
+                    }
+
+                    .pagination-wrapper {
+                        background: #f8f9fa;
+                        padding: 8px;
+                        border-radius: 4px;
+                    }
+
+                    .pagination {
+                        margin-bottom: 0;
+                        gap: 2px;
+                    }
+
+                    .pagination .page-link {
+                        padding: 4px 8px;
+                        font-size: 11px;
+                        border-radius: 3px;
+                        color: #333;
+                        background-color: #fff;
+                        border: 1px solid #dee2e6;
+                        min-width: 28px;
+                        text-align: center;
+                    }
+
+                    .pagination .page-item.active .page-link {
+                        background-color: #007bff;
+                        border-color: #007bff;
+                        color: #fff;
+                        font-weight: 500;
+                    }
+
+                    .pagination .page-item.disabled .page-link {
+                        background-color: #e9ecef;
+                        border-color: #dee2e6;
+                        color: #6c757d;
+                    }
+
+                    .btn-group {
+                        gap: 5px;
+                    }
+
+                    .form-label {
+                        font-size: 12px;
+                        margin-bottom: 0.25rem;
+                    }
+
+                    @media print {
+                        .table-container {
+                            max-height: none;
+                            overflow: visible;
+                        }
+                        .sticky-header, .sticky-footer {
+                            position: static;
+                        }
+                        .btn-group, #searchInput, .pagination-wrapper {
+                            display: none !important;
+                        }
+                        .dynamic-table {
+                            font-size: 10px;
+                        }
+                    }
+                </style>
+            `);
+         };
+
+         // Start the application
+         $(() => {
+            applyStyles();
+            initialize();
+         });
+      })(jQuery);
+   </script>
 
 
 
