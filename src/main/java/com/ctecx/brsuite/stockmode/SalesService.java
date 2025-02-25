@@ -77,7 +77,7 @@ public class SalesService {
 
     @Transactional
     public String createSalesWaiters(SalesStockDTO salesStockDTO) {
-        String sn = customProductManagerRepository.generateUniqueSerialNumber("");
+        String sn = customProductManagerRepository.generateUniqueSerialNumber("G2");
         String orderNumber = customProductManagerRepository.generateNewOrderNumber();
 
         List<StockTransaction> stockTransactions = salesStockDTO.saleStocks.stream()
