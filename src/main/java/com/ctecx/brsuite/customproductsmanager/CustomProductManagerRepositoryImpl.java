@@ -326,7 +326,7 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     @Override
     public List<Map<String, Object>> GetMonthlyStockValuationReport(int currentYear, int currentMonth,int branchId) {
 
-        return jdbcTemplate.queryForList("CALL GetMonthlyStockValuationReport(?,?,?)",currentYear, currentMonth,branchId);
+        return jdbcTemplate.queryForList("CALL GetStockValuationReportMonthlyData(?,?,?)",currentYear, currentMonth,branchId);
     }
 
     @Override
