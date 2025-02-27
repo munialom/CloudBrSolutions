@@ -43,9 +43,5 @@ public class PosController {
         return "pos/pos-rooms";
     }
 
-  /*  @GetMapping("workflow")
-    public String posWorkFlow(Model model) {
 
-        return "pos/pos-control";
-    }*/
 }

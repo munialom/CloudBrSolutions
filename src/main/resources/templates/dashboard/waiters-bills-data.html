@@ -1,0 +1,603 @@
+<div th:fragment="payee_form">
+
+
+   <div class="col-lg-12">
+
+      <div class="card border">
+         <div class="card-header bg-none p-1 h6 m-0 d-flex align-items-center">
+            <!-- Left side with icon and title -->
+            <i class="fa fa-users fa-lg me-2 text-gray text-opacity-50"></i>
+            Waiters Bills
+
+            <!-- Center controls with select and date picker -->
+            <div class="ms-auto d-flex align-items-center">
+               <!-- Report Type Select -->
+               <select class="form-select form-select-sm me-2 mt-3" id="userSearch" style="width: 250px;">
+
+
+               </select>
+
+               <!-- Date Range Picker -->
+               <input type="text"
+                      class="form-control form-control-sm me-3 mt-2"
+                      id="daterangepicker"
+                      style="width: 200px;">
+
+
+
+               <!-- Export Buttons -->
+               <div class="btn-group btn-group-sm">
+                  <button type="button" id="printdata" class="btn btn-default" title="Print">
+                     <i class="fas fa-print"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+
+         <div class="card-body">
+            <div id="tableWrapper"></div>
+         </div>
+
+
+      </div>
+   </div>
+
+
+
+
+
+   <script>
+      $(() => {
+         // Utility functions
+         const dateUtils = {
+            formatDate: (date) => {
+               const d = new Date(date);
+               const month = (d.getMonth() + 1).toString().padStart(2, '0');
+               const day = d.getDate().toString().padStart(2, '0');
+               const year = d.getFullYear();
+               return `${month}/${day}/${year}`;
+            },
+
+            formatDateRange: (start, end) => {
+               return `${dateUtils.formatDate(start)} - ${dateUtils.formatDate(end)}`;
+            }
+         };
+
+         // Date range configuration
+         const rangeConfig = {
+            getPredefinedRanges: () => ({
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')],
+               'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+               'Custom Range': [moment().startOf('month'), moment()]
+            }),
+
+            getLocaleConfig: () => ({
+               format: 'MM/DD/YYYY',
+               separator: ' - ',
+               applyLabel: 'Apply',
+               cancelLabel: 'Cancel',
+               fromLabel: 'From',
+               toLabel: 'To',
+               customRangeLabel: 'Custom Range'
+            })
+         };
+
+         // Date range picker handlers
+         const dateRangeHandlers = {
+            onRangeSelect: (start, end, label) => {
+               const rangeDisplay = dateUtils.formatDateRange(start, end);
+               $('#daterangepicker').val(rangeDisplay);
+
+               // Trigger custom event with selected range
+               $('#daterangepicker').trigger('rangeSelected', {
+                  start: start,
+                  end: end,
+                  label: label,
+                  formattedRange: rangeDisplay
+               });
+
+               console.log(`Date range selected: ${rangeDisplay}`);
+            },
+
+            setInitialRange: () => {
+               const initialRange = dateUtils.formatDateRange(moment(), moment());
+               $('#daterangepicker').val(initialRange);
+            }
+         };
+
+         // Initialize daterangepicker
+         const initializeDateRangePicker = () => {
+            $('#daterangepicker').daterangepicker({
+               singleDatePicker: false,
+               showDropdowns: true,
+               autoApply: true,
+               opens: 'left',
+               ranges: rangeConfig.getPredefinedRanges(),
+               locale: rangeConfig.getLocaleConfig(),
+               startDate: moment().startOf('month'),
+               endDate: moment(),
+               minYear: 2020,
+               maxYear: parseInt(moment().format('YYYY'), 10),
+               alwaysShowCalendars: true,
+               showCustomRangeLabel: true
+            }, dateRangeHandlers.onRangeSelect);
+
+            // Set initial range
+            dateRangeHandlers.setInitialRange();
+         };
+
+         // Initialize everything
+         initializeDateRangePicker();
+
+         // Example of event handling
+         $('#daterangepicker').on('rangeSelected', (event, data) => {
+            // Handle the range selection event
+            // You can add your custom logic here
+            console.log('Range selected event:', data);
+         });
+      });
+   </script>
+
+
+
+
+
+
+
+ <!--  <script>
+      $(document).ready(function() {
+         // Store the current response data globally
+         let currentData = [];
+
+         // Initialize Select2
+         $('#userSearch').select2({
+            width: '250px',
+            placeholder: 'Search for a waiter...',
+            allowClear: true,
+            minimumInputLength: 1,
+            ajax: {
+               url: '/api/users/search',
+               delay: 300,
+               data: function(params) {
+                  return {
+                     searchName: params.term
+                  };
+               },
+               processResults: function(data) {
+                  return {
+                     results: data.map(function(user) {
+                        return {
+                           id: user.id,
+                           text: user.full_name
+                        };
+                     })
+                  };
+               }
+
+            }
+         });
+
+         // Initialize DateRangePicker
+         $('#daterangepicker').daterangepicker({
+            startDate: moment().startOf('day'),
+            endDate: moment().endOf('day'),
+            locale: {
+               format: 'YYYY-MM-DD'
+            },
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')]
+            }
+         });
+
+         // Function to format numbers and currency
+         function formatValue(value, key) {
+            if (typeof value === 'number') {
+               if (key.toLowerCase().includes('amount') ||
+                       key.toLowerCase().includes('price') ||
+                       key.toLowerCase().includes('value')) {
+                  return new Intl.NumberFormat('en-US', {
+                     style: 'currency',
+                     currency: 'KES'
+                  }).format(value);
+               }
+               return value.toLocaleString();
+            }
+            return value || 'N/A';
+         }
+
+         // Function to create and update table
+         function createTable(data) {
+            // Store the data globally
+            currentData = data;
+
+            if (!data || data.length === 0) {
+               $('#tableWrapper').html('<div class="alert alert-info">No records found</div>');
+               return;
+            }
+
+            const $table = $('<table>').addClass('table table-sm table-striped table-bordered');
+            const headers = Object.keys(data[0]);
+
+            // Create table header
+            const $thead = $('<thead>').append(
+                    $('<tr>').append(
+                            headers.map(header =>
+                                    $('<th>').text(header.replace(/_/g, ' ').toUpperCase())
+                            )
+                    )
+            );
+
+            // Create table body
+            const $tbody = $('<tbody>').append(
+                    data.map((row, index) =>
+                            $('<tr>').append(
+                                    headers.map(header =>
+                                            $('<td>').text(formatValue(row[header], header))
+                                    )
+                            )
+                    )
+            );
+
+            $table.append([$thead, $tbody]);
+            $('#tableWrapper').empty().append($table);
+         }
+
+         // Function to fetch data
+         function fetchData() {
+            const waiterName = $('#userSearch').select2('data')[0]?.text || '';
+            const dates = $('#daterangepicker').data('daterangepicker');
+            const startDate = dates.startDate.format('YYYY-MM-DD');
+            const endDate = dates.endDate.format('YYYY-MM-DD');
+
+            // Show loading state
+            $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+
+            // Fetch data from API
+            $.ajax({
+               url: '/api/products-manager/running-orders-waiters',
+               method: 'GET',
+               data: {
+                  startDate: startDate,
+                  endDate: endDate,
+                  waiterName: waiterName
+               },
+               success: function(response) {
+                  createTable(response);
+               },
+               error: function(xhr, status, error) {
+                  $('#tableWrapper').html(
+                          '<div class="alert alert-danger">' +
+                          'Error loading data. Please try again.' +
+                          '<br><small>' + (error || 'Unknown error') + '</small>' +
+                          '</div>'
+                  );
+               }
+            });
+         }
+
+         // Event Listeners
+         $('#userSearch').on('select2:select select2:clear', function(e) {
+            fetchData();
+         });
+
+         $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
+            fetchData();
+         });
+
+         // Add print button event listener
+         $('#printdata').on('click', function() {
+            const waiterName = $('#userSearch').select2('data')[0]?.text || 'All Waiters';
+            const dates = $('#daterangepicker').data('daterangepicker');
+            const startDate = dates.startDate.format('YYYY-MM-DD');
+            const endDate = dates.endDate.format('YYYY-MM-DD');
+
+            const reportTitle = `Waiters Summary Bill - ${waiterName} (${startDate} to ${endDate})`;
+
+            // Call the existing printGeneratePdf function with current data and title
+            if (currentData && currentData.length > 0) {
+               printGeneratePdf(currentData, reportTitle);
+            } else {
+               alert('No data available to print. Please ensure data is loaded first.');
+            }
+         });
+
+         // Add basic styles
+         $('head').append(`
+     <style>
+         .table {
+             font-size: 0.675rem;
+             margin-top: 1rem;
+         }
+         .table th {
+             background-color: #f8f9fa;
+             position: sticky;
+             top: 0;
+             z-index: 1;
+         }
+         .table td, .table th {
+             padding: 0.5rem;
+             vertical-align: middle;
+             white-space: nowrap;
+         }
+         #tableWrapper {
+             margin-top: 1rem;
+             overflow-x: auto;
+             max-height: calc(100vh - 200px);
+         }
+         .select2-container {
+             margin-right: 1rem;
+         }
+         .daterangepicker {
+             font-size: 0.875rem;
+         }
+     </style>
+ `);
+
+         // Initial data load
+         fetchData();
+      });
+   </script>-->
+
+   <script>
+      $(document).ready(function() {
+         // Store the current response data globally
+         let currentData = [];
+
+         // Initialize Select2
+         $('#userSearch').select2({
+            width: '250px',
+            placeholder: 'Search for a waiter...',
+            allowClear: true,
+            minimumInputLength: 1,
+            ajax: {
+               url: '/api/users/search',
+               delay: 300,
+               data: function(params) {
+                  return {
+                     searchName: params.term
+                  };
+               },
+               processResults: function(data) {
+                  return {
+                     results: data.map(function(user) {
+                        return {
+                           id: user.id,
+                           text: user.full_name
+                        };
+                     })
+                  };
+               }
+
+            }
+         });
+
+         // Initialize DateRangePicker
+         $('#daterangepicker').daterangepicker({
+            startDate: moment().startOf('day'),
+            endDate: moment().endOf('day'),
+            locale: {
+               format: 'YYYY-MM-DD'
+            },
+            ranges: {
+               'Today': [moment(), moment()],
+               'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+               'This Month': [moment().startOf('month'), moment().endOf('month')]
+            }
+         });
+
+         // Function to format numbers and currency
+         function formatValue(value, key) {
+            if (typeof value === 'number') {
+               if (key.toLowerCase().includes('amount') ||
+                       key.toLowerCase().includes('price') ||
+                       key.toLowerCase().includes('value')) {
+                  return new Intl.NumberFormat('en-US', {
+                     style: 'currency',
+                     currency: 'KES'
+                  }).format(value);
+               }
+               return value.toLocaleString();
+            }
+            return value || 'N/A';
+         }
+
+         // Function to create and update table
+         function createTable(data) {
+            // Store the data globally
+            currentData = data;
+
+            if (!data || data.length === 0) {
+               $('#tableWrapper').html('<div class="alert alert-info">No records found</div>');
+               return;
+            }
+
+            const $table = $('<table>').addClass('table table-sm table-striped table-bordered');
+            const headers = Object.keys(data[0]);
+
+            // Create table header
+            const $thead = $('<thead>').append(
+                    $('<tr>').append(
+                            headers.map(header =>
+                                    $('<th>').text(header.replace(/_/g, ' ').toUpperCase())
+                            )
+                    )
+            );
+
+            // Create table body
+            const $tbody = $('<tbody>').append(
+                    data.map((row, index) => {
+                       const $row = $('<tr>');
+
+                       headers.forEach(header => {
+                          $row.append($('<td>').text(formatValue(row[header], header)));
+                       });
+
+                       // Add Cancel Order Button
+                       const transactionId = row['Transaction ID']; // Access 'Transaction ID' correctly
+                       const $cancelButtonCell = $('<td>').append(
+                               $('<button>')
+                                       .addClass('btn btn-danger btn-sm cancel-order-btn')
+                                       .text('Cancel Order')
+                                       .data('transaction-id', transactionId) // Store Transaction ID in the button's data
+                       );
+
+                       $row.append($cancelButtonCell);  // Append the button cell to the row.
+                       return $row;
+                    })
+            );
+
+            $table.append([$thead, $tbody]);
+            $('#tableWrapper').empty().append($table);
+         }
+
+         // Function to fetch data
+         function fetchData() {
+            const waiterName = $('#userSearch').select2('data')[0]?.text || '';
+            const dates = $('#daterangepicker').data('daterangepicker');
+            const startDate = dates.startDate.format('YYYY-MM-DD');
+            const endDate = dates.endDate.format('YYYY-MM-DD');
+
+            // Show loading state
+            $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+
+            // Fetch data from API
+            $.ajax({
+               url: '/api/products-manager/running-orders-waiters',
+               method: 'GET',
+               data: {
+                  startDate: startDate,
+                  endDate: endDate,
+                  waiterName: waiterName
+               },
+               success: function(response) {
+                  createTable(response);
+               },
+               error: function(xhr, status, error) {
+                  $('#tableWrapper').html(
+                          '<div class="alert alert-danger">' +
+                          'Error loading data. Please try again.' +
+                          '<br><small>' + (error || 'Unknown error') + '</small>' +
+                          '</div>'
+                  );
+               }
+            });
+         }
+
+         // Event Listener for Cancel Order Button (Delegated Event)
+         $(document).on('click', '.cancel-order-btn', function() {
+            const orderId = $(this).data('transaction-id'); // Retrieve the transaction ID from the button's data.
+
+            if (confirm('Are you sure you want to cancel order with Transaction ID: ' + orderId + '?')) {
+               //Show loading (you'll need to define hideLoading() and showLoading() if you intend to use it)
+               //showLoading();
+
+               $.ajax({
+                  type: 'DELETE',
+                  url: `/api/products-manager/byId/${orderId}`,  // Assuming `orderId` maps to the transaction ID
+                  success: (response) => {
+                     //hideLoading(); // Assuming a hideLoading() function exists
+                     $.wnoty({  // Assuming $.wnoty is a notification library
+                        type: 'success',
+                        message: 'Order deleted successfully',
+                        position: 'top-right'
+                     });
+                     fetchData(); // Reload the table after successful deletion to reflect changes.
+                  },
+                  error: (xhr, status, error) => {
+                     // hideLoading(); // Assuming a hideLoading() function exists
+                     $.wnoty({  // Assuming $.wnoty is a notification library
+                        type: 'error',
+                        message: 'Error deleting order: ' + error,
+                        position: 'top-right'
+                     });
+                  }
+               });
+            }
+         });
+
+
+         // Event Listeners
+         $('#userSearch').on('select2:select select2:clear', function(e) {
+            fetchData();
+         });
+
+         $('#daterangepicker').on('apply.daterangepicker', function(ev, picker) {
+            fetchData();
+         });
+
+         // Add print button event listener
+         $('#printdata').on('click', function() {
+            const waiterName = $('#userSearch').select2('data')[0]?.text || 'All Waiters';
+            const dates = $('#daterangepicker').data('daterangepicker');
+            const startDate = dates.startDate.format('YYYY-MM-DD');
+            const endDate = dates.endDate.format('YYYY-MM-DD');
+
+            const reportTitle = `Waiters Summary Bill - ${waiterName} (${startDate} to ${endDate})`;
+
+            // Call the existing printGeneratePdf function with current data and title
+            if (currentData && currentData.length > 0) {
+               printGeneratePdf(currentData, reportTitle);
+            } else {
+               alert('No data available to print. Please ensure data is loaded first.');
+            }
+         });
+
+         // Add basic styles
+         $('head').append(`
+     <style>
+         .table {
+             font-size: 0.675rem;
+             margin-top: 1rem;
+         }
+         .table th {
+             background-color: #f8f9fa;
+             position: sticky;
+             top: 0;
+             z-index: 1;
+         }
+         .table td, .table th {
+             padding: 0.5rem;
+             vertical-align: middle;
+             white-space: nowrap;
+         }
+         #tableWrapper {
+             margin-top: 1rem;
+             overflow-x: auto;
+             max-height: calc(100vh - 200px);
+         }
+         .select2-container {
+             margin-right: 1rem;
+         }
+         .daterangepicker {
+             font-size: 0.875rem;
+         }
+         .cancel-order-btn {
+            margin: 2px;
+         }
+
+     </style>
+ `);
+
+         // Initial data load
+         fetchData();
+      });
+   </script>
+
+
+
+</div>
+
+
+
+
+
+
+

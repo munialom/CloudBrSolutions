@@ -68,6 +68,10 @@ public interface CustomProductManagerRepository {
     List<Map<String, Object>>GetProductStockTransactions(int productID);
 
     void deleteProductAndTransactions(Long productId);
+    void  DeleteStockTransactionById(Long transactionId);
+    List<Map<String, Object>> SearchSalesTransactions(String serialNumber);
+    List<Map<String, Object>> GetRunningOrdersByWaiters(LocalDate startDate,LocalDate endDate,String waiterName);
+    List<Map<String, Object>> GetEnhancedCashierReport(LocalDate startDate,LocalDate endDate);
     void updateProductNameAndCode(Long productId, String newProductName, String newProductCode);
 
     List<Map<String, Object>> GetSupplierCumulativeValue();

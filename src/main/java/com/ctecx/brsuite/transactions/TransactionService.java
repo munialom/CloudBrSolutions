@@ -1,20 +1,25 @@
 package com.ctecx.brsuite.transactions;
 
 import com.ctecx.brsuite.customproductsmanager.CustomManagerProductService;
+import com.ctecx.brsuite.util.SalesDateTimeManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
+
     private final TransactionRepository transactionRepository;
     private final CustomManagerProductService customManagerProductService;
+
+    private final SalesDateTimeManager salesDateTimeManager;
 
     @Transactional
     public List<Transaction> processSaleTransaction(SaleTransactionDTO dto) {
@@ -22,26 +27,38 @@ public class TransactionService {
         BigDecimal totalAmount = dto.getTotalAmount();
         BigDecimal receivedAmount = dto.getReceivedAmount();
         List<String> paymentModes = dto.getPaymentModes();
-        BigDecimal changeOut = dto.getChangeOut();
 
         // Validate input
-        validateSaleTransaction(totalAmount, receivedAmount, paymentModes);
+        if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Total amount must be greater than zero");
+        }
+        if (receivedAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Received amount must be greater than zero");
+        }
+        if (receivedAmount.compareTo(totalAmount) > 0) {
+            throw new IllegalArgumentException("Received amount cannot exceed total amount");
+        }
+        if (paymentModes.isEmpty()) {
+            throw new IllegalArgumentException("At least one payment mode must be selected");
+        }
 
-        BigDecimal actualReceivedAmount = receivedAmount.subtract(changeOut);
+        BigDecimal remainingTotal = totalAmount;
+        BigDecimal remainingReceived = receivedAmount;
 
         // Process CASH first if it's a selected payment mode
         if (paymentModes.contains("CASH")) {
-            BigDecimal cashAmount = actualReceivedAmount.min(totalAmount);
+            BigDecimal cashAmount = remainingReceived;
             transactions.add(createTransaction(dto, "CASH", cashAmount));
-            totalAmount = totalAmount.subtract(cashAmount);
+            remainingTotal = remainingTotal.subtract(cashAmount);
+            remainingReceived = BigDecimal.ZERO;
         }
 
         // Distribute remaining total amount to other payment modes
         for (String mode : paymentModes) {
-            if (!mode.equals("CASH") && totalAmount.compareTo(BigDecimal.ZERO) > 0) {
-                BigDecimal amount = totalAmount;
+            if (!mode.equals("CASH") && remainingTotal.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal amount = remainingTotal;
                 transactions.add(createTransaction(dto, mode, amount));
-                totalAmount = BigDecimal.ZERO;
+                remainingTotal = BigDecimal.ZERO;
                 break; // Only one additional transaction needed
             }
         }
@@ -49,27 +66,13 @@ public class TransactionService {
         if (transactions.isEmpty()) {
             throw new IllegalArgumentException("No valid payment amounts calculated");
         }
-
-        int updatedCount = customManagerProductService.updateStatus(dto.getSerialNumber());
+        int updatedCount=customManagerProductService.updateStatus(dto.getSerialNumber());
         return transactionRepository.saveAll(transactions);
     }
 
-    private void validateSaleTransaction(BigDecimal totalAmount, BigDecimal receivedAmount, List<String> paymentModes) {
-        if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Total amount must be greater than zero");
-        }
-        if (receivedAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Received amount must be greater than zero");
-        }
-        if (receivedAmount.compareTo(totalAmount) < 0) {
-            throw new IllegalArgumentException("Received amount cannot be less than total amount");
-        }
-        if (paymentModes.isEmpty()) {
-            throw new IllegalArgumentException("At least one payment mode must be selected");
-        }
-    }
-
     private Transaction createTransaction(SaleTransactionDTO dto, String paymentMode, BigDecimal amount) {
+        ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
+        LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
         Transaction transaction = new Transaction();
         transaction.setSerialNumber(dto.getSerialNumber());
         transaction.setAmount(amount);
@@ -83,7 +86,7 @@ public class TransactionService {
         transaction.setRef(dto.getSerialNumber());
         transaction.setTransaction_type("CREDIT");
         transaction.setSubmodule("CASH_SALE");
-        transaction.setTransactionDate(LocalDate.now());
+        transaction.setTransactionDate(salesDate);
         transaction.setPaymentState(PaymentState.PAID);
         transaction.setOrderState(OrderState.COMPLETED);
         return transaction;

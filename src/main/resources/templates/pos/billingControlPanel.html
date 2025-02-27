@@ -82,120 +82,25 @@
             <div class="card-body fw-bold">
                 <div class="messenger rounded border p-0" id="messenger">
 
-                    <div class="messenger-menu d-flex flex-column bg-white shadow-sm rounded p-2" style="width: auto; min-width:100px;">
-                        <div class="messenger-menu-category mb-2">
-                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Sales</span>
-                        </div>
-                        <div class="messenger-menu-item active mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/cash-billing/counter', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="cart-outline" class="me-2" style="font-size: 24px; color: #16a085;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px; color: #16a085;">Counter Billing</span>
-                            </a>
-                        </div>
-                        <div class="messenger-menu-category mb-2 mt-3">
-                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Payments</span>
-                        </div>
-                   <!--     <div class="messenger-menu-item mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/finance/waiter-summary', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="cash-outline" class="me-2" style="font-size: 24px; color: #27ae60;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Waiter Summary</span>
-                            </a>
-                        </div>-->
 
-                        <div class="messenger-menu-item mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/finance/payment-methods', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="card-outline" class="me-2" style="font-size: 24px; color: #f39c12;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Payment Methods</span>
-                            </a>
-                        </div>
-
-                        <div class="messenger-menu-category mb-2 mt-3">
-                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">Reporting & Analysis</span>
-                        </div>
-                        <div class="messenger-menu-item mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/finance/byRevenueCodes', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="bar-chart-outline" class="me-2" style="font-size: 24px; color: #f39c12;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Sales Reports</span>
-                            </a>
-                        </div>
-                        <div class="messenger-menu-item mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/finance/revenueSummary', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="analytics-outline" class="me-2" style="font-size: 24px; color: #2980b9;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Analytics</span>
-                            </a>
-                        </div>
-                        <div class="messenger-menu-item mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/finance/products-summary', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="shield-checkmark-outline" class="me-2" style="font-size: 24px; color: #34495e;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Product Summary</span>
-                            </a>
-                        </div>
-                        <div class="messenger-menu-item mb-2">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/finance/stock-sheet', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="list-outline" class="me-2" style="font-size: 24px; color: #3498db;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Stock Sheet</span>
-                            </a>
-                        </div>
-
-                        <div class="messenger-menu-category mb-2 mt-3">
-                            <span class="menu-category-label" style="font-size: 12px; font-weight: bold; color: #7f8c8d;">System</span>
-                        </div>
-                        <div class="messenger-menu-item">
-                            <a href="#" onclick="cashBillingControlPanelFragment('/pos/bills', event)" class="messenger-menu-link d-flex align-items-center text-decoration-none">
-                                <ion-icon name="settings-outline" class="me-2" style="font-size: 24px; color: #7f8c8d;"></ion-icon>
-                                <span class="menu-label" style="font-size: 14px;">Settings</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="messenger-chat" style="display: none;">
-                        <div class="messenger-chat-header d-flex">
-                            <div class="flex-1 position-relative">
-                                <input type="text" class="form-control border-0 bg-light ps-30px" placeholder="Search" id="search-list" />
-                                <i class="fa fa-search position-absolute start-0 top-0 h-100 ps-2 ms-3px d-flex align-items-center justify-content-center"></i>
-                            </div>
-                            <div class="ps-2">
-                                <a href="#" class="btn border-0 bg-light shadow-none">
-                                    <i class="fa fa-plus"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="messenger-chat-body">
-                            <div data-scrollbar="true" data-height="100%">
-                                <div class="messenger-chat-list">
-                                    <div class="messenger-chat-item">
-                                        <a href="javascript:;" class="messenger-chat-link" data-toggle-class="messenger-chat-content-mobile-toggled" data-target="#messenger">
-                                            <div class="messenger-chat-media">
-                                                <img alt="" src="assets/img/user/user-1.jpg" />
-                                            </div>
-                                            <div class="messenger-chat-content">
-                                                <div class="messenger-chat-title">
-                                                    <div>Daniel</div>
-                                                    <div class="messenger-chat-time">09:15 AM</div>
-                                                </div>
-                                                <div class="messenger-chat-desc"> Hey, how was your weekend?</div>
-                                            </div>
-                                        </a>
-                                    </div>
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="messenger-content">
                         <div class="widget-chat">
                             <!-- BEGIN widget-chat-header -->
-                            <div class="widget-chat-header">
-                                <div class="d-block d-lg-none">
+
+                            <div class="widget-chat-header d-flex align-items-center">
+                                <select class="form-select p-2" id="searchBySerialNumber">
+
+                                </select>
+
+                                <div class="d-block d-lg-none ms-2">
                                     <button type="button" class="btn border-0 shadow-none" data-toggle-class="messenger-chat-content-mobile-toggled" data-target="#messenger">
                                         <i class="fa fa-chevron-left fa-lg"></i>
                                     </button>
                                 </div>
-                                <div class="widget-chat-header-content" id="transactionSummaryContainer">
 
-
+                                <div class="widget-chat-header-content flex-grow-1 p-1" id="transactionSummaryContainer">
                                 </div>
+
                                 <div class="">
                                     <button type="button" class="btn border-0 shadow-none" data-bs-toggle="dropdown">
                                         <i class="fa fa-ellipsis fa-lg"></i>
@@ -207,7 +112,6 @@
                                         <li>
                                             <a class="dropdown-item" href="#">Cancel Order</a>
                                         </li>
-
                                     </ul>
                                 </div>
                             </div>
@@ -229,10 +133,10 @@
             </div>
 
 
-            </div>
+        </div>
 
 
-            </div>
+    </div>
 
 
     <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
@@ -248,6 +152,16 @@
             100% { transform: rotate(360deg); }
         }
     </style>
+
+    <script>
+        function showLoading() {
+            $('#loading-overlay').show();
+        }
+
+        function hideLoading() {
+            $('#loading-overlay').hide();
+        }
+    </script>
 
     <script>
         // Ensure the DOM is fully loaded before executing the script
@@ -346,177 +260,6 @@
 
 
 
- <script>
-     $(document).ready(function() {
-         let allTransactions = [];
-         let totalTransactionCount = 0;
-         const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F06292', '#AED581', '#7986CB', '#4DB6AC', '#FFD54F'];
-         let searchTimeout;
-         let activeItemSerialNumber = null;
-
-         function showLoading() {
-             $('#loading-overlay').show();
-         }
-
-         function hideLoading() {
-             $('#loading-overlay').hide();
-         }
-
-         function formatDate(dateString) {
-             const date = new Date(dateString);
-             return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-         }
-
-         function formatCurrency(amount) {
-             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'KES' }).format(amount);
-         }
-
-         function getInitials(name) {
-             return name.split(' ').map(n => n[0]).join('').toUpperCase();
-         }
-
-         function updateTotalCountBadge() {
-             $('.messenger-menu-item.active').css('position', 'relative');
-             const badgeHtml = `
-            <span class="badge rounded-pill bg-danger total-count-badge"
-                  style="position: absolute; top: -1px; right: -4px;">
-                ${totalTransactionCount}
-            </span>`;
-             $('.messenger-menu-item.active .total-count-badge').remove();
-             $('.messenger-menu-item.active').append(badgeHtml);
-         }
-
-         function renderTransactionList(transactions) {
-             $('.messenger-chat-list').empty();
-             if (transactions.length === 0) {
-                 $('.messenger-chat-list').html('<p>No transactions found.</p>');
-                 totalTransactionCount = 0;
-             } else {
-                 transactions.forEach(function(transaction, index) {
-                     let formattedDate = formatDate(transaction.transaction_date);
-                     let formattedAmount = formatCurrency(transaction.total_amount);
-                     let initials = getInitials(transaction.created_by);
-                     let colorIndex = index % colors.length;
-
-                     let transactionItem = `
-                    <div class="messenger-chat-item position-relative mb-2" data-serial-number="${transaction.serial_number}">
-                        <div class="chat-item-content d-flex align-items-center p-2">
-                            <div class="messenger-chat-media rounded-circle flex-shrink-0 me-3" style="background-color: ${colors[colorIndex]}; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: small;">
-                                ${initials}
-                            </div>
-                            <div class="messenger-chat-content flex-grow-1">
-                                <div class="messenger-chat-title d-flex justify-content-between align-items-center">
-                                    <div class="fw-bold">${transaction.serial_number}</div>
-                                    <div class="messenger-chat-time text-muted small">${formattedDate}</div>
-                                </div>
-                                <div class="messenger-chat-desc text-muted small">
-                                    Created by: ${transaction.created_by} | Amount: ${formattedAmount}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                     $('.messenger-chat-list').append(transactionItem);
-                 });
-                 totalTransactionCount = transactions.length;
-             }
-             updateTotalCountBadge();
-         }
-
-         function setActiveItem(serialNumber) {
-             $('.messenger-chat-item.active').removeClass('active');
-             const $newActiveItem = $(`.messenger-chat-item[data-serial-number="${serialNumber}"]`);
-             $newActiveItem.addClass('active');
-             activeItemSerialNumber = serialNumber;
-
-             // Display transaction summary
-             const selectedTransaction = allTransactions.find(t => t.serial_number === serialNumber);
-             if (selectedTransaction) {
-                 displayTransactionSummary(selectedTransaction);
-
-                 onTransactionSelected(activeItemSerialNumber);
-
-
-             }
-
-             // Hide the chat menu
-             $('.messenger-content').removeClass('show');
-         }
-
-         function displayTransactionSummary(transaction) {
-             const deepBlue = '#0047AB';
-             const deepRed = 'rgba(245,13,55,0.98)';
-             const iconStyles = 'margin-right: 5px; vertical-align: middle;';
-
-             const summaryHtml = `
-            <div id="transactionSummaryContainer" style="font-family: Arial, sans-serif;">
-                <p style="margin: 0; font-size: 11px; line-height: 1.6;">
-                    <span id="currentSerial" style="color: ${deepRed}; font-weight: bold;"><i class="fas fa-file-invoice" style="${iconStyles}"></i>${transaction.serial_number}</span>
-                    <span style="color: black;"><i class="fas fa-calendar" style="${iconStyles}"></i>Date: ${formatDate(transaction.transaction_date)}</span>
-                    <span style="color: ${deepBlue};"><i class="fas fa-user" style="${iconStyles}"></i>Created by: ${transaction.created_by}</span>
-                    <span style="color: black;"><i class="fas fa-money-bill" style="${iconStyles}"></i>Amount: ${formatCurrency(transaction.total_amount)}</span>
-                </p>
-            </div>
-        `;
-
-             $('#transactionSummaryContainer').html(summaryHtml);
-         }
-
-         $('.messenger-chat-list').on('click', '.messenger-chat-item', function(e) {
-             const clickedSerialNumber = $(this).data('serial-number');
-             setActiveItem(clickedSerialNumber);
-             e.stopPropagation();
-         });
-
-         function fetchTransactionData() {
-             showLoading();
-             $.ajax({
-                 url: '/api/products-manager/sales-transactions-summary',
-                 method: 'GET',
-                 dataType: 'json',
-                 success: function(data) {
-                     allTransactions = data.sort((a, b) => b.serial_number.localeCompare(a.serial_number));
-                     renderTransactionList(allTransactions);
-                     hideLoading();
-                 },
-                 error: function(xhr, status, error) {
-                     console.error('Error fetching transactions:', error);
-                     $('.messenger-chat-list').html('<p>Error loading transactions. Please try again later.</p>');
-                     totalTransactionCount = 0;
-                     updateTotalCountBadge();
-                     hideLoading();
-                 }
-             });
-         }
-
-         function searchTransactions(searchTerm) {
-             if (searchTerm === '') {
-                 renderTransactionList(allTransactions);
-             } else {
-                 let filteredTransactions = allTransactions.filter(transaction =>
-                     transaction.serial_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                     transaction.created_by.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                     transaction.transaction_date.includes(searchTerm) ||
-                     transaction.total_amount.toString().includes(searchTerm)
-                 );
-                 renderTransactionList(filteredTransactions);
-             }
-         }
-
-         $('#search-list').on('input', function() {
-             let searchTerm = $(this).val().trim();
-             clearTimeout(searchTimeout);
-
-             searchTimeout = setTimeout(() => {
-                 searchTransactions(searchTerm);
-             }, 300);
-         });
-
-         // Initial data fetch
-         fetchTransactionData();
-     });
- </script>
 
 
 
@@ -524,17 +267,6 @@
 
 
 
-    <script>
-        $(document).ready(function() {
-            // Click event handler for the messenger menu item
-            $(".messenger-menu-item.active").on("click", function(e) {
-                e.preventDefault(); // Prevent default link behavior
-
-                // Toggle the visibility of the messenger chat
-                $(".messenger-chat").toggle();
-            });
-        });
-    </script>
 
 
 

@@ -286,10 +286,10 @@
             });
         }
 
-        function getCategoryIcon(categoryName) {
+/*        function getCategoryIcon(categoryName) {
             var iconMap = {
                 'Wine': 'fa-wine-glass|#722F37',
-                'Beer': 'fa-wine-bottle|#FFA500',
+                'Beers': 'fa-wine-bottle|#FFA500',
                 'Pizza': 'fa-pizza-slice|#FF6347',
                 'Soft Drinks': 'fa-martini-glass-citrus|#1E90FF',
                 'Desserts': 'fa-ice-cream|#FF69B4',
@@ -301,8 +301,21 @@
             };
 
             return iconMap[categoryName] || 'fa-utensils|#808080';
-        }
+        }*/
 
+        function getCategoryIcon(categoryName) {
+            var iconMap = {
+                'Beers': 'fa-beer|#FFD700',
+                'Meals': 'fa-utensils|#228B22',
+                'Others': 'fa-question|#808080',
+                'Rooms': 'fa-bed|#D2B48C',
+                'Spirits': 'fa-bottle-droplet|#2F4F4F',
+                'Soft Drinks': 'fa-glass-water|#00CED1',
+                'Wines': 'fa-wine-glass|#722F37',
+                'Whiskys': 'fa-whiskey-glass|#8B4513'
+            };
+            return iconMap[categoryName] || 'fa-utensils|#808080';
+        }
         // Updated Product loading and display function
         function loadProductsByCategory(categoryId) {
             $.ajax({

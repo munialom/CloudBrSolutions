@@ -63,6 +63,29 @@
 				</div>
 			</div>
 
+			<div class="menu-item has-sub" sec:authorize="hasAnyAuthority('Barman','Admin')">
+				<a href="javascript:;" class="menu-link">
+					<div class="menu-icon"><i class="fa fa-chalkboard-user"></i></div>
+					<div class="menu-text">BarMan Module</div>
+					<div class="menu-caret"></div>
+				</a>
+				<div class="menu-submenu">
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/pos/cashier')" class="menu-link"><div class="menu-text">Clear Bills</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/all-cashiers')" class="menu-link"><div class="menu-text">Summary By Cashier</div></a>
+					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/waiter-bills')" class="menu-link"><div class="menu-text">Waiters Bills</div></a>
+					</div>
+
+				</div>
+			</div>
+
 			<!-- Sales Management Section -->
 			<div class="menu-item has-sub">
 				<a href="javascript:;" class="menu-link">
@@ -190,25 +213,7 @@
 
 
 
-			<!-- Customer Management Section -->
-		<!--	<div class="menu-item has-sub">
-				<a href="javascript:;" class="menu-link">
-					<div class="menu-icon"><i class="fa fa-users"></i></div>
-					<div class="menu-text">Customers</div>
-					<div class="menu-caret"></div>
-				</a>
-				<div class="menu-submenu">
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/customers/management')" class="menu-link"><div class="menu-text">Customer Database</div></a>
-					</div>
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/customers/loyalty')" class="menu-link"><div class="menu-text">Loyalty Program</div></a>
-					</div>
-					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/customers/feedback')" class="menu-link"><div class="menu-text">Customer Feedback</div></a>
-					</div>
-				</div>
-			</div>-->
+
 
 
 

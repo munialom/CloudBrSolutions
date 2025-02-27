@@ -141,7 +141,19 @@ public class CustomManagerProductService {
 
         return customProductManagerRepository.GetStockValuationReport(startDate,endDate,branchId);
     }
+    public List<Map<String, Object>> searchSalesTransactions(String serialNumber) {
+        return customProductManagerRepository.SearchSalesTransactions(serialNumber);
+    }
+    public List<Map<String, Object>> GetRunningOrdersWaiters(LocalDate startDate,LocalDate endDate,String waiterName) {
 
+        return customProductManagerRepository.GetRunningOrdersByWaiters(startDate,endDate,waiterName);
+    }
+
+    public List<Map<String, Object>> GetEnhancedCashierReport(LocalDate startDate, LocalDate endDate) {
+
+
+        return customProductManagerRepository.GetEnhancedCashierReport(startDate, endDate);
+    }
 
     public List<Map<String, Object>> GasValuation(LocalDate startDate, LocalDate endDate) {
         return customProductManagerRepository.GasValuation(startDate,endDate);
@@ -159,7 +171,13 @@ public class CustomManagerProductService {
     public void deleteProductAndTransactions(Long productId) {
         customProductManagerRepository.deleteProductAndTransactions(productId);
     }
+//
 
+    @Transactional
+    public void DeleteStockTransactionById(Long transactionId) {
+
+        customProductManagerRepository.DeleteStockTransactionById(transactionId);
+    }
 
     @Transactional
     public void updateProductNameAndCode(Long productId, String newProductName, String newProductCode) {

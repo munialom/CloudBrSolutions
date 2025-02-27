@@ -70,7 +70,18 @@ public class DashboardController {
 
 
 
+	@GetMapping("all-cashiers")
+	public String allCashiers(Model model) {
 
+		return "dashboard/all-cashiers";
+
+	}
+	@GetMapping("waiter-bills")
+	public String waiterBillsData(Model model) {
+
+		return "dashboard/waiters-bills-data";
+
+	}
 
 
 

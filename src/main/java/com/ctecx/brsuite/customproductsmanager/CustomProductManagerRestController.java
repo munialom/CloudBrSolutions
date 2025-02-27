@@ -16,6 +16,14 @@ public class CustomProductManagerRestController {
 
  private final CustomManagerProductService customManagerProductService;
 
+ @GetMapping("/cashier-summaries-data")
+ public ResponseEntity<List<Map<String, Object>>> GetEnhancedCashierReport(
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+  List<Map<String, Object>> report = customManagerProductService.GetEnhancedCashierReport(startDate, endDate);
+  return ResponseEntity.ok(report);
+ }
+
  @GetMapping("/categories")
  public ResponseEntity<List<Map<String, Object>>> getAllCategories() {
   List<Map<String, Object>> categories = customManagerProductService.getAllCategories();
@@ -105,16 +113,25 @@ public class CustomProductManagerRestController {
   return ResponseEntity.ok(report);
  }
 
-/*
- @GetMapping("/stock-valuation-report")
- public ResponseEntity<List<Map<String, Object>>> getStockValuationReport(
-         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-  List<Map<String, Object>> report = customManagerProductService.GetStockValuationReport(startDate, endDate);
-  return ResponseEntity.ok(report);
+ @GetMapping("/search-sales-transactions")
+ public ResponseEntity<List<Map<String, Object>>> searchSalesTransactions(
+         @RequestParam(required = true) String serialNumber) {
+  List<Map<String, Object>> results = customManagerProductService.searchSalesTransactions(serialNumber);
+  return ResponseEntity.ok(results);
  }
-*/
 
+ @GetMapping("/running-orders-waiters")
+ public ResponseEntity<List<Map<String, Object>>> GetRunningOrdersWaiters(
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+         @RequestParam(required = false) String waiterName
+ ) {
+
+  List<Map<String, Object>> report = customManagerProductService.GetRunningOrdersWaiters(startDate, endDate, waiterName);
+
+  return ResponseEntity.ok(report);
+
+ }
 
  @GetMapping("/gas-valuation-report")
  public ResponseEntity<List<Map<String, Object>>> gasValuationReport(
@@ -187,6 +204,13 @@ public class CustomProductManagerRestController {
  @DeleteMapping("/{id}")
  public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
  customManagerProductService.deleteProductAndTransactions(id);
+  return ResponseEntity.noContent().build();
+ }
+
+
+ @DeleteMapping("/byId/{id}")
+ public ResponseEntity<Void> DeleteStockTransactionById(@PathVariable Long id) {
+  customManagerProductService.DeleteStockTransactionById(id);
   return ResponseEntity.noContent().build();
  }
 

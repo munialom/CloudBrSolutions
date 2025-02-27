@@ -101,22 +101,16 @@
                                         </a>
                                         </div>
                                         <div class="card-body">
-                                            <div class="d-flex justify-content-between">
-                                                <div class="d-flex justify-content-between">
-                                                    <div class="mb-3 flex-grow-1 pe-1">
-                                                        <div class="d-flex align-items-center bg-light-100" style="padding: 10px;">
-                                                            <div style="flex: 0 0 auto; margin-right: 20px;">
-                                                                <i class="fab fa-cc-amazon-pay fa-4x"></i>
-                                                            </div>
-                                                            <div style="flex: 1 1 auto; text-align: right;">
-                                                                <span id="totalAmount" style="font-size: 2.5rem; font-weight: bold;">0.00</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                            <div class="d-flex align-items-center bg-light rounded p-2 mb-2">
+                                                <div class="me-3">
+                                                    <i class="fab fa-cc-amazon-pay fa-3x text-dark"></i>
+                                                </div>
+                                                <div class="flex-grow-1 text-end">
+                                                    <span id="totalAmount" class="fs-1 fw-bold">0.00</span>
                                                 </div>
                                             </div>
                                             <div class="form-floating mb-15px">
-                                                <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder="Amount Paid" id="receivedAmount" value="0.00"/>
+                                                <input type="text" name="receivedAmount" class="form-control h-45px fs-13px" placeholder="Amount Paid {0.00}" id="receivedAmount"/>
                                                 <label for="receivedAmount" class="d-flex align-items-center fs-13px text-gray-600">Amount Paid</label>
                                             </div>
                                             <div class="row mb-2">
@@ -213,63 +207,107 @@
             </div>
         </div>
 
-        <style>
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        </style>
+
 
     </div>
+
+
+    <script>
+        // Initialize Select2 and handle transaction search
+        $('#searchBySerialNumber').select2({
+            width: '300px',
+            placeholder: 'Search by serial number...',
+            minimumInputLength: 2,
+            allowClear: true,
+            ajax: {
+                url: '/api/products-manager/search-sales-transactions',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        serialNumber: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.map(transaction => ({
+                            id: transaction.serial_number,
+                            text: transaction.serial_number,
+                            transaction: transaction
+                        }))
+                    };
+                },
+                cache: true
+            }
+        }).on('select2:select', function(e) {
+            const selectedTransaction = e.params.data.transaction;
+            displayTransactionSummary(selectedTransaction);
+            updateCashBillData(selectedTransaction.serial_number);  // Added this line back
+        }).on('select2:clear', function() {
+            $('#transactionSummaryContainer').empty();
+        });
+
+        // Format date helper function
+        const formatDate = (dateString) => {
+            if (!dateString) return '';
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        };
+
+        // Format currency helper function
+        const formatCurrency = (amount) => {
+            if (!amount) return '0.00';
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        };
+
+        // Display transaction summary
+        const displayTransactionSummary = (transaction) => {
+            const deepBlue = '#0047AB';
+            const deepRed = 'rgba(245,13,55,0.98)';
+            const iconStyles = 'margin-right: 5px; vertical-align: middle;';
+
+            const summaryHtml = `
+        <div id="transactionSummaryContainer" style="font-family: Arial, sans-serif;">
+            <p style="margin: 0; font-size: 11px; line-height: 1.6;">
+                <span id="currentSerial" style="color: ${deepRed}; font-weight: bold;">
+                    <i class="fas fa-file-invoice" style="${iconStyles}"></i>${transaction.serial_number}
+                </span>
+                <span style="color: black;">
+                    <i class="fas fa-calendar" style="${iconStyles}"></i>Date: ${formatDate(transaction.transaction_date)}
+                </span>
+                <span style="color: ${deepBlue};">
+                    <i class="fas fa-user" style="${iconStyles}"></i>Created by: ${transaction.created_by}
+                </span>
+                <span style="color: black;">
+                    <i class="fas fa-money-bill" style="${iconStyles}"></i>Amount: ${formatCurrency(transaction.total_amount)}
+                </span>
+            </p>
+        </div>
+    `;
+
+            $('#transactionSummaryContainer').html(summaryHtml);
+        };
+    </script>
+
 
 
 
 
 
     <script>
-        // Global variables
-        let cashBillData = [];
-        let totalAmount = 0;
-        let totalTax = 0;
-        let totalItems = 0;
-
-        function initializeCashBillManager(containerId) {
-            const container = $(`#${containerId}`);
-            createStructure(container);
-            addEventListeners(container);
-        }
-
         function updateCashBillData(serialNumber) {
-            const container = $('#cashBillContainer');
-            if (serialNumber) {
-                fetchData(serialNumber, container);
-            } else {
-                showNoRecordsAlert(container, "No valid serial number provided.");
-            }
-        }
+            // Sample data structure that would normally come from API
 
-        function fetchData(serialNumber, container) {
-            $.ajax({
-                url: `/api/products-manager/order-transaction-details/${serialNumber}`,
-                method: 'GET',
-                success: function(data) {
-                    cashBillData = data;
-                    if (cashBillData.length === 0) {
-                        showNoRecordsAlert(container, "No records found for this transaction.");
-                    } else {
-                        displayBillData(container);
-                    }
-                    updateSidebar();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching cash bill data:', error);
-                    container.html('<div class="alert alert-danger" role="alert">Error loading cash bill data. Please try again later.</div>');
-                }
-            });
-        }
-
-        function createStructure(container) {
-            const structure = `
+            // Create the table structure
+            const tableStructure = `
         <div id="alertContainer"></div>
         <div class="table-responsive panel-heading bg-light-100">
             <table id="cash-bill-table" class="table table-bordered mb-0">
@@ -292,136 +330,175 @@
             </table>
         </div>
     `;
-            container.html(structure);
 
             // Add custom styles
-            if (!$("#custom-bill-manager-style").length) {
-                $("<style>")
-                    .attr("id", "custom-bill-manager-style")
-                    .prop("type", "text/css")
-                    .html(`
-                #cash-bill-table {
-                    font-size: 0.7rem;
-                }
-                #cash-bill-table th,
-                #cash-bill-table td {
-                    padding: 0.3rem;
-                }
-                #cash-bill-table .text-end {
-                    text-align: right;
-                }
-                .table-responsive {
-                    max-height: 500px;
-                    overflow-y: auto;
-                }
-            `)
-                    .appendTo("head");
+            const styles = `
+        <style id="custom-bill-manager-style">
+            #cash-bill-table {
+                font-size: 0.7rem;
             }
-        }
-
-        function showNoRecordsAlert(container, message) {
-            const alertHtml = `
-        <div class="alert alert-info" role="alert">
-            ${message}
-        </div>
+            #cash-bill-table th,
+            #cash-bill-table td {
+                padding: 0.3rem;
+            }
+            #cash-bill-table .text-end {
+                text-align: right;
+            }
+            .table-responsive {
+                max-height: 500px;
+                overflow-y: auto;
+            }
+        </style>
     `;
-            container.find('#alertContainer').html(alertHtml);
-            container.find('.table-responsive').hide();
-        }
 
-        function displayBillData(container) {
-            container.find('#alertContainer').empty();
-            container.find('.table-responsive').show();
-            const tbody = container.find('tbody');
-            const tfoot = container.find('tfoot');
-            tbody.empty();
+            // Insert the structure and styles
+            document.getElementById('cashBillContainer').innerHTML = styles + tableStructure;
 
-            cashBillData.forEach((item, index) => {
-                const tr = $('<tr>');
-                tr.append(`<td><input type="checkbox" class="row-checkbox" data-product-id="${item.product_id}"></td>`);
-                tr.append(`<td>${index + 1}</td>`);
-                tr.append(`<td>${item.product_id}</td>`);
-                tr.append(`<td>${item.product_code}</td>`);
-                tr.append(`<td>${item.product_name}</td>`);
-                tr.append(`<td class="text-end">${item.qty}</td>`);
-                tr.append(`<td class="text-end">${item.unitprice.toFixed(2)}</td>`);
-                tr.append(`<td class="text-end">${item.tax.toFixed(2)}</td>`);
-                tr.append(`<td class="text-end">${item.net_tax.toFixed(2)}</td>`);
-                tr.append(`<td class="text-end">${item.subtotal.toFixed(2)}</td>`);
-                tbody.append(tr);
-            });
+            // Function to display the data
+            function displayData(data) {
+                const tbody = document.querySelector('#cash-bill-table tbody');
+                const tfoot = document.querySelector('#cash-bill-table tfoot');
 
-            updateBillSummary(tfoot);
-        }
+                // Clear existing content
+                tbody.innerHTML = '';
 
-        function updateBillSummary(tfoot) {
-            totalItems = cashBillData.reduce((sum, item) => sum + item.qty, 0);
-            totalAmount = cashBillData.reduce((sum, item) => sum + item.subtotal, 0);
-            totalTax = cashBillData.reduce((sum, item) => sum + item.net_tax, 0);
+                // Calculate totals
+                let totalItems = 0;
+                let totalAmount = 0;
+                let totalTax = 0;
 
-            const summaryContent = `
-        <tr class="table-light">
-            <td colspan="5"><strong>Total Items: ${totalItems}</strong></td>
-            <td colspan="3" class="text-end"><strong>Total Tax: ${totalTax.toFixed(2)}</strong></td>
-            <td colspan="2" class="text-end"><strong>Total Amount: ${totalAmount.toFixed(2)}</strong></td>
-        </tr>
-    `;
-            tfoot.html(summaryContent);
-            updateSidebar();
-        }
+                // Add rows
+                data.forEach((item, index) => {
+                    totalItems += item.qty;
+                    totalAmount += item.subtotal;
+                    totalTax += item.net_tax;
 
-        function updateSidebar() {
-            // Update the total items
-            $('.table-borderless tr:first-child td:nth-child(2)').text(`${totalItems} items`);
+                    const row = `
+                <tr>
+                    <td><input type="checkbox" class="row-checkbox" data-product-id="${item.product_id}"></td>
+                    <td>${index + 1}</td>
+                    <td>${item.product_id}</td>
+                    <td>${item.product_code}</td>
+                    <td>${item.product_name}</td>
+                    <td class="text-end">${item.qty}</td>
+                    <td class="text-end">${item.unitprice.toFixed(2)}</td>
+                    <td class="text-end">${item.tax.toFixed(2)}</td>
+                    <td class="text-end">${item.net_tax.toFixed(2)}</td>
+                    <td class="text-end">${item.subtotal.toFixed(2)}</td>
+                </tr>
+            `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
 
-            // Update the subtotal
-            $('#subtotal b').text(totalAmount.toFixed(2));
+                // Add footer with totals
+                const footerRow = `
+            <tr class="table-light">
+                <td colspan="5"><strong>Total Items: ${totalItems}</strong></td>
+                <td colspan="3" class="text-end"><strong>Total Tax: ${totalTax.toFixed(2)}</strong></td>
+                <td colspan="2" class="text-end"><strong>Total Amount: ${totalAmount.toFixed(2)}</strong></td>
+            </tr>
+        `;
+                tfoot.innerHTML = footerRow;
 
-            // Update the tax amount
-            $('#tax b').text(totalTax.toFixed(2));
+                // Update sidebar if it exists
+                updateSidebar(totalItems, totalAmount, totalTax);
 
-            // Update the total amount
-            $('#totalAmount').text(totalAmount.toFixed(2));
+                // Add event listeners
+                setupEventListeners();
+            }
 
-            updateChange();
-        }
+            // Function to update sidebar
+            function updateSidebar(totalItems, totalAmount, totalTax) {
+                // Update items count if element exists
+                const itemsElement = document.querySelector('.table-borderless tr:first-child td:nth-child(2)');
+                if (itemsElement) itemsElement.textContent = `${totalItems} items`;
 
-        function updateChange() {
-            const receivedAmount = parseFloat($('#receivedAmount').val()) || 0;
-            const change = receivedAmount - totalAmount;
-            $('#change-balance b').text(change >= 0 ? change.toFixed(2) : '0.00');
-        }
+                // Update subtotal if element exists
+                const subtotalElement = document.querySelector('#subtotal b');
+                if (subtotalElement) subtotalElement.textContent = totalAmount.toFixed(2);
 
-        function addEventListeners(container) {
-            $('#receivedAmount').on('input', function() {
-                updateChange();
-            });
+                // Update tax if element exists
+                const taxElement = document.querySelector('#tax b');
+                if (taxElement) taxElement.textContent = totalTax.toFixed(2);
 
-            // Add event listener for the "Select All" checkbox
-            $('#select-all-checkbox').on('change', function() {
-                $('.row-checkbox').prop('checked', $(this).is(':checked'));
-            });
+                // Update total amount if element exists
+                const totalElement = document.querySelector('#totalAmount');
+                if (totalElement) totalElement.textContent = totalAmount.toFixed(2);
 
-            // Add event listener for individual row checkboxes
-            container.on('change', '.row-checkbox', function() {
-                const allChecked = $('.row-checkbox:checked').length === $('.row-checkbox').length;
-                $('#select-all-checkbox').prop('checked', allChecked);
-            });
-        }
+                // Update change if received amount input exists
+                updateChange(totalAmount);
+            }
 
-        // Call this function after the DOM is fully loaded
-        $(document).ready(function() {
-            // Initialize the received amount input with 0.00
-            $('#receivedAmount').val('0.00');
+            // Function to update change amount
+            function updateChange(totalAmount) {
+                const receivedInput = document.querySelector('#receivedAmount');
+                const changeElement = document.querySelector('#change-balance b');
 
-            // Initialize the cash bill manager
-            initializeCashBillManager('cashBillContainer');
-        });
+                if (receivedInput && changeElement) {
+                    const receivedAmount = parseFloat(receivedInput.value) || 0;
+                    const change = receivedAmount - totalAmount;
+                    changeElement.textContent = change >= 0 ? change.toFixed(2) : '0.00';
+                }
+            }
 
-        // Function to be called when a transaction is selected
-        function onTransactionSelected(serialNumber) {
-            updateCashBillData(serialNumber);
-            $(".messenger-chat").toggle();
+            // Function to setup event listeners
+            function setupEventListeners() {
+                // Select all checkbox
+                const selectAllCheckbox = document.querySelector('#select-all-checkbox');
+                const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', (e) => {
+                        rowCheckboxes.forEach(checkbox => checkbox.checked = e.target.checked);
+                    });
+                }
+
+                // Individual checkboxes
+                rowCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        if (selectAllCheckbox) {
+                            selectAllCheckbox.checked =
+                                Array.from(rowCheckboxes).every(cb => cb.checked);
+                        }
+                    });
+                });
+
+                // Received amount input
+                const receivedInput = document.querySelector('#receivedAmount');
+                if (receivedInput) {
+                    receivedInput.addEventListener('input', () => {
+                        const totalAmount = parseFloat(document.querySelector('#totalAmount')?.textContent || '0');
+                        updateChange(totalAmount);
+                    });
+                }
+            }
+
+            // If serialNumber is provided, fetch data from API
+            if (serialNumber) {
+                fetch(`/api/products-manager/order-transaction-details/${serialNumber}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            document.querySelector('#alertContainer').innerHTML = `
+                        <div class="alert alert-info" role="alert">
+                            No records found for this transaction.
+                        </div>
+                    `;
+                            document.querySelector('.table-responsive').style.display = 'none';
+                        } else {
+                            displayData(data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching cash bill data:', error);
+                        document.querySelector('#alertContainer').innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        Error loading cash bill data. Please try again later.
+                    </div>
+                `;
+                        document.querySelector('.table-responsive').style.display = 'none';
+                    });
+            }
         }
     </script>
 
@@ -554,19 +631,9 @@
             // Clear the cash bill table
             $('#cash-bill-table tbody').empty();
 
-            // Reset any other relevant UI elements
-            // For example, if you have a current serial number display, you might want to reset it:
-            // $('#currentSerial').text('');
+
         }
 
-        // Utility functions
-        function showLoading() {
-            $('#loading-overlay').show();
-        }
-
-        function hideLoading() {
-            $('#loading-overlay').hide();
-        }
 
         function showNotification(type, message) {
             $.wnoty({
@@ -579,6 +646,8 @@
         // Attach event listener to the save button
         $('#saveSaleTransactionBtn').on('click', saveSaleTransaction);
     </script>
+
+
 
 </div>
 
