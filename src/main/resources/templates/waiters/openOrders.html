@@ -419,11 +419,11 @@
                      } else if (header === 'Actions') {
                         const $deleteBtn = $('<button>').html('<i class="fas fa-trash"></i>').attr({
                            title: 'Delete',
-                           style: 'padding: 2px 4px; margin-right: 2px; background-color: #dc3545; color: white; border: none; cursor: pointer;'
+                           style: 'padding: 2px 4px; margin-right: 2px; background-color: #dc3545; color: white; border: none; cursor: pointer; display:none'
                         }).click(() => deleteOrder(order.OrderID));
                         const $updateBtn = $('<button>').html('<i class="fas fa-edit"></i>').attr({
                            title: 'Update',
-                           style: 'padding: 2px 4px; background-color: #ffc107; color: white; border: none; cursor: pointer;'
+                           style: 'padding: 2px 4px; background-color: #ffc107; color: white; border: none; cursor: pointer; display:none'
                         }).click(() => updateOrder(order.OrderID));
                         $cell.append($deleteBtn, $updateBtn);
                      } else {

@@ -244,13 +244,16 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
     }
     @Override
     public List<Map<String, Object>> GetRunningOrdersByWaiters(LocalDate startDate, LocalDate endDate, String waiterName) {
-        return jdbcTemplate.queryForList("CALL GetRunningOrdersByWaiters(?,?,?)",startDate, endDate,waiterName);
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL GetRunningOrdersByWaiters(?,?,?,?)";
+        return jdbcTemplate.queryForList(sql,startDate, endDate,waiterName,branchId);
     }
     @Override
     public List<Map<String, Object>> GetEnhancedCashierReport(LocalDate startDate, LocalDate endDate) {
 
-
-        return jdbcTemplate.queryForList("CALL GetEnhancedCashierReport(?,?)",startDate, endDate);
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL GetEnhancedCashierReport(?,?,?)";
+        return jdbcTemplate.queryForList(sql,startDate, endDate,branchId);
     }
 
     @Override
