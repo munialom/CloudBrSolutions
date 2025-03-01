@@ -258,7 +258,10 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
 
     @Override
     public List<Map<String, Object>> SearchSalesTransactions(String serialNumber) {
-        return jdbcTemplate.queryForList("CALL SearchSalesTransactions(?)", serialNumber);
+        Integer branchId = Math.toIntExact(SecurityUtils.getCurrentUserBranch().getId());
+        String sql = "CALL SearchSalesTransactions(?,?)";
+
+        return jdbcTemplate.queryForList(sql, serialNumber,branchId);
     }
 
 
