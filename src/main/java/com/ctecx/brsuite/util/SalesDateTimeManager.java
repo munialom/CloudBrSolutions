@@ -9,6 +9,7 @@ public class SalesDateTimeManager {
   /*  private static final LocalTime SALES_START_TIME = LocalTime.of(8, 0);*/
     private static final LocalTime SALES_START_TIME = LocalTime.of(7, 0);
     private static final LocalTime SALES_START_TIME_G2 = LocalTime.of(10, 0);
+
     public ZonedDateTime getCurrentTransactionDateTime() {
         return ZonedDateTime.now(TIMEZONE_UTC_PLUS_3);
     }

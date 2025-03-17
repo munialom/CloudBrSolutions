@@ -100,7 +100,7 @@ public class TransactionService {
         Long branchId = SecurityUtils.getCurrentUserBranch().getId();
         LocalDate salesDate;
 
-        if (branchId == 19 || branchId == 20) {
+        if (branchId == 19) {
             salesDate = salesDateTimeManager.getSalesDate_G2(transactionDateTime);
         } else {
             salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
