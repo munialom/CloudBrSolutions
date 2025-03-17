@@ -8,7 +8,7 @@ public class SalesDateTimeManager {
     private static final ZoneId TIMEZONE_UTC_PLUS_3 = ZoneId.of("UTC+3");
   /*  private static final LocalTime SALES_START_TIME = LocalTime.of(8, 0);*/
     private static final LocalTime SALES_START_TIME = LocalTime.of(7, 0);
-    private static final LocalTime SALES_START_TIME_G2 = LocalTime.of(9, 0);
+    private static final LocalTime SALES_START_TIME_G2 = LocalTime.of(10, 0);
     public ZonedDateTime getCurrentTransactionDateTime() {
         return ZonedDateTime.now(TIMEZONE_UTC_PLUS_3);
     }
@@ -24,6 +24,21 @@ public class SalesDateTimeManager {
             return transactionDate;
         }
     }
+
+
+
+    public LocalDate getSalesDate_G2(ZonedDateTime transactionDateTime) {
+        ZonedDateTime utcPlus3DateTime = transactionDateTime.withZoneSameInstant(TIMEZONE_UTC_PLUS_3);
+        LocalDate transactionDate = utcPlus3DateTime.toLocalDate();
+        LocalTime transactionTime = utcPlus3DateTime.toLocalTime();
+
+        if (transactionTime.isBefore(SALES_START_TIME_G2)) {
+            return transactionDate.minusDays(1);
+        } else {
+            return transactionDate;
+        }
+    }
+
 
     public void logTimezoneInfo() {
         ZoneId systemZone = ZoneId.systemDefault();

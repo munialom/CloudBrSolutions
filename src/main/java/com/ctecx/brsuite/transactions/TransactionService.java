@@ -2,6 +2,7 @@ package com.ctecx.brsuite.transactions;
 
 import com.ctecx.brsuite.customproductsmanager.CustomManagerProductService;
 import com.ctecx.brsuite.util.SalesDateTimeManager;
+import com.ctecx.brsuite.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +71,7 @@ public class TransactionService {
         return transactionRepository.saveAll(transactions);
     }
 
-    private Transaction createTransaction(SaleTransactionDTO dto, String paymentMode, BigDecimal amount) {
+  /*  private Transaction createTransaction(SaleTransactionDTO dto, String paymentMode, BigDecimal amount) {
         ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
         LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
         Transaction transaction = new Transaction();
@@ -89,6 +90,39 @@ public class TransactionService {
         transaction.setTransactionDate(salesDate);
         transaction.setPaymentState(PaymentState.PAID);
         transaction.setOrderState(OrderState.COMPLETED);
+        return transaction;
+    }*/
+
+    private Transaction createTransaction(SaleTransactionDTO dto, String paymentMode, BigDecimal amount) {
+        ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
+
+        // Determine which sales date method to use based on the branch ID
+        Long branchId = SecurityUtils.getCurrentUserBranch().getId();
+        LocalDate salesDate;
+
+        if (branchId == 19 || branchId == 20) {
+            salesDate = salesDateTimeManager.getSalesDate_G2(transactionDateTime);
+        } else {
+            salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setSerialNumber(dto.getSerialNumber());
+        transaction.setAmount(amount);
+        transaction.setCredit(amount);
+        transaction.setDebit(BigDecimal.ZERO);
+        transaction.setDescription(dto.getDescription());
+        transaction.setStatus("COMPLETED");
+        transaction.setAccountName("Sales Account");
+        transaction.setPaymentMode(paymentMode);
+        transaction.setModule("SALES");
+        transaction.setRef(dto.getSerialNumber());
+        transaction.setTransaction_type("CREDIT");
+        transaction.setSubmodule("CASH_SALE");
+        transaction.setTransactionDate(salesDate);
+        transaction.setPaymentState(PaymentState.PAID);
+        transaction.setOrderState(OrderState.COMPLETED);
+
         return transaction;
     }
 }

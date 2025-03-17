@@ -171,7 +171,7 @@ public class SalesService {
         return stockTransaction;
     }
 
-    private StockTransaction createStockTransactionWaiters(SaleStock saleStock, Product product, String sn,String oderNumber, SalesStockDTO salesStockDTO) {
+/*    private StockTransaction createStockTransactionWaiters(SaleStock saleStock, Product product, String sn,String oderNumber, SalesStockDTO salesStockDTO) {
         StockTransaction stockTransaction = new StockTransaction();
         ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
         LocalDate salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
@@ -222,8 +222,70 @@ public class SalesService {
         stockTransaction.setBranch(SecurityUtils.getCurrentUserBranch().getBranchName());
 
         return stockTransaction;
-    }
+    }*/
 
+    private StockTransaction createStockTransactionWaiters(SaleStock saleStock, Product product, String sn, String orderNumber, SalesStockDTO salesStockDTO) {
+        StockTransaction stockTransaction = new StockTransaction();
+        ZonedDateTime transactionDateTime = salesDateTimeManager.getCurrentTransactionDateTime();
+
+        // Determine which sales date method to use based on the branch ID
+        Long branchId = SecurityUtils.getCurrentUserBranch().getId();
+        LocalDate salesDate;
+
+        if (branchId == 19 || branchId == 20) {
+            salesDate = salesDateTimeManager.getSalesDate_G2(transactionDateTime);
+        } else {
+            salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
+        }
+
+        System.out.println("Zone Time: " + transactionDateTime);
+        System.out.println("Date: " + salesDate);
+        log.info("Processing sale at {} for sales date {}", transactionDateTime, salesDate);
+
+        BigDecimal changeOut = salesStockDTO.calculateChangeOut();
+
+        stockTransaction.setProductCode(product.getProductCode());
+        stockTransaction.setProductName(product.getProductName());
+        stockTransaction.setTransactionDate(salesDate);
+        stockTransaction.setProduct(product);
+        stockTransaction.setModule("SALES");
+        stockTransaction.setSubModule("CASH SALE");
+        stockTransaction.setStockIn(0);
+        stockTransaction.setRevenue(product.getRevenue());
+        stockTransaction.setRevenue_code(product.getRevenue().getRevenueName());
+
+        Customer customer = myCustomerService.getDefaultCustomer();
+        stockTransaction.setCustomer(customer);
+
+        stockTransaction.setStockOut(saleStock.getQty());
+        stockTransaction.setDescription("Stock Sale for " + product.getProductName());
+        stockTransaction.setStatus("Active");
+        System.out.println("ExistingSerialNumber: " + salesStockDTO.getExistingSerialNumber());
+
+        // Check if addItems is true and use existingSerialNumber if available
+        if (salesStockDTO.isAddItems()) {
+            stockTransaction.setSerialNumber(salesStockDTO.getExistingSerialNumber());
+        } else {
+            stockTransaction.setSerialNumber(sn);
+        }
+
+        stockTransaction.setProductCost(product.getProductCost());
+        stockTransaction.setProductSalePrice(product.getProductPrice());
+        stockTransaction.setDiscount(saleStock.getDiscount());
+        stockTransaction.setTax(saleStock.getTax());
+        stockTransaction.setNetTax(saleStock.getNetTax());
+        stockTransaction.setSubtotal(saleStock.getSubtotal());
+        stockTransaction.setChangeOut(changeOut);
+        stockTransaction.setPaymentState(PaymentState.PENDING);
+        stockTransaction.setOrderState(OrderState.OPEN);
+        stockTransaction.setTransactionDate(salesDate);
+        stockTransaction.setStore(storeService.getDefaultCounterStore());
+        stockTransaction.setOrderNumber(orderNumber);
+        stockTransaction.setBranchId(Math.toIntExact(branchId));
+        stockTransaction.setBranch(SecurityUtils.getCurrentUserBranch().getBranchName());
+
+        return stockTransaction;
+    }
 
     @Transactional
     public String splitOrders(SplitOrderDTO splitOrderDTO) {
