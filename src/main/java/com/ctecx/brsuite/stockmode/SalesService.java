@@ -238,9 +238,9 @@ public class SalesService {
             salesDate = salesDateTimeManager.getSalesDate(transactionDateTime);
         }
 
-        System.out.println("Zone Time: " + transactionDateTime);
-        System.out.println("Date: " + salesDate);
-        log.info("Processing sale at {} for sales date {}", transactionDateTime, salesDate);
+       // System.out.println("Zone Time: " + transactionDateTime);
+      //  System.out.println("Date: " + salesDate);
+       // log.info("Processing sale at {} for sales date {}", transactionDateTime, salesDate);
 
         BigDecimal changeOut = salesStockDTO.calculateChangeOut();
 
@@ -260,7 +260,7 @@ public class SalesService {
         stockTransaction.setStockOut(saleStock.getQty());
         stockTransaction.setDescription("Stock Sale for " + product.getProductName());
         stockTransaction.setStatus("Active");
-        System.out.println("ExistingSerialNumber: " + salesStockDTO.getExistingSerialNumber());
+      //  System.out.println("ExistingSerialNumber: " + salesStockDTO.getExistingSerialNumber());
 
         // Check if addItems is true and use existingSerialNumber if available
         if (salesStockDTO.isAddItems()) {

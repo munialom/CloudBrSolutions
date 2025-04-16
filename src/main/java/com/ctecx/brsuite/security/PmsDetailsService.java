@@ -24,20 +24,20 @@ public class PmsDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        logger.debug("Attempting to load user by email: {}", email);
+        //logger.debug("Attempting to load user by email: {}", email);
         User user = userRepository.getUserByEmail(email);
         if (user == null) {
-            logger.error("User not found with email: {}", email);
+           // logger.error("User not found with email: {}", email);
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
         return new PmsUserDetails(user);
     }
 
     public UserDetails loadUserByPin(String pin) throws UsernameNotFoundException {
-        logger.debug("Attempting to load user by PIN");
+        //logger.debug("Attempting to load user by PIN");
         User user = userRepository.getUserByPin(pin);
         if (user == null || !user.hasRole("Waiter")) {
-            logger.error("Could not find waiter with PIN");
+            //logger.error("Could not find waiter with PIN");
             throw new UsernameNotFoundException("Could not find waiter with PIN");
         }
         return new PmsUserDetails(user);
@@ -46,7 +46,7 @@ public class PmsDetailsService implements UserDetailsService {
 
 
     public void updateLastLoginDate(String username) {
-        logger.debug("Updating last login date for user: {}", username);
+        //logger.debug("Updating last login date for user: {}", username);
         User user = userRepository.getUserByEmail(username);
         if (user != null) {
             user.setLastLogin(LocalDateTime.now());

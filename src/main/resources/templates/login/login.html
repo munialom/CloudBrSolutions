@@ -156,6 +156,10 @@
 				<!-- Regular Login Form -->
 				<div id="regularLoginForm">
 					<div th:if="${param.error}" class="error-message" th:text="${param.error[0]}"></div>
+					<!-- Error message display -->
+					<div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}">
+						Error message will be displayed here
+					</div>
 					<form th:action="@{/login}" method="POST" class="fs-13px">
 						<div class="mb-3">
 							<label for="emailAddress" class="form-label">Email Address</label>
