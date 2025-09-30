@@ -15,7 +15,6 @@
 	<description>brsuite</description>
 	<properties>
 		<java.version>17</java.version>
-		<jasperreports.version>6.20.0</jasperreports.version>
 		<itext.version>8.0.5</itext.version>
 	</properties>
 	<dependencies>
@@ -81,13 +80,15 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>${jasperreports.version}</version>
+			<version>6.21.3</version> <!-- or the latest stable -->
 		</dependency>
+
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
-			<version>${jasperreports.version}</version>
+			<version>6.21.3</version>
 		</dependency>
+
 		<!-- JSON library -->
 		<dependency>
 			<groupId>org.json</groupId>
