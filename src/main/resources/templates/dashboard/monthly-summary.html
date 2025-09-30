@@ -1,435 +1,95 @@
 <div th:fragment="payee_form">
 
-
-<!--
    <div class="col-lg-12">
       <div class="card border">
-         <div class="card-header bg-none p-3 h6 m-0">
-            <div class="d-flex align-items-center justify-content-between">
-               &lt;!&ndash; Left side with icon and title &ndash;&gt;
-               <div class="d-flex align-items-center">
-                  <i class="fa fa-credit-card fa-lg me-2 text-gray text-opacity-50"></i>
-                  <span class="fw-bold">Revenue Summary</span>
-               </div>
+         <!-- Card Header -->
+         <div class="card-header bg-transparent p-3">
+            <div class="row align-items-center g-3">
 
-               &lt;!&ndash; Center controls with branch and date inputs &ndash;&gt;
-               <div class="d-flex align-items-center gap-3">
-                  &lt;!&ndash; Branch Selector &ndash;&gt;
-                  <div id="branch_selector_container" style="min-width: 250px;"></div>
-
-                  &lt;!&ndash; Date Range Inputs &ndash;&gt;
-                  <div class="d-flex align-items-center gap-2">
-                     <label for="startDate" class="form-label mb-0">Start Date:</label>
-                     <input type="date" id="startDate" class="form-control form-control-sm" style="width: 140px;" />
-                     <label for="endDate" class="form-label mb-0">End Date:</label>
-                     <input type="date" id="endDate" class="form-control form-control-sm" style="width: 140px;" />
-                     <button type="button" class="btn btn-primary btn-sm" id="loadReportButton">Load</button>
+               <!-- Title and Branch Selector -->
+               <div class="col-lg-4 col-md-12">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                     <div class="d-flex align-items-center gap-2">
+                        <i class="fa fa-credit-card fa-lg text-muted"></i>
+                        <h5 class="card-title mb-0 fw-bold">Revenue Summary</h5>
+                     </div>
+                     <div id="branch_selector_container" class="flex-grow-1" style="min-width: 150px; max-width: 200px;"></div>
                   </div>
-
-                  &lt;!&ndash; Print Button &ndash;&gt;
-                  <button type="button" class="btn btn-default px-2" title="Print" id="printButton">
-                     <i class="fas fa-print"></i>
-                  </button>
-               </div>
-            </div>
-         </div>
-
-         <div class="card-body">
-            <div id="tableWrapper">
-               &lt;!&ndash; Table content will be loaded here &ndash;&gt;
-            </div>
-         </div>
-      </div>
-   </div>
-
-   <script>
-      ($ => {
-         // Configuration
-         const config = {
-            revenueSummaryApiUrl: '/api/products-manager/stock-valuation-report', // Replace with your API endpoint
-            branchesApiUrl: '/api/branches/branches-list',
-            recordsPerPage: 10, // Consider using this if you paginate the table
-            exportFileName: 'revenue_summary_report' // Modify as needed
-         };
-
-         // State management
-         const state = {
-            fullData: [],
-            currentPage: 1,
-            totalPages: 0,
-            totalRecords: 0,
-            filteredData: [],
-            processedData: [],
-            visiblePages: 5,
-            dateRange: {
-               startDate: null,
-               endDate: null
-            },
-            selectedBranch: null
-         };
-
-         // Data processing utilities (Keep these if you need them)
-         const dataProcessor = {
-            addAutoIncrement: (data) => {
-               return data.map((item, index) => ({
-                  no: (state.currentPage - 1) * config.recordsPerPage + index + 1,
-                  ...item
-               }));
-            },
-            prepareForExport: (data) => {
-               return data.map(item => {
-                  const { no, ...rest } = item;
-                  return rest;
-               });
-            },
-            formatNumber: (value) => {
-               return typeof value === 'number'
-                       ? new Intl.NumberFormat('en-US').format(value)
-                       : 'N/A';
-            }
-         };
-
-         // Export utilities
-         const exportUtils = {
-            print: () => {
-               window.print();
-            }
-         };
-
-         // Table generation (Adapt this to your data structure)
-         const tableGenerator = {
-            createTable: (data) => {
-               if (!data || data.length === 0) {
-                  return $('<div class="alert alert-info">No data to display.</div>');
-               }
-               const $table = $('<table>').addClass('dynamic-table table table-bordered table-striped table-sm');
-               const $thead = $('<thead>').appendTo($table);
-               const $tbody = $('<tbody>').appendTo($table);
-
-               // Assuming data is an array of objects
-               const headers = Object.keys(data[0]); // Dynamically get headers from the first data item
-               const headerDisplayNames = headers.map(header => header.replace(/_/g, ' ').toUpperCase());
-
-               $('<tr>').append(
-                       headerDisplayNames.map(header => $('<th>').text(header))
-               ).appendTo($thead);
-
-               data.forEach(row => {
-                  const $tr = $('<tr>');
-                  headers.forEach(header => {
-                     let cellValue = row[header];
-                     if (typeof cellValue === 'number') {
-                        cellValue = dataProcessor.formatNumber(cellValue); // Use the formatting utility
-                     }
-                     $('<td>').html(cellValue != null ? cellValue : '').appendTo($tr);
-                  });
-                  $tbody.append($tr);
-               });
-
-               return $table;
-            },
-
-            createExportButtons: () => { // Removed unnecessary buttons
-               return $('<div>').addClass('btn-group mb-3').append([
-                  createButton('Print', 'fas fa-print', 'btn-info', exportUtils.print)
-               ]);
-            }
-         };
-
-         // Branch selector (Reusing and adapting your existing branch selector)
-         const createBranchSelector = () => {
-            const $container = $('#branch_selector_container');
-            $container.empty(); // Ensure container is empty
-
-            const $select = $('<select>')
-                    .attr('id', 'branchSelect')
-                    .addClass('form-control select2-branch')
-                    .attr('style', 'width: 100%');
-
-            $container.append($select); // Append select to container
-
-            $('.select2-branch').select2({
-               placeholder: 'Select a branch',
-               allowClear: true,
-               width: '100%',
-               ajax: {
-                  url: config.branchesApiUrl,
-                  dataType: 'json',
-                  delay: 250,
-                  data: function(params) {
-                     return {
-                        keyword: params.term || ''
-                     };
-                  },
-                  processResults: function(data) {
-                     return {
-                        results: data.map(branch => ({
-                           id: branch.id,
-                           text: `${branch.branchName} (${branch.branchCode})`,
-                           branch: branch
-                        }))
-                     };
-                  },
-                  cache: true
-               },
-               minimumInputLength: 0
-            }).on('change', function() {
-               const selectedBranchId = $(this).val();
-               state.selectedBranch = selectedBranchId;
-            });
-         };
-
-
-         // Pagination component (Adapt if you need pagination based on the API response)
-         const createPagination = () => {
-            // Modify this if you need to paginate based on the data
-            return $('<div>'); // Return an empty div if no pagination is needed
-         };
-
-         // Helper functions (Reusing)
-         const createButton = (text, icon, className, action) => {
-            return $('<button>').addClass(`btn ${className} btn-sm`)
-                    .html(`<i class="${icon} mr-1"></i>${text}`)
-                    .on('click', action);
-         };
-
-         const createPaginationItem = (text, enabled, action, active = false) => {
-            return $('<li>').addClass(`page-item ${!enabled ? 'disabled' : ''} ${active ? 'active' : ''}`)
-                    .append(
-                            $('<a>').addClass('page-link')
-                                    .attr('href', 'javascript:void(0)')
-                                    .text(text)
-                                    .on('click', (e) => {
-                                       e.preventDefault();
-                                       if (enabled) action();
-                                    })
-                    );
-         };
-
-         // Format date for export (if needed)
-         const formatDateForExport = () => {
-            const now = new Date();
-            return now.toISOString().split('T')[0];
-         };
-
-         // Event handlers
-         const changePage = (newPage) => {
-            // Implement this if you need to handle pagination
-         };
-
-         const filterTable = (searchTerm) => {
-            // Implement filtering logic here (if applicable)
-         };
-
-         // Data fetching function
-         const fetchRevenueSummaryData = () => {
-            const startDate = $('#startDate').val();
-            const endDate = $('#endDate').val();
-
-            if (!startDate || !endDate) {
-               $.wnoty({
-                  type: 'warning',
-                  message: 'Please select both start and end dates.',
-                  position: 'top-right'
-               });
-               return;
-            }
-
-            if (!state.selectedBranch) {
-               $.wnoty({
-                  type: 'warning',
-                  message: 'Please select a branch.',
-                  position: 'top-right'
-               });
-               return;
-            }
-
-            $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
-
-            const apiUrl = `${config.revenueSummaryApiUrl}?startDate=${startDate}&endDate=${endDate}&branchId=${state.selectedBranch}`;
-
-            return $.ajax({
-               url: apiUrl,
-               method: 'GET',
-               dataType: 'json'
-            }).then(data => {
-               if (data && data.length > 0) {
-                  state.fullData = data; // Store raw data
-                  state.filteredData = data; // For basic display, no filtering yet
-                  state.processedData = data; // Data prepared for the table (no pagination yet)
-                  renderTable();
-               } else {
-                  $('#tableWrapper').html('<div class="alert alert-info">No records found for the selected criteria.</div>');
-               }
-            }).catch(error => {
-               console.error('Error fetching data:', error);
-               $('#tableWrapper').html(
-                       '<div class="alert alert-danger">Error loading data. Please try again later.</div>'
-               );
-               $.wnoty({
-                  type: 'error',
-                  message: 'Failed to load data. Please try again.',
-                  position: 'top-right'
-               });
-            });
-         };
-
-
-         // Render functions (Modified)
-         const renderTable = () => {
-            const $wrapper = $('#tableWrapper');
-            $wrapper.empty();
-
-            $wrapper.append(tableGenerator.createExportButtons());
-            $wrapper.append(tableGenerator.createTable(state.processedData)); // Pass the data
-            $wrapper.append(createPagination()); // Implement pagination if needed
-         };
-
-         // Initialize (Adapted)
-         const initialize = () => {
-            const $target = $('#table_div_content'); // Assuming this is the container
-            $target.empty();
-
-            // Create table wrapper
-            const $tableWrapper = $('#tableWrapper');
-
-            // Initialize date pickers - set default values
-            const today = new Date().toISOString().split('T')[0];
-            $('#startDate').val(today);
-            $('#endDate').val(today);
-            state.dateRange.startDate = today;
-            state.dateRange.endDate = today;
-
-            // Initialize branch selector
-            createBranchSelector();
-
-            // Event listeners
-            $('#loadReportButton').on('click', fetchRevenueSummaryData);
-            $('#printButton').on('click', exportUtils.print);
-         };
-
-         // Apply styles (Reusing your existing styles)
-         const applyStyles = () => {
-            $('head').append(`
-            <style>
-                .dynamic-table {
-                    width: 100%;
-                    font-family: 'Roboto', sans-serif;
-                    font-size: 11px;
-                }
-                .dynamic-table th {
-                    font-weight: 600;
-                    color: #495057;
-                    text-transform: uppercase;
-                    padding: 6px 8px !important;
-                    vertical-align: middle !important;
-                }
-                .dynamic-table td {
-                    padding: 4px 8px !important;
-                    vertical-align: middle !important;
-                    height: 24px !important;
-                    white-space: nowrap;
-                    font-weight: normal;
-                }
-                .pagination-wrapper {
-                    background: #f8f9fa;
-                    padding: 8px;
-                    border-radius: 4px;
-                }
-                .pagination {
-                    margin-bottom: 0;
-                    gap: 2px;
-                }
-                .pagination .page-link {
-                    padding: 4px 8px;
-                    font-size: 11px;
-                    border-radius: 3px;
-                    color: #333;
-                    background-color: #fff;
-                    border: 1px solid #dee2e6;
-                    min-width: 28px;
-                    text-align: center;
-                }
-                .pagination .page-item.active .page-link {
-                    background-color: #007bff;
-                    border-color: #007bff;
-                    color: #fff;
-                    font-weight: 500;
-                }
-                .pagination .page-item.disabled .page-link {
-                    background-color: #e9ecef;
-                    border-color: #dee2e6;
-                    color: #6c757d;
-                }
-                .btn-group {
-                    gap: 5px;
-                }
-                .form-label {
-                    font-size: 12px;
-                    margin-bottom: 0.25rem;
-                }
-                @media print {
-                    .btn-group, #searchInput, .pagination-wrapper {
-                        display: none !important;
-                    }
-                    .dynamic-table {
-                        font-size: 10px;
-                    }
-                }
-            </style>
-        `);
-         };
-
-
-         // Start the application
-         $(() => {
-            applyStyles();
-            initialize();
-         });
-      })(jQuery);
-   </script>
--->
-
-
-   <div class="col-lg-12">
-      <div class="card border">
-         <div class="card-header bg-none p-3 h6 m-0">
-            <div class="d-flex align-items-center justify-content-between">
-               <!-- Left side with icon and title -->
-               <div class="d-flex align-items-center">
-                  <i class="fa fa-credit-card fa-lg me-2 text-gray text-opacity-50"></i>
-                  <span class="fw-bold">Revenue Summary</span>
                </div>
 
-               <!-- Center controls with branch and date inputs -->
-               <div class="d-flex align-items-center gap-3">
-                  <!-- Branch Selector -->
-                  <div id="branch_selector_container" style="min-width: 250px;"></div>
-
-                  <!-- Date Range Inputs -->
-                  <div class="d-flex align-items-center gap-2">
-                     <label for="startDate" class="form-label mb-0">Start Date:</label>
-                     <input type="date" id="startDate" class="form-control form-control-sm" style="width: 140px;" />
-                     <label for="endDate" class="form-label mb-0">End Date:</label>
-                     <input type="date" id="endDate" class="form-control form-control-sm" style="width: 140px;" />
-                     <button type="button" class="btn btn-primary btn-sm" id="loadReportButton">Load</button>
+               <!-- Date Range Controls -->
+               <div class="col-lg-5 col-md-12">
+                  <div class="d-flex align-items-center gap-2 flex-wrap justify-content-lg-center">
+                     <div class="d-flex align-items-center gap-1">
+                        <label for="startDate" class="form-label mb-0 text-muted small">From:</label>
+                        <input
+                                type="date"
+                                id="startDate"
+                                class="form-control form-control-sm"
+                                style="width: 140px;"
+                        />
+                     </div>
+                     <div class="d-flex align-items-center gap-1">
+                        <label for="endDate" class="form-label mb-0 text-muted small">To:</label>
+                        <input
+                                type="date"
+                                id="endDate"
+                                class="form-control form-control-sm"
+                                style="width: 140px;"
+                        />
+                     </div>
+                     <button
+                             type="button"
+                             class="btn btn-primary btn-sm px-3"
+                             id="loadReportButton"
+                     >
+                        <i class="fas fa-search me-1"></i>Load
+                     </button>
                   </div>
-
-                  <!-- Print Button -->
-                  <button type="button" class="btn btn-default px-2" title="Print" id="printButton">
-                     <i class="fas fa-print"></i>
-                  </button>
                </div>
+
+               <!-- Export Actions -->
+               <div class="col-lg-3 col-md-12">
+                  <div class="d-flex justify-content-lg-end justify-content-start gap-1">
+                     <div class="btn-group" role="group" aria-label="Export options">
+                        <button
+                                type="button"
+                                class="btn btn-outline-success btn-sm"
+                                title="Export to Excel"
+                                id="excelButton"
+                        >
+                           <i class="fas fa-file-excel me-1"></i>Excel
+                        </button>
+                        <button
+                                type="button"
+                                class="btn btn-outline-danger btn-sm"
+                                title="Export to PDF"
+                                id="pdfButton"
+                        >
+                           <i class="fas fa-file-pdf me-1"></i>PDF
+                        </button>
+                        <button
+                                type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                title="Print Report"
+                                id="printButton"
+                        >
+                           <i class="fas fa-print me-1"></i>Print
+                        </button>
+                     </div>
+                  </div>
+               </div>
+
             </div>
          </div>
 
+         <!-- Card Body -->
          <div class="card-body p-0">
-            <div class="table-container">
-               <div id="tableWrapper">
-                  <!-- Table content will be loaded here -->
-               </div>
+            <div class="table-responsive">
+               <div id="tableWrapper" class="w-100"></div>
             </div>
          </div>
+
       </div>
    </div>
 
@@ -439,19 +99,22 @@
          const config = {
             revenueSummaryApiUrl: '/api/products-manager/stock-valuation-report',
             branchesApiUrl: '/api/branches/branches-list',
-            recordsPerPage: 10,
-            exportFileName: 'revenue_summary_report'
+            recordsPerPageOptions: [10, 20, 50, 100, 'All'],
+            defaultRecordsPerPage: 10,
+            exportFileName: 'revenue_summary_report',
+            ajaxTimeout: 10000 // 10 seconds timeout
          };
 
          // State management
          const state = {
             fullData: [],
+            filteredData: [],
+            processedData: [],
             currentPage: 1,
             totalPages: 0,
             totalRecords: 0,
-            filteredData: [],
-            processedData: [],
             visiblePages: 5,
+            recordsPerPage: config.defaultRecordsPerPage,
             dateRange: {
                startDate: null,
                endDate: null
@@ -459,11 +122,17 @@
             selectedBranch: null
          };
 
+         // DOM element cache
+         const elements = {
+            tableWrapper: $('#tableWrapper'),
+            loadingOverlay: null
+         };
+
          // Data processing utilities
          const dataProcessor = {
             addAutoIncrement: (data) => {
                return data.map((item, index) => ({
-                  no: (state.currentPage - 1) * config.recordsPerPage + index + 1,
+                  no: (state.currentPage - 1) * state.recordsPerPage + index + 1,
                   ...item
                }));
             },
@@ -476,12 +145,42 @@
             formatNumber: (value) => {
                return typeof value === 'number'
                        ? new Intl.NumberFormat('en-US').format(value)
-                       : 'N/A';
+                       : value != null ? value : 'N/A';
             }
          };
 
          // Export utilities
          const exportUtils = {
+            toExcel: () => {
+               elements.loadingOverlay.show();
+               try {
+                  const exportData = dataProcessor.prepareForExport(state.processedData);
+                  generateExcel(exportData, config.exportFileName);
+                  elements.loadingOverlay.hide();
+               } catch (error) {
+                  elements.loadingOverlay.hide();
+                  $.wnoty({
+                     type: 'error',
+                     message: 'Error generating Excel: ' + error.message,
+                     position: 'top-right'
+                  });
+               }
+            },
+            toPDF: () => {
+               elements.loadingOverlay.show();
+               try {
+                  const exportData = dataProcessor.prepareForExport(state.processedData);
+                  printGeneratePdf(exportData, 'Revenue Summary Report');
+                  elements.loadingOverlay.hide();
+               } catch (error) {
+                  elements.loadingOverlay.hide();
+                  $.wnoty({
+                     type: 'error',
+                     message: 'Error generating PDF: ' + error.message,
+                     position: 'top-right'
+                  });
+               }
+            },
             print: () => {
                window.print();
             }
@@ -491,7 +190,7 @@
          const tableGenerator = {
             createTable: (data) => {
                if (!data || data.length === 0) {
-                  return $('<div class="alert alert-info">No data to display.</div>');
+                  return $('<div>').addClass('alert alert-info m-2').text('No data to display.');
                }
 
                const $tableContainer = $('<div>').addClass('table-inner-container');
@@ -503,7 +202,6 @@
                // Headers
                const headers = Object.keys(data[0]);
                const headerDisplayNames = headers.map(header => header.replace(/_/g, ' ').toUpperCase());
-
                const $headerRow = $('<tr>').append(
                        headerDisplayNames.map(header => $('<th>').text(header))
                );
@@ -513,11 +211,8 @@
                data.forEach(row => {
                   const $tr = $('<tr>');
                   headers.forEach(header => {
-                     let cellValue = row[header];
-                     if (typeof cellValue === 'number') {
-                        cellValue = dataProcessor.formatNumber(cellValue);
-                     }
-                     $('<td>').html(cellValue != null ? cellValue : '').appendTo($tr);
+                     let cellValue = dataProcessor.formatNumber(row[header]);
+                     $('<td>').html(cellValue).appendTo($tr);
                   });
                   $tbody.append($tr);
                });
@@ -530,10 +225,30 @@
                $tableContainer.append($table);
                return $tableContainer;
             },
-
             createExportButtons: () => {
-               return $('<div>').addClass('btn-group mb-3').append([
-                  createButton('Print', 'fas fa-print', 'btn-info', exportUtils.print)
+               return $('<div>').addClass('btn-group m-2').append([
+                  createButton('Excel', 'fas fa-file-excel', 'btn-success btn-xs', exportUtils.toExcel),
+                  createButton('PDF', 'fas fa-file-pdf', 'btn-danger btn-xs', exportUtils.toPDF),
+                  createButton('Print', 'fas fa-print', 'btn-info btn-xs', exportUtils.print)
+               ]);
+            },
+            createRecordsPerPageDropdown: () => {
+               const $dropdown = $('<select>').addClass('form-control form-control-xs records-per-page ms-2');
+               config.recordsPerPageOptions.forEach(option => {
+                  const $option = $('<option>').val(option === 'All' ? -1 : option).text(option);
+                  if (option === state.recordsPerPage) {
+                     $option.prop('selected', true);
+                  }
+                  $dropdown.append($option);
+               });
+               $dropdown.on('change', (e) => {
+                  state.recordsPerPage = e.target.value === '-1' ? state.filteredData.length : parseInt(e.target.value);
+                  state.currentPage = 1;
+                  changePage(1);
+               });
+               return $('<div>').addClass('records-per-page-wrapper d-inline-flex align-items-center mb-2').append([
+                  $('<label>').text('Rows: ').addClass('me-1 fs-7'),
+                  $dropdown
                ]);
             }
          };
@@ -545,51 +260,75 @@
 
             const $select = $('<select>')
                     .attr('id', 'branchSelect')
-                    .addClass('form-control select2-branch')
-                    .attr('style', 'width: 100%');
+                    .addClass('form-control form-control-xs select2-branch');
 
             $container.append($select);
 
             $('.select2-branch').select2({
-               placeholder: 'Select a branch',
+               placeholder: 'Select branch',
                allowClear: true,
                width: '100%',
                ajax: {
                   url: config.branchesApiUrl,
                   dataType: 'json',
                   delay: 250,
-                  data: function(params) {
-                     return {
-                        keyword: params.term || ''
-                     };
-                  },
-                  processResults: function(data) {
-                     return {
-                        results: data.map(branch => ({
-                           id: branch.id,
-                           text: `${branch.branchName} (${branch.branchCode})`,
-                           branch: branch
-                        }))
-                     };
-                  },
+                  data: params => ({ keyword: params.term || '' }),
+                  processResults: data => ({
+                     results: data.map(branch => ({
+                        id: branch.id,
+                        text: `${branch.branchName} (${branch.branchCode})`,
+                        branch
+                     }))
+                  }),
                   cache: true
                },
                minimumInputLength: 0
-            }).on('change', function() {
-               const selectedBranchId = $(this).val();
-               state.selectedBranch = selectedBranchId;
+            }).on('change', function () {
+               state.selectedBranch = $(this).val();
             });
          };
 
          // Pagination component
          const createPagination = () => {
-            return $('<div>');
+            const totalPages = state.recordsPerPage === -1 ? 1 : Math.ceil(state.filteredData.length / state.recordsPerPage);
+            state.totalPages = totalPages;
+            const start = (state.currentPage - 1) * state.recordsPerPage + 1;
+            const end = state.recordsPerPage === -1 ? state.filteredData.length : Math.min(state.currentPage * state.recordsPerPage, state.filteredData.length);
+
+            const $pagination = $('<div>').addClass('pagination-wrapper m-2');
+            const $ul = $('<ul>').addClass('pagination pagination-sm justify-content-center mb-1');
+
+            $ul.append(createPaginationItem('Previous', state.currentPage > 1,
+                    () => changePage(state.currentPage - 1)));
+
+            let startPage = Math.max(1, state.currentPage - Math.floor(state.visiblePages / 2));
+            let endPage = startPage + state.visiblePages - 1;
+
+            if (endPage > totalPages) {
+               endPage = totalPages;
+               startPage = Math.max(1, endPage - state.visiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+               $ul.append(createPaginationItem(i, true, () => changePage(i),
+                       i === state.currentPage));
+            }
+
+            $ul.append(createPaginationItem('Next', state.currentPage < totalPages,
+                    () => changePage(state.currentPage + 1)));
+
+            const $info = $('<div>').addClass('text-center text-muted small')
+                    .text(`Page ${state.currentPage} of ${totalPages} | ${start}-${end} of ${state.filteredData.length} rows`);
+
+            $pagination.append([$ul, $info]);
+            return $pagination;
          };
 
          // Helper functions
          const createButton = (text, icon, className, action) => {
-            return $('<button>').addClass(`btn ${className} btn-sm`)
-                    .html(`<i class="${icon} mr-1"></i>${text}`)
+            return $('<button>').addClass(`btn ${className}`)
+                    .html(`<i class="${icon}"></i>`)
+                    .attr('title', text)
                     .on('click', action);
          };
 
@@ -606,17 +345,16 @@
                     );
          };
 
-         const formatDateForExport = () => {
-            const now = new Date();
-            return now.toISOString().split('T')[0];
+         // Event handlers
+         const changePage = (newPage) => {
+            state.currentPage = newPage;
+            const start = (newPage - 1) * state.recordsPerPage;
+            const pageData = state.recordsPerPage === -1 ? state.filteredData : state.filteredData.slice(start, start + state.recordsPerPage);
+            state.processedData = dataProcessor.addAutoIncrement(pageData);
+            renderTable();
          };
 
-         // Event handlers
-         const changePage = (newPage) => {};
-
-         const filterTable = (searchTerm) => {};
-
-         // Data fetching function
+         // Data fetching
          const fetchRevenueSummaryData = () => {
             const startDate = $('#startDate').val();
             const endDate = $('#endDate').val();
@@ -639,31 +377,43 @@
                return;
             }
 
-            $('#tableWrapper').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>');
+            elements.loadingOverlay.show();
+            const timeout = setTimeout(() => {
+               elements.loadingOverlay.hide();
+               $.wnoty({
+                  type: 'error',
+                  message: 'Request timed out. Please try again.',
+                  position: 'top-right'
+               });
+            }, config.ajaxTimeout);
 
             const apiUrl = `${config.revenueSummaryApiUrl}?startDate=${startDate}&endDate=${endDate}&branchId=${state.selectedBranch}`;
 
-            return $.ajax({
+            $.ajax({
                url: apiUrl,
                method: 'GET',
-               dataType: 'json'
+               dataType: 'json',
+               timeout: config.ajaxTimeout
             }).then(data => {
+               clearTimeout(timeout);
+               elements.loadingOverlay.hide();
                if (data && data.length > 0) {
                   state.fullData = data;
                   state.filteredData = data;
-                  state.processedData = data;
-                  renderTable();
+                  state.totalRecords = data.length;
+                  state.currentPage = 1;
+                  changePage(1);
                } else {
-                  $('#tableWrapper').html('<div class="alert alert-info">No records found for the selected criteria.</div>');
+                  elements.tableWrapper.html('<div class="alert alert-info m-2">No records found for the selected criteria.</div>');
                }
             }).catch(error => {
+               clearTimeout(timeout);
+               elements.loadingOverlay.hide();
                console.error('Error fetching data:', error);
-               $('#tableWrapper').html(
-                       '<div class="alert alert-danger">Error loading data. Please try again later.</div>'
-               );
+               elements.tableWrapper.html('<div class="alert alert-danger m-2">Error loading data. Please try again.</div>');
                $.wnoty({
                   type: 'error',
-                  message: 'Failed to load data. Please try again.',
+                  message: 'Failed to load data: ' + (error.message || 'Unknown error'),
                   position: 'top-right'
                });
             });
@@ -671,174 +421,245 @@
 
          // Render functions
          const renderTable = () => {
-            const $wrapper = $('#tableWrapper');
-            $wrapper.empty();
-
-            $wrapper.append(tableGenerator.createExportButtons());
-            $wrapper.append(tableGenerator.createTable(state.processedData));
-            $wrapper.append(createPagination());
+            elements.tableWrapper.empty();
+            elements.tableWrapper.append(tableGenerator.createExportButtons());
+            elements.tableWrapper.append(tableGenerator.createRecordsPerPageDropdown());
+            elements.tableWrapper.append(tableGenerator.createTable(state.processedData));
+            elements.tableWrapper.append(createPagination());
          };
 
          // Initialize
          const initialize = () => {
-            const $target = $('#table_div_content');
-            $target.empty();
-
-            const $tableWrapper = $('#tableWrapper');
-
             const today = new Date().toISOString().split('T')[0];
             $('#startDate').val(today);
             $('#endDate').val(today);
             state.dateRange.startDate = today;
             state.dateRange.endDate = today;
 
+            // Create loading overlay
+            elements.loadingOverlay = $('<div>')
+                    .attr('id', 'loading-overlay')
+                    .css({
+                       position: 'fixed',
+                       top: 0,
+                       left: 0,
+                       width: '100%',
+                       height: '100%',
+                       background: 'rgba(0, 0, 0, 0.5)',
+                       display: 'none',
+                       justifyContent: 'center',
+                       alignItems: 'center',
+                       zIndex: 9999
+                    })
+                    .html(`
+                  <div style="background: #fff; padding: 10px; border-radius: 4px; text-align: center;">
+                     <div style="width: 24px; height: 24px; border: 3px solid #e9ecef; border-top: 3px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 6px;"></div>
+                     <span style="font-size: 11px; color: #333;">Loading...</span>
+                  </div>
+               `);
+            $('body').append(elements.loadingOverlay);
+
             createBranchSelector();
 
             $('#loadReportButton').on('click', fetchRevenueSummaryData);
+            $('#excelButton').on('click', exportUtils.toExcel);
+            $('#pdfButton').on('click', exportUtils.toPDF);
             $('#printButton').on('click', exportUtils.print);
          };
 
          // Apply styles
          const applyStyles = () => {
             $('head').append(`
-                <style>
-                    .table-container {
-                        position: relative;
-                        max-height: 500px;
-                        overflow-y: auto;
-                        overflow-x: auto;
-                        width: 100%;
-                    }
-
-                    .table-inner-container {
-                        position: relative;
-                        width: 100%;
-                    }
-
-                    .dynamic-table {
-                        width: 100%;
-                        font-family: 'Roboto', sans-serif;
-                        font-size: 11px;
-                        border-collapse: collapse;
-                        table-layout: auto;
-                    }
-
-                    .sticky-header {
-                        position: sticky;
-                        top: 0;
-                        background: #fff;
-                        z-index: 10;
-                        box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
-                    }
-
-                    .sticky-footer {
-                        position: sticky;
-                        bottom: 0;
-                        background: #fff;
-                        z-index: 10;
-                        box-shadow: 0 -2px 2px -1px rgba(0,0,0,0.1);
-                    }
-
-                    .dynamic-table th {
-                        font-weight: 600;
-                        color: #495057;
-                        text-transform: uppercase;
-                        padding: 6px 8px !important;
-                        vertical-align: middle !important;
-                        white-space: nowrap;
-                        background: #f8f9fa;
-                    }
-
-                    .dynamic-table td {
-                        padding: 4px 8px !important;
-                        vertical-align: middle !important;
-                        height: 24px !important;
-                        white-space: nowrap;
-                    }
-
-                    .dynamic-table tfoot td {
-                        font-weight: 600;
-                        background: #f8f9fa;
-                    }
-
-                    .table-container::-webkit-scrollbar {
-                        width: 8px;
-                        height: 8px;
-                    }
-
-                    .table-container::-webkit-scrollbar-track {
-                        background: #f1f1f1;
-                    }
-
-                    .table-container::-webkit-scrollbar-thumb {
-                        background: #888;
-                        border-radius: 4px;
-                    }
-
-                    .table-container::-webkit-scrollbar-thumb:hover {
-                        background: #555;
-                    }
-
-                    .pagination-wrapper {
-                        background: #f8f9fa;
-                        padding: 8px;
-                        border-radius: 4px;
-                    }
-
-                    .pagination {
-                        margin-bottom: 0;
-                        gap: 2px;
-                    }
-
-                    .pagination .page-link {
-                        padding: 4px 8px;
-                        font-size: 11px;
-                        border-radius: 3px;
-                        color: #333;
-                        background-color: #fff;
-                        border: 1px solid #dee2e6;
-                        min-width: 28px;
-                        text-align: center;
-                    }
-
-                    .pagination .page-item.active .page-link {
-                        background-color: #007bff;
-                        border-color: #007bff;
-                        color: #fff;
-                        font-weight: 500;
-                    }
-
-                    .pagination .page-item.disabled .page-link {
-                        background-color: #e9ecef;
-                        border-color: #dee2e6;
-                        color: #6c757d;
-                    }
-
-                    .btn-group {
-                        gap: 5px;
-                    }
-
-                    .form-label {
-                        font-size: 12px;
-                        margin-bottom: 0.25rem;
-                    }
-
-                    @media print {
-                        .table-container {
-                            max-height: none;
-                            overflow: visible;
-                        }
-                        .sticky-header, .sticky-footer {
-                            position: static;
-                        }
-                        .btn-group, #searchInput, .pagination-wrapper {
-                            display: none !important;
-                        }
-                        .dynamic-table {
-                            font-size: 10px;
-                        }
-                    }
-                </style>
+               <style>
+                  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                  @keyframes spin {
+                     0% { transform: rotate(0deg); }
+                     100% { transform: rotate(360deg); }
+                  }
+                  .card {
+                     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                     border-radius: 6px;
+                  }
+                  .card-header {
+                     border-bottom: 1px solid #e9ecef;
+                  }
+                  .table-container {
+                     max-height: 400px;
+                     overflow-y: auto;
+                     overflow-x: auto;
+                     width: 100%;
+                  }
+                  .table-inner-container {
+                     width: 100%;
+                  }
+                  .dynamic-table {
+                     width: 100%;
+                     font-family: 'Roboto', sans-serif;
+                     font-size: 11px;
+                     border-collapse: collapse;
+                  }
+                  .sticky-header {
+                     position: sticky;
+                     top: 0;
+                     background: #f8f9fa;
+                     z-index: 10;
+                  }
+                  .sticky-footer {
+                     position: sticky;
+                     bottom: 0;
+                     background: #f8f9fa;
+                     z-index: 10;
+                  }
+                  .dynamic-table th {
+                     background: #4a90e2;
+                     color: #fff;
+                     font-weight: 500;
+                     text-transform: uppercase;
+                     padding: 6px !important;
+                     vertical-align: middle !important;
+                     white-space: nowrap;
+                  }
+                  .dynamic-table td {
+                     padding: 4px 6px !important;
+                     vertical-align: middle !important;
+                     white-space: nowrap;
+                     overflow: hidden;
+                     text-overflow: ellipsis;
+                     max-width: 150px;
+                  }
+                  .dynamic-table tfoot td {
+                     font-weight: 500;
+                     background: #f8f9fa;
+                  }
+                  .dynamic-table.table-striped tbody tr:nth-of-type(odd) {
+                     background: rgba(0,0,0,0.02);
+                  }
+                  .dynamic-table tr:hover {
+                     background: #f1f3f5;
+                  }
+                  .table-container::-webkit-scrollbar {
+                     width: 6px;
+                     height: 6px;
+                  }
+                  .table-container::-webkit-scrollbar-track {
+                     background: #f1f1f1;
+                  }
+                  .table-container::-webkit-scrollbar-thumb {
+                     background: #888;
+                     border-radius: 3px;
+                  }
+                  .table-container::-webkit-scrollbar-thumb:hover {
+                     background: #555;
+                  }
+                  .btn-group {
+                     gap: 4px;
+                  }
+                  .btn-xs {
+                     padding: 4px 6px;
+                     font-size: 11px;
+                     line-height: 1.5;
+                     border-radius: 3px;
+                  }
+                  .btn-group .btn:hover {
+                     transform: translateY(-1px);
+                  }
+                  .form-control-xs {
+                     padding: 3px 6px;
+                     font-size: 11px;
+                     line-height: 1.5;
+                     border-radius: 3px;
+                     height: 24px;
+                  }
+                  .form-label.fs-7 {
+                     font-size: 11px;
+                  }
+                  .select2-container .select2-selection--single {
+                     height: 24px;
+                     padding: 2px;
+                     font-size: 11px;
+                     border-radius: 3px;
+                  }
+                  .select2-container--default .select2-selection--single .select2-selection__rendered {
+                     line-height: 20px;
+                  }
+                  .select2-container--default .select2-selection--single .select2-selection__arrow {
+                     height: 24px;
+                  }
+                  .records-per-page-wrapper {
+                     gap: 6px;
+                  }
+                  .records-per-page {
+                     width: 80px;
+                     height: 24px;
+                  }
+                  .pagination-wrapper {
+                     background: #f8f9fa;
+                     padding: 6px;
+                     border-radius: 4px;
+                     margin-top: 8px;
+                  }
+                  .pagination .page-link {
+                     padding: 3px 8px;
+                     font-size: 11px;
+                     border-radius: 3px;
+                     color: #4a90e2;
+                     background: #fff;
+                     border: 1px solid #dee2e6;
+                     min-width: 24px;
+                     text-align: center;
+                  }
+                  .pagination .page-item.active .page-link {
+                     background: #4a90e2;
+                     border-color: #4a90e2;
+                     color: #fff;
+                  }
+                  .pagination .page-item.disabled .page-link {
+                     background: #e9ecef;
+                     color: #6c757d;
+                  }
+                  .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+                     background: #4a90e2;
+                     color: #fff;
+                  }
+                  @media (max-width: 768px) {
+                     .form-control-xs {
+                        width: 100px !important;
+                     }
+                     .select2-container {
+                        max-width: 150px;
+                     }
+                     .records-per-page {
+                        width: 60px;
+                     }
+                     .flex-wrap {
+                        flex-direction: column;
+                        align-items: flex-start;
+                     }
+                     .btn-group {
+                        margin-top: 6px;
+                     }
+                  }
+                  @media print {
+                     .btn-group, .pagination-wrapper, .records-per-page-wrapper, .card-header {
+                        display: none !important;
+                     }
+                     .table-container {
+                        max-height: none;
+                        overflow: visible;
+                     }
+                     .dynamic-table {
+                        font-size: 9px;
+                     }
+                     .dynamic-table th, .dynamic-table td {
+                        border: 1px solid #dee2e6 !important;
+                        padding: 2px 4px !important;
+                     }
+                     .dynamic-table th {
+                        background: #f8f9fa !important;
+                        color: #000 !important;
+                     }
+                  }
+               </style>
             `);
          };
 
@@ -849,18 +670,4 @@
          });
       })(jQuery);
    </script>
-
-
-
-
-
-
-
 </div>
-
-
-
-
-
-
-

@@ -1,414 +1,675 @@
-
-
-
 <div th:fragment="products">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card p-4">
-                <div id="table_div_content"></div>
-            </div>
-        </div>
-        <div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);">
-                <div style="width: 40px; height: 40px; margin: 0 auto 10px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <span style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">Processing Please wait...</span>
-            </div>
-        </div>
-
-        <style>
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        </style>
-    </div>
-
-
-<script>
-    function showLoading() {
-        $('#loading-overlay').show();
-    }
-
-    function hideLoading() {
-        $('#loading-overlay').hide();
-    }
-</script>
-
-
-<script>
-    ($ => {
-        // Configuration
-        const config = {
-            defaultApiUrl: '/api-bulk/products-database',
-            recordsPerPage: 10,
-            saveEndpoint: '/api/stocks/prices'
-        };
-
-        // State management
-        const state = {
-            fullData: [],
-            filteredData: [],
-            currentPage: 1,
-            selectedRows: new Set(),
-            priceChanges: {},
-            pricingEditable: false
-        };
-
-        // DOM element cache
-        const elements = {
-            target: $('#table_div_content'),
-            tableWrapper: null,
-            searchInput: null,
-            loadingOverlay: $('#loading-overlay')
-        };
-
-        // Initialize the page
-        const initializePage = () => {
-            elements.target.empty();
-            elements.target.append(createControls());
-            elements.searchInput = createSearchInput();
-            elements.target.append(elements.searchInput);
-            elements.tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
-            elements.target.append(elements.tableWrapper);
-
-            attachEventListeners();
-            fetchAndDisplayData();
-        };
-
-        // Create header controls
-        const createControls = () => {
-            return $(`
-        <div class="row g-2 align-items-center mb-3">
-            <div class="col-md-4">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="changePrice">
-                    <label class="form-check-label" for="changePrice">Enable Price Editing</label>
+    <div class="col-lg-12">
+        <div class="card border">
+            <!-- Card Header -->
+            <div class="card-header bg-transparent p-3">
+                <div class="row align-items-center g-3">
+                    <!-- Title and Controls -->
+                    <div class="col-lg-4 col-md-12">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa fa-box fa-lg text-muted"></i>
+                                <h5 class="card-title mb-0 fw-bold">Product Management</h5>
+                            </div>
+                            <div class="form-check form-switch ms-3">
+                                <input class="form-check-input" type="checkbox" id="changePrice">
+                                <label class="form-check-label small" for="changePrice">Enable Price Editing</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Search Input -->
+                    <div class="col-lg-5 col-md-12">
+                        <div class="d-flex align-items-center gap-2 flex-wrap justify-content-lg-center">
+                            <input type="text" id="searchInput" class="form-control form-control-xs"
+                                   placeholder="Search..." style="width: 200px;">
+                            <button class="btn btn-primary btn-sm px-3" id="savePriceChangesBtn">
+                                <i class="fas fa-save me-1"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Export Actions -->
+                    <div class="col-lg-3 col-md-12">
+                        <div class="d-flex justify-content-lg-end justify-content-start gap-1">
+                            <div class="btn-group" role="group" aria-label="Export options">
+                                <button type="button" class="btn btn-outline-success btn-xs" title="Export to Excel"
+                                        id="excelButton">
+                                    <i class="fas fa-file-excel"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-xs" title="Export to PDF"
+                                        id="pdfButton">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-xs" title="Print Report"
+                                        id="printButton">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 text-end">
-                <button class="btn btn-success btn-sm" id="savePriceChangesBtn">
-                    <i class="fas fa-save me-1"></i>Save Price Changes
-                </button>
+
+            <!-- Card Body -->
+            <div class="card-body p-0">
+                <div class="table-responsive table-container">
+                    <div id="tableWrapper" class="table-inner-container"></div>
+                </div>
             </div>
         </div>
-    `);
-        };
 
-        // Create search input
-        const createSearchInput = () => {
-            return $('<input>')
-                .attr('type', 'text')
-                .attr('placeholder', 'Search...')
-                .attr('id', 'searchInput')
-                .addClass('form-control mb-3');
-        };
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" style="display: none;">
+            <div style="background: #fff; padding: 10px; border-radius: 4px; text-align: center;">
+                <div style="width: 24px; height: 24px; border: 3px solid #e9ecef; border-top: 3px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 6px;"></div>
+                <span style="font-size: 11px; color: #333;">Processing Please wait...</span>
+            </div>
+        </div>
+    </div>
 
-        // Attach event listeners
-        const attachEventListeners = () => {
-            elements.searchInput.on('input', event => filterTable(event.target.value));
-            $('#changePrice').on('change', event => {
-                state.pricingEditable = event.target.checked;
-                refreshTable();
-            });
-            $('#savePriceChangesBtn').on('click', savePriceChanges);
-        };
+    <script>
+        ($ => {
+            // Configuration
+            const config = {
+                defaultApiUrl: '/api-bulk/products-database',
+                saveEndpoint: '/api/stocks/prices',
+                recordsPerPageOptions: [10, 20, 50, 100, 'All'],
+                defaultRecordsPerPage: 10,
+                exportFileName: 'products_report',
+                ajaxTimeout: 10000 // 10 seconds timeout
+            };
 
-        // Generate dynamic table
-        const generateDynamicTable = (data) => {
-            elements.tableWrapper.empty();
+            // State management
+            const state = {
+                fullData: [],
+                filteredData: [],
+                processedData: [],
+                currentPage: 1,
+                totalPages: 0,
+                totalRecords: 0,
+                visiblePages: 5,
+                recordsPerPage: config.defaultRecordsPerPage,
+                selectedRows: new Set(),
+                priceChanges: {},
+                pricingEditable: false
+            };
 
-            if (!Array.isArray(data) || data.length === 0) {
-                elements.tableWrapper.append('<p>No data available</p>');
-                return;
-            }
+            // DOM element cache
+            const elements = {
+                target: $('#tableWrapper'),
+                searchInput: $('#searchInput'),
+                loadingOverlay: $('#loading-overlay')
+            };
 
-            const table = $('<table id="member-table" class="table table-thead-sticky table-tfoot-sticky table-tbody-bordered table-px-10px table-py-4px table-sm text-nowrap mb-0 table-bordered"/>');
-            const thead = $('<thead style="position: sticky; top: 0; background-color: #f8f9fa;"><tr><th><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input" id="selectAll" /></div></th><th>No</th></tr></thead>');
-            const tbody = $('<tbody/>');
+            // Data processing utilities
+            const dataProcessor = {
+                addAutoIncrement: (data) => {
+                    return data.map((item, index) => ({
+                        no: (state.currentPage - 1) * state.recordsPerPage + index + 1,
+                        ...item
+                    }));
+                },
+                prepareForExport: (data) => {
+                    return data.map(item => {
+                        const { no, ...rest } = item;
+                        return rest;
+                    });
+                },
+                formatNumber: (value) => {
+                    return typeof value === 'number'
+                        ? new Intl.NumberFormat('en-US').format(value)
+                        : value != null ? value : 'N/A';
+                }
+            };
 
-            // Build table headers
-            Object.keys(data[0]).forEach(key => {
-                thead.find('tr').append('<th>' + key + '</th>');
-            });
-            table.append(thead);
-            table.append(tbody);
-
-            elements.tableWrapper.append(table);
-
-            displayTableData(data);
-            createPagination(data.length);
-        };
-
-        // Display table data
-        const displayTableData = (displayData) => {
-            const tbody = $('#member-table tbody');
-            tbody.empty();
-
-            const startIndex = (state.currentPage - 1) * config.recordsPerPage;
-            const endIndex = startIndex + config.recordsPerPage;
-            const itemsToShow = displayData.slice(startIndex, endIndex);
-
-            itemsToShow.forEach((item, index) => {
-                const tr = $('<tr/>').data('original-index', startIndex + index);
-                const rowIndex = startIndex + index;
-                const isChecked = state.selectedRows.has(item['Product ID'].toString());
-
-                tr.append(`<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ${isChecked ? 'checked' : ''} data-product-id="${item['Product ID']}" /></div></td>`);
-                tr.append(`<td>${rowIndex + 1}</td>`);
-
-                Object.entries(item).forEach(([key, value]) => {
-                    const td = $('<td/>');
-                    if (key === 'Cost Price' || key === 'Selling Price') {
-                        const inputId = `${key.toLowerCase().replace(' ', '-')}-${item['Product ID']}`;
-                        const inputValue = state.priceChanges[inputId] !== undefined ? state.priceChanges[inputId] : value;
-                        if (state.pricingEditable) {
-                            td.html(`<input type="number" id="${inputId}" class="form-control form-control-sm price-input" value="${inputValue}" style="width: 80px;" data-product-id="${item['Product ID']}">`);
-                        } else {
-                            td.text(inputValue);
-                        }
-                    } else {
-                        td.text(value);
+            // Export utilities
+            const exportUtils = {
+                toExcel: () => {
+                    elements.loadingOverlay.show();
+                    try {
+                        const exportData = dataProcessor.prepareForExport(state.processedData);
+                        generateExcel(exportData, config.exportFileName);
+                        elements.loadingOverlay.hide();
+                    } catch (error) {
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'error',
+                            message: 'Error generating Excel: ' + error.message,
+                            position: 'top-right'
+                        });
                     }
-                    tr.append(td);
+                },
+                toPDF: () => {
+                    elements.loadingOverlay.show();
+                    try {
+                        const exportData = dataProcessor.prepareForExport(state.processedData);
+                        printGeneratePdf(exportData, 'Products Report');
+                        elements.loadingOverlay.hide();
+                    } catch (error) {
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'error',
+                            message: 'Error generating PDF: ' + error.message,
+                            position: 'top-right'
+                        });
+                    }
+                },
+                print: () => {
+                    window.print();
+                }
+            };
+
+            // Table generation
+            const tableGenerator = {
+                createTable: (data) => {
+                    if (!data || data.length === 0) {
+                        return $('<div>').addClass('alert alert-info m-2').text('No data to display.');
+                    }
+
+                    const $tableContainer = $('<div>').addClass('table-inner-container');
+                    const $table = $('<table>').addClass('dynamic-table table table-bordered table-striped table-sm');
+                    const $thead = $('<thead>').addClass('sticky-header');
+                    const $tbody = $('<tbody>');
+                    const $tfoot = $('<tfoot>').addClass('sticky-footer');
+
+                    // Headers
+                    const headers = ['Select', 'No', ...Object.keys(data[0]).filter(key => key !== 'no')];
+                    const headerDisplayNames = headers.map(header => header.replace(/_/g, ' ').toUpperCase());
+                    const $headerRow = $('<tr>').append(
+                        headerDisplayNames.map(header => $('<th>').text(header))
+                    );
+                    $thead.append($headerRow);
+
+                    // Body
+                    data.forEach(row => {
+                        const $tr = $('<tr>').data('original-index', row.no - 1);
+                        const isChecked = state.selectedRows.has(row['Product ID'].toString());
+
+                        headers.forEach(header => {
+                            const $td = $('<td>');
+                            if (header === 'Select') {
+                                $td.html(`<div class="form-check d-flex justify-content-center my-0 mx-n1">
+                                    <input type="checkbox" class="form-check-input rowCheckbox" ${isChecked ? 'checked' : ''} data-product-id="${row['Product ID']}" />
+                                </div>`);
+                            } else if (header === 'No') {
+                                $td.text(row.no);
+                            } else if (header === 'Cost Price' || header === 'Selling Price') {
+                                const inputId = `${header.toLowerCase().replace(' ', '-')}-${row['Product ID']}`;
+                                const inputValue = state.priceChanges[inputId] !== undefined ? state.priceChanges[inputId] : row[header];
+                                if (state.pricingEditable) {
+                                    $td.html(`<input type="number" id="${inputId}" class="form-control form-control-xs price-input" value="${inputValue}" data-product-id="${row['Product ID']}">`);
+                                } else {
+                                    $td.text(dataProcessor.formatNumber(inputValue));
+                                }
+                            } else {
+                                $td.text(dataProcessor.formatNumber(row[header]));
+                            }
+                            $tr.append($td);
+                        });
+                        $tbody.append($tr);
+                    });
+
+                    // Footer
+                    const $footerRow = $headerRow.clone();
+                    $tfoot.append($footerRow);
+
+                    $table.append($thead, $tbody, $tfoot);
+                    $tableContainer.append($table);
+                    return $tableContainer;
+                },
+                createExportButtons: () => {
+                    return $('<div>').addClass('btn-group m-2').append([
+                        createButton('Excel', 'fas fa-file-excel', 'btn-success btn-xs', exportUtils.toExcel),
+                        createButton('PDF', 'fas fa-file-pdf', 'btn-danger btn-xs', exportUtils.toPDF),
+                        createButton('Print', 'fas fa-print', 'btn-info btn-xs', exportUtils.print)
+                    ]);
+                },
+                createRecordsPerPageDropdown: () => {
+                    const $dropdown = $('<select>').addClass('form-control form-control-xs records-per-page ms-2');
+                    config.recordsPerPageOptions.forEach(option => {
+                        const $option = $('<option>').val(option === 'All' ? -1 : option).text(option);
+                        if (option === state.recordsPerPage) {
+                            $option.prop('selected', true);
+                        }
+                        $dropdown.append($option);
+                    });
+                    $dropdown.on('change', (e) => {
+                        state.recordsPerPage = e.target.value === '-1' ? state.filteredData.length : parseInt(e.target.value);
+                        state.currentPage = 1;
+                        changePage(1);
+                    });
+                    return $('<div>').addClass('records-per-page-wrapper d-inline-flex align-items-center mb-2').append([
+                        $('<label>').text('Rows: ').addClass('me-1 fs-7'),
+                        $dropdown
+                    ]);
+                }
+            };
+
+            // Helper functions
+            const createButton = (text, icon, className, action) => {
+                return $('<button>').addClass(`btn ${className}`)
+                    .html(`<i class="${icon}"></i>`)
+                    .attr('title', text)
+                    .on('click', action);
+            };
+
+            const createPaginationItem = (text, enabled, action, active = false) => {
+                return $('<li>').addClass(`page-item ${!enabled ? 'disabled' : ''} ${active ? 'active' : ''}`)
+                    .append(
+                        $('<a>').addClass('page-link')
+                            .attr('href', 'javascript:void(0)')
+                            .text(text)
+                            .on('click', (e) => {
+                                e.preventDefault();
+                                if (enabled) action();
+                            })
+                    );
+            };
+
+            // Event handlers
+            const attachEventListeners = () => {
+                elements.searchInput.on('input', event => filterTable(event.target.value));
+                $('#changePrice').on('change', event => {
+                    state.pricingEditable = event.target.checked;
+                    renderTable();
+                });
+                $('#savePriceChangesBtn').on('click', savePriceChanges);
+                $('#excelButton').on('click', exportUtils.toExcel);
+                $('#pdfButton').on('click', exportUtils.toPDF);
+                $('#printButton').on('click', exportUtils.print);
+
+                $('#selectAll').off('change').on('change', function () {
+                    const isChecked = $(this).prop('checked');
+                    $('.rowCheckbox').prop('checked', isChecked);
+                    if (isChecked) {
+                        $('.rowCheckbox').each(function () {
+                            state.selectedRows.add($(this).data('product-id').toString());
+                        });
+                    } else {
+                        state.selectedRows.clear();
+                    }
+                    updateSelectAllCheckbox();
                 });
 
-                tbody.append(tr);
-            });
+                elements.target.off('change', '.rowCheckbox').on('change', '.rowCheckbox', function () {
+                    const productId = $(this).data('product-id').toString();
+                    if ($(this).prop('checked')) {
+                        state.selectedRows.add(productId);
+                    } else {
+                        state.selectedRows.delete(productId);
+                    }
+                    updateSelectAllCheckbox();
+                });
 
-            updateSelectAllCheckbox();
-            attachTableEventListeners();
-        };
+                elements.target.off('input', '.price-input').on('input', '.price-input', function () {
+                    const inputId = $(this).attr('id');
+                    const productId = $(this).data('product-id').toString();
+                    state.priceChanges[inputId] = $(this).val();
+                    if (!state.selectedRows.has(productId)) {
+                        state.selectedRows.add(productId);
+                        $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
+                    }
+                    updateSelectAllCheckbox();
+                });
+            };
 
-        // Attach table event listeners
-        const attachTableEventListeners = () => {
-            $('#selectAll').off('change').on('change', function() {
-                const isChecked = $(this).prop('checked');
-                $('.rowCheckbox').prop('checked', isChecked);
-                if (isChecked) {
-                    $('.rowCheckbox').each(function() {
-                        state.selectedRows.add($(this).data('product-id').toString());
-                    });
-                } else {
-                    state.selectedRows.clear();
+            const updateSelectAllCheckbox = () => {
+                const totalVisible = $('.rowCheckbox').length;
+                const totalChecked = $('.rowCheckbox:checked').length;
+                $('#selectAll').prop({
+                    checked: totalChecked > 0,
+                    indeterminate: totalChecked > 0 && totalChecked < totalVisible
+                });
+            };
+
+            const changePage = (newPage) => {
+                const totalPages = state.recordsPerPage === -1 ? 1 : Math.ceil(state.filteredData.length / state.recordsPerPage);
+                if (newPage >= 1 && newPage <= totalPages) {
+                    state.currentPage = newPage;
+                    const start = (newPage - 1) * state.recordsPerPage;
+                    const pageData = state.recordsPerPage === -1 ? state.filteredData : state.filteredData.slice(start, start + state.recordsPerPage);
+                    state.processedData = dataProcessor.addAutoIncrement(pageData);
+                    renderTable();
                 }
-            });
+            };
 
-            $('.rowCheckbox').off('change').on('change', function() {
-                const productId = $(this).data('product-id').toString();
-                if ($(this).prop('checked')) {
-                    state.selectedRows.add(productId);
-                } else {
-                    state.selectedRows.delete(productId);
-                }
-                updateSelectAllCheckbox();
-            });
-
-            $('.price-input').off('input').on('input', function() {
-                const inputId = $(this).attr('id');
-                const productId = $(this).data('product-id').toString();
-                state.priceChanges[inputId] = $(this).val();
-
-                if (!state.selectedRows.has(productId)) {
-                    state.selectedRows.add(productId);
-                    $(this).closest('tr').find('.rowCheckbox').prop('checked', true);
-                }
-                updateSelectAllCheckbox();
-            });
-        };
-
-        // Update "Select All" checkbox state
-        const updateSelectAllCheckbox = () => {
-            const totalVisible = $('.rowCheckbox').length;
-            const totalChecked = $('.rowCheckbox:checked').length;
-            $('#selectAll').prop({
-                checked: totalChecked > 0,
-                indeterminate: totalChecked > 0 && totalChecked < totalVisible
-            });
-        };
-
-        // Create pagination
-        const createPagination = (totalItems) => {
-            const totalPages = Math.ceil(totalItems / config.recordsPerPage);
-            const pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
-            const leftControls = $('<div class="d-flex align-items-center"/>');
-            const rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
-
-            leftControls.append(`<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">
-            <option value="10">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="all">All</option>
-        </select>`);
-            leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
-
-            rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
-            rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
-
-            pagination.append(leftControls);
-            pagination.append(rightControls);
-            elements.tableWrapper.append(pagination);
-
-            updatePaginationControls(totalPages);
-
-            $('#itemsPerPage').val(config.recordsPerPage).off('change').on('change', function() {
-                config.recordsPerPage = $(this).val() === 'all' ? state.filteredData.length : parseInt($(this).val());
+            const filterTable = (searchTerm) => {
+                state.filteredData = state.fullData.filter(row =>
+                    Object.values(row).some(value =>
+                        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                );
                 state.currentPage = 1;
-                displayTableData(state.filteredData);
-                updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
-            });
+                changePage(1);
+            };
 
-            $('#prevPage').off('click').on('click', () => changePage(state.currentPage - 1));
-            $('#nextPage').off('click').on('click', () => changePage(state.currentPage + 1));
-        };
+            // Fetch and display data
+            const fetchAndDisplayData = () => {
+                elements.loadingOverlay.show();
+                $.ajax({
+                    url: config.defaultApiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    timeout: config.ajaxTimeout,
+                    success: data => {
+                        state.fullData = data;
+                        state.filteredData = [...state.fullData];
+                        state.totalRecords = data.length;
+                        changePage(1);
+                        elements.loadingOverlay.hide();
+                    },
+                    error: (_, textStatus, errorThrown) => {
+                        console.error('Error fetching data:', textStatus, errorThrown);
+                        elements.target.html('<div class="alert alert-danger m-2">Error loading data. Please try again.</div>');
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'error',
+                            message: 'Failed to load data: ' + (errorThrown || 'Unknown error'),
+                            position: 'top-right'
+                        });
+                    }
+                });
+            };
 
-        // Update pagination controls
-        const updatePaginationControls = (totalPages) => {
-            const startItem = (state.currentPage - 1) * config.recordsPerPage + 1;
-            const endItem = Math.min(state.currentPage * config.recordsPerPage, state.filteredData.length);
-            $('#paginationInfo').text(`Page ${state.currentPage} of ${totalPages} | Showing ${startItem}-${endItem} of ${state.filteredData.length} records`);
-            $('#prevPage').prop('disabled', state.currentPage === 1);
-            $('#nextPage').prop('disabled', state.currentPage === totalPages || totalPages === 0);
-        };
+            // Save price changes
+            const savePriceChanges = () => {
+                elements.loadingOverlay.show();
+                const priceUpdates = Array.from(state.selectedRows).map(productId => {
+                    const row = state.fullData.find(item => item['Product ID'].toString() === productId);
+                    return {
+                        productCode: row['Product Code'],
+                        productName: row['Product Name'],
+                        buyPrice: parseFloat(state.priceChanges[`cost-price-${productId}`] || row['Cost Price']),
+                        salePrice: parseFloat(state.priceChanges[`selling-price-${productId}`] || row['Selling Price'])
+                    };
+                });
 
-        // Change page
-        const changePage = (newPage) => {
-            const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
-            if (newPage >= 1 && newPage <= totalPages) {
-                state.currentPage = newPage;
-                displayTableData(state.filteredData);
-                updatePaginationControls(totalPages);
-            }
-        };
-
-        // Filter table
-        const filterTable = (searchTerm) => {
-            state.filteredData = state.fullData.filter(row =>
-                Object.values(row).some(value =>
-                    String(value).toLowerCase().includes(searchTerm.toLowerCase())
-                )
-            );
-            state.currentPage = 1;
-            displayTableData(state.filteredData);
-            updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
-        };
-
-        // Fetch and display data
-        const fetchAndDisplayData = () => {
-            showLoading();
-            $.ajax({
-                url: config.defaultApiUrl,
-                method: 'GET',
-                dataType: 'json',
-                success: data => {
-                    state.fullData = data;
-                    state.filteredData = [...state.fullData];
-                    generateDynamicTable(state.filteredData);
-                    hideLoading();
-                },
-                error: (_, textStatus, errorThrown) => {
-                    console.error('Error fetching data:', textStatus, errorThrown);
-                    elements.tableWrapper.html('<p>Error loading data. Please try again later.</p>');
-                    hideLoading();
+                if (priceUpdates.length === 0) {
+                    elements.loadingOverlay.hide();
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Please select at least one product to update prices.',
+                        position: 'top-right'
+                    });
+                    return;
                 }
-            });
-        };
 
-        // Refresh table
-        const refreshTable = () => {
-            displayTableData(state.filteredData);
-            updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
-        };
+                $.ajax({
+                    url: config.saveEndpoint,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ openingStocks: priceUpdates }),
+                    success: response => {
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'success',
+                            message: 'Prices updated successfully',
+                            position: 'top-right'
+                        });
+                        state.selectedRows.clear();
+                        state.priceChanges = {};
+                        renderTable();
+                    },
+                    error: (xhr, status, error) => {
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'error',
+                            message: 'Error updating prices: ' + (xhr.responseText || 'Unknown error'),
+                            position: 'top-right'
+                        });
+                    }
+                });
+            };
 
-        // Save price changes
-        const savePriceChanges = () => {
-            showLoading();
-            const priceUpdates = Array.from(state.selectedRows).map(productId => {
-                const row = state.fullData.find(item => item['Product ID'].toString() === productId);
-                return {
-                    productCode: row['Product Code'],
-                    productName: row['Product Name'],
-                    buyPrice: parseFloat(state.priceChanges[`cost-price-${productId}`] || row['Cost Price']),
-                    salePrice: parseFloat(state.priceChanges[`selling-price-${productId}`] || row['Selling Price'])
-                };
-            });
+            // Render table
+            const renderTable = () => {
+                elements.target.empty();
+                elements.target.append(tableGenerator.createExportButtons());
+                elements.target.append(tableGenerator.createRecordsPerPageDropdown());
+                elements.target.append(tableGenerator.createTable(state.processedData));
+                elements.target.append(createPagination());
+                attachEventListeners();
+            };
 
-            if (priceUpdates.length === 0) {
-                hideLoading();
-                showNotification('error', 'Please select at least one product to update prices.');
-                return;
-            }
+            // Pagination component
+            const createPagination = () => {
+                const totalPages = state.recordsPerPage === -1 ? 1 : Math.ceil(state.filteredData.length / state.recordsPerPage);
+                state.totalPages = totalPages;
+                const start = (state.currentPage - 1) * state.recordsPerPage + 1;
+                const end = state.recordsPerPage === -1 ? state.filteredData.length : Math.min(state.currentPage * state.recordsPerPage, state.filteredData.length);
 
-            $.ajax({
-                url: config.saveEndpoint,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ openingStocks: priceUpdates }),
-                success: response => {
-                    hideLoading();
-                    showNotification('success', 'Prices updated successfully');
-                    state.selectedRows.clear();
-                    state.priceChanges = {};
-                    refreshTable();
-                },
-                error: (xhr, status, error) => {
-                    hideLoading();
-                    showNotification('error', 'Error updating prices: ' + xhr.responseText);
+                const $pagination = $('<div>').addClass('pagination-wrapper m-2');
+                const $ul = $('<ul>').addClass('pagination pagination-sm justify-content-center mb-1');
+
+                $ul.append(createPaginationItem('Previous', state.currentPage > 1,
+                    () => changePage(state.currentPage - 1)));
+
+                let startPage = Math.max(1, state.currentPage - Math.floor(state.visiblePages / 2));
+                let endPage = startPage + state.visiblePages - 1;
+
+                if (endPage > totalPages) {
+                    endPage = totalPages;
+                    startPage = Math.max(1, endPage - state.visiblePages + 1);
                 }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    $ul.append(createPaginationItem(i, true, () => changePage(i), i === state.currentPage));
+                }
+
+                $ul.append(createPaginationItem('Next', state.currentPage < totalPages,
+                    () => changePage(state.currentPage + 1)));
+
+                const $info = $('<div>').addClass('text-center text-muted small')
+                    .text(`Page ${state.currentPage} of ${totalPages} | ${start}-${end} of ${state.filteredData.length} rows`);
+
+                $pagination.append([$ul, $info]);
+                return $pagination;
+            };
+
+            // Apply styles
+            const applyStyles = () => {
+                $('head').append(`
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                        #loading-overlay {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(0, 0, 0, 0.5);
+                            display: none;
+                            justify-content: center;
+                            align-items: center;
+                            z-index: 9999;
+                        }
+                        .card {
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                            border-radius: 6px;
+                        }
+                        .card-header {
+                            border-bottom: 1px solid #e9ecef;
+                        }
+                        .table-container {
+                            max-height: 400px;
+                            overflow-y: auto;
+                            overflow-x: auto;
+                            width: 100%;
+                        }
+                        .table-inner-container {
+                            width: 100%;
+                        }
+                        .dynamic-table {
+                            width: 100%;
+                            font-family: 'Roboto', sans-serif;
+                            font-size: 11px;
+                            border-collapse: collapse;
+                        }
+                        .sticky-header {
+                            position: sticky;
+                            top: 0;
+                            background: #f8f9fa;
+                            z-index: 10;
+                        }
+                        .sticky-footer {
+                            position: sticky;
+                            bottom: 0;
+                            background: #f8f9fa;
+                            z-index: 10;
+                        }
+                        .dynamic-table th {
+                            background: #4a90e2;
+                            color: #fff;
+                            font-weight: 500;
+                            text-transform: uppercase;
+                            padding: 6px !important;
+                            vertical-align: middle !important;
+                            white-space: nowrap;
+                        }
+                        .dynamic-table td {
+                            padding: 4px 6px !important;
+                            vertical-align: middle !important;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 150px;
+                        }
+                        .dynamic-table tfoot td {
+                            font-weight: 500;
+                            background: #f8f9fa;
+                        }
+                        .dynamic-table.table-striped tbody tr:nth-of-type(odd) {
+                            background: rgba(0,0,0,0.02);
+                        }
+                        .dynamic-table tr:hover {
+                            background: #f1f3f5;
+                        }
+                        .table-container::-webkit-scrollbar {
+                            width: 6px;
+                            height: 6px;
+                        }
+                        .table-container::-webkit-scrollbar-track {
+                            background: #f1f1f1;
+                        }
+                        .table-container::-webkit-scrollbar-thumb {
+                            background: #888;
+                            border-radius: 3px;
+                        }
+                        .table-container::-webkit-scrollbar-thumb:hover {
+                            background: #555;
+                        }
+                        .btn-group {
+                            gap: 4px;
+                        }
+                        .btn-xs {
+                            padding: 4px 6px;
+                            font-size: 11px;
+                            line-height: 1.5;
+                            border-radius: 3px;
+                        }
+                        .btn-group .btn:hover {
+                            transform: translateY(-1px);
+                        }
+                        .form-control-xs {
+                            padding: 3px 6px;
+                            font-size: 11px;
+                            line-height: 1.5;
+                            border-radius: 3px;
+                            height: 24px;
+                        }
+                        .form-label.fs-7 {
+                            font-size: 11px;
+                        }
+                        .records-per-page-wrapper {
+                            gap: 6px;
+                        }
+                        .records-per-page {
+                            width: 80px;
+                            height: 24px;
+                        }
+                        .pagination-wrapper {
+                            background: #f8f9fa;
+                            padding: 6px;
+                            border-radius: 4px;
+                            margin-top: 8px;
+                        }
+                        .pagination .page-link {
+                            padding: 3px 8px;
+                            font-size: 11px;
+                            border-radius: 3px;
+                            color: #4a90e2;
+                            background: #fff;
+                            border: 1px solid #dee2e6;
+                            min-width: 24px;
+                            text-align: center;
+                        }
+                        .pagination .page-item.active .page-link {
+                            background: #4a90e2;
+                            border-color: #4a90e2;
+                            color: #fff;
+                        }
+                        .pagination .page-item.disabled .page-link {
+                            background: #e9ecef;
+                            color: #6c757d;
+                        }
+                        .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+                            background: #4a90e2;
+                            color: #fff;
+                        }
+                        .price-input {
+                            width: 80px !important;
+                        }
+                        @media (max-width: 768px) {
+                            .form-control-xs {
+                                width: 100px !important;
+                            }
+                            .records-per-page {
+                                width: 60px;
+                            }
+                            .flex-wrap {
+                                flex-direction: column;
+                                align-items: flex-start;
+                            }
+                            .btn-group {
+                                margin-top: 6px;
+                            }
+                            .price-input {
+                                width: 60px !important;
+                            }
+                        }
+                        @media print {
+                            .btn-group, .pagination-wrapper, .records-per-page-wrapper, .card-header {
+                                display: none !important;
+                            }
+                            .table-container {
+                                max-height: none;
+                                overflow: visible;
+                            }
+                            .dynamic-table {
+                                font-size: 9px;
+                            }
+                            .dynamic-table th, .dynamic-table td {
+                                border: 1px solid #dee2e6 !important;
+                                padding: 2px 4px !important;
+                            }
+                            .dynamic-table th {
+                                background: #f8f9fa !important;
+                                color: #000 !important;
+                            }
+                        }
+                    </style>
+                `);
+            };
+
+            // Initialize
+            $(() => {
+                applyStyles();
+                elements.loadingOverlay.appendTo('body');
+                fetchAndDisplayData();
             });
-        };
-
-        // Show notification
-        const showNotification = (type, message) => {
-            $.wnoty({
-                type: type,
-                message: message,
-                position: 'top-right'
-            });
-        };
-
-        // Show loading overlay
-        const showLoading = () => {
-            elements.loadingOverlay.show();
-        };
-
-        // Hide loading overlay
-        const hideLoading = () => {
-            elements.loadingOverlay.hide();
-        };
-
-        // Apply styles
-        const applyStyles = () => {
-            $('head').append(`
-<style>
-    .table-responsive {
-        overflow-x: auto;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        border-radius: 4px;
-        padding: 11px;
-    }
-    .price-input {
-        width: 80px !important;
-    }
-    @media (max-width: 768px) {
-        .price-input {
-            width: 60px !important;
-        }
-    }
-</style>
-`);
-        };
-
-        // Initialize
-        $(() => {
-            applyStyles();
-            initializePage();
-        });
-
-    })(jQuery);
-</script>
-
+        })(jQuery);
+    </script>
 </div>
-
-
-

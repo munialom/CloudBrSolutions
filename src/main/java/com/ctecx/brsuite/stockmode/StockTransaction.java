@@ -79,4 +79,10 @@ public class StockTransaction extends AuditableBase {
     @Column(nullable = true)
     private int branchId;
     private String branch;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean printStatusOrder;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean printStatusReceipt;
 }

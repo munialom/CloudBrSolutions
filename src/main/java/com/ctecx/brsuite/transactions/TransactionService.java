@@ -36,9 +36,7 @@ public class TransactionService {
         if (receivedAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Received amount must be greater than zero");
         }
-        if (receivedAmount.compareTo(totalAmount) > 0) {
-            throw new IllegalArgumentException("Received amount cannot exceed total amount");
-        }
+
         if (paymentModes.isEmpty()) {
             throw new IllegalArgumentException("At least one payment mode must be selected");
         }

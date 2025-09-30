@@ -1,0 +1,261 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="InvoiceTemplate" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="83e640e4-3cae-48bf-a573-1a26fb1076c0">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="WEBHIMS"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="157"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="838"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="InvoiceNumber" class="java.lang.String"/>
+	<query language="SQL"><![CDATA[CALL GetBilledInvoiceDetails($P{InvoiceNumber});]]></query>
+	<field name="serial_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="serial_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="serial_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bills"/>
+	</field>
+	<field name="transaction_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="transaction_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="transaction_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bills"/>
+	</field>
+	<field name="payment_mode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="payment_mode"/>
+		<property name="com.jaspersoft.studio.field.label" value="payment_mode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bills"/>
+	</field>
+	<field name="receive_amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="receive_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="receive_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bills"/>
+	</field>
+	<field name="total_amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="total_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bills"/>
+	</field>
+	<field name="reg_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="reg_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="reg_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patients"/>
+	</field>
+	<field name="first_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="first_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="first_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patients"/>
+	</field>
+	<field name="middle_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="middle_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="middle_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patients"/>
+	</field>
+	<field name="last_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="last_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="last_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patients"/>
+	</field>
+	<field name="phone_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="phone_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="phone_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patients"/>
+	</field>
+	<field name="product_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="product_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="product_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bill_items"/>
+	</field>
+	<field name="quantity" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="quantity"/>
+		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bill_items"/>
+	</field>
+	<field name="price" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="price"/>
+		<property name="com.jaspersoft.studio.field.label" value="price"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bill_items"/>
+	</field>
+	<field name="amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bill_items"/>
+	</field>
+	<field name="tax_amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="tax_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="tax_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bill_items"/>
+	</field>
+	<field name="net_amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="net_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="net_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="bill_items"/>
+	</field>
+	<field name="patient_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="patient_type"/>
+		<property name="com.jaspersoft.studio.field.label" value="patient_type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patient_visits"/>
+	</field>
+	<field name="insurance_company_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="insurance_company_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="insurance_companies"/>
+	</field>
+	<field name="insurance_company_address" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="address"/>
+		<property name="com.jaspersoft.studio.field.label" value="insurance_company_address"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="insurance_companies"/>
+	</field>
+	<field name="insurance_company_contact" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="contact_info"/>
+		<property name="com.jaspersoft.studio.field.label" value="insurance_company_contact"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="insurance_companies"/>
+	</field>
+	<field name="policy_number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="policy_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="policy_number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patient_insurance_policies"/>
+	</field>
+	<field name="dependent_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="dependent_type"/>
+		<property name="com.jaspersoft.studio.field.label" value="dependent_type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="patient_insurance_policies"/>
+	</field>
+	<variable name="subtotal" calculation="Sum" class="java.lang.Double">
+		<expression><![CDATA[$F{amount}]]></expression>
+	</variable>
+	<title height="130">
+		<element kind="textField" uuid="c30cb74d-111d-4578-a4c7-a12573a3d356" x="0" y="0" width="555" height="30" fontName="Arial" fontSize="18.0" bold="true" hTextAlign="Center">
+			<expression><![CDATA["Sri Rama Mobile Store Ltd."]]></expression>
+		</element>
+		<element kind="textField" uuid="b059eab0-2d1f-41b7-93bd-1e919c7cd0a0" x="0" y="35" width="555" height="20" fontName="Arial" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["Padapudi Road,Opt Satya Sai Theater Kuchipudi, Movva (md), Krishna (dst), Andhra Pradesh 521136"]]></expression>
+		</element>
+		<element kind="textField" uuid="4e31cf7a-5132-4907-8faa-e23b94a9cba4" x="0" y="55" width="555" height="20" fontName="Arial" fontSize="10.0" hTextAlign="Center">
+			<expression><![CDATA["+91-9985258992, 08671-2523687 | srmobiles@gmail.com, sriramamobiles@gmail.com"]]></expression>
+		</element>
+		<element kind="staticText" uuid="8a5bad59-d213-4137-9551-83bbe3d29de0" x="455" y="85" width="100" height="30" fontName="Arial" fontSize="16.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[Invoice]]></text>
+		</element>
+	</title>
+	<pageHeader height="90">
+		<element kind="rectangle" uuid="e6267a34-0a37-4979-8e5a-f61da901b1b8" x="355" y="0" width="200" height="50">
+			<pen lineWidth="0.5"/>
+		</element>
+		<element kind="staticText" uuid="7d5874e5-d39a-4037-9184-6d406f952fd0" x="365" y="10" width="70" height="15" fontName="Arial" fontSize="10.0">
+			<text><![CDATA[Invoice No]]></text>
+		</element>
+		<element kind="textField" uuid="e420d7b6-9a4d-42ba-95c9-c21f1a939eea" x="435" y="10" width="110" height="15" fontName="Arial" fontSize="10.0">
+			<expression><![CDATA[$F{serial_number}]]></expression>
+		</element>
+		<element kind="staticText" uuid="a6d70a7a-eff3-4035-9aff-6f8d97bb4d0f" x="365" y="25" width="70" height="15" fontName="Arial" fontSize="10.0">
+			<text><![CDATA[Invoice Date]]></text>
+		</element>
+		<element kind="textField" uuid="ea609857-aa58-407d-bccf-cfe0f7d91b33" x="435" y="25" width="110" height="15" fontName="Arial" fontSize="10.0" pattern="dd-MMM-yyyy">
+			<expression><![CDATA[$F{transaction_date}.toLocalDate()]]></expression>
+		</element>
+		<element kind="staticText" uuid="c5bda662-9fd0-411e-890d-179cdd82b9b5" x="0" y="0" width="100" height="15" fontName="Arial" fontSize="12.0" bold="true">
+			<text><![CDATA[Bill To]]></text>
+		</element>
+		<element kind="staticText" uuid="83640e4a-3cae-48bf-a573-1a26fb1076c1" x="0" y="15" width="80" height="12" fontName="Arial" fontSize="9.0">
+			<text><![CDATA[Patient Name:]]></text>
+		</element>
+		<element kind="textField" uuid="83640e4a-3cae-48bf-a573-1a26fb1076c2" x="85" y="15" width="215" height="12" fontName="Arial" fontSize="9.0">
+			<expression><![CDATA[$F{first_name} + " " + ($F{middle_name} != null ? $F{middle_name} + " " : "") + $F{last_name}]]></expression>
+		</element>
+		<element kind="staticText" uuid="83640e4a-3cae-48bf-a573-1a26fb1076c3" x="0" y="30" width="80" height="12" fontName="Arial" fontSize="9.0">
+			<text><![CDATA[Policy Details:]]></text>
+		</element>
+		<element kind="textField" uuid="83640e4a-3cae-48bf-a573-1a26fb1076c4" x="85" y="30" width="215" height="12" fontName="Arial" fontSize="9.0">
+			<expression><![CDATA["Policy #: " + $F{policy_number} + ($F{dependent_type} != null ? " (" + $F{dependent_type} + ")" : "")]]></expression>
+		</element>
+		<element kind="staticText" uuid="83640e4a-3cae-48bf-a573-1a26fb1076c5" x="0" y="45" width="80" height="12" fontName="Arial" fontSize="9.0">
+			<text><![CDATA[Insurance:]]></text>
+		</element>
+		<element kind="textField" uuid="83640e4a-3cae-48bf-a573-1a26fb1076c6" x="85" y="45" width="215" height="30" fontName="Arial" fontSize="9.0">
+			<expression><![CDATA[$F{insurance_company_name}.toUpperCase()]]></expression>
+		</element>
+	</pageHeader>
+	<columnHeader height="30">
+		<element kind="rectangle" uuid="968b5009-5513-42f0-bd5d-dad272070b15" x="0" y="0" width="555" height="30"/>
+		<element kind="staticText" uuid="c994afeb-ccd9-4a9f-875f-82646bf4f30c" x="5" y="0" width="40" height="30" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+			<text><![CDATA[Index]]></text>
+		</element>
+		<element kind="staticText" uuid="586e6207-70de-4b77-b2b6-adbceb3c11de" x="50" y="0" width="340" height="30" fontName="Arial" fontSize="10.0" vTextAlign="Middle">
+			<text><![CDATA[Description]]></text>
+		</element>
+		<element kind="staticText" uuid="713c7554-4a79-44a4-909b-9c71317a5b0c" x="400" y="0" width="60" height="30" fontName="Arial" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Unit Price]]></text>
+		</element>
+		<element kind="staticText" uuid="6fdc3d9e-aa1e-4910-8555-f1ab087bad55" x="465" y="0" width="30" height="30" fontName="Arial" fontSize="10.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Qty]]></text>
+		</element>
+		<element kind="staticText" uuid="9d5271a4-0bfb-4581-be74-6e5e15a6c15e" x="500" y="0" width="50" height="30" fontName="Arial" fontSize="10.0" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Amount]]></text>
+		</element>
+		<element kind="line" uuid="5d06f3a8-2505-4246-83d2-fbce528ae502" x="45" y="0" width="1" height="30"/>
+		<element kind="line" uuid="1f8ac118-e585-4faa-b567-d25c4bc93ae1" x="395" y="0" width="1" height="30"/>
+		<element kind="line" uuid="da3520a1-2405-4f1e-999f-ab3074102c38" x="460" y="0" width="1" height="30"/>
+		<element kind="line" uuid="f16f9e44-4b00-42a0-aaa2-ca81b647da53" x="495" y="0" width="1" height="30"/>
+	</columnHeader>
+	<detail>
+		<band height="400">
+			<element kind="rectangle" uuid="359816aa-8b58-4553-867a-ff3882d44418" x="0" y="0" width="555" height="400"/>
+			<element kind="line" uuid="8b343499-be25-4c66-bd16-820371808979" x="45" y="0" width="1" height="400"/>
+			<element kind="line" uuid="c0ab6857-5221-4dbb-aa60-d18852aa4769" x="395" y="0" width="1" height="400"/>
+			<element kind="line" uuid="283aa340-d1dc-434b-994b-6c807e0b0baf" x="460" y="0" width="1" height="400"/>
+			<element kind="line" uuid="5ed8c40a-6339-4f48-a200-b6060eaf4454" x="495" y="0" width="1" height="400"/>
+			<element kind="textField" uuid="ea229211-23bc-4b53-b63d-3ebefbcc129a" x="5" y="5" width="40" height="20" fontName="Arial" fontSize="10.0" blankWhenNull="true" vTextAlign="Top">
+				<expression><![CDATA[$V{REPORT_COUNT}]]></expression>
+			</element>
+			<element kind="textField" uuid="d1f2cc5a-02d5-415f-8514-e78df57015ef" x="50" y="5" width="340" height="20" fontName="Arial" fontSize="10.0" blankWhenNull="true" vTextAlign="Top">
+				<expression><![CDATA[$F{product_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="4e32b15f-ac19-4c8c-acad-76427074cc00" x="400" y="5" width="60" height="20" fontName="Arial" fontSize="10.0" pattern="#,##0.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Top">
+				<expression><![CDATA[$F{price}]]></expression>
+			</element>
+			<element kind="textField" uuid="ad11eaed-b668-4a6f-af52-1627c4e7ebf6" x="465" y="5" width="30" height="20" fontName="Arial" fontSize="10.0" blankWhenNull="true" hTextAlign="Center" vTextAlign="Top">
+				<expression><![CDATA[$F{quantity}]]></expression>
+			</element>
+			<element kind="textField" uuid="db7147e8-f855-439f-800a-2e9151e3081b" x="500" y="5" width="50" height="20" fontName="Arial" fontSize="10.0" pattern="#,##0.0" blankWhenNull="true" hTextAlign="Right" vTextAlign="Top">
+				<expression><![CDATA[$F{net_amount}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<lastPageFooter height="117">
+		<element kind="staticText" uuid="0b2c99c6-d06b-40c7-820e-fc8093668ee6" x="400" y="0" width="70" height="20" fontName="Arial" fontSize="10.0">
+			<text><![CDATA[Subtotal]]></text>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="textField" uuid="017102e9-e2fa-4ceb-b47c-15999a1f45d8" x="470" y="0" width="80" height="20" fontName="Arial" fontSize="10.0" pattern="#,##0.00" hTextAlign="Right">
+			<expression><![CDATA[$V{subtotal}]]></expression>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="a323cdbf-3871-4fb5-ad4c-24cc7bc7a574" x="400" y="22" width="70" height="20" fontName="Arial" fontSize="10.0" bold="true">
+			<text><![CDATA[Total]]></text>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="textField" uuid="b96c31fc-3eea-4289-8abe-dfc82b697fa8" x="470" y="22" width="80" height="20" fontName="Arial" fontSize="10.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$V{subtotal}]]></expression>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="textField" uuid="232c0e47-d369-4d85-8dbb-cce1d893c23d" x="0" y="87" width="555" height="30" fontName="Arial" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA["Goods once sold will not be taken back or exchanged || Subject to product justification || Product damage no one responsible || Service only at authorized service centers"]]></expression>
+		</element>
+	</lastPageFooter>
+</jasperReport>

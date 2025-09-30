@@ -660,7 +660,7 @@
                   productUnitsSelect.append('<option value="">[Units of Measure]</option>');
 
                   $.each(data, function(index, productUnit) {
-                     productUnitsSelect.append('<option value="' + productUnit.id + '">' + productUnit.unit + '</option>');
+                     productUnitsSelect.append('<option value="' + productUnit.id + '">' + productUnit.description + '</option>');
                   });
                },
                error: function(xhr, status, error) {

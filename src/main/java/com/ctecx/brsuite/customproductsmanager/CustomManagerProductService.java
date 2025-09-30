@@ -22,6 +22,31 @@ public class CustomManagerProductService {
     private final SalesDateTimeManager salesDateTimeManager;
 
 
+
+
+    // ++ START: New service methods for print status ++
+    public Optional<Boolean> checkPrintStatus(String type, String identifier) {
+        // Basic validation can be added here
+        if (!"ORDER".equalsIgnoreCase(type) && !"RECEIPT".equalsIgnoreCase(type)) {
+            throw new IllegalArgumentException("Type must be 'ORDER' or 'RECEIPT'.");
+        }
+        return customProductManagerRepository.checkPrintStatus(type.toUpperCase(), identifier);
+    }
+
+    public int updatePrintStatus(PrintStatusUpdateRequest request) {
+        String type = request.getType();
+        if (!"ORDER".equalsIgnoreCase(type) && !"RECEIPT".equalsIgnoreCase(type)) {
+            throw new IllegalArgumentException("Type must be 'ORDER' or 'RECEIPT'.");
+        }
+        // Unpack the DTO and pass primitive values to the repository
+        return customProductManagerRepository.updatePrintStatus(
+                type.toUpperCase(),
+                request.getIdentifier(),
+                request.isStatus()
+        );
+    }
+
+
     public List<Map<String, Object>> getAllCategories() {
 
        return customProductManagerRepository.getAllCategories();

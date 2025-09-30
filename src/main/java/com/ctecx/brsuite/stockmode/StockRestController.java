@@ -81,6 +81,7 @@ public class StockRestController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Sales Transaction Saved successfully");
         response.put("transactionId", transactionId);
+        System.out.println("Current Order"+ transactionId  );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

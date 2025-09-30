@@ -1,8 +1,5 @@
 <div th:fragment="pos-main">
-
     <style type="text/css">
-
-
         /* Set flexbox for the pos-container */
         .pos-container {
             display: flex;
@@ -24,7 +21,6 @@
 
         /* Style pos-sidebar */
         .pos-sidebar {
-
             background-color: #ffffff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
@@ -33,21 +29,16 @@
             height: auto;
             display: flex;
             flex-direction: column;
-
         }
     </style>
-
 
     <div class="row">
         <div class="col-md-12">
             <div class="card p-1">
                 <div class="pos-container">
-
                     <!-- pos-content -->
                     <div class="pos-content">
                         <div class="col-md-12">
-
-
                             <div class="card mb-3">
                                 <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
                                     <h6 class="card-title mb-0">Purchase & Invoice Details</h6>
@@ -83,10 +74,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="purchaseDate" class="form-label">Purchase Date:</label>
-                                                <div class="input-group">
-                                                    <input type="text" id="purchaseDate" name="purchaseDate" class="form-control form-control-sm"/>
-                                                    <span class="input-group-text"  style="height: calc(1.5em + 0.5rem + 2px); margin: 0;"><i class="fa fa-calendar"></i></span>
-                                                </div>
+                                                <input type="date" id="purchaseDate" name="purchaseDate" class="form-control form-control-sm" />
                                             </div>
                                         </div>
 
@@ -113,7 +101,6 @@
                                                 <div class="input-group">
                                                     <select id="supplierId" name="supplierSearch" class="form-select form-select-sm">
                                                         <option value="">Select Supplier</option>
-
                                                     </select>
                                                     <button class="btn btn-secondary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#supplierModal">
                                                         <i class="fa fa-plus"></i>
@@ -136,7 +123,6 @@
                                                 <label for="stationId" class="form-label">Store/Location:</label>
                                                 <select class="form-control form-control-sm" id="stationId">
                                                     <option value="">Select Location</option>
-
                                                 </select>
                                             </div>
                                         </div>
@@ -177,9 +163,6 @@
                                 </div>
                             </div>
 
-
-
-
                             <!-- pos-content-container -->
                             <div class="pos-content-container">
                                 <div class="pos-table-row">
@@ -193,9 +176,9 @@
                                         </button>
                                         <div class="flex-grow-1 position-relative">
                                             <div class="input-group">
-                                              <span class="input-group-text bg-light border-0 py-0 px-2" style="height: 38px;">
-                                                <i class="fa fa-barcode"></i>
-                                              </span>
+                                                <span class="input-group-text bg-light border-0 py-0 px-2" style="height: 38px;">
+                                                    <i class="fa fa-barcode"></i>
+                                                </span>
                                                 <input type="text" class="form-control bg-light border-start-0" placeholder="Search products..." id="search-pos" style="height: 38px;">
                                             </div>
                                             <div id="productTableContainer-pos" class="position-absolute w-100 bg-white border mt-1" style="display: none; z-index: 1000;"></div>
@@ -207,16 +190,13 @@
                                     <!-- BEGIN panel -->
                                     <div class="panel rounded border" data-sortable-id="ui-widget-16">
                                         <div class="panel-heading bg-default-700 text-white">
-
                                             <div class="panel-heading-btn">
                                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
                                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
                                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
                                                 <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
                                             </div>
-
                                         </div>
-
 
                                         <div class="panel-body">
                                             <!-- BEGIN table -->
@@ -235,7 +215,6 @@
                                                         <th>Batch Number</th>
                                                         <th>Expiry Date</th>
                                                         <th>Action</th>
-
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -248,38 +227,18 @@
                                             </div>
                                             <!-- END table -->
                                         </div>
-
                                     </div>
                                     <!-- END panel -->
                                 </div>
-
                             </div>
                             <!-- END pos-content-container -->
                         </div>
-
-
                     </div>
                     <!-- END pos-content -->
-
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <script>
         $(document).ready(function() {
@@ -306,7 +265,7 @@
                     $(document).on('click', '.decrease-qty', this.handleQuantityDecrease.bind(this));
                     $(document).on('click', '.remove-row', (e) => this.removeRow($(e.currentTarget).closest('tr')));
                     $(document).on('change', '.expiry-date', this.handleExpiryDateChange.bind(this));
-                    $(document).on('input', '.batch-input', this.handleBatchChange.bind(this));
+                    $(document).on('input', '. chiropractic-input', this.handleBatchChange.bind(this));
                     this.$receivedAmount.on('input', this.updateSidebar.bind(this));
                     this.$selectedProductsTable.on('click', 'tbody tr', this.handleRowSelection.bind(this));
                 },
@@ -451,42 +410,42 @@
                     } else {
                         const currentDate = new Date().toISOString().split('T')[0];
                         const newRow = `
-                    <tr data-product-code="${productCode}">
-                        <td key-id="productCode">${productCode}</td>
-                        <td key-id="productName">${productName}</td>
-                        <td key-id="productQty" style="white-space: nowrap;">
-                            <div class="input-group qty">
-                                <button class="btn btn-danger btn-sm decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
-                                <input type="text" class="form-control form-control-sm text-center product-input"
-                                    value="1" style="width: 50px; margin: 0 5px;" />
-                                <button class="btn btn-success btn-sm increase-qty"><i class="fa fa-plus fa-sm"></i></button>
-                            </div>
-                        </td>
-                        <td key-id="SalePrice">
-                            <input type="number" class="form-control form-control-sm price-input"
-                                value="${productPrice}" step="0.01" />
-                        </td>
-                        <td key-id="unitTax">${this.formatNumber(unitTax)}</td>
-                        <td key-id="discount">
-                            <input type="number" class="form-control form-control-sm discount-input"
-                                value="0.00" step="0.01" />
-                        </td>
-                        <td key-id="finalTax">${this.formatNumber(unitTax)}</td>
-                        <td key-id="subtotal">${this.formatNumber(productPrice + unitTax)}</td>
-                        <td key-id="batchNumber">
-                            <input type="text" class="form-control form-control-sm batch-input" />
-                        </td>
-                        <td key-id="expiryDate">
-                            <input type="date" class="form-control form-control-sm expiry-date"
-                                value="${currentDate}" min="${currentDate}" />
-                        </td>
-                        <td key-id="action">
-                            <button class="btn btn-danger btn-sm remove-row">
-                                <i class="fa fa-trash fa-sm"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                            <tr data-product-code="${productCode}">
+                                <td key-id="productCode">${productCode}</td>
+                                <td key-id="productName">${productName}</td>
+                                <td key-id="productQty" style="white-space: nowrap;">
+                                    <div class="input-group qty">
+                                        <button class="btn btn-danger btn-sm decrease-qty"><i class="fa fa-minus fa-sm"></i></button>
+                                        <input type="text" class="form-control form-control-sm text-center product-input"
+                                            value="1" style="width: 50px; margin: 0 5px;" />
+                                        <button class="btn btn-success btn-sm increase-qty"><i class="fa fa-plus fa-sm"></i></button>
+                                    </div>
+                                </td>
+                                <td key-id="SalePrice">
+                                    <input type="number" class="form-control form-control-sm price-input"
+                                        value="${productPrice}" step="0.01" />
+                                </td>
+                                <td key-id="unitTax">${this.formatNumber(unitTax)}</td>
+                                <td key-id="discount">
+                                    <input type="number" class="form-control form-control-sm discount-input"
+                                        value="0.00" step="0.01" />
+                                </td>
+                                <td key-id="finalTax">${this.formatNumber(unitTax)}</td>
+                                <td key-id="subtotal">${this.formatNumber(productPrice + unitTax)}</td>
+                                <td key-id="batchNumber">
+                                    <input type="text" class="form-control form-control-sm batch-input" />
+                                </td>
+                                <td key-id="expiryDate">
+                                    <input type="date" class="form-control form-control-sm expiry-date"
+                                        value="${currentDate}" min="${currentDate}" />
+                                </td>
+                                <td key-id="action">
+                                    <button class="btn btn-danger btn-sm remove-row">
+                                        <i class="fa fa-trash fa-sm"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
 
                         this.$selectedProductsTable.find('tbody').prepend(newRow);
                         this.updateRowTotals(this.$selectedProductsTable.find(`tbody tr[data-product-code="${productCode}"]`));
@@ -557,7 +516,6 @@
                     const $input = $(event.target);
                     const batchNumber = $input.val().trim();
 
-                    // Add any specific batch number validation if needed
                     if (batchNumber === '') {
                         console.log('Empty batch number entered');
                     }
@@ -627,10 +585,8 @@
         });
     </script>
 
-
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for store search
             $("#stationId").select2({
                 ajax: {
                     url: "/api/stores/search",
@@ -660,10 +616,8 @@
         });
     </script>
 
-
     <script>
         $(document).ready(function() {
-            // Initialize Select2
             $("#supplierId").select2({
                 ajax: {
                     url: "/api/suppliers/search",
@@ -682,7 +636,7 @@
                                     id: obj.id,
                                     value: obj.id,
                                     text: obj.id + ' - ' + obj.creditorName,
-                                    supplierId: obj.id // add the supplierId to the option
+                                    supplierId: obj.id
                                 };
                             })
                         };
@@ -693,414 +647,398 @@
         });
     </script>
 
-
-
-
-
-
-
-
-
-
-
-
-   <script>
-       (function($) {
-           'use strict';
-
-           // Create a namespace for our application
-           window.StockApp = window.StockApp || {};
-
-           const API_CONFIG = {
-               baseUrl: '/api/stocks',
-               endpoint: 'purchase'
-           };
-
-           const DOM = {
-               selectors: {
-                   supplier: '#supplierId',
-                   station: '#stationId',
-                   purchaseOrder: '#purchaseOrder',
-                   invoiceNumber: '#invoiceNumber',
-                   purchaseDate: '#purchaseDate',
-                   productsTable: '#selectedProducts-pos tbody',
-                   searchInput: '#search-pos',
-                   totals: {
-                       subtotal: '#subtotal',
-                       tax: '#tax',
-                       discount: '#discount',
-                       totalAmount: '#totalAmount'
-                   }
-               }
-           };
-
-           const showNotification = (type, message) => {
-               $.wnoty({ type, message, position: 'top-right' });
-           };
-
-           StockApp.PurchaseTransaction = {
-               // Date Handling
-               initializeDatePicker: function() {
-                   try {
-                       const $datePicker = $(DOM.selectors.purchaseDate);
-                       const self = this;
-
-                       if ($datePicker.data('datepicker')) {
-                           $datePicker.datepicker('destroy');
-                       }
-
-                       $datePicker.datepicker({
-                           format: 'yyyy-mm-dd',
-                           autoclose: true,
-                           todayHighlight: true,
-                           startDate: moment().subtract(1, 'month').toDate(),
-                           endDate: moment().toDate(),
-                           clearBtn: true
-                       });
-
-                       const today = moment().format('YYYY-MM-DD');
-                       $datePicker.datepicker('setDate', today);
-
-                       $datePicker.on('changeDate', function(e) {
-                           self.handleDateChange(e);
-                       });
-                   } catch (error) {
-                       console.error('Error initializing datepicker:', error);
-                       showNotification('error', 'Error initializing date picker');
-                   }
-               },
-
-               // Data Collection
-               collectFormData: function() {
-                   try {
-                       const supplierId = $(DOM.selectors.supplier).val();
-                       if (!supplierId) throw new Error('Please select a supplier');
-
-                       const branchId = $(DOM.selectors.station).val();
-                       if (!branchId) throw new Error('Please select a store location');
-
-                       const purchaseStocks = this.collectProductsData();
-                       if (!purchaseStocks.length) throw new Error('Please add at least one product');
-
-                       const purchaseDate = $(DOM.selectors.purchaseDate).val();
-                       if (!purchaseDate) throw new Error('Please select a purchase date');
-
-                       const invoiceNumber = $(DOM.selectors.invoiceNumber).val();
-                       if (!invoiceNumber) throw new Error('Please enter an invoice number');
-
-                       return {
-                           supplierId: parseInt(supplierId),
-                           branchId: parseInt(branchId),
-                           purchaseStocks,
-                           purchaseDate: moment(purchaseDate).format('YYYY-MM-DD'),
-                           invoiceNumber: invoiceNumber.trim()
-                       };
-                   } catch (error) {
-                       console.error('Error collecting form data:', error);
-                       throw error;
-                   }
-               },
-
-               collectProductsData: function() {
-                   const purchaseStocks = [];
-
-                   try {
-                       $(DOM.selectors.productsTable).find('tr').each((_, row) => {
-                           const $row = $(row);
-                           const quantity = parseInt($row.find('.product-input').val()) || 0;
-
-                           if (quantity <= 0) return;
-
-                           const unitPrice = parseFloat($row.find('.price-input').val()) || 0;
-                           const discount = parseFloat($row.find('.discount-input').val() || 0);
-                           const subtotal = parseFloat((quantity * unitPrice).toFixed(2));
-                           const tax = parseFloat((subtotal * 0.16).toFixed(2)); // 16% VAT
-
-                           purchaseStocks.push({
-                               productCode: $row.find('[key-id="productCode"]').text().trim(),
-                               productName: $row.find('[key-id="productName"]').text().trim(),
-                               unitcost: parseFloat(unitPrice.toFixed(2)),
-                               discount: parseFloat(discount.toFixed(2)),
-                               tax: tax,
-                               subtotal: subtotal,
-                               qty: quantity
-                           });
-                       });
-                   } catch (error) {
-                       console.error('Error collecting product data:', error);
-                       throw error;
-                   }
-
-                   return purchaseStocks;
-               },
-
-               calculateTotals: function() {
-                   try {
-                       const products = this.collectProductsData();
-
-                       const subtotal = products.reduce((sum, product) => sum + product.subtotal, 0);
-                       const tax = products.reduce((sum, product) => sum + product.tax, 0);
-                       const discount = products.reduce((sum, product) => sum + product.discount, 0);
-                       const total = subtotal + tax - discount;
-
-                       // Update UI with formatted numbers
-                       $(DOM.selectors.totals.subtotal).text(subtotal.toFixed(2));
-                       $(DOM.selectors.totals.tax).text(tax.toFixed(2));
-                       $(DOM.selectors.totals.discount).text(discount.toFixed(2));
-                       $(DOM.selectors.totals.totalAmount).text(total.toFixed(2));
-                   } catch (error) {
-                       console.error('Error calculating totals:', error);
-                   }
-               },
-
-               // Validation
-               validateFormData: function(data) {
-                   const errors = [
-                       !data.supplierId && 'Please select a supplier',
-                       !data.branchId && 'Please select a store location',
-                       (!data.purchaseStocks?.length) && 'Please add at least one product',
-                       !data.purchaseDate && 'Please select a purchase date',
-                       !data.invoiceNumber && 'Please enter an invoice number',
-                       ...this.validateProducts(data.purchaseStocks)
-                   ].filter(Boolean);
-
-                   if (errors.length) throw new Error(errors[0]);
-                   return true;
-               },
-
-               validateProducts: function(products = []) {
-                   return products.reduce((errors, product) => {
-                       if (!product.productCode) errors.push('Invalid product information detected');
-                       if (!product.qty || product.qty <= 0)
-                           errors.push('All products must have a valid quantity');
-                       if (!product.unitcost || product.unitcost < 0)
-                           errors.push('All products must have a valid unit cost');
-                       return errors;
-                   }, []);
-               },
-
-               // API Calls
-               savePurchase: async function(data) {
-                   try {
-                       console.log("Purchase Stock Data:", JSON.stringify(data));
-
-                       const response = await fetch(`${API_CONFIG.baseUrl}/${API_CONFIG.endpoint}`, {
-                           method: 'POST',
-                           headers: {
-                               'Content-Type': 'application/json',
-                               'Accept': 'application/json'
-                           },
-                           body: JSON.stringify(data)
-                       });
-
-                       if (!response.ok) {
-                           let errorMessage;
-                           try {
-                               const errorData = await response.json();
-                               errorMessage = errorData.message || `Server error: ${response.status}`;
-                           } catch (e) {
-                               errorMessage = await response.text();
-                           }
-                           throw new Error(errorMessage);
-                       }
-
-                       const responseText = await response.text();
-                       if (!responseText) {
-                           return { success: true };
-                       }
-
-                       try {
-                           return JSON.parse(responseText);
-                       } catch (e) {
-                           return { success: true, message: responseText };
-                       }
-                   } catch (error) {
-                       console.error('Save error:', error);
-                       throw error;
-                   }
-               },
-
-               // UI Updates
-               toggleLoadingState: function(button, isLoading) {
-                   const $button = $(button);
-                   const $icon = $button.find('i');
-
-                   $icon
-                       .toggleClass('fa-shopping-cart', !isLoading)
-                       .toggleClass('fa-spinner fa-spin', isLoading);
-
-                   $button.prop('disabled', isLoading);
-               },
-
-               updateTotals: function() {
-                   try {
-                       Object.values(DOM.selectors.totals).forEach(selector =>
-                           $(selector).text('0.00')
-                       );
-                   } catch (error) {
-                       console.error('Error updating totals:', error);
-                   }
-               },
-
-               clearForm: function() {
-                   try {
-                       $(DOM.selectors.supplier).val('').trigger('change');
-                       $(DOM.selectors.station).val('').trigger('change');
-                       $(DOM.selectors.purchaseOrder).val('');
-                       $(DOM.selectors.invoiceNumber).val('');
-
-                       const today = moment().format('YYYY-MM-DD');
-                       $(DOM.selectors.purchaseDate).datepicker('setDate', today);
-
-                       $(DOM.selectors.productsTable).empty();
-                       $(DOM.selectors.searchInput).val('');
-
-                       this.updateTotals();
-
-                       $(document).trigger('purchaseTransactionFormCleared');
-                   } catch (error) {
-                       console.error('Error clearing form:', error);
-                       showNotification('error', 'Error clearing form');
-                   }
-               },
-
-               // Event Handlers
-               handleSubmit: async function(event) {
-                   event.preventDefault();
-                   const button = event.currentTarget;
-
-                   try {
-                       this.toggleLoadingState(button, true);
-
-                       const formData = this.collectFormData();
-                       this.validateFormData(formData);
-
-                       await this.savePurchase(formData);
-
-                       showNotification('success', 'Purchase transaction saved successfully!');
-                       this.clearForm();
-
-                       $(document).trigger('purchaseTransactionSaved');
-                       $(document).trigger('purchaseTransactionTableCleared');
-
-                   } catch (error) {
-                       showNotification('error', error.message || 'An error occurred while saving the purchase');
-                       console.error(error);
-                   } finally {
-                       this.toggleLoadingState(button, false);
-                   }
-               },
-
-               handleCancel: function(event) {
-                   event.preventDefault();
-                   const hasChanges = $(DOM.selectors.productsTable).find('tr').length > 0;
-                   if (!hasChanges || confirm('Are you sure? Unsaved changes will be lost.')) {
-                       this.clearForm();
-                   }
-               },
-
-               handleStationChange: function() {
-                   if ($(DOM.selectors.station).val()) {
-                       $(DOM.selectors.productsTable).empty();
-                       this.updateTotals();
-                       $(document).trigger('stationChanged');
-                   }
-               },
-
-               handleSupplierChange: function() {
-                   if ($(DOM.selectors.supplier).val()) {
-                       console.log('Supplier changed');
-                       $(document).trigger('supplierChanged');
-                   }
-               },
-
-               handleDateChange: function(e) {
-                   const selectedDate = $(e.target).val();
-                   if (!moment(selectedDate, 'YYYY-MM-DD', true).isValid()) {
-                       showNotification('error', 'Please select a valid date');
-                       $(e.target).datepicker('setDate', moment().format('YYYY-MM-DD'));
-                   }
-               },
-
-               handleProductChange: function() {
-                   this.calculateTotals();
-                   $(document).trigger('productsChanged');
-               },
-
-               init: function() {
-                   try {
-                       const self = this;
-
-                       this.initializeDatePicker();
-
-                       $('#btnSaveAsPurchase').off('click').on('click', function(e) {
-                           self.handleSubmit.call(self, e);
-                       });
-
-                       $('#btnCancel').off('click').on('click', function(e) {
-                           self.handleCancel.call(self, e);
-                       });
-
-                       $(DOM.selectors.station).off('change').on('change', function() {
-                           self.handleStationChange.call(self);
-                       });
-
-                       $(DOM.selectors.supplier).off('change').on('change', function() {
-                           self.handleSupplierChange.call(self);
-                       });
-
-                       const $productsTable = $(DOM.selectors.productsTable);
-                       $productsTable.off('change', '.product-input, .price-input, .discount-input')
-                           .on('change', '.product-input, .price-input, .discount-input',
-                               function() {
-                                   self.handleProductChange.call(self);
-                               });
-
-                       $('[data-toggle="tooltip"]').tooltip();
-
-                       console.log('Purchase Transaction module initialized successfully');
-                   } catch (error) {
-                       console.error('Error initializing Purchase Transaction module:', error);
-                       showNotification('error', 'Error initializing form');
-                   }
-               },
-
-               destroy: function() {
-                   try {
-                       const $datePicker = $(DOM.selectors.purchaseDate);
-                       if ($datePicker.data('datepicker')) {
-                           $datePicker.datepicker('destroy');
-                       }
-
-                       $('#btnSaveAsPurchase').off('click');
-                       $('#btnCancel').off('click');
-                       $(DOM.selectors.station).off('change');
-                       $(DOM.selectors.supplier).off('change');
-                       $(DOM.selectors.productsTable).off('change');
-
-                       $('[data-toggle="tooltip"]').tooltip('dispose');
-
-                       console.log('Purchase Transaction module destroyed successfully');
-                   } catch (error) {
-                       console.error('Error destroying Purchase Transaction module:', error);
-                   }
-               }
-           };
-
-           // Initialize when document is ready
-           $(document).ready(function() {
-               if (StockApp.PurchaseTransaction.destroy) {
-                   StockApp.PurchaseTransaction.destroy();
-               }
-               StockApp.PurchaseTransaction.init();
-           });
-
-       })(jQuery);
-   </script>
+    <script>
+        (function($) {
+            'use strict';
+
+            window.StockApp = window.StockApp || {};
+
+            const API_CONFIG = {
+                baseUrl: '/api/stocks',
+                endpoint: 'purchase'
+            };
+
+            const DOM = {
+                selectors: {
+                    supplier: '#supplierId',
+                    station: '#stationId',
+                    purchaseOrder: '#purchaseOrder',
+                    invoiceNumber: '#invoiceNumber',
+                    purchaseDate: '#purchaseDate',
+                    productsTable: '#selectedProducts-pos tbody',
+                    searchInput: '#search-pos',
+                    totals: {
+                        subtotal: '#subtotal',
+                        tax: '#tax',
+                        discount: '#discount',
+                        totalAmount: '#totalAmount'
+                    }
+                }
+            };
+
+            const showNotification = (type, message) => {
+                $.wnoty({ type, message, position: 'top-right' });
+            };
+
+            StockApp.PurchaseTransaction = {
+                initializeDatePicker: function() {
+                    try {
+                        const $dateInput = $(DOM.selectors.purchaseDate);
+                        const self = this;
+
+                        // Get today's date and one month ago
+                        const today = new Date();
+                        const oneMonthAgo = new Date();
+                        oneMonthAgo.setMonth(today.getMonth() - 1);
+
+                        // Format dates as YYYY-MM-DD
+                        const formatDate = (date) => {
+                            return date.toISOString().split('T')[0];
+                        };
+
+                        // Set min, max, and default value
+                        $dateInput.attr({
+                            min: formatDate(oneMonthAgo),
+                            max: formatDate(today)
+                        });
+                        $dateInput.val(formatDate(today));
+
+                        // Bind change event
+                        $dateInput.off('change').on('change', function(e) {
+                            self.handleDateChange.call(self, e);
+                        });
+                    } catch (error) {
+                        console.error('Error initializing date input:', error);
+                        showNotification('error', 'Error initializing date input');
+                    }
+                },
+
+                collectFormData: function() {
+                    try {
+                        const supplierId = $(DOM.selectors.supplier).val();
+                        if (!supplierId) throw new Error('Please select a supplier');
+
+                        const branchId = $(DOM.selectors.station).val();
+                        if (!branchId) throw new Error('Please select a store location');
+
+                        const purchaseStocks = this.collectProductsData();
+                        if (!purchaseStocks.length) throw new Error('Please add at least one product');
+
+                        const purchaseDate = $(DOM.selectors.purchaseDate).val();
+                        if (!purchaseDate) throw new Error('Please select a purchase date');
+
+                        const invoiceNumber = $(DOM.selectors.invoiceNumber).val();
+                        if (!invoiceNumber) throw new Error('Please enter an invoice number');
+
+                        return {
+                            supplierId: parseInt(supplierId),
+                            branchId: parseInt(branchId),
+                            purchaseStocks,
+                            purchaseDate: purchaseDate, // Already in YYYY-MM-DD format
+                            invoiceNumber: invoiceNumber.trim()
+                        };
+                    } catch (error) {
+                        console.error('Error collecting form data:', error);
+                        throw error;
+                    }
+                },
+
+                collectProductsData: function() {
+                    const purchaseStocks = [];
+
+                    try {
+                        $(DOM.selectors.productsTable).find('tr').each((_, row) => {
+                            const $row = $(row);
+                            const quantity = parseInt($row.find('.product-input').val()) || 0;
+
+                            if (quantity <= 0) return;
+
+                            const unitPrice = parseFloat($row.find('.price-input').val()) || 0;
+                            const discount = parseFloat($row.find('.discount-input').val() || 0);
+                            const subtotal = parseFloat((quantity * unitPrice).toFixed(2));
+                            const tax = parseFloat((subtotal * 0.16).toFixed(2)); // 16% VAT
+
+                            purchaseStocks.push({
+                                productCode: $row.find('[key-id="productCode"]').text().trim(),
+                                productName: $row.find('[key-id="productName"]').text().trim(),
+                                unitcost: parseFloat(unitPrice.toFixed(2)),
+                                discount: parseFloat(discount.toFixed(2)),
+                                tax: tax,
+                                subtotal: subtotal,
+                                qty: quantity
+                            });
+                        });
+                    } catch (error) {
+                        console.error('Error collecting product data:', error);
+                        throw error;
+                    }
+
+                    return purchaseStocks;
+                },
+
+                calculateTotals: function() {
+                    try {
+                        const products = this.collectProductsData();
+
+                        const subtotal = products.reduce((sum, product) => sum + product.subtotal, 0);
+                        const tax = products.reduce((sum, product) => sum + product.tax, 0);
+                        const discount = products.reduce((sum, product) => sum + product.discount, 0);
+                        const total = subtotal + tax - discount;
+
+                        $(DOM.selectors.totals.subtotal).text(subtotal.toFixed(2));
+                        $(DOM.selectors.totals.tax).text(tax.toFixed(2));
+                        $(DOM.selectors.totals.discount).text(discount.toFixed(2));
+                        $(DOM.selectors.totals.totalAmount).text(total.toFixed(2));
+                    } catch (error) {
+                        console.error('Error calculating totals:', error);
+                    }
+                },
+
+                validateFormData: function(data) {
+                    const errors = [
+                        !data.supplierId && 'Please select a supplier',
+                        !data.branchId && 'Please select a store location',
+                        (!data.purchaseStocks?.length) && 'Please add at least one product',
+                        !data.purchaseDate && 'Please select a purchase date',
+                        !data.invoiceNumber && 'Please enter an invoice number',
+                        ...this.validateProducts(data.purchaseStocks)
+                    ].filter(Boolean);
+
+                    if (errors.length) throw new Error(errors[0]);
+                    return true;
+                },
+
+                validateProducts: function(products = []) {
+                    return products.reduce((errors, product) => {
+                        if (!product.productCode) errors.push('Invalid product information detected');
+                        if (!product.qty || product.qty <= 0)
+                            errors.push('All products must have a valid quantity');
+                        if (!product.unitcost || product.unitcost < 0)
+                            errors.push('All products must have a valid unit cost');
+                        return errors;
+                    }, []);
+                },
+
+                savePurchase: async function(data) {
+                    try {
+                        console.log("Purchase Stock Data:", JSON.stringify(data));
+
+                        const response = await fetch(`${API_CONFIG.baseUrl}/${API_CONFIG.endpoint}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (!response.ok) {
+                            let errorMessage;
+                            try {
+                                const errorData = await response.json();
+                                errorMessage = errorData.message || `Server error: ${response.status}`;
+                            } catch (e) {
+                                errorMessage = await response.text();
+                            }
+                            throw new Error(errorMessage);
+                        }
+
+                        const responseText = await response.text();
+                        if (!responseText) {
+                            return { success: true };
+                        }
+
+                        try {
+                            return JSON.parse(responseText);
+                        } catch (e) {
+                            return { success: true, message: responseText };
+                        }
+                    } catch (error) {
+                        console.error('Save error:', error);
+                        throw error;
+                    }
+                },
+
+                toggleLoadingState: function(button, isLoading) {
+                    const $button = $(button);
+                    const $icon = $button.find('i');
+
+                    $icon
+                        .toggleClass('fa-shopping-cart', !isLoading)
+                        .toggleClass('fa-spinner fa-spin', isLoading);
+
+                    $button.prop('disabled', isLoading);
+                },
+
+                updateTotals: function() {
+                    try {
+                        Object.values(DOM.selectors.totals).forEach(selector =>
+                            $(selector).text('0.00')
+                        );
+                    } catch (error) {
+                        console.error('Error updating totals:', error);
+                    }
+                },
+
+                clearForm: function() {
+                    try {
+                        $(DOM.selectors.supplier).val('').trigger('change');
+                        $(DOM.selectors.station).val('').trigger('change');
+                        $(DOM.selectors.purchaseOrder).val('');
+                        $(DOM.selectors.invoiceNumber).val('');
+
+                        const today = new Date().toISOString().split('T')[0];
+                        $(DOM.selectors.purchaseDate).val(today);
+
+                        $(DOM.selectors.productsTable).empty();
+                        $(DOM.selectors.searchInput).val('');
+
+                        this.updateTotals();
+
+                        $(document).trigger('purchaseTransactionFormCleared');
+                    } catch (error) {
+                        console.error('Error clearing form:', error);
+                        showNotification('error', 'Error clearing form');
+                    }
+                },
+
+                handleSubmit: async function(event) {
+                    event.preventDefault();
+                    const button = event.currentTarget;
+
+                    try {
+                        this.toggleLoadingState(button, true);
+
+                        const formData = this.collectFormData();
+                        this.validateFormData(formData);
+
+                        await this.savePurchase(formData);
+
+                        showNotification('success', 'Purchase transaction saved successfully!');
+                        this.clearForm();
+
+                        $(document).trigger('purchaseTransactionSaved');
+                        $(document).trigger('purchaseTransactionTableCleared');
+
+                    } catch (error) {
+                        showNotification('error', error.message || 'An error occurred while saving the purchase');
+                        console.error(error);
+                    } finally {
+                        this.toggleLoadingState(button, false);
+                    }
+                },
+
+                handleCancel: function(event) {
+                    event.preventDefault();
+                    const hasChanges = $(DOM.selectors.productsTable).find('tr').length > 0;
+                    if (!hasChanges || confirm('Are you sure? Unsaved changes will be lost.')) {
+                        this.clearForm();
+                    }
+                },
+
+                handleStationChange: function() {
+                    if ($(DOM.selectors.station).val()) {
+                        $(DOM.selectors.productsTable).empty();
+                        this.updateTotals();
+                        $(document).trigger('stationChanged');
+                    }
+                },
+
+                handleSupplierChange: function() {
+                    if ($(DOM.selectors.supplier).val()) {
+                        console.log('Supplier changed');
+                        $(document).trigger('supplierChanged');
+                    }
+                },
+
+                handleDateChange: function(e) {
+                    const $input = $(e.target);
+                    const selectedDate = new Date($input.val());
+                    const today = new Date();
+                    const oneMonthAgo = new Date();
+                    oneMonthAgo.setMonth(today.getMonth() - 1);
+
+                    // Check if the date is valid
+                    if (isNaN(selectedDate.getTime())) {
+                        showNotification('error', 'Please select a valid date');
+                        $input.val(today.toISOString().split('T')[0]);
+                        return;
+                    }
+
+                    // Check if the date is within the allowed range
+                    if (selectedDate > today || selectedDate < oneMonthAgo) {
+                        showNotification('error', 'Date must be between one month ago and today');
+                        $input.val(today.toISOString().split('T')[0]);
+                    }
+                },
+
+                handleProductChange: function() {
+                    this.calculateTotals();
+                    $(document).trigger('productsChanged');
+                },
+
+                init: function() {
+                    try {
+                        const self = this;
+
+                        this.initializeDatePicker();
+
+                        $('#btnSaveAsPurchase').off('click').on('click', function(e) {
+                            self.handleSubmit.call(self, e);
+                        });
+
+                        $('#btnCancel').off('click').on('click', function(e) {
+                            self.handleCancel.call(self, e);
+                        });
+
+                        $(DOM.selectors.station).off('change').on('change', function() {
+                            self.handleStationChange.call(self);
+                        });
+
+                        $(DOM.selectors.supplier).off('change').on('change', function() {
+                            self.handleSupplierChange.call(self);
+                        });
+
+                        const $productsTable = $(DOM.selectors.productsTable);
+                        $productsTable.off('change', '.product-input, .price-input, .discount-input')
+                            .on('change', '.product-input, .price-input, .discount-input',
+                                function() {
+                                    self.handleProductChange.call(self);
+                                });
+
+                        $('[data-toggle="tooltip"]').tooltip();
+
+                        console.log('Purchase Transaction module initialized successfully');
+                    } catch (error) {
+                        console.error('Error initializing Purchase Transaction module:', error);
+                        showNotification('error', 'Error initializing form');
+                    }
+                },
+
+                destroy: function() {
+                    try {
+                        $(DOM.selectors.purchaseDate).off('change');
+                        $('#btnSaveAsPurchase').off('click');
+                        $('#btnCancel').off('click');
+                        $(DOM.selectors.station).off('change');
+                        $(DOM.selectors.supplier).off('change');
+                        $(DOM.selectors.productsTable).off('change');
+                        $('[data-toggle="tooltip"]').tooltip('dispose');
+
+                        console.log('Purchase Transaction module destroyed successfully');
+                    } catch (error) {
+                        console.error('Error destroying Purchase Transaction module:', error);
+                    }
+                }
+            };
+
+            $(document).ready(function() {
+                if (StockApp.PurchaseTransaction.destroy) {
+                    StockApp.PurchaseTransaction.destroy();
+                }
+                StockApp.PurchaseTransaction.init();
+            });
+
+        })(jQuery);
+    </script>
 </div>
-
-
-
-
-
-

@@ -56,14 +56,14 @@
 					<div class="menu-item">
 						<a href="#" onclick="loadFragment('/pos/workflow')" class="menu-link"><div class="menu-text">POS Terminal</div></a>
 					</div>
-					<div class="menu-item">
+					<div class="menu-item" style="display: none">
 						<a href="#" onclick="loadFragment('/pos/returns')" class="menu-link"><div class="menu-text">Returns & Exchanges</div></a>
 					</div>
 
 				</div>
 			</div>
 
-			<div class="menu-item has-sub" sec:authorize="hasAnyAuthority('Barman','Admin')">
+			<div class="menu-item has-sub" sec:authorize="hasAnyAuthority('Barman','Admin')" style="display: none">
 				<a href="javascript:;" class="menu-link">
 					<div class="menu-icon"><i class="fa fa-chalkboard-user"></i></div>
 					<div class="menu-text">BarMan Module</div>
@@ -96,18 +96,23 @@
 				<div class="menu-submenu">
 
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/finance/products-sales-summary')" class="menu-link"><div class="menu-text">Sales By Products</div></a>
+						<a href="#" onclick="loadFragment('/monthly-summary-data')" class="menu-link"><div class="menu-text">Monthly Sales</div></a>
 					</div>
 
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/finance/byRevenueCodes')" class="menu-link"><div class="menu-text">Sales By Categories</div></a>
+						<a href="#" onclick="loadFragment('/month-sales-summary')" class="menu-link"><div class="menu-text">Stock Movements</div></a>
 					</div>
+
+					<div class="menu-item">
+						<a href="#" onclick="loadFragment('/finance/products-sales-summary')" class="menu-link"><div class="menu-text">Sales By Products</div></a>
+				</div>-->
+
 					<div class="menu-item">
 						<a href="#" onclick="loadFragment('/finance/waiter-summary')" class="menu-link"><div class="menu-text">Sales By Users</div></a>
 					</div>
 
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/finance/payment-methods')" class="menu-link"><div class="menu-text">Payment Methods Summaries</div></a>
+						<a href="#" onclick="loadFragment('/finance/payment-methods')" class="menu-link"><div class="menu-text">Payment Methods</div></a>
 					</div>
 
 				</div>
@@ -122,7 +127,7 @@
 				</a>
 				<div class="menu-submenu">
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/productsWorkFlow/controlPanel')" class="menu-link">
+						<a href="#" onclick="loadFragment('/products/adding-new-product')" class="menu-link">
 							<div class="menu-text">Add New Products</div>
 						</a>
 					</div>
@@ -141,6 +146,7 @@
 							<div class="menu-text">Price Lists</div>
 						</a>
 					</div>
+
 				</div>
 			</div>
 
@@ -187,7 +193,7 @@
 
 					<!-- Suppliers -->
 					<div class="menu-item">
-						<a href="#" onclick="loadFragment('/suppliers')" class="menu-link">
+						<a href="#" onclick="loadFragment('/suppliers/form')" class="menu-link">
 							<div class="menu-text">Suppliers</div>
 						</a>
 					</div>

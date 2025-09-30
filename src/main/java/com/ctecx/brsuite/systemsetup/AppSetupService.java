@@ -4,13 +4,38 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class AppSetupService {
     @Autowired
     private final AppSetupRepository appSetupRepository;
+
+
+
+    // New method to fetch only SCHOOL_NAME, SCHOOL_PHONE, SCHOOL_POSTAL as a Map
+    public Map<String, Object> getLimitedSchoolSettingsMap() {
+        Set<String> requiredKeys = Set.of("SCHOOL_NAME", "SCHOOL_PHONE", "SCHOOL_POSTAL","SCHOOL_KRA");
+        List<AppSetup> settings = appSetupRepository.findBySetupCategory(SetupCategory.SCHOOL);
+        Map<String, Object> settingsMap = new HashMap<>();
+        settings.stream()
+                .filter(setting -> requiredKeys.contains(setting.getKey()))
+                .forEach(setting -> settingsMap.put(setting.getKey(), setting.getValue()));
+        return settingsMap;
+    }
+
+    // Optional: Convert AppSetup entity to DTO (if needed elsewhere)
+    private AppSetupDTO toDTO(AppSetup appSetup) {
+        AppSetupDTO dto = new AppSetupDTO();
+        dto.setKey(appSetup.getKey());
+        dto.setValue(appSetup.getValue());
+        dto.setSetupCategory(appSetup.getSetupCategory().name());
+        return dto;
+    }
 
     public List<AppSetup> appSetupList() {
 

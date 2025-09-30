@@ -4,6 +4,7 @@ package com.ctecx.brsuite.customproductsmanager;
 import com.ctecx.brsuite.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +25,42 @@ public class CustomProductManagerRepositoryImpl implements CustomProductManagerR
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
+    // ++ START: Implementation of new print status methods ++
+    /**
+     * Checks the print status by querying for an Integer (0 or 1) and converting it to a boolean.
+     * This approach is more robust as it doesn't depend on the JDBC driver's automatic
+     * conversion from BIT/TINYINT to a Java boolean.
+     */
+    @Override
+    public Optional<Boolean> checkPrintStatus(String type, String identifier) {
+        String sql = "CALL check_print_status(?, ?)";
+        try {
+            // Query for an Integer, which is a safe mapping for BIT(1) or TINYINT(1).
+            Integer statusInt = jdbcTemplate.queryForObject(sql, Integer.class, type, identifier);
+
+            // If a value is returned, convert it to a boolean (non-zero is true).
+            // Optional.ofNullable handles the rare case of a NULL status from the DB.
+            return Optional.ofNullable(statusInt != null && statusInt != 0);
+
+        } catch (EmptyResultDataAccessException e) {
+            // This is the expected result when the identifier is not found.
+            // It means the item has never been printed, so we return an empty Optional.
+            return Optional.empty();
+        } catch (Exception e) {
+            // Log any other unexpected database errors.
+
+            return Optional.empty(); // Return empty on error to prevent accidental printing.
+        }
+    }
+
+    @Override
+    public int updatePrintStatus(String type, String identifier, boolean newStatus) {
+        // Use a direct call for the update procedure
+        String sql = "CALL update_print_status(?, ?, ?)";
+        return jdbcTemplate.update(sql, type, identifier, newStatus);
+    }
 
 
     @Override

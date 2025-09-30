@@ -1,49 +1,127 @@
 <div th:fragment="payee_form">
-
-    <div class="col-lg-12">
-        <div class="card border">
-            <div class="card-header bg-none p-3 h6 m-0">
-                <div class="d-flex align-items-center justify-content-between">
-                    <!-- Left side with icon and title -->
+<!--    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header p-2 bg-light">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    &lt;!&ndash; Left side with icon and title &ndash;&gt;
                     <div class="d-flex align-items-center">
-                        <i class="fa fa-chart-bar fa-lg me-2 text-gray text-opacity-50"></i>
-                        <span class="fw-bold">Monthly Sales Report</span>
+                        <i class="fa fa-chart-bar fa-lg me-1 text-muted"></i>
+                        <span class="fw-bold fs-6">Monthly Sales</span>
                     </div>
 
-                    <!-- Center controls with select and date dropdowns -->
-                    <div class="d-flex align-items-center gap-3" id="sales_controls_container">
-
-                        <div id="branch_selector_container" style="width: 200px;">
-                            <!-- Branch selector will be dynamically created here -->
+                    &lt;!&ndash; Controls &ndash;&gt;
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <div id="branch_selector_container" style="min-width: 150px; max-width: 150px;"></div>
+                        <select id="yearSelect" class="form-select form-control-xs"></select>
+                        <select id="monthSelect" class="form-select form-control-xs"></select>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-xs" title="Excel" id="excelButton">
+                                <i class="fas fa-file-excel"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-xs" title="PDF" id="pdfButton">
+                                <i class="fas fa-file-pdf"></i>
+                            </button>
+                            <button type="button" class="btn btn-info btn-xs" title="Print" id="printButton">
+                                <i class="fas fa-print"></i>
+                            </button>
                         </div>
-
-                        <!-- Year Dropdown -->
-                        <select id="yearSelect" class="form-select form-select-sm" style="width: 120px;">
-                            <!-- Year options will be dynamically created here -->
-                        </select>
-
-                        <!-- Month Dropdown -->
-                        <select id="monthSelect" class="form-select form-select-sm" style="width: 140px;">
-                            <!-- Month options will be dynamically created here -->
-                        </select>
-
                     </div>
                 </div>
             </div>
 
-            <div class="card-body">
-                <div id="table_div_content">
-                    <div id="loading-spinner" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                    </div>
-                    <div id="tableWrapper" class="table-responsive">
-                        <!-- Table content will be dynamically created here -->
-                    </div>
+            <div class="card-body p-0">
+                <div class="table-container">
+                    <div id="tableWrapper"></div>
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
+    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm">
+
+            <!-- Card Header -->
+            <div class="card-header bg-light p-3">
+                <div class="row align-items-center g-3">
+
+                    <!-- Title Section -->
+                    <div class="col-lg-3 col-md-12">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa fa-chart-bar fa-lg text-primary"></i>
+                            <h5 class="card-title mb-0 fw-bold">Monthly Sales</h5>
+                        </div>
+                    </div>
+
+                    <!-- Filter Controls -->
+                    <div class="col-lg-6 col-md-12">
+                        <div class="d-flex align-items-center gap-2 flex-wrap justify-content-lg-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="form-label mb-0 text-muted small">Branch:</label>
+                                <div id="branch_selector_container" style="min-width: 150px; max-width: 180px;"></div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="yearSelect" class="form-label mb-0 text-muted small">Year:</label>
+                                <select
+                                        id="yearSelect"
+                                        class="form-select form-select-sm"
+                                        style="min-width: 100px;"
+                                ></select>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="monthSelect" class="form-label mb-0 text-muted small">Month:</label>
+                                <select
+                                        id="monthSelect"
+                                        class="form-select form-select-sm"
+                                        style="min-width: 120px;"
+                                ></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Actions -->
+                    <div class="col-lg-3 col-md-12">
+                        <div class="d-flex justify-content-lg-end justify-content-start">
+                            <div class="btn-group" role="group" aria-label="Export options">
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-success btn-sm"
+                                        title="Export to Excel"
+                                        id="excelButton"
+                                >
+                                    <i class="fas fa-file-excel me-1"></i>Excel
+                                </button>
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-danger btn-sm"
+                                        title="Export to PDF"
+                                        id="pdfButton"
+                                >
+                                    <i class="fas fa-file-pdf me-1"></i>PDF
+                                </button>
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-info btn-sm"
+                                        title="Print Report"
+                                        id="printButton"
+                                >
+                                    <i class="fas fa-print me-1"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <div id="tableWrapper" class="w-100"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <script>
         ($ => {
@@ -51,395 +129,660 @@
             const config = {
                 monthlySalesReportApiUrl: '/api/products-manager/monthly-sales-report',
                 branchesApiUrl: '/api/branches/branches-list',
-                recordsPerPage: 35
+                recordsPerPageOptions: [10, 20, 50, 40, 'All'],
+                defaultRecordsPerPage: 10,
+                exportFileName: 'monthly_sales_report',
+                ajaxTimeout: 10000,
+                debounceDelay: 300
             };
 
-            // Store the full dataset and current state
-            let fullData = [];
-            let currentPage = 1;
-            let totalRecords = 0;
-            let filteredData = [];
-            let selectedBranchId = null;
-            let isLoading = false;
-
-            // Function to initialize the page
-            const initializePage = () => {
-                const $target = $('#table_div_content');
-                $target.empty();
-
-                // Create branch selector (using Select2)
-                createBranchSelector();
-
-                // Populate year and month options
-                const currentYear = new Date().getFullYear();
-                const currentMonth = new Date().getMonth() + 1;
-
-                for (let year = currentYear; year >= currentYear - 5; year--) {
-                    $('#yearSelect').append($('<option>').val(year).text(year));
-                }
-                for (let month = 1; month <= 12; month++) {
-                    $('#monthSelect').append($('<option>').val(month).text(month));
-                }
-
-                // Set default values
-                $('#yearSelect').val(currentYear);
-                $('#monthSelect').val(currentMonth);
-
-                // Create and append the table wrapper
-                const $tableWrapper = $('<div>').attr('id', 'tableWrapper').addClass('table-responsive');
-                $target.append($tableWrapper);
-
-                // Attach event listeners to year and month selects
-                $('#yearSelect, #monthSelect').on('change', function() {
-                    loadMonthlySalesReport();
-                });
+            // State management
+            const state = {
+                fullData: [],
+                filteredData: [],
+                processedData: [],
+                currentPage: 1,
+                totalPages: 0,
+                totalRecords: 0,
+                visiblePages: 5,
+                recordsPerPage: config.defaultRecordsPerPage,
+                selectedBranch: null,
+                year: new Date().getFullYear(),
+                month: new Date().getMonth() + 1,
+                isLoading: false
             };
 
-            // Create Branch Selector using Select2
+            // DOM element cache
+            const elements = {
+                tableWrapper: $('#tableWrapper'),
+                loadingOverlay: null
+            };
+
+            // Debounce utility
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => func(...args), delay);
+                };
+            };
+
+            // Data processing utilities
+            const dataProcessor = {
+                addAutoIncrement: (data) => {
+                    return data.map((item, index) => ({
+                        no: (state.currentPage - 1) * state.recordsPerPage + index + 1,
+                        ...item
+                    }));
+                },
+                prepareForExport: (data) => {
+                    return data.map(item => {
+                        const { no, ...rest } = item;
+                        return rest;
+                    });
+                },
+                formatNumber: (value) => {
+                    if (value == null) return 'N/A';
+                    const num = parseFloat(value.toString().replace(/,/g, ''));
+                    return isNaN(num) ? value : new Intl.NumberFormat('en-US').format(num);
+                }
+            };
+
+            // Export utilities
+            const exportUtils = {
+                toExcel: () => {
+                    elements.loadingOverlay.show();
+                    try {
+                        const exportData = dataProcessor.prepareForExport(state.processedData);
+                        generateExcel(exportData, config.exportFileName);
+                        elements.loadingOverlay.hide();
+                    } catch (error) {
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'error',
+                            message: 'Error generating Excel: ' + error.message,
+                            position: 'top-right'
+                        });
+                    }
+                },
+                toPDF: () => {
+                    elements.loadingOverlay.show();
+                    try {
+                        const exportData = dataProcessor.prepareForExport(state.processedData);
+                        printPDF(exportData, 'Monthly Sales Report');
+                        elements.loadingOverlay.hide();
+                    } catch (error) {
+                        elements.loadingOverlay.hide();
+                        $.wnoty({
+                            type: 'error',
+                            message: 'Error generating PDF: ' + error.message,
+                            position: 'top-right'
+                        });
+                    }
+                },
+                print: () => {
+                    window.print();
+                }
+            };
+
+            // Table generation
+            const tableGenerator = {
+                createTable: (data) => {
+                    if (!data || data.length === 0) {
+                        return $('<div>').addClass('alert alert-info m-2').text('No data to display.');
+                    }
+
+                    const $tableContainer = $('<div>').addClass('table-inner-container');
+                    const $table = $('<table>').addClass('dynamic-table table table-bordered table-striped table-sm');
+                    const $thead = $('<thead>').addClass('sticky-header');
+                    const $tbody = $('<tbody>');
+
+                    // Headers
+                    const headers = Object.keys(data[0]);
+                    const $headerRow = $('<tr>').append(
+                        headers.map(h => $('<th>').text(h.replace(/_/g, ' ').toUpperCase()))
+                    );
+                    $thead.append($headerRow);
+
+                    // Body
+                    data.forEach(row => {
+                        const $tr = $('<tr>');
+                        headers.forEach(h => {
+                            let cellValue = row[h];
+                            if (['Paid Amount', 'Pending Amount', 'Cancelled Amount', 'Total Amount', 'Profit', 'Loss'].includes(h)) {
+                                cellValue = dataProcessor.formatNumber(cellValue);
+                                const numVal = parseFloat(cellValue.replace(/,/g, '') || 0);
+                                $tr.append($('<td>').text(cellValue).addClass(numVal < 0 ? 'negative' : 'positive'));
+                            } else {
+                                $tr.append($('<td>').text(cellValue ?? 'N/A').addClass(h === 'Revenue Category' ? 'revenue-category' : ''));
+                            }
+                        });
+                        $tbody.append($tr);
+                    });
+
+                    $table.append($thead, $tbody);
+                    $tableContainer.append($table);
+                    return $tableContainer;
+                },
+                createRecordsPerPageDropdown: () => {
+                    const $dropdown = $('<select>').addClass('form-control form-control-xs records-per-page ms-2');
+                    config.recordsPerPageOptions.forEach(option => {
+                        const $option = $('<option>').val(option === 'All' ? -1 : option).text(option);
+                        if (option === state.recordsPerPage) {
+                            $option.prop('selected', true);
+                        }
+                        $dropdown.append($option);
+                    });
+                    $dropdown.on('change', (e) => {
+                        state.recordsPerPage = e.target.value === '-1' ? state.filteredData.length : parseInt(e.target.value);
+                        state.currentPage = 1;
+                        changePage(1);
+                    });
+                    return $('<div>').addClass('records-per-page-wrapper d-inline-flex align-items-center mb-2').append([
+                        $('<label>').text('Rows: ').addClass('me-1 fs-7'),
+                        $dropdown
+                    ]);
+                }
+            };
+
+            // Branch selector
             const createBranchSelector = () => {
                 const $container = $('#branch_selector_container');
                 $container.empty();
 
-                const $label = $('<label>').attr('for', 'branchSelect').text('Select Branch:');
                 const $select = $('<select>')
                     .attr('id', 'branchSelect')
-                    .addClass('form-control select2-branch')
-                    .attr('style', 'width: 100%'); // Important for Select2
+                    .addClass('form-control form-control-xs select2-branch');
 
-                $container.append($label, $select);
+                $container.append($select);
 
-                // Initialize Select2
                 $('.select2-branch').select2({
-                    placeholder: 'Select a branch',
+                    placeholder: 'Select branch',
                     allowClear: true,
                     width: '100%',
+                    data: [],
                     ajax: {
                         url: config.branchesApiUrl,
                         dataType: 'json',
                         delay: 250,
-                        data: function (params) {
-                            return {
-                                keyword: params.term
-                            };
-                        },
-                        processResults: function (data) {
-                            return {
-                                results: data.map(branch => ({
-                                    id: branch.id,
-                                    text: `${branch.branchName} (${branch.branchCode})`
-                                }))
-                            };
-                        },
+                        data: params => ({ keyword: params.term || '' }),
+                        processResults: data => ({
+                            results: data.map(branch => ({
+                                id: branch.id,
+                                text: `${branch.branchName} (${branch.branchCode})`
+                            }))
+                        }),
                         cache: true
                     },
-                    minimumInputLength: 0 // Trigger AJAX after 0 characters (optional)
-                }).on('change', function () {
-                    selectedBranchId = $(this).val();
-
-                    if (selectedBranchId) {
+                    minimumInputLength: 0
+                }).on('change', debounce(() => {
+                    state.selectedBranch = $('#branchSelect').val();
+                    if (state.selectedBranch) {
                         loadMonthlySalesReport();
                     } else {
-                        $('#tableWrapper').empty();
-                        fullData = [];
-                        filteredData = [];
-                        totalRecords = 0;
+                        elements.tableWrapper.empty();
+                        state.fullData = [];
+                        state.filteredData = [];
+                        state.totalRecords = 0;
+                    }
+                }, config.debounceDelay));
+
+                // Preload branches
+                $.ajax({
+                    url: config.branchesApiUrl,
+                    method: 'GET',
+                    dataType: 'json',
+                    timeout: config.ajaxTimeout,
+                    success: data => {
+                        if (data && data.length > 0) {
+                            const branches = data.map(branch => ({
+                                id: branch.id,
+                                text: `${branch.branchName} (${branch.branchCode})`
+                            }));
+                            $('#branchSelect').select2('destroy').empty().select2({
+                                placeholder: 'Select branch',
+                                allowClear: true,
+                                width: '100%',
+                                data: branches
+                            });
+                            // Set default branch
+                            state.selectedBranch = data[0].id;
+                            $('#branchSelect').val(state.selectedBranch).trigger('change');
+                        } else {
+                            $.wnoty({
+                                type: 'warning',
+                                message: 'No branches available.',
+                                position: 'top-right'
+                            });
+                        }
                     }
                 });
             };
 
-            // Reusable function to generate dynamic table
-            const generateDynamicTable = (data, options = {}) => {
-                const {
-                    actionButtons = []
-                } = options;
+            // Pagination component
+            const createPagination = () => {
+                const totalPages = state.recordsPerPage === -1 ? 1 : Math.ceil(state.filteredData.length / state.recordsPerPage);
+                state.totalPages = totalPages;
+                const start = (state.currentPage - 1) * state.recordsPerPage + 1;
+                const end = state.recordsPerPage === -1 ? state.filteredData.length : Math.min(state.currentPage * state.recordsPerPage, state.filteredData.length);
 
-                const $tableWrapper = $('#tableWrapper');
-                $tableWrapper.empty();
+                const $pagination = $('<div>').addClass('pagination-wrapper m-2');
+                const $ul = $('<ul>').addClass('pagination pagination-sm justify-content-center mb-1');
 
-                // Add action buttons
-                const $buttonGroup = $('<div>').addClass('btn-group mb-3');
-                actionButtons.forEach(button => {
-                    $buttonGroup.append(
-                        $('<button>').addClass(`btn ${button.class}`)
-                            .html(`<i class="${button.icon} mr-2"></i> ${button.text}`)
-                            .on('click', button.action)
-                    );
-                });
-                $tableWrapper.append($buttonGroup);
+                $ul.append(createPaginationItem('Previous', state.currentPage > 1,
+                    () => changePage(state.currentPage - 1)));
 
-                if (!Array.isArray(data) || data.length === 0) {
-                    $tableWrapper.append('<p>No data available</p>');
-                    return;
+                let startPage = Math.max(1, state.currentPage - Math.floor(state.visiblePages / 2));
+                let endPage = startPage + state.visiblePages - 1;
+                if (endPage > totalPages) {
+                    endPage = totalPages;
+                    startPage = Math.max(1, endPage - state.visiblePages + 1);
                 }
-
-                const headers = Object.keys(data[0]);
-                const $table = $('<table>').addClass('dynamic-table');
-                const $thead = $('<thead>').appendTo($table);
-                const $tbody = $('<tbody>').appendTo($table);
-
-                const $headerRow = $('<tr>');
-                headers.forEach(h => $headerRow.append($('<th>').text(h)));
-                $headerRow.appendTo($thead);
-
-                data.forEach(row => {
-                    const $dataRow = $('<tr>');
-                    headers.forEach(h => {
-                        let $cell;
-                        const val = row[h];
-                        if (h === 'Revenue Category') {
-                            $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A').addClass('revenue-category');
-                        } else if (['Paid Amount', 'Pending Amount', 'Cancelled Amount', 'Total Amount', 'Profit', 'Loss'].includes(h)) {
-                            const numVal = parseFloat(val.replace(/,/g, ''));
-                            $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A')
-                                .addClass(numVal < 0 ? 'negative' : 'positive');
-                        } else {
-                            $cell = $('<td>').text(val !== null && val !== undefined ? val : 'N/A');
-                        }
-                        $dataRow.append($cell);
-                    });
-                    $dataRow.appendTo($tbody);
-                });
-
-                $tableWrapper.append($table);
-
-                // Add pagination
-                const $pagination = generatePagination();
-                $tableWrapper.append($pagination);
-            };
-
-            // Function to generate pagination
-            const generatePagination = () => {
-                const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
-                const $pagination = $('<nav>').addClass('mt-3');
-                const $ul = $('<ul>').addClass('pagination justify-content-center');
-
-                // Previous button
-                $ul.append(
-                    $('<li>').addClass(`page-item ${currentPage === 1 ? 'disabled' : ''}`)
-                        .append($('<a>').addClass('page-link').text('Previous').on('click', () => changePage(currentPage - 1)))
-                );
-
-                // Page numbers
-                const maxPages = 5;
-                const startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
-                const endPage = Math.min(totalPages, startPage + maxPages - 1);
 
                 for (let i = startPage; i <= endPage; i++) {
-                    $ul.append(
-                        $('<li>').addClass(`page-item ${i === currentPage ? 'active' : ''}`)
-                            .append($('<a>').addClass('page-link').text(i).on('click', () => changePage(i)))
-                    );
+                    $ul.append(createPaginationItem(i, true, () => changePage(i),
+                        i === state.currentPage));
                 }
 
-                // Next button
-                $ul.append(
-                    $('<li>').addClass(`page-item ${currentPage === totalPages ? 'disabled' : ''}`)
-                        .append($('<a>').addClass('page-link').text('Next').on('click', () => changePage(currentPage + 1)))
-                );
+                $ul.append(createPaginationItem('Next', state.currentPage < totalPages,
+                    () => changePage(state.currentPage + 1)));
 
-                $pagination.append($ul);
+                const $info = $('<div>').addClass('text-center text-muted small')
+                    .text(`Page ${state.currentPage} of ${totalPages} | ${start}-${end} of ${state.filteredData.length} rows`);
 
-                // Add pagination info
-                const start = (currentPage - 1) * config.recordsPerPage + 1;
-                const end = Math.min(currentPage * config.recordsPerPage, filteredData.length);
-                const $info = $('<div>').addClass('text-center mt-2')
-                    .text(`Page ${currentPage} of ${totalPages} | Showing ${start}-${end} of ${filteredData.length} records (${totalRecords} total)`);
-                $pagination.append($info);
-
+                $pagination.append([$ul, $info]);
                 return $pagination;
             };
 
-            // Function to change page
-            const changePage = (newPage) => {
-                const totalPages = Math.ceil(filteredData.length / config.recordsPerPage);
-                if (newPage < 1 || newPage > totalPages) return;
-
-                currentPage = newPage;
-                const start = (currentPage - 1) * config.recordsPerPage;
-                const end = start + config.recordsPerPage;
-                const pageData = filteredData.slice(start, end);
-
-                generateDynamicTable(pageData, getTableOptions());
+            // Helper functions
+            const createPaginationItem = (text, enabled, action, active = false) => {
+                return $('<li>').addClass(`page-item ${!enabled ? 'disabled' : ''} ${active ? 'active' : ''}`)
+                    .append(
+                        $('<a>').addClass('page-link')
+                            .attr('href', 'javascript:void(0)')
+                            .text(text)
+                            .on('click', (e) => {
+                                e.preventDefault();
+                                if (enabled) action();
+                            })
+                    );
             };
 
-            // Function to load monthly sales report
+            // Event handlers
+            const changePage = (newPage) => {
+                const totalPages = state.recordsPerPage === -1 ? 1 : Math.ceil(state.filteredData.length / state.recordsPerPage);
+                if (newPage < 1 || newPage > totalPages) return;
+
+                state.currentPage = newPage;
+                const start = (newPage - 1) * state.recordsPerPage;
+                const pageData = state.recordsPerPage === -1 ? state.filteredData : state.filteredData.slice(start, start + state.recordsPerPage);
+                state.processedData = dataProcessor.addAutoIncrement(pageData);
+                renderTable();
+            };
+
+            // Load report
             const loadMonthlySalesReport = () => {
-                if (!selectedBranchId) {
-                    $('#tableWrapper').html('<p>Please select a branch.</p>');
+                if (!state.selectedBranch) {
+                    elements.tableWrapper.html('<div class="alert alert-info m-2">Please select a branch.</div>');
                     return;
                 }
 
-                $('#tableWrapper').empty();
-                $('#loading-spinner').show();
-                isLoading = true;
+                if (state.isLoading) return;
+                state.isLoading = true;
+
+                elements.loadingOverlay.show();
+                const timeout = setTimeout(() => {
+                    elements.loadingOverlay.hide();
+                    state.isLoading = false;
+                    $.wnoty({
+                        type: 'error',
+                        message: 'Request timed out. Please try again.',
+                        position: 'top-right'
+                    });
+                }, config.ajaxTimeout);
 
                 const year = $('#yearSelect').val();
                 const month = $('#monthSelect').val();
 
                 $.ajax({
-                    url: `${config.monthlySalesReportApiUrl}?year=${year}&month=${month}&branchId=${selectedBranchId}`, // Include branchId
+                    url: `${config.monthlySalesReportApiUrl}?year=${year}&month=${month}&branchId=${state.selectedBranch}`,
                     method: 'GET',
                     dataType: 'json',
+                    timeout: config.ajaxTimeout,
                     success: data => {
+                        clearTimeout(timeout);
+                        elements.loadingOverlay.hide();
+                        state.isLoading = false;
                         if (data && data.length > 0) {
-                            fullData = data;
-                            totalRecords = data.length;
-                            filteredData = [...fullData];
-                            currentPage = 1; // Reset page on new data load
+                            state.fullData = data;
+                            state.filteredData = [...data];
+                            state.totalRecords = data.length;
+                            state.currentPage = 1;
                             changePage(1);
                         } else {
-                            $('#tableWrapper').html('<p>No records found for the selected month, year and branch.</p>');
+                            elements.tableWrapper.html('<div class="alert alert-info m-2">No records found for the selected criteria.</div>');
                         }
                     },
-                    error: (xhr, textStatus, errorThrown) => {
-                        console.error('Error loading monthly sales report:', textStatus, errorThrown);
-                        let errorMessage = 'Error loading monthly sales report. Please try again later.';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage = xhr.responseJSON.message; //  Use the error message from the API, if it exists.
-                        }
-                        $('#tableWrapper').html(`<p>${errorMessage}</p>`);
-                    },
-                    complete: () => {
-                        $('#loading-spinner').hide();
-                        isLoading = false;
+                    error: (xhr) => {
+                        clearTimeout(timeout);
+                        elements.loadingOverlay.hide();
+                        state.isLoading = false;
+                        const errorMessage = xhr.responseJSON?.message || 'Error loading report. Please try again.';
+                        elements.tableWrapper.html(`<div class="alert alert-danger m-2">${errorMessage}</div>`);
+                        $.wnoty({
+                            type: 'error',
+                            message: errorMessage,
+                            position: 'top-right'
+                        });
                     }
                 });
             };
 
-            // Function to get table options
-            const getTableOptions = () => ({
-                actionButtons: [
-                    { text: 'Excel', icon: 'fas fa-file-excel', class: 'btn-success', action: exportToExcel },
-                    { text: 'PDF', icon: 'fas fa-file-pdf', class: 'btn-warning', action: downloadPDF },
-                    { text: 'Print', icon: 'fas fa-print', class: 'btn-secondary', action: printTable }
-                ]
-            });
-
-            // Export functionality
-            const exportToExcel = () => {
-                generateExcel(fullData, 'Aggregate Monthly Sales Group Report');
+            // Render table
+            const renderTable = () => {
+                elements.tableWrapper.empty();
+                elements.tableWrapper.append(tableGenerator.createRecordsPerPageDropdown());
+                elements.tableWrapper.append(tableGenerator.createTable(state.processedData));
+                elements.tableWrapper.append(createPagination());
             };
 
-            const downloadPDF = () => {
-                printGeneratePdf(fullData, 'Aggregate Monthly Sales Group Report');
+            // Initialize
+            const initializePage = () => {
+                // Populate year and month options
+                const currentYear = new Date().getFullYear();
+                for (let year = currentYear; year >= currentYear - 5; year--) {
+                    $('#yearSelect').append($('<option>').val(year).text(year));
+                }
+                for (let month = 1; month <= 12; month++) {
+                    $('#monthSelect').append($('<option>').val(month).text(new Date(0, month - 1).toLocaleString('default', { month: 'long' })));
+                }
+                $('#yearSelect').val(currentYear);
+                $('#monthSelect').val(state.month);
+
+                // Create loading overlay
+                elements.loadingOverlay = $('<div>')
+                    .attr('id', 'loading-overlay')
+                    .css({
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        display: 'none',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 9999
+                    })
+                    .html(`
+                        <div style="background: #fff; padding: 10px; border-radius: 4px; text-align: center;">
+                            <div style="width: 24px; height: 24px; border: 3px solid #e9ecef; border-top: 3px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 6px;"></div>
+                            <span style="font-size: 11px; color: #333;">Loading...</span>
+                        </div>
+                    `);
+                $('body').append(elements.loadingOverlay);
+
+                createBranchSelector();
+
+                $('#yearSelect, #monthSelect').on('change', debounce(() => {
+                    state.year = parseInt($('#yearSelect').val());
+                    state.month = parseInt($('#monthSelect').val());
+                    if (state.selectedBranch) {
+                        loadMonthlySalesReport();
+                    }
+                }, config.debounceDelay));
+
+                $('#excelButton').on('click', exportUtils.toExcel);
+                $('#pdfButton').on('click', exportUtils.toPDF);
+                $('#printButton').on('click', exportUtils.print);
             };
 
-            const printTable = () => {
-                printGeneratePdf(fullData, 'Aggregate Monthly Sales Group Report');
-            };
-
-            // Apply styles function
+            // Apply styles
             const applyStyles = () => {
                 $('head').append(`
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
-    @import url('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css'); /* Select2 CSS */
-
-    .table-responsive {
-        overflow-x: auto;
-        overflow-y: auto; /* Enable vertical scrolling */
-        max-height: 500px; /* Set a fixed height for the table container */
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        border-radius: 4px;
-        padding: 15px;
-    }
-
-    .dynamic-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: 'Roboto', sans-serif;
-        font-size: 11px;
-    }
-
-    .dynamic-table th, .dynamic-table td {
-        padding: 8px 12px;
-        border-bottom: 1px solid #e0e0e0;
-        text-align: left;
-    }
-
-    .dynamic-table th {
-        background-color: #f8f9fa;
-        font-weight: 700;
-        color: #495057;
-        text-transform: uppercase;
-        position: sticky; /* Make the header sticky */
-        top: 0; /* Stick to the top */
-        z-index: 1; /* Ensure the header is above the table rows */
-    }
-
-    .dynamic-table tr:last-child td { border-bottom: none; }
-    .dynamic-table tr:hover { background-color: #f1f3f5; }
-    .dynamic-table .revenue-category { font-weight: bold; }
-    .dynamic-table .negative { color: #d32f2f; }
-    .dynamic-table .positive { color: #388e3c; }
-    .btn-group .btn {
-        margin-right: 10px;
-    }
-    .btn-group .btn i {
-        margin-right: 5px;
-    }
-
-    /* Loading Spinner Styles */
-    #loading-spinner {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1000; /* Ensure it's on top */
-    }
-
-    @media print {
-        .btn-group, #searchInput, .pagination, #branch_selector_container {
-            display: none;
-        }
-    }
-</style>
-`);
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+                        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+                        @import url('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css');
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                        .card {
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                            border-radius: 6px;
+                        }
+                        .card-header {
+                            border-bottom: 1px solid #e9ecef;
+                        }
+                        .table-container {
+                            max-height: 400px;
+                            overflow-y: auto;
+                            overflow-x: auto;
+                            width: 100%;
+                        }
+                        .table-inner-container {
+                            width: 100%;
+                        }
+                        .dynamic-table {
+                            width: 100%;
+                            font-family: 'Roboto', sans-serif;
+                            font-size: 11px;
+                            border-collapse: collapse;
+                        }
+                        .sticky-header {
+                            position: sticky;
+                            top: 0;
+                            background: #f8f9fa;
+                            z-index: 10;
+                        }
+                        .dynamic-table th {
+                            background: #4a90e2;
+                            color: #fff;
+                            font-weight: 500;
+                            text-transform: uppercase;
+                            padding: 4px !important;
+                            vertical-align: middle !important;
+                            white-space: nowrap;
+                        }
+                        .dynamic-table td {
+                            padding: 4px 6px !important;
+                            vertical-align: middle !important;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 150px;
+                        }
+                        .dynamic-table.table-striped tbody tr:nth-of-type(odd) {
+                            background: rgba(0,0,0,0.02);
+                        }
+                        .dynamic-table tr:hover {
+                            background: #f1f3f5;
+                        }
+                        .revenue-category {
+                            font-weight: bold;
+                        }
+                        .negative {
+                            color: #d32f2f;
+                        }
+                        .positive {
+                            color: #388e3c;
+                        }
+                        .table-container::-webkit-scrollbar {
+                            width: 6px;
+                            height: 6px;
+                        }
+                        .table-container::-webkit-scrollbar-track {
+                            background: #f1f1f1;
+                        }
+                        .table-container::-webkit-scrollbar-thumb {
+                            background: #888;
+                            border-radius: 3px;
+                        }
+                        .table-container::-webkit-scrollbar-thumb:hover {
+                            background: #555;
+                        }
+                        .btn-group {
+                            gap: 4px;
+                        }
+                        .btn-xs {
+                            padding: 4px 6px;
+                            font-size: 11px;
+                            line-height: 1.5;
+                            border-radius: 3px;
+                        }
+                        .btn-group .btn:hover {
+                            transform: translateY(-1px);
+                        }
+                        .form-control-xs {
+                            padding: 3px 6px;
+                            font-size: 11px;
+                            line-height: 1.5;
+                            border-radius: 3px;
+                            height: 24px;
+                            width: 100px;
+                        }
+                        #monthSelect.form-control-xs {
+                            width: 120px;
+                        }
+                        .select2-container .select2-selection--single {
+                            height: 24px;
+                            padding: 2px;
+                            font-size: 11px;
+                            border-radius: 3px;
+                        }
+                        .select2-container--default .select2-selection--single .select2-selection__rendered {
+                            line-height: 20px;
+                        }
+                        .select2-container--default .select2-selection--single .select2-selection__arrow {
+                            height: 24px;
+                        }
+                        .records-per-page-wrapper {
+                            gap: 6px;
+                        }
+                        .records-per-page {
+                            width: 80px;
+                            height: 24px;
+                        }
+                        .pagination-wrapper {
+                            background: #f8f9fa;
+                            padding: 6px;
+                            border-radius: 4px;
+                            margin-top: 8px;
+                        }
+                        .pagination .page-link {
+                            padding: 3px 8px;
+                            font-size: 11px;
+                            border-radius: 3px;
+                            color: #4a90e2;
+                            background: #fff;
+                            border: 1px solid #dee2e6;
+                            min-width: 24px;
+                            text-align: center;
+                        }
+                        .pagination .page-item.active .page-link {
+                            background: #4a90e2;
+                            border-color: #4a90e2;
+                            color: #fff;
+                        }
+                        .pagination .page-item.disabled .page-link {
+                            background: #e9ecef;
+                            color: #6c757d;
+                        }
+                        .pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+                            background: #4a90e2;
+                            color: #fff;
+                        }
+                        .fs-7 {
+                            font-size: 11px;
+                        }
+                        @media (max-width: 768px) {
+                            .form-control-xs {
+                                width: 80px !important;
+                            }
+                            #monthSelect.form-control-xs {
+                                width: 100px !important;
+                            }
+                            .select2-container {
+                                max-width: 130px;
+                            }
+                            .records-per-page {
+                                width: 60px;
+                            }
+                            .flex-wrap {
+                                flex-direction: column;
+                                align-items: flex-start;
+                            }
+                            .btn-group {
+                                margin-top: 6px;
+                            }
+                        }
+                        @media print {
+                            .btn-group, .pagination-wrapper, .records-per-page-wrapper, .card-header {
+                                display: none !important;
+                            }
+                            .table-container {
+                                max-height: none;
+                                overflow: visible;
+                            }
+                            .dynamic-table {
+                                font-size: 9px;
+                            }
+                            .dynamic-table th, .dynamic-table td {
+                                border: 1px solid #dee2e6 !important;
+                                padding: 2px 4px !important;
+                            }
+                            .dynamic-table th {
+                                background: #f8f9fa !important;
+                                color: #000 !important;
+                            }
+                        }
+                    </style>
+                `);
             };
 
-            // Helper functions for export (Implement these based on your needs)
+            // Export functions
             const generateExcel = (data, filename) => {
                 if (!data || data.length === 0) {
-                    alert('No data to export.');
+                    $.wnoty({
+                        type: 'warning',
+                        message: 'No data to export.',
+                        position: 'top-right'
+                    });
                     return;
                 }
                 const headers = Object.keys(data[0]);
-                const wb = XLSX.utils.book_new();
-                const wsData = [headers];
+                const wsData = [headers.map(h => h.replace(/_/g, ' ').toUpperCase())];
                 data.forEach(row => {
-                    wsData.push(headers.map(header => row[header]));
+                    wsData.push(headers.map(header => row[header] ?? 'N/A'));
                 });
+                const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.aoa_to_sheet(wsData);
                 XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
                 XLSX.writeFile(wb, `${filename}.xlsx`);
             };
 
-            const printGeneratePdf = (data, filename) => {
+            const printPDF = (data, filename) => {
                 if (!data || data.length === 0) {
-                    alert('No data to print or export to PDF.');
+                    $.wnoty({
+                        type: 'warning',
+                        message: 'No data to export.',
+                        position: 'top-right'
+                    });
                     return;
                 }
                 const headers = Object.keys(data[0]);
                 const doc = new jspdf.jsPDF();
-                let columnWidths = [];
                 const initialX = 10;
                 let currentX = initialX;
-                const initialY = 10;
-                let currentY = initialY;
+                let currentY = 10;
                 const margin = 10;
                 const fontSize = 10;
                 doc.setFontSize(fontSize);
                 doc.setFont('helvetica', 'bold');
+                const columnWidths = headers.map(header => Math.max(doc.getTextWidth(header) + 10, 30));
                 headers.forEach((header, index) => {
-                    const textWidth = doc.getTextWidth(header);
-                    columnWidths[index] = Math.max(textWidth + 10, 30);
-                    if (currentX + columnWidths[index] + margin > doc.internal.pageSize.getWidth()) {
-                        currentX = initialX;
-                        currentY += 10;
-                    }
-                    doc.text(header, currentX, currentY);
+                    doc.text(header.replace(/_/g, ' ').toUpperCase(), currentX, currentY);
                     currentX += columnWidths[index] + margin;
                 });
                 currentX = initialX;
@@ -447,15 +790,13 @@
                 doc.setFont('helvetica', 'normal');
                 data.forEach(row => {
                     headers.forEach((header, index) => {
-                        const text = String(row[header]);
+                        const text = String(row[header] ?? 'N/A');
                         if (currentX + columnWidths[index] + margin > doc.internal.pageSize.getWidth()) {
                             currentX = initialX;
                             currentY += 10;
                             if (currentY >= doc.internal.pageSize.getHeight() - margin) {
                                 doc.addPage();
-                                currentX = initialX;
-                                currentY = initialY;
-                                doc.setFontSize(fontSize);
+                                currentY = 10;
                             }
                         }
                         doc.text(text, currentX, currentY);
@@ -465,27 +806,17 @@
                     currentY += 10;
                     if (currentY >= doc.internal.pageSize.getHeight() - margin) {
                         doc.addPage();
-                        currentX = initialX;
-                        currentY = initialY;
+                        currentY = 10;
                     }
                 });
                 doc.save(`${filename}.pdf`);
             };
 
-            // Initialize
+            // Start
             $(() => {
                 applyStyles();
                 initializePage();
             });
         })(jQuery);
     </script>
-
-
 </div>
-
-
-
-
-
-
-

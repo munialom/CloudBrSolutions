@@ -12,16 +12,8 @@
       </div>
    </div>
 </div>
-<script>
-   function showLoading() {
-      $('#loading-overlay').show();
-   }
 
-   function hideLoading() {
-      $('#loading-overlay').hide();
-   }
-</script>
-<script>
+<!--<script>
    $(document).ready(() => {
       const loadTableProducts = () => {
          $.ajax({
@@ -297,4 +289,358 @@
          }
       });
    });
+</script>-->
+
+
+<script>
+   $(document).ready(() => {
+      // Placeholder functions (define these based on your application)
+      const showLoading = () => { /* Show loading spinner */ };
+      const hideLoading = () => { /* Hide loading spinner */ };
+
+      const loadTableProducts = () => {
+         $.ajax({
+            type: 'GET',
+            url: '/api/products-manager/open-orders',
+            success: (data) => {
+               generateDynamicTable(data, 'productsTableContainer');
+            },
+            error: (xhr, status, error) => {
+               console.error('Error loading products:', error);
+               $.wnoty({
+                  type: 'error',
+                  message: 'Failed to load orders: ' + error,
+                  position: 'top-right'
+               });
+            }
+         });
+      };
+
+      const generateDynamicTable = (data, targetElementId) => {
+         const $targetElement = $(`#${targetElementId}`);
+         $targetElement.css({
+            'width': '100%',
+            'overflow-x': 'auto',
+            'padding': '0'
+         });
+
+         const $table = $('<table>').attr('style', `
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-family: Arial, sans-serif;
+                    font-size: 11px;
+                    table-layout: auto;
+                `);
+
+         const $thead = $('<thead>');
+         const $tbody = $('<tbody>');
+         const $tfoot = $('<tfoot>');
+
+         const headers = ['Select', 'SerialNumber', 'OrderID', 'CreatedDateTime', 'CreatedBy', 'OrderDate', 'ProductName', 'Quantity', 'UnitPrice', 'Subtotal', 'Tax', 'TotalAmount', 'PaymentStatus', 'OrderState', 'Actions'];
+         const $headerRow = $('<tr>');
+         headers.forEach(header => {
+            const $th = $('<th>')
+                    .text(header)
+                    .addClass(`column-${header.toLowerCase().replace(/\s/g, '-')}`)
+                    .attr('style', `
+                            padding: 2px 4px;
+                            border: 1px solid #e0e0e0;
+                            text-align: left;
+                            white-space: nowrap;
+                            background-color: #f0f0f0;
+                            font-weight: bold;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        `);
+            if (header === 'Actions') {
+               $th.css('min-width', '80px');
+            }
+            $headerRow.append($th);
+         });
+         $thead.append($headerRow);
+
+         const groupedData = groupBySerialNumber(data);
+         let totalSales = 0;
+
+         const renderTableBody = (pageData) => {
+            $tbody.empty();
+            pageData.forEach(group => {
+               const $groupRow = $('<tr>').attr('style', 'background-color: #f8f8f8;');
+               $groupRow.append($('<td>').append($('<input>').attr({
+                  type: 'checkbox',
+                  class: 'group-select',
+                  style: 'margin: 0; padding: 0;'
+               })));
+               $groupRow.append($('<td>').text(group.SerialNumber).attr('colspan', 12).attr('style', `
+                            padding: 2px 4px;
+                            border: 1px solid #e0e0e0;
+                            text-align: left;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        `));
+
+               const $buttonGroup = $('<div>').attr('style', `
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: space-around;
+                            width: 100%;
+                        `);
+               const buttonStyle = `
+                            padding: 2px 4px;
+                            margin: 0 2px;
+                            font-size: 14px;
+                            border: none;
+                            cursor: pointer;
+                            color: white;
+                            border-radius: 3px;
+                        `;
+               $buttonGroup.append(
+                       $('<button>').html('<i class="fas fa-eye"></i>').attr('title', 'View').attr('style', buttonStyle + 'background-color: #007bff;').click(() => viewGroup(group.SerialNumber)),
+                       $('<button>').html('<i class="fas fa-plus"></i>').attr('title', 'Add').attr('style', buttonStyle + 'background-color: #28a745;').click(() => addItemToGroup(group.SerialNumber)),
+                       $('<button>').html('<i class="fas fa-cut"></i>').attr('title', 'Split').attr('style', buttonStyle + 'background-color: #ffc107;').click(() => splitGroup(group.SerialNumber)),
+                       $('<button>').html('<i class="fas fa-times"></i>').attr('title', 'Close').attr('style', buttonStyle + 'background-color: #dc3545;').click(() => closeGroup(group.SerialNumber))
+               );
+               $groupRow.append($('<td>').attr('colspan', 2).append($buttonGroup));
+               $tbody.append($groupRow);
+
+               group.orders.forEach(order => {
+                  const $dataRow = $('<tr>').addClass(`order-row ${group.SerialNumber}`).attr('style', `
+                                display: none;
+                                background-color: #ffffff;
+                            `);
+                  headers.forEach(header => {
+                     let $cell = $('<td>');
+                     if (header === 'Select') {
+                        $cell.append($('<input>').attr({
+                           type: 'checkbox',
+                           class: 'order-select',
+                           style: 'margin: 0; padding: 0;'
+                        }));
+                     } else if (header === 'Actions') {
+                        const $deleteBtn = $('<button>').html('<i class="fas fa-trash"></i>').attr({
+                           title: 'Delete',
+                           style: 'padding: 2px 4px; margin-right: 2px; background-color: #dc3545; color: white; border: none; cursor: pointer; display:none'
+                        }).click(() => deleteOrder(order.OrderID));
+                        const $updateBtn = $('<button>').html('<i class="fas fa-edit"></i>').attr({
+                           title: 'Update',
+                           style: 'padding: 2px 4px; background-color: #ffc107; color: white; border: none; cursor: pointer; display:none'
+                        }).click(() => updateOrder(order.OrderID));
+                        $cell.append($deleteBtn, $updateBtn);
+                     } else {
+                        $cell.text(order[header] || '');
+                     }
+                     $cell.addClass(`column-${header.toLowerCase().replace(/\s/g, '-')}`).attr('style', `
+                                    padding: 2px 4px;
+                                    border: 1px solid #e0e0e0;
+                                    text-align: left;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                `);
+                     $dataRow.append($cell);
+                  });
+                  $tbody.append($dataRow);
+                  totalSales += parseFloat(order.TotalAmount) || 0;
+               });
+            });
+         };
+
+         renderTableBody(groupedData);
+
+         const $footerRow = $('<tr>').attr('style', `
+                    background-color: #f0f0f0;
+                    font-weight: bold;
+                `);
+         $footerRow.append($('<td>').attr('colspan', headers.length - 1).text('Total Sales:').attr('style', `
+                    text-align: right;
+                    padding: 2px 4px;
+                    border: 1px solid #e0e0e0;
+                `));
+         $footerRow.append($('<td>').text(`${totalSales.toFixed(2)}`).attr('style', `
+                    text-align: right;
+                    padding: 2px 4px;
+                    border: 1px solid #e0e0e0;
+                `));
+         $tfoot.append($footerRow);
+
+         $table.append($thead).append($tbody).append($tfoot);
+         $targetElement.empty().append($table);
+      };
+
+      const groupBySerialNumber = (data) => {
+         const grouped = {};
+         data.forEach(order => {
+            if (!grouped[order.SerialNumber]) {
+               grouped[order.SerialNumber] = {
+                  SerialNumber: order.SerialNumber,
+                  orders: []
+               };
+            }
+            grouped[order.SerialNumber].orders.push(order);
+         });
+         return Object.values(grouped);
+      };
+
+      const viewGroup = (serialNumber) => {
+         $(`.order-row.${serialNumber}`).toggle();
+      };
+
+      const addItemToGroup = (serialNumber) => {
+         console.log(`Adding item to group: ${serialNumber}`);
+         const currentOrderNumberElement = document.getElementById('CurrentorderNumber');
+         if (currentOrderNumberElement) {
+            currentOrderNumberElement.textContent = serialNumber;
+         }
+         const checkbox = document.getElementById('addingOrder');
+         if (checkbox) {
+            checkbox.checked = true;
+         }
+      };
+
+      const splitGroup = (serialNumber) => {
+         const checkedOrderIds = $(`.order-row.${serialNumber} .order-select:checked`)
+                 .map(function() {
+                    return $(this).closest('tr').find('td:eq(2)').text();
+                 })
+                 .get();
+
+         if (checkedOrderIds.length === 0) {
+            $.wnoty({
+               type: 'warning',
+               message: 'Please select at least one order to split',
+               position: 'top-right'
+            });
+            return;
+         }
+
+         showLoading();
+         const splitOrderDTO = { ids: checkedOrderIds };
+         $.ajax({
+            type: 'POST',
+            url: '/api/stocks/split-orders',
+            contentType: 'application/json',
+            data: JSON.stringify(splitOrderDTO),
+            success: (response) => {
+               hideLoading();
+               $.wnoty({
+                  type: 'success',
+                  message: response,
+                  position: 'top-right'
+               });
+               loadTableProducts();
+            },
+            error: (xhr, status, error) => {
+               hideLoading();
+               $.wnoty({
+                  type: 'error',
+                  message: 'Error splitting orders: ' + error,
+                  position: 'top-right'
+               });
+            }
+         });
+      };
+
+      const closeGroup = (serialNumber) => {
+         swal({
+            title: "Are you sure?",
+            text: `Do you want to close Sales with serial number ${serialNumber}?`,
+            icon: "warning",
+            buttons: ["Cancel", "Yes, close group"],
+            dangerMode: true,
+         }).then((willClose) => {
+            if (willClose) {
+               showLoading();
+               $.ajax({
+                  type: 'GET',
+                  url: `/api/print/printReceipt/${serialNumber}`,
+                  contentType: 'application/json',
+                  success: (response) => {
+                     hideLoading();
+                     $.wnoty({
+                        type: 'success',
+                        message: response,
+                        position: 'top-right'
+                     });
+                     loadTableProducts();
+                  },
+                  error: (xhr, status, error) => {
+                     hideLoading();
+                     $.wnoty({
+                        type: 'error',
+                        message: 'Error closing group: ' + error,
+                        position: 'top-right'
+                     });
+                  }
+               });
+            }
+         });
+      };
+
+      const deleteOrder = (orderId) => {
+         swal({
+            title: "Are you sure?",
+            text: `Do you want to delete order ${orderId}?`,
+            icon: "warning",
+            buttons: ["Cancel", "Yes, delete"],
+            dangerMode: true,
+         }).then((willDelete) => {
+            if (willDelete) {
+               showLoading();
+               $.ajax({
+                  type: 'DELETE',
+                  url: `/api/products-manager/byId/${orderId}`,
+                  success: (response) => {
+                     hideLoading();
+                     $.wnoty({
+                        type: 'success',
+                        message: 'Order deleted successfully',
+                        position: 'top-right'
+                     });
+                     loadTableProducts();
+                  },
+                  error: (xhr, status, error) => {
+                     hideLoading();
+                     $.wnoty({
+                        type: 'error',
+                        message: 'Error deleting order: ' + error,
+                        position: 'top-right'
+                     });
+                  }
+               });
+            }
+         });
+      };
+
+      const updateOrder = (orderId) => {
+         // Placeholder for update functionality
+         alert(`Update order ${orderId} - functionality to be implemented`);
+         // Replace with actual update logic, e.g., open a modal with a form
+      };
+
+      loadTableProducts();
+
+      // Enhance responsiveness on window resize
+      $(window).resize(() => {
+         const $table = $('#productsTableContainer table');
+         if ($(window).width() < 768) {
+            $table.css('font-size', '10px');
+            $table.find('th, td').css('padding', '1px 2px');
+         } else {
+            $table.css('font-size', '11px');
+            $table.find('th, td').css('padding', '2px 4px');
+         }
+      });
+   });
+</script>
+
+
+
+<script>
+   function showLoading() {
+      $('#loading-overlay').show();
+   }
+
+   function hideLoading() {
+      $('#loading-overlay').hide();
+   }
 </script>

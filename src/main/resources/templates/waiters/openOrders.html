@@ -1,646 +1,339 @@
-<div id="openOdersData">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Open Orders</title>
+   <style>
+      #openOrdersData { font-family: 'Arial', sans-serif; font-size: 11px; padding: 0; }
+      .card { border-radius: 4px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); margin: 0; }
+      .card-header { padding: 0.3rem; background-color: #007bff; color: white; display: flex; justify-content: space-between; align-items: center; }
+      .card-header h6 { margin: 0; font-size: 0.8rem; }
+      .table-responsive { margin-top: 0.3rem; }
+      table { width: 100%; border-collapse: collapse; font-size: 10px; table-layout: auto; }
+      th, td { padding: 2px 4px; border: 1px solid #e0e0e0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      th { background-color: #f0f0f0; font-weight: bold; }
+      tbody tr:hover { background-color: #f8f9fa; }
+      .group-row { background-color: #f8f8f8; font-weight: 500; }
+      .order-row { background-color: #ffffff; }
+      .btn-group { display: flex; gap: 2px; flex-wrap: nowrap; }
+      .btn-group .btn { padding: 2px 4px; font-size: 10px; border-radius: 2px; border: none; color: white; cursor: pointer; transition: all 0.2s ease; }
+      .btn-group .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+      .btn-view { background-color: #007bff; }
+      .btn-add { background-color: #28a745; }
+      .btn-split { background-color: #ffc107; color: #212529; }
+      .btn-close { background-color: #dc3545; }
+      .btn-print-receipt { background-color: #17a2b8; margin-left: 4px; }
+      .btn-print-order { background-color: #17a2b8; }
+      .btn-print-order:disabled { background-color: #6c757d; cursor: not-allowed; opacity: 0.6; }
+      #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+      #fullscreenPdfViewerContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 10000; display: none; flex-direction: column; justify-content: center; align-items: center; }
+      #fullscreenPdfViewer { width: 90%; height: 80%; border: none; }
+      #fullscreenPdfCloseBtn { position: absolute; top: 10px; right: 20px; color: white; font-size: 24px; cursor: pointer; }
+      .pdf-actions { text-align: center; margin-top: 10px; }
+      .no-scroll { overflow: hidden; }
+   </style>
+</head>
+<body>
+<div id="openOrdersData" class="container-fluid py-1">
    <div class="row">
       <div class="col-xl-12">
          <div class="card">
             <div class="card-header">
                <h6 class="mb-0">Current Running Orders</h6>
+               <button id="refreshTable" class="btn btn-sm btn-light" style="padding: 2px 4px; font-size: 10px;">
+                  Refresh
+               </button>
             </div>
-            <div class="card-body">
-               <div id="productsTableContainer"></div>
+            <div class="card-body p-1">
+               <div id="productsTableContainer" class="table-responsive"></div>
             </div>
          </div>
       </div>
    </div>
+   <div id="loading-overlay" class="d-none">
+      <div class="spinner-border text-primary" role="status">
+         <span class="visually-hidden">Loading...</span>
+      </div>
+   </div>
+   <div id="fullscreenPdfViewerContainer">
+      <span id="fullscreenPdfCloseBtn">×</span>
+      <iframe id="fullscreenPdfViewer"></iframe>
+      <div class="pdf-actions">
+         <button id="printPdfBtn" class="btn btn-light btn-sm">
+            <i class="fas fa-print"></i> Print
+         </button>
+         <button id="closePdfBtn" class="btn btn-danger btn-sm">
+            <i class="fas fa-times"></i> Close
+         </button>
+      </div>
+   </div>
 </div>
-
-<!--<script>
-   $(document).ready(() => {
-      const loadTableProducts = () => {
-         $.ajax({
-            type: 'GET',
-            url: '/api/products-manager/open-orders',
-            success: (data) => {
-               generateDynamicTable(data, 'productsTableContainer');
-            },
-            error: (xhr, status, error) => {
-               console.error('Error loading products:', error);
-            }
-         });
-      };
-
-      const generateDynamicTable = (data, targetElementId) => {
-         const $targetElement = $(`#${targetElementId}`);
-         $targetElement.css({
-            'width': '100%',
-            'overflow-x': 'auto',
-            'padding': '0'
-         });
-
-         const $table = $('<table>').attr('style', `
-            width: 100%;
-            border-collapse: collapse;
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            table-layout: auto;
-         `);
-
-         const $thead = $('<thead>');
-         const $tbody = $('<tbody>');
-         const $tfoot = $('<tfoot>');
-
-         const headers = ['Select', 'SerialNumber', 'OrderID', 'CreatedDateTime', 'CreatedBy', 'OrderDate', 'ProductName', 'Quantity', 'UnitPrice', 'Subtotal', 'Tax', 'TotalAmount', 'PaymentStatus', 'OrderState', 'Actions'];
-         const $headerRow = $('<tr>');
-         headers.forEach(header => {
-            $headerRow.append($('<th>').text(header).attr('style', `
-               padding: 2px 4px;
-               border: 1px solid #e0e0e0;
-               text-align: left;
-               white-space: nowrap;
-               background-color: #f0f0f0;
-               font-weight: bold;
-               overflow: hidden;
-               text-overflow: ellipsis;
-            `));
-         });
-         $thead.append($headerRow);
-
-         const groupedData = groupBySerialNumber(data);
-         let totalSales = 0;
-
-         const renderTableBody = (pageData) => {
-            $tbody.empty();
-            pageData.forEach(group => {
-               const $groupRow = $('<tr>').attr('style', 'background-color: #f8f8f8;');
-               $groupRow.append($('<td>').append($('<input>').attr({
-                  type: 'checkbox',
-                  class: 'group-select',
-                  style: 'margin: 0; padding: 0;'
-               })));
-               $groupRow.append($('<td>').text(group.SerialNumber).attr('colspan', 12).attr('style', `
-                  padding: 2px 4px;
-                  border: 1px solid #e0e0e0;
-                  text-align: left;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-               `));
-
-               const $buttonGroup = $('<div>').attr('style', `
-                  display: flex;
-                  justify-content: space-between;
-                  width: 100%;
-               `);
-               const buttonStyle = `
-                  padding: 2px 3px;
-                  margin: 0 1px;
-                  font-size: 18px;
-                  border: none;
-                  cursor: pointer;
-                  color: white;
-                  width: 50%;
-                  border-radius: 3px;
-               `;
-               $buttonGroup.append(
-                       $('<button>').text('View').attr('style', buttonStyle + 'background-color: #007bff;').click(() => viewGroup(group.SerialNumber)),
-                       $('<button>').text('Add').attr('style', buttonStyle + 'background-color: #28a745;').click(() => addItemToGroup(group.SerialNumber)),
-                       $('<button>').text('Split').attr('style', buttonStyle + 'background-color: #ffc107;').click(() => splitGroup(group.SerialNumber)),
-                       $('<button>').text('Close').attr('style', buttonStyle + 'background-color: #dc3545;').click(() => closeGroup(group.SerialNumber))
-               );
-               $groupRow.append($('<td>').attr('colspan', 2).append($buttonGroup));
-
-               $tbody.append($groupRow);
-
-               group.orders.forEach(order => {
-                  const $dataRow = $('<tr>').addClass(`order-row ${group.SerialNumber}`).attr('style', `
-                     display: none;
-                     background-color: #ffffff;
-                  `);
-                  headers.forEach(header => {
-                     let $cell = $('<td>').text(order[header] || '');
-                     if (header === 'Select') {
-                        $cell = $('<td>').append($('<input>').attr({
-                           type: 'checkbox',
-                           class: 'order-select',
-                           style: 'margin: 0; padding: 0;'
-                        }));
-                     }
-                     $cell.attr('style', `
-                        padding: 2px 4px;
-                        border: 1px solid #e0e0e0;
-                        text-align: left;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                     `);
-                     $dataRow.append($cell);
-                  });
-                  $tbody.append($dataRow);
-                  totalSales += parseFloat(order.TotalAmount) || 0;
-               });
-            });
-         };
-
-         renderTableBody(groupedData);
-
-         const $footerRow = $('<tr>').attr('style', `
-            background-color: #f0f0f0;
-            font-weight: bold;
-         `);
-         $footerRow.append($('<td>').attr('colspan', headers.length - 1).text('Total Sales:').attr('style', `
-            text-align: right;
-            padding: 2px 4px;
-            border: 1px solid #e0e0e0;
-         `));
-         $footerRow.append($('<td>').text(`${totalSales.toFixed(2)}`).attr('style', `
-            text-align: right;
-            padding: 2px 4px;
-            border: 1px solid #e0e0e0;
-         `));
-         $tfoot.append($footerRow);
-
-         $table.append($thead).append($tbody).append($tfoot);
-         $targetElement.empty().append($table);
-      };
-
-      const groupBySerialNumber = (data) => {
-         const grouped = {};
-         data.forEach(order => {
-            if (!grouped[order.SerialNumber]) {
-               grouped[order.SerialNumber] = {
-                  SerialNumber: order.SerialNumber,
-                  orders: []
-               };
-            }
-            grouped[order.SerialNumber].orders.push(order);
-         });
-         return Object.values(grouped);
-      };
-
-      const viewGroup = (serialNumber) => {
-         $(`.${serialNumber}`).toggle();
-
-      };
-
-      const addItemToGroup = (serialNumber) => {
-         console.log(`Adding item to group: ${serialNumber}`);
-
-         // Update the CurrentorderNumber
-         const currentOrderNumberElement = document.getElementById('CurrentorderNumber');
-         currentOrderNumberElement.textContent = serialNumber;
-         // Check the checkbox
-         const checkbox = document.getElementById('addingOrder');
-         checkbox.checked = true;
-      };
-
-      const splitGroup = (serialNumber) => {
-         const checkedOrderIds = $(`.order-row.${serialNumber} .order-select:checked`)
-                 .map(function() {
-                    return $(this).closest('tr').find('td:eq(2)').text(); // Assuming OrderID is in the third column
-                 })
-                 .get();
-
-         if (checkedOrderIds.length === 0) {
-            $.wnoty({
-               type: 'warning',
-               message: 'Please select at least one order to split',
-               position: 'top-right'
-            });
-            return;
-         }
-
-         showLoading();
-
-         const splitOrderDTO = {
-            ids: checkedOrderIds
-         };
-
-         $.ajax({
-            type: 'POST',
-            url: '/api/stocks/split-orders',
-            contentType: 'application/json',
-            data: JSON.stringify(splitOrderDTO),
-            success: (response) => {
-               hideLoading();
-               $.wnoty({
-                  type: 'success',
-                  message: response, // Show the response message
-                  position: 'top-right'
-               });
-               loadTableProducts(); // Reload the table after successful split
-            },
-            error: (xhr, status, error) => {
-               hideLoading();
-               $.wnoty({
-                  type: 'error',
-                  message: 'Error splitting orders: ' + error,
-                  position: 'top-right'
-               });
-            }
-         });
-      };
-
-      const closeGroup = (serialNumber) => {
-         swal({
-            title: "Are you sure?",
-            text: `Do you want to close Sales with serial number ${serialNumber}?`,
-            icon: "warning",
-            buttons: ["Cancel", "Yes, close group"],
-            dangerMode: true,
-         })
-                 .then((willClose) => {
-                    if (willClose) {
-                       console.log(`Closing group: ${serialNumber}`);
-                       showLoading();
-                       $.ajax({
-                          type: 'GET',
-                          url: `/api/print/printReceipt/${serialNumber}`,
-                          contentType: 'application/json',
-                          success: (response) => {
-                             hideLoading();
-                             $.wnoty({
-                                type: 'success',
-                                message: response,
-                                position: 'top-right'
-                             });
-                             loadTableProducts();
-                          },
-                          error: (xhr, status, error) => {
-                             hideLoading();
-                             $.wnoty({
-                                type: 'error',
-                                message: 'Error closing group and printing receipt: ' + error,
-                                position: 'top-right'
-                             });
-                          }
-                       });
-                    }
-                 });
-      };
-      loadTableProducts();
-
-      // Make the table responsive
-      $(window).resize(() => {
-         const $table = $('#productsTableContainer table');
-         if ($(window).width() < 768) {
-            $table.css('font-size', '10px');
-            $table.find('th, td').css('padding', '1px 2px');
-         } else {
-            $table.css('font-size', '11px');
-            $table.find('th, td').css('padding', '2px 4px');
-         }
-      });
-   });
-</script>-->
-
 
 <script>
    $(document).ready(() => {
-      // Placeholder functions (define these based on your application)
-      const showLoading = () => { /* Show loading spinner */ };
-      const hideLoading = () => { /* Hide loading spinner */ };
+      function showLoading() {
+         $('#loading-overlay').removeClass('d-none').show();
+      }
+
+      function hideLoading() {
+         $('#loading-overlay').hide();
+      }
 
       const loadTableProducts = () => {
+         showLoading();
          $.ajax({
             type: 'GET',
             url: '/api/products-manager/open-orders',
             success: (data) => {
                generateDynamicTable(data, 'productsTableContainer');
+               hideLoading();
             },
-            error: (xhr, status, error) => {
-               console.error('Error loading products:', error);
-               $.wnoty({
-                  type: 'error',
-                  message: 'Failed to load orders: ' + error,
-                  position: 'top-right'
-               });
+            error: (xhr) => {
+               hideLoading();
+               console.error('Error loading products:', xhr.status, xhr.responseText);
+               swal("Error", "Could not load open orders. Please try again.", "error");
             }
          });
       };
 
       const generateDynamicTable = (data, targetElementId) => {
          const $targetElement = $(`#${targetElementId}`);
-         $targetElement.css({
-            'width': '100%',
-            'overflow-x': 'auto',
-            'padding': '0'
-         });
-
-         const $table = $('<table>').attr('style', `
-                    width: 100%;
-                    border-collapse: collapse;
-                    font-family: Arial, sans-serif;
-                    font-size: 11px;
-                    table-layout: auto;
-                `);
-
+         $targetElement.css({ 'width': '100%', 'overflow-x': 'auto' });
+         const $table = $('<table>').addClass('table table-bordered table-hover');
          const $thead = $('<thead>');
          const $tbody = $('<tbody>');
          const $tfoot = $('<tfoot>');
-
-         const headers = ['Select', 'SerialNumber', 'OrderID', 'CreatedDateTime', 'CreatedBy', 'OrderDate', 'ProductName', 'Quantity', 'UnitPrice', 'Subtotal', 'Tax', 'TotalAmount', 'PaymentStatus', 'OrderState', 'Actions'];
+         const headers = [
+            'Select', 'SerialNumber', 'OrderID', 'OrderNumber', 'CreatedDateTime', 'CreatedBy',
+            'OrderDate', 'ProductName', 'Quantity', 'UnitPrice', 'Subtotal', 'Tax',
+            'TotalAmount', 'PaymentStatus', 'OrderState', 'OrderPrinted', 'Actions'
+         ];
          const $headerRow = $('<tr>');
-         headers.forEach(header => {
-            const $th = $('<th>')
-                    .text(header)
-                    .addClass(`column-${header.toLowerCase().replace(/\s/g, '-')}`)
-                    .attr('style', `
-                            padding: 2px 4px;
-                            border: 1px solid #e0e0e0;
-                            text-align: left;
-                            white-space: nowrap;
-                            background-color: #f0f0f0;
-                            font-weight: bold;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                        `);
-            if (header === 'Actions') {
-               $th.css('min-width', '80px');
-            }
-            $headerRow.append($th);
-         });
+         headers.forEach(header => $headerRow.append($('<th>').text(header)));
          $thead.append($headerRow);
-
          const groupedData = groupBySerialNumber(data);
          let totalSales = 0;
-
-         const renderTableBody = (pageData) => {
-            $tbody.empty();
-            pageData.forEach(group => {
-               const $groupRow = $('<tr>').attr('style', 'background-color: #f8f8f8;');
-               $groupRow.append($('<td>').append($('<input>').attr({
-                  type: 'checkbox',
-                  class: 'group-select',
-                  style: 'margin: 0; padding: 0;'
-               })));
-               $groupRow.append($('<td>').text(group.SerialNumber).attr('colspan', 12).attr('style', `
-                            padding: 2px 4px;
-                            border: 1px solid #e0e0e0;
-                            text-align: left;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                        `));
-
-               const $buttonGroup = $('<div>').attr('style', `
-                            display: flex;
-                            flex-wrap: wrap;
-                            justify-content: space-around;
-                            width: 100%;
-                        `);
-               const buttonStyle = `
-                            padding: 2px 4px;
-                            margin: 0 2px;
-                            font-size: 14px;
-                            border: none;
-                            cursor: pointer;
-                            color: white;
-                            border-radius: 3px;
-                        `;
-               $buttonGroup.append(
-                       $('<button>').html('<i class="fas fa-eye"></i>').attr('title', 'View').attr('style', buttonStyle + 'background-color: #007bff;').click(() => viewGroup(group.SerialNumber)),
-                       $('<button>').html('<i class="fas fa-plus"></i>').attr('title', 'Add').attr('style', buttonStyle + 'background-color: #28a745;').click(() => addItemToGroup(group.SerialNumber)),
-                       $('<button>').html('<i class="fas fa-cut"></i>').attr('title', 'Split').attr('style', buttonStyle + 'background-color: #ffc107;').click(() => splitGroup(group.SerialNumber)),
-                       $('<button>').html('<i class="fas fa-times"></i>').attr('title', 'Close').attr('style', buttonStyle + 'background-color: #dc3545;').click(() => closeGroup(group.SerialNumber))
-               );
-               $groupRow.append($('<td>').attr('colspan', 2).append($buttonGroup));
-               $tbody.append($groupRow);
-
-               group.orders.forEach(order => {
-                  const $dataRow = $('<tr>').addClass(`order-row ${group.SerialNumber}`).attr('style', `
-                                display: none;
-                                background-color: #ffffff;
-                            `);
-                  headers.forEach(header => {
-                     let $cell = $('<td>');
-                     if (header === 'Select') {
-                        $cell.append($('<input>').attr({
-                           type: 'checkbox',
-                           class: 'order-select',
-                           style: 'margin: 0; padding: 0;'
-                        }));
-                     } else if (header === 'Actions') {
-                        const $deleteBtn = $('<button>').html('<i class="fas fa-trash"></i>').attr({
-                           title: 'Delete',
-                           style: 'padding: 2px 4px; margin-right: 2px; background-color: #dc3545; color: white; border: none; cursor: pointer; display:none'
-                        }).click(() => deleteOrder(order.OrderID));
-                        const $updateBtn = $('<button>').html('<i class="fas fa-edit"></i>').attr({
-                           title: 'Update',
-                           style: 'padding: 2px 4px; background-color: #ffc107; color: white; border: none; cursor: pointer; display:none'
-                        }).click(() => updateOrder(order.OrderID));
-                        $cell.append($deleteBtn, $updateBtn);
-                     } else {
-                        $cell.text(order[header] || '');
-                     }
-                     $cell.addClass(`column-${header.toLowerCase().replace(/\s/g, '-')}`).attr('style', `
-                                    padding: 2px 4px;
-                                    border: 1px solid #e0e0e0;
-                                    text-align: left;
-                                    white-space: nowrap;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                `);
-                     $dataRow.append($cell);
-                  });
-                  $tbody.append($dataRow);
-                  totalSales += parseFloat(order.TotalAmount) || 0;
+         groupedData.forEach(group => {
+            const $groupRow = $('<tr>').addClass('group-row');
+            $groupRow.append($('<td>').append($('<input>').attr({ type: 'checkbox', class: 'group-select' })));
+            const $serialCell = $('<td>').text(group.SerialNumber).attr('colspan', 12);
+            const $printReceiptBtn = $('<button>').text('Print Receipt')
+                    .addClass('btn btn-print-receipt')
+                    .css({ 'padding': '2px 4px', 'font-size': '10px', 'margin-left': '4px' })
+                    .click(() => generateReceipt(group.SerialNumber));
+            $serialCell.append($printReceiptBtn);
+            $groupRow.append($serialCell);
+            const $groupButtonGroup = $('<div>').addClass('btn-group');
+            $groupButtonGroup.append(
+                    $('<button>').text('View').addClass('btn btn-view').click(() => viewGroup(group.SerialNumber)),
+                    $('<button>').text('Add').addClass('btn btn-add').click(() => addItemToGroup(group.SerialNumber)),
+                    $('<button>').text('Split').addClass('btn btn-split').click(() => splitGroup(group.SerialNumber)),
+                    $('<button>').text('Close').addClass('btn btn-close').click(() => closeGroup(group.SerialNumber))
+            );
+            $groupRow.append($('<td>').attr('colspan', 4).append($groupButtonGroup));
+            $tbody.append($groupRow);
+            group.orders.forEach(order => {
+               const $dataRow = $('<tr>').addClass(`order-row ${group.SerialNumber}`).hide();
+               headers.forEach(header => {
+                  let $cell;
+                  if (header === 'Actions') {
+                     const $orderButtonGroup = $('<div>').addClass('btn-group');
+                     const $printOrderBtn = $('<button>').text('Print Order').addClass('btn btn-print-order')
+                             .prop('disabled', order.OrderPrinted === 1)
+                             .click(() => { if (order.OrderNumber) generateOrder(order.OrderNumber); });
+                     $orderButtonGroup.append($printOrderBtn);
+                     $cell = $('<td>').append($orderButtonGroup);
+                  } else if (header === 'Select') {
+                     $cell = $('<td>').append($('<input>').attr({ type: 'checkbox', class: 'order-select' }));
+                  } else {
+                     const cellValue = header === 'OrderPrinted' ? (order[header] === 1 ? 'Yes' : 'No') : (order[header] || '');
+                     $cell = $('<td>').text(cellValue);
+                  }
+                  $dataRow.append($cell);
                });
+               $tbody.append($dataRow);
+               totalSales += parseFloat(order.TotalAmount) || 0;
             });
-         };
-
-         renderTableBody(groupedData);
-
-         const $footerRow = $('<tr>').attr('style', `
-                    background-color: #f0f0f0;
-                    font-weight: bold;
-                `);
-         $footerRow.append($('<td>').attr('colspan', headers.length - 1).text('Total Sales:').attr('style', `
-                    text-align: right;
-                    padding: 2px 4px;
-                    border: 1px solid #e0e0e0;
-                `));
-         $footerRow.append($('<td>').text(`${totalSales.toFixed(2)}`).attr('style', `
-                    text-align: right;
-                    padding: 2px 4px;
-                    border: 1px solid #e0e0e0;
-                `));
+         });
+         const $footerRow = $('<tr>').append(
+                 $('<td>').attr('colspan', headers.length - 1).text('Total Sales:').css('text-align', 'right'),
+                 $('<td>').text(totalSales.toFixed(2))
+         );
          $tfoot.append($footerRow);
-
-         $table.append($thead).append($tbody).append($tfoot);
+         $table.append($thead, $tbody, $tfoot);
          $targetElement.empty().append($table);
       };
 
       const groupBySerialNumber = (data) => {
          const grouped = {};
          data.forEach(order => {
-            if (!grouped[order.SerialNumber]) {
-               grouped[order.SerialNumber] = {
-                  SerialNumber: order.SerialNumber,
-                  orders: []
-               };
-            }
+            if (!grouped[order.SerialNumber]) grouped[order.SerialNumber] = { SerialNumber: order.SerialNumber, orders: [] };
             grouped[order.SerialNumber].orders.push(order);
          });
          return Object.values(grouped);
       };
 
-      const viewGroup = (serialNumber) => {
-         $(`.order-row.${serialNumber}`).toggle();
-      };
-
+      const viewGroup = (serialNumber) => { $(`.order-row.${serialNumber}`).toggle(); };
       const addItemToGroup = (serialNumber) => {
-         console.log(`Adding item to group: ${serialNumber}`);
          const currentOrderNumberElement = document.getElementById('CurrentorderNumber');
-         if (currentOrderNumberElement) {
-            currentOrderNumberElement.textContent = serialNumber;
-         }
+         if (currentOrderNumberElement) { currentOrderNumberElement.textContent = serialNumber; }
          const checkbox = document.getElementById('addingOrder');
-         if (checkbox) {
-            checkbox.checked = true;
-         }
+         if (checkbox) { checkbox.checked = true; }
+         console.log(`Adding item to group: ${serialNumber}`);
       };
-
       const splitGroup = (serialNumber) => {
-         const checkedOrderIds = $(`.order-row.${serialNumber} .order-select:checked`)
-                 .map(function() {
-                    return $(this).closest('tr').find('td:eq(2)').text();
-                 })
-                 .get();
-
+         const checkedOrderIds = $(`.order-row.${serialNumber} .order-select:checked`).map(function() {
+            return $(this).closest('tr').find('td:eq(2)').text();
+         }).get();
          if (checkedOrderIds.length === 0) {
-            $.wnoty({
-               type: 'warning',
-               message: 'Please select at least one order to split',
-               position: 'top-right'
-            });
+            swal("No Orders Selected", "Please select at least one order to split into a new group.", "warning");
             return;
          }
-
          showLoading();
-         const splitOrderDTO = { ids: checkedOrderIds };
          $.ajax({
             type: 'POST',
             url: '/api/stocks/split-orders',
             contentType: 'application/json',
-            data: JSON.stringify(splitOrderDTO),
-            success: (response) => {
+            data: JSON.stringify({ ids: checkedOrderIds }),
+            success: () => {
                hideLoading();
-               $.wnoty({
-                  type: 'success',
-                  message: response,
-                  position: 'top-right'
-               });
+               swal("Success", "Orders have been split successfully into a new group.", "success");
                loadTableProducts();
             },
-            error: (xhr, status, error) => {
+            error: (xhr) => {
                hideLoading();
-               $.wnoty({
-                  type: 'error',
-                  message: 'Error splitting orders: ' + error,
-                  position: 'top-right'
-               });
+               swal("Error", "Could not split the selected orders. Please try again.", "error");
             }
          });
       };
-
+      const performGroupClose = (serialNumber) => {
+         showLoading();
+         $.ajax({
+            type: 'GET',
+            url: `/api/print/printReceipt/${serialNumber}`,
+            contentType: 'application/json',
+            success: () => {
+               hideLoading();
+               swal("Group Closed", `Group ${serialNumber} has been closed.`, "success");
+               loadTableProducts();
+            },
+            error: (xhr) => {
+               hideLoading();
+               swal("Error", "An error occurred while closing the group.", "error");
+            }
+         });
+      };
       const closeGroup = (serialNumber) => {
          swal({
             title: "Are you sure?",
-            text: `Do you want to close Sales with serial number ${serialNumber}?`,
+            text: `This will close all orders in group ${serialNumber}. This action cannot be undone.`,
             icon: "warning",
-            buttons: ["Cancel", "Yes, close group"],
+            buttons: ["Cancel", "Yes, Close Group"],
             dangerMode: true,
          }).then((willClose) => {
             if (willClose) {
-               showLoading();
-               $.ajax({
-                  type: 'GET',
-                  url: `/api/print/printReceipt/${serialNumber}`,
-                  contentType: 'application/json',
-                  success: (response) => {
-                     hideLoading();
-                     $.wnoty({
-                        type: 'success',
-                        message: response,
-                        position: 'top-right'
-                     });
-                     loadTableProducts();
-                  },
-                  error: (xhr, status, error) => {
-                     hideLoading();
-                     $.wnoty({
-                        type: 'error',
-                        message: 'Error closing group: ' + error,
-                        position: 'top-right'
-                     });
-                  }
-               });
+               performGroupClose(serialNumber);
             }
          });
       };
 
-      const deleteOrder = (orderId) => {
-         swal({
-            title: "Are you sure?",
-            text: `Do you want to delete order ${orderId}?`,
-            icon: "warning",
-            buttons: ["Cancel", "Yes, delete"],
-            dangerMode: true,
-         }).then((willDelete) => {
-            if (willDelete) {
-               showLoading();
-               $.ajax({
-                  type: 'DELETE',
-                  url: `/api/products-manager/byId/${orderId}`,
-                  success: (response) => {
-                     hideLoading();
-                     $.wnoty({
-                        type: 'success',
-                        message: 'Order deleted successfully',
-                        position: 'top-right'
-                     });
-                     loadTableProducts();
-                  },
-                  error: (xhr, status, error) => {
-                     hideLoading();
-                     $.wnoty({
-                        type: 'error',
-                        message: 'Error deleting order: ' + error,
-                        position: 'top-right'
-                     });
+      let currentBlobUrl = null;
+      const clearPdfViewer = () => {
+         $('#fullscreenPdfViewerContainer').hide();
+         if (currentBlobUrl) {
+            URL.revokeObjectURL(currentBlobUrl);
+            currentBlobUrl = null;
+         }
+         $('#fullscreenPdfViewer').attr('src', '');
+         $('body').removeClass('no-scroll');
+      };
+
+      const displayFullscreenPdf = (blob) => {
+         if (currentBlobUrl) {
+            URL.revokeObjectURL(currentBlobUrl);
+         }
+         currentBlobUrl = URL.createObjectURL(blob);
+         $('#fullscreenPdfViewer').attr('src', currentBlobUrl);
+         $('#fullscreenPdfViewerContainer').css('display', 'flex');
+         $('body').addClass('no-scroll');
+      };
+
+      const handlePdfGenerationError = (xhr, documentType) => {
+         hideLoading();
+
+         if (xhr.status === 403) {
+            let userMessage = `This ${documentType} has already been printed. Re-printing requires administrator privileges.`;
+
+            if (xhr.responseText) {
+               try {
+                  const errorData = JSON.parse(xhr.responseText);
+                  if (errorData && errorData.error) {
+                     userMessage = errorData.error;
                   }
-               });
+               } catch (e) {
+                  console.warn("Could not parse 403 error response as JSON. Falling back to default message.");
+               }
+            }
+            swal("Permission Denied", userMessage, "warning");
+
+         } else {
+            console.error(`Error generating ${documentType}:`, xhr.status, xhr.responseText);
+            swal("Error", `Could not generate the ${documentType} PDF. Please try again.`, "error");
+         }
+      };
+
+      const generateReceipt = (serialNumber) => {
+         showLoading();
+         $.ajax({
+            url: `/api/jasper/receipt/${serialNumber}`,
+            method: 'POST',
+            xhrFields: { responseType: 'blob' },
+            success: function(data) {
+               hideLoading();
+               displayFullscreenPdf(new Blob([data], { type: 'application/pdf' }));
+               loadTableProducts();
+            },
+            error: function(xhr) {
+               handlePdfGenerationError(xhr, "Receipt");
             }
          });
       };
 
-      const updateOrder = (orderId) => {
-         // Placeholder for update functionality
-         alert(`Update order ${orderId} - functionality to be implemented`);
-         // Replace with actual update logic, e.g., open a modal with a form
+      const generateOrder = (orderNumber) => {
+         if (!orderNumber || orderNumber.trim() === '') return;
+         showLoading();
+         $.ajax({
+            url: `/api/jasper/order/${encodeURIComponent(orderNumber)}`,
+            method: 'POST',
+            xhrFields: { responseType: 'blob' },
+            success: function(pdfData) {
+               hideLoading();
+               displayFullscreenPdf(new Blob([pdfData], { type: 'application/pdf' }));
+               loadTableProducts();
+            },
+            error: function(xhr) {
+               handlePdfGenerationError(xhr, "Order");
+            }
+         });
       };
+
+      const closeFullscreenPdf = () => { clearPdfViewer(); };
+      const printFullscreenPdf = () => {
+         const iframe = document.getElementById('fullscreenPdfViewer');
+         if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+         }
+      };
+
+      $('#fullscreenPdfCloseBtn').on('click', closeFullscreenPdf);
+      $('#printPdfBtn').on('click', printFullscreenPdf);
+      $('#closePdfBtn').on('click', closeFullscreenPdf);
+      $('#refreshTable').click(loadTableProducts);
 
       loadTableProducts();
-
-      // Enhance responsiveness on window resize
-      $(window).resize(() => {
-         const $table = $('#productsTableContainer table');
-         if ($(window).width() < 768) {
-            $table.css('font-size', '10px');
-            $table.find('th, td').css('padding', '1px 2px');
-         } else {
-            $table.css('font-size', '11px');
-            $table.find('th, td').css('padding', '2px 4px');
-         }
-      });
    });
 </script>
-
-
-
-<script>
-   function showLoading() {
-      $('#loading-overlay').show();
-   }
-
-   function hideLoading() {
-      $('#loading-overlay').hide();
-   }
-</script>
+</body>
+</html>

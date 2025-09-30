@@ -8,6 +8,25 @@ import java.util.Optional;
 
 public interface CustomProductManagerRepository {
 
+    // ++ START: New methods for print status ++
+    /**
+     * Checks the print status for a given order or receipt identifier.
+     * @param type 'ORDER' or 'RECEIPT'
+     * @param identifier The order_number or serial_number
+     * @return An Optional containing the status (true for printed, false for not printed), or empty if not found.
+     */
+    Optional<Boolean> checkPrintStatus(String type, String identifier);
+
+    /**
+     * Updates the print status for a given order or receipt identifier.
+     * @param type 'ORDER' or 'RECEIPT'
+     * @param identifier The order_number or serial_number
+     * @param newStatus The new status to set (true for printed, false for not printed)
+     * @return The number of rows affected.
+     */
+    int updatePrintStatus(String type, String identifier, boolean newStatus);
+    // ++ END: New methods for print status ++
+
     List<Map<String, Object>> GetOpenOrderNumbers();
     List<Map<String, Object>>GetClosedOrderSerialNumbers();
     Optional<Map<String, Object>> getSingleProductById(Long productId);
