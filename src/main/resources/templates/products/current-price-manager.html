@@ -1,6 +1,3 @@
-
-
-
 <div th:fragment="products">
     <div class="row">
         <div class="col-md-12">
@@ -23,24 +20,11 @@
         </style>
     </div>
 
-
-    <script>
-        function showLoading() {
-            $('#loading-overlay').show();
-        }
-
-        function hideLoading() {
-            $('#loading-overlay').hide();
-        }
-    </script>
-
-
     <script>
         ($ => {
             // Configuration
             const config = {
                 defaultApiUrl: '/api-bulk/products-database',
-                recordsPerPage: 10,
                 saveEndpoint: '/api/stocks/prices'
             };
 
@@ -48,7 +32,6 @@
             const state = {
                 fullData: [],
                 filteredData: [],
-                currentPage: 1,
                 selectedRows: new Set(),
                 priceChanges: {},
                 pricingEditable: false
@@ -78,20 +61,20 @@
             // Create header controls
             const createControls = () => {
                 return $(`
-        <div class="row g-2 align-items-center mb-3">
-            <div class="col-md-4">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="changePrice">
-                    <label class="form-check-label" for="changePrice">Enable Price Editing</label>
-                </div>
-            </div>
-            <div class="col-md-4 text-end">
-                <button class="btn btn-success btn-sm" id="savePriceChangesBtn">
-                    <i class="fas fa-save me-1"></i>Save Price Changes
-                </button>
-            </div>
-        </div>
-    `);
+                    <div class="row g-2 align-items-center mb-3">
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="changePrice">
+                                <label class="form-check-label" for="changePrice">Enable Price Editing</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-success btn-sm" id="savePriceChangesBtn">
+                                <i class="fas fa-save me-1"></i>Save Price Changes
+                            </button>
+                        </div>
+                    </div>
+                `);
             };
 
             // Create search input
@@ -136,7 +119,6 @@
                 elements.tableWrapper.append(table);
 
                 displayTableData(data);
-                createPagination(data.length);
             };
 
             // Display table data
@@ -144,17 +126,12 @@
                 const tbody = $('#member-table tbody');
                 tbody.empty();
 
-                const startIndex = (state.currentPage - 1) * config.recordsPerPage;
-                const endIndex = startIndex + config.recordsPerPage;
-                const itemsToShow = displayData.slice(startIndex, endIndex);
-
-                itemsToShow.forEach((item, index) => {
-                    const tr = $('<tr/>').data('original-index', startIndex + index);
-                    const rowIndex = startIndex + index;
+                displayData.forEach((item, index) => {
+                    const tr = $('<tr/>').data('original-index', index);
                     const isChecked = state.selectedRows.has(item['Product ID'].toString());
 
                     tr.append(`<td><div class="form-check d-flex justify-content-center my-0 mx-n1"><input type="checkbox" class="form-check-input rowCheckbox" ${isChecked ? 'checked' : ''} data-product-id="${item['Product ID']}" /></div></td>`);
-                    tr.append(`<td>${rowIndex + 1}</td>`);
+                    tr.append(`<td>${index + 1}</td>`);
 
                     Object.entries(item).forEach(([key, value]) => {
                         const td = $('<td/>');
@@ -226,60 +203,6 @@
                 });
             };
 
-            // Create pagination
-            const createPagination = (totalItems) => {
-                const totalPages = Math.ceil(totalItems / config.recordsPerPage);
-                const pagination = $('<div class="pagination-controls d-flex justify-content-between mt-3"/>');
-                const leftControls = $('<div class="d-flex align-items-center"/>');
-                const rightControls = $('<div class="btn-group" role="group" aria-label="Pagination controls"/>');
-
-                leftControls.append(`<select id="itemsPerPage" class="form-select form-select-sm" style="width: auto; margin-right: 10px;">
-            <option value="10">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="all">All</option>
-        </select>`);
-                leftControls.append('<span id="paginationInfo" style="margin: 0 10px;"></span>');
-
-                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="prevPage">Previous</button>');
-                rightControls.append('<button class="btn btn-sm btn-outline-primary" id="nextPage">Next</button>');
-
-                pagination.append(leftControls);
-                pagination.append(rightControls);
-                elements.tableWrapper.append(pagination);
-
-                updatePaginationControls(totalPages);
-
-                $('#itemsPerPage').val(config.recordsPerPage).off('change').on('change', function() {
-                    config.recordsPerPage = $(this).val() === 'all' ? state.filteredData.length : parseInt($(this).val());
-                    state.currentPage = 1;
-                    displayTableData(state.filteredData);
-                    updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
-                });
-
-                $('#prevPage').off('click').on('click', () => changePage(state.currentPage - 1));
-                $('#nextPage').off('click').on('click', () => changePage(state.currentPage + 1));
-            };
-
-            // Update pagination controls
-            const updatePaginationControls = (totalPages) => {
-                const startItem = (state.currentPage - 1) * config.recordsPerPage + 1;
-                const endItem = Math.min(state.currentPage * config.recordsPerPage, state.filteredData.length);
-                $('#paginationInfo').text(`Page ${state.currentPage} of ${totalPages} | Showing ${startItem}-${endItem} of ${state.filteredData.length} records`);
-                $('#prevPage').prop('disabled', state.currentPage === 1);
-                $('#nextPage').prop('disabled', state.currentPage === totalPages || totalPages === 0);
-            };
-
-            // Change page
-            const changePage = (newPage) => {
-                const totalPages = Math.ceil(state.filteredData.length / config.recordsPerPage);
-                if (newPage >= 1 && newPage <= totalPages) {
-                    state.currentPage = newPage;
-                    displayTableData(state.filteredData);
-                    updatePaginationControls(totalPages);
-                }
-            };
-
             // Filter table
             const filterTable = (searchTerm) => {
                 state.filteredData = state.fullData.filter(row =>
@@ -287,9 +210,7 @@
                         String(value).toLowerCase().includes(searchTerm.toLowerCase())
                     )
                 );
-                state.currentPage = 1;
                 displayTableData(state.filteredData);
-                updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
             };
 
             // Fetch and display data
@@ -316,7 +237,6 @@
             // Refresh table
             const refreshTable = () => {
                 displayTableData(state.filteredData);
-                updatePaginationControls(Math.ceil(state.filteredData.length / config.recordsPerPage));
             };
 
             // Save price changes
@@ -379,24 +299,24 @@
             // Apply styles
             const applyStyles = () => {
                 $('head').append(`
-<style>
-    .table-responsive {
-        overflow-x: auto;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        border-radius: 4px;
-        padding: 11px;
-    }
-    .price-input {
-        width: 80px !important;
-    }
-    @media (max-width: 768px) {
-        .price-input {
-            width: 60px !important;
-        }
-    }
-</style>
-`);
+                    <style>
+                        .table-responsive {
+                            overflow-x: auto;
+                            margin-bottom: 1rem;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            border-radius: 4px;
+                            padding: 11px;
+                        }
+                        .price-input {
+                            width: 80px !important;
+                        }
+                        @media (max-width: 768px) {
+                            .price-input {
+                                width: 60px !important;
+                            }
+                        }
+                    </style>
+                `);
             };
 
             // Initialize
@@ -407,8 +327,4 @@
 
         })(jQuery);
     </script>
-
 </div>
-
-
-
